@@ -1,0 +1,34 @@
+{
+  "id": "epic",
+  "name": "Epic",
+  "description": "Максимум из меню игры (Epic/Cinematic). Только sg.* — без Engine.ini, якорь шкалы.",
+  "files": {
+    "GameUserSettings.ini": {
+      "[ScalabilityGroups]": {
+        "sg.ResolutionQuality": "100",
+        "sg.ViewDistanceQuality": "4",
+        "sg.AntiAliasingQuality": "4",
+        "sg.ShadowQuality": "4",
+        "sg.GlobalIlluminationQuality": "4",
+        "sg.ReflectionQuality": "4",
+        "sg.PostProcessQuality": "4",
+        "sg.TextureQuality": "4",
+        "sg.EffectsQuality": "4",
+        "sg.FoliageQuality": "4",
+        "sg.ShadingQuality": "4",
+        "sg.LandscapeQuality": "4",
+        "sg.CloudsQuality": "4"
+      },
+      "[/Script/Engine.GameUserSettings]": {
+        "bUseVSync": "False",
+        "bUseDynamicResolution": "False",
+        "FullscreenMode": "1",
+        "ResolutionSizeX": "{{width}}",
+        "ResolutionSizeY": "{{height}}",
+        "LastUserConfirmedResolutionSizeX": "{{width}}",
+        "LastUserConfirmedResolutionSizeY": "{{height}}",
+        "FrameRateLimit": "0.000000"
+      }
+    }
+  }
+}

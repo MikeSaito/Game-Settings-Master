@@ -1,0 +1,9 @@
+{
+  "id": "low",
+  "name": "Low",
+  "description": "Unity — низкий приоритет GPU: gfx jobs выкл, упрощённый threading.",
+  "boot_config": {
+    "gfx-enable-gfx-jobs": "0",
+    "gfx-threading-mode": "0"
+  }
+}

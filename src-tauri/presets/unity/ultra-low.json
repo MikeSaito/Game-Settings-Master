@@ -1,0 +1,10 @@
+{
+  "id": "ultra-low",
+  "name": "Ultra Low",
+  "description": "Unity — минимум: отключены gfx jobs, однопоточный рендер, режим экономии.",
+  "boot_config": {
+    "gfx-enable-gfx-jobs": "0",
+    "gfx-threading-mode": "0",
+    "force-low-power-device": "1"
+  }
+}

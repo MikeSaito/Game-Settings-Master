@@ -1,0 +1,9 @@
+{
+  "id": "medium",
+  "name": "Medium",
+  "description": "Unity — сбалансированный boot.config: gfx jobs вкл, стандартный threading.",
+  "boot_config": {
+    "gfx-enable-gfx-jobs": "1",
+    "gfx-threading-mode": "4"
+  }
+}

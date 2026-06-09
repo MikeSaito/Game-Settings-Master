@@ -1,0 +1,203 @@
+[
+  {
+    "key": "LastGPUBenchmarkResult",
+    "category": "System",
+    "title": "Оценка GPU (бенчмарк)",
+    "description": "Число, которое игра сама записала после теста видеокарты при первом запуске. Используется для подбора пресета графики — не настройка для ручного тweak.",
+    "impact": "Не редактировать — игра пересчитает при следующем бенчмарке.",
+    "editable": false
+  },
+  {
+    "key": "LastCPUBenchmarkResult",
+    "category": "System",
+    "title": "Оценка CPU (бенчмарк)",
+    "description": "Результат встроенного теста процессора. Служебное значение для авто-подбора настроек.",
+    "impact": "Не редактировать вручную.",
+    "editable": false
+  },
+  {
+    "key": "LastGPUBenchmarkSteps",
+    "category": "System",
+    "title": "Шаги GPU-бенчмарка",
+    "description": "Внутренний счётчик прохождения GPU-теста. Не влияет на картинку.",
+    "impact": "Служебное — не трогать.",
+    "editable": false
+  },
+  {
+    "key": "LastCPUBenchmarkSteps",
+    "category": "System",
+    "title": "Шаги CPU-бенчмарка",
+    "description": "Внутренний счётчик CPU-теста.",
+    "impact": "Служебное — не трогать.",
+    "editable": false
+  },
+  {
+    "key": "LastGPUBenchmarkMultiplier",
+    "category": "System",
+    "title": "Множитель GPU-бенчмарка",
+    "description": "Калибровочный коэффициент результата GPU-теста.",
+    "impact": "Служебное — не трогать.",
+    "editable": false
+  },
+  {
+    "key": "Version",
+    "category": "System",
+    "title": "Версия файла настроек",
+    "description": "Номер формата ini. Игра использует его при обновлениях — чтобы мигрировать старые настройки.",
+    "impact": "Изменение может сломать загрузку настроек после патча.",
+    "editable": false
+  },
+  {
+    "key": "InstallGUID",
+    "category": "System",
+    "title": "ID установки",
+    "description": "Уникальный идентификатор вашей копии игры на этом ПК.",
+    "impact": "Не связано с графикой. Не редактировать.",
+    "editable": false
+  },
+  {
+    "key": "RunNumber",
+    "category": "System",
+    "title": "Счётчик запусков",
+    "description": "Сколько раз игра была запущена на этой установке.",
+    "impact": "Служебная статистика.",
+    "editable": false
+  },
+  {
+    "key": "DesiredScreenWidth",
+    "category": "Display",
+    "title": "Желаемая ширина (legacy)",
+    "description": "Старое поле разрешения в UE — часто дублирует ResolutionSizeX. Меняйте ResolutionSizeX, если хотите изменить ширину.",
+    "impact": "Может конфликтовать с ResolutionSizeX — лучше править основные поля.",
+    "min": "640",
+    "max": "7680"
+  },
+  {
+    "key": "DesiredScreenHeight",
+    "category": "Display",
+    "title": "Желаемая высота (legacy)",
+    "description": "Старое поле высоты — дублирует ResolutionSizeY в большинстве игр.",
+    "impact": "Меняйте ResolutionSizeY для реального эффекта.",
+    "min": "480",
+    "max": "4320"
+  },
+  {
+    "key": "RefreshRate",
+    "category": "Display",
+    "title": "Частота обновления монитора",
+    "description": "Герцовка, под которую игра настраивает вывод: 60, 120, 144, 165 Hz. Должна совпадать с монитором.",
+    "impact": "Неверное значение — рваная картинка или лишний tearing.",
+    "min": "30",
+    "max": "360",
+    "value_hint": "60 / 120 / 144 / 165",
+    "value_type": "float"
+  },
+  {
+    "key": "WindowPosX",
+    "category": "Display",
+    "title": "Позиция окна по X",
+    "description": "Где левый край окна на рабочем столе. Используется в оконном режиме.",
+    "impact": "На FPS не влияет.",
+    "min": "-4096",
+    "max": "8192",
+    "value_type": "int",
+    "editable": false
+  },
+  {
+    "key": "WindowPosY",
+    "category": "Display",
+    "title": "Позиция окна по Y",
+    "description": "Где верхний край окна на рабочем столе.",
+    "impact": "На FPS не влияет.",
+    "min": "-4096",
+    "max": "8192",
+    "value_type": "int",
+    "editable": false
+  },
+  {
+    "key": "bUseHDRDisplayOutput",
+    "category": "Display",
+    "title": "Вывод HDR",
+    "description": "True — HDR на совместимом мониторе. False — обычный SDR.",
+    "impact": "Нужен HDR-дисплей.",
+    "value_hint": "True / False",
+    "value_type": "bool"
+  },
+  {
+    "key": "HDRDisplayOutputNits",
+    "category": "Display",
+    "title": "Пиковая яркость HDR",
+    "description": "Максимальная яркость светлых участков в нитах.",
+    "impact": "Только при включённом HDR.",
+    "min": "400",
+    "max": "10000",
+    "value_type": "int"
+  },
+  {
+    "key": "AudioQualityLevel",
+    "category": "Audio",
+    "title": "Качество звука",
+    "description": "Детализация аудио-движка: сжатие и число источников.",
+    "impact": "Почти не влияет на FPS.",
+    "min": "0",
+    "max": "3",
+    "value_hint": "0 — мин, 3 — макс",
+    "value_type": "int"
+  },
+  {
+    "key": "BenchmarkResolutionX",
+    "category": "System",
+    "title": "Разрешение GPU-бенчмарка (ширина)",
+    "description": "В каком разрешении игра гоняла тест видеокарты.",
+    "impact": "Служебное — не менять.",
+    "editable": false,
+    "value_type": "int"
+  },
+  {
+    "key": "BenchmarkResolutionY",
+    "category": "System",
+    "title": "Разрешение GPU-бенчмарка (высота)",
+    "description": "Высота окна при GPU-бенчмарке.",
+    "impact": "Служебное — не менять.",
+    "editable": false,
+    "value_type": "int"
+  },
+  {
+    "key": "bUseDesiredScreenHeight",
+    "category": "Display",
+    "title": "Использовать DesiredScreenHeight",
+    "description": "Служебный флаг legacy-разрешения.",
+    "impact": "Не влияет на графику напрямую.",
+    "value_hint": "True / False",
+    "value_type": "bool",
+    "editable": false
+  },
+  {
+    "key": "bUseDesiredScreenWidth",
+    "category": "Display",
+    "title": "Использовать DesiredScreenWidth",
+    "description": "Служебный флаг legacy-разрешения.",
+    "impact": "Не влияет на графику напрямую.",
+    "value_hint": "True / False",
+    "value_type": "bool",
+    "editable": false
+  },
+  {
+    "key": "LastRecommendedScreenWidth",
+    "category": "System",
+    "title": "Рекомендованная ширина (бенчмарк)",
+    "description": "Ширина, которую игра рекомендовала после теста железа.",
+    "impact": "Служебное.",
+    "editable": false,
+    "value_type": "int"
+  },
+  {
+    "key": "LastRecommendedScreenHeight",
+    "category": "System",
+    "title": "Рекомендованная высота (бенчмарк)",
+    "description": "Высота после авто-рекомендации.",
+    "impact": "Служебное.",
+    "editable": false,
+    "value_type": "int"
+  }
+]

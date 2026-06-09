@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "pack_id": "unity-tiers",
+  "title": "Unity tier presets",
+  "match": {
+    "engine_families": [
+      "unity"
+    ]
+  },
+  "apply": {
+    "kind": "unity",
+    "presets_root": "presets"
+  },
+  "presets": [
+    {
+      "id": "ultra-low",
+      "name": "Ultra Low",
+      "description": "",
+      "definition_file": "ultra-low.json"
+    },
+    {
+      "id": "low",
+      "name": "Low",
+      "description": "",
+      "definition_file": "low.json"
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "description": "",
+      "definition_file": "medium.json"
+    },
+    {
+      "id": "high",
+      "name": "High",
+      "description": "",
+      "definition_file": "high.json"
+    },
+    {
+      "id": "epic",
+      "name": "Epic",
+      "description": "",
+      "definition_file": "epic.json"
+    },
+    {
+      "id": "ultra-high",
+      "name": "Ultra High",
+      "description": "",
+      "definition_file": "ultra-high.json"
+    }
+  ],
+  "bundle": {
+    "file": "pack.zip",
+    "sha256": "3c189ebecc7fd661db825f03a9fe60ee3d3ff9bbbfd5a7f080abb45a3309bbcd"
+  },
+  "revision": "1.3.0",
+  "updated_at": "2026-06-09T12:18:48.493Z"
+}

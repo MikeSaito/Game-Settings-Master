@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-bg: #0f1115;
+  --color-bg-elevated: #151921;
+  --color-bg-card: #1a1f28;
+  --color-bg-hover: #212733;
+  --color-bg-active: #1e2838;
+  --color-border: #2f3642;
+  --color-border-strong: #434b58;
+  --color-text: #eef1f6;
+  --color-text-secondary: #c4cad4;
+  --color-text-muted: #9aa3b2;
+  --color-text-faint: #727b8a;
+  --color-accent: #5b8def;
+  --color-accent-hover: #4a7ee0;
+  --color-accent-soft: rgba(91, 141, 239, 0.14);
+}
+
+:root {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(91, 141, 239, 0.35);
+  color: #fff;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #434b58 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #434b58;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #5a6370;
+}
+
+/* Layout surfaces */
+.app-bg {
+  background: var(--color-bg);
+}
+
+.surface-panel {
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border);
+}
+
+.surface-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+}
+
+.surface-card:hover {
+  border-color: var(--color-border-strong);
+}
+
+.surface-card-selected {
+  background: var(--color-bg-active);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px rgba(91, 141, 239, 0.25);
+}
+
+/* Typography helpers */
+.text-body {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-faint {
+  color: var(--color-text-faint);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-code {
+  color: #a8c4ff;
+  font-family: var(--font-mono);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
+}
+
+/* Range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  border: 2px solid #eef1f6;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  border: 2px solid #eef1f6;
+}
+
+.input-field {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.input-field::placeholder {
+  color: var(--color-text-faint);
+}
+
+.input-field:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+select option {
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+}
+
+/* Обрезка обложки по центру — равномерно сверху и снизу (лого Steam/Epic в центре кадра) */
+.cover-crop-center,
+.cover-crop-center-static {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gsm.local/schema/preset-catalog.v1.schema.json",
+  "title": "GSM Preset Catalog v1.1",
+  "description": "Корневой каталог удалённых пресетов для Game Settings Master",
+  "type": "object",
+  "required": ["schema_version", "catalog_id", "version", "packs"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "catalog_id": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "base_url": {
+      "type": "string",
+      "description": "Базовый URL каталога (относительные пути в packs[])"
+    },
+    "packs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/catalog_pack_ref" }
+    }
+  },
+  "$defs": {
+    "catalog_pack_ref": {
+      "type": "object",
+      "required": ["id", "manifest_url"],
+      "properties": {
+        "id": { "type": "string" },
+        "manifest_url": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "pack_match": {
+      "type": "object",
+      "properties": {
+        "steam_app_ids": { "type": "array", "items": { "type": "string" } },
+        "game_ids": { "type": "array", "items": { "type": "string" } },
+        "engine_families": { "type": "array", "items": { "type": "string" } },
+        "overlay_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "pack_bundle": {
+      "type": "object",
+      "required": ["file"],
+      "properties": {
+        "file": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "pack_policy": {
+      "type": "object",
+      "properties": {
+        "preserve_settings": { "type": "array", "items": { "type": "string" } },
+        "preserve_selections": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "forza_apply": {
+      "type": "object",
+      "required": ["kind", "presets_root", "user_config_patch", "media_dir"],
+      "properties": {
+        "kind": { "const": "forza" },
+        "presets_root": { "type": "string" },
+        "profiles_root": { "type": "string", "description": "alias presets_root" },
+        "user_config_patch": { "type": "string" },
+        "preset_xml": { "type": "string", "description": "alias user_config_patch" },
+        "media_dir": { "type": "string" },
+        "parameter_catalog": { "type": "string" }
+      }
+    },
+    "ue_overlay_apply": {
+      "type": "object",
+      "required": ["kind", "overlay_id", "overlay_file"],
+      "properties": {
+        "kind": { "const": "ue_overlay" },
+        "overlay_id": { "type": "string" },
+        "overlay_file": { "type": "string" }
+      }
+    },
+    "unity_apply": {
+      "type": "object",
+      "required": ["kind", "presets_root"],
+      "properties": {
+        "kind": { "const": "unity" },
+        "presets_root": { "type": "string" },
+        "parameter_catalog": { "type": "string" }
+      }
+    },
+    "ue_json_apply": {
+      "type": "object",
+      "required": ["kind", "presets_root"],
+      "properties": {
+        "kind": { "const": "ue_json" },
+        "presets_root": { "type": "string" },
+        "engines_root": { "type": "string" },
+        "parameter_catalog": { "type": "string" }
+      }
+    },
+    "catalog_apply": {
+      "type": "object",
+      "required": ["kind", "catalog_root"],
+      "properties": {
+        "kind": { "const": "catalog" },
+        "catalog_root": { "type": "string" },
+        "parameter_catalog": { "type": "string" }
+      }
+    },
+    "forza_preset_entry": {
+      "type": "object",
+      "required": ["id", "name", "profile_folder"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "profile_folder": { "type": "string" }
+      }
+    },
+    "json_preset_entry": {
+      "type": "object",
+      "required": ["id", "name", "definition_file"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "definition_file": { "type": "string" }
+      }
+    },
+    "pack_manifest": {
+      "type": "object",
+      "required": ["schema_version", "pack_id", "match", "apply"],
+      "properties": {
+        "schema_version": { "const": 1 },
+        "pack_id": { "type": "string" },
+        "title": { "type": "string" },
+        "revision": { "type": "string" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "match": { "$ref": "#/$defs/pack_match" },
+        "apply": {
+          "oneOf": [
+            { "$ref": "#/$defs/forza_apply" },
+            { "$ref": "#/$defs/ue_overlay_apply" },
+            { "$ref": "#/$defs/unity_apply" },
+            { "$ref": "#/$defs/ue_json_apply" },
+            { "$ref": "#/$defs/catalog_apply" }
+          ]
+        },
+        "policy": { "$ref": "#/$defs/pack_policy" },
+        "bundle": { "$ref": "#/$defs/pack_bundle" },
+        "presets": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/forza_preset_entry" },
+              { "$ref": "#/$defs/json_preset_entry" }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

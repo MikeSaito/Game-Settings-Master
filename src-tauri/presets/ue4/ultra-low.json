@@ -1,0 +1,49 @@
+{
+  "id": "ultra-low",
+  "name": "Ultra Low",
+  "description": "UE4 — режим «картошки»: 40% разрешения, sg.* на нуле, агрессивные Engine CVars. Для слабых ПК.",
+  "files": {
+    "GameUserSettings.ini": {
+      "[ScalabilityGroups]": {
+        "sg.ResolutionQuality": "40",
+        "sg.ViewDistanceQuality": "0",
+        "sg.AntiAliasingQuality": "0",
+        "sg.ShadowQuality": "0",
+        "sg.PostProcessQuality": "0",
+        "sg.TextureQuality": "0",
+        "sg.EffectsQuality": "0",
+        "sg.FoliageQuality": "0"
+      },
+      "[/Script/Engine.GameUserSettings]": {
+        "bUseVSync": "False",
+        "bUseDynamicResolution": "False",
+        "FullscreenMode": "2",
+        "ResolutionSizeX": "{{width}}",
+        "ResolutionSizeY": "{{height}}",
+        "FrameRateLimit": "60.000000"
+      }
+    },
+    "Engine.ini": {
+      "[SystemSettings]": {
+        "r.ViewDistanceScale": "0.25",
+        "r.Streaming.PoolSize": "1000",
+        "r.Streaming.MipBias": "3",
+        "r.MaxAnisotropy": "1",
+        "r.Shadow.MaxResolution": "128",
+        "r.Shadow.DistanceScale": "0.25",
+        "r.Shadow.CSM.MaxCascades": "1",
+        "r.MaterialQualityLevel": "0",
+        "r.DefaultFeature.Bloom": "False",
+        "r.DefaultFeature.MotionBlur": "False",
+        "r.DefaultFeature.LensFlare": "False",
+        "r.AmbientOcclusionLevels": "0",
+        "r.SSR.Quality": "0",
+        "r.DetailMode": "0",
+        "r.ScreenSpaceReflections": "0",
+        "r.ShadowQuality": "0",
+        "r.PostProcessAAQuality": "0",
+        "r.FoliageQuality": "0"
+      }
+    }
+  }
+}

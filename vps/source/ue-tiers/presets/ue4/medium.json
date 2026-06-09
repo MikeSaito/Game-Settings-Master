@@ -1,0 +1,43 @@
+{
+  "id": "medium",
+  "name": "Medium",
+  "description": "UE4 — середина шкалы: ~50% от Epic, 85% разрешения, сбалансированные тени и текстуры.",
+  "files": {
+    "GameUserSettings.ini": {
+      "[ScalabilityGroups]": {
+        "sg.ResolutionQuality": "85",
+        "sg.ViewDistanceQuality": "2",
+        "sg.AntiAliasingQuality": "2",
+        "sg.ShadowQuality": "2",
+        "sg.PostProcessQuality": "2",
+        "sg.TextureQuality": "2",
+        "sg.EffectsQuality": "2",
+        "sg.FoliageQuality": "2"
+      },
+      "[/Script/Engine.GameUserSettings]": {
+        "bUseVSync": "False",
+        "FullscreenMode": "2",
+        "ResolutionSizeX": "{{width}}",
+        "ResolutionSizeY": "{{height}}",
+        "FrameRateLimit": "0.000000"
+      }
+    },
+    "Engine.ini": {
+      "[SystemSettings]": {
+        "r.ViewDistanceScale": "0.85",
+        "r.Streaming.PoolSize": "2500",
+        "r.Streaming.MipBias": "0",
+        "r.MaxAnisotropy": "8",
+        "r.ShadowQuality": "1",
+        "r.Shadow.MaxResolution": "1024",
+        "r.Shadow.DistanceScale": "0.8",
+        "r.MaterialQualityLevel": "1",
+        "r.PostProcessAAQuality": "3",
+        "r.DefaultFeature.MotionBlur": "False",
+        "r.DefaultFeature.Bloom": "True",
+        "r.ScreenSpaceReflections": "0",
+        "r.FoliageQuality": "1"
+      }
+    }
+  }
+}

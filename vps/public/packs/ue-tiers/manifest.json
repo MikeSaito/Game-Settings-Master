@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "pack_id": "ue-tiers",
+  "title": "UE tier presets",
+  "match": {
+    "engine_families": [
+      "ue4",
+      "ue5"
+    ]
+  },
+  "apply": {
+    "kind": "ue_json",
+    "presets_root": "presets",
+    "engines_root": "engines"
+  },
+  "presets": [
+    {
+      "id": "ultra-low",
+      "name": "Ultra Low",
+      "description": "",
+      "definition_file": "ultra-low.json"
+    },
+    {
+      "id": "low",
+      "name": "Low",
+      "description": "",
+      "definition_file": "low.json"
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "description": "",
+      "definition_file": "medium.json"
+    },
+    {
+      "id": "high",
+      "name": "High",
+      "description": "",
+      "definition_file": "high.json"
+    },
+    {
+      "id": "epic",
+      "name": "Epic",
+      "description": "",
+      "definition_file": "epic.json"
+    },
+    {
+      "id": "ultra-high",
+      "name": "Ultra High",
+      "description": "",
+      "definition_file": "ultra-high.json"
+    }
+  ],
+  "bundle": {
+    "file": "pack.zip",
+    "sha256": "f954c5e2412f31df40b15d3950f346737fdfc654abc042019a4bd3da4959a026"
+  },
+  "revision": "1.3.0",
+  "updated_at": "2026-06-09T12:18:48.467Z"
+}

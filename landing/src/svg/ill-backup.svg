@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200" fill="none">
+  <path d="M 140 44 C 98 44 68 74 68 112 C 68 150 98 172 140 172 C 182 172 212 150 212 112" stroke="#434b58" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M 128 54 L 140 38 L 152 54" stroke="#5b8def" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="140" cy="112" r="38" stroke="#5b8def" stroke-width="1" fill="rgba(91,141,239,0.06)" opacity="0.45"/>
+  <rect x="108" y="96" width="64" height="48" rx="8" fill="#1a1f28" stroke="#5b8def" stroke-width="1.5"/>
+  <path d="M 122 116 L 134 128 L 158 104" stroke="#5b8def" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="140" y="168" fill="#727b8a" font-size="9" font-family="JetBrains Mono, monospace" text-anchor="middle">snapshot</text>
+</svg>

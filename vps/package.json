@@ -1,0 +1,21 @@
+{
+  "name": "gsm-preset-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Статический сервер пресетов для Game Settings Master",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-catalog.mjs",
+    "validate": "npm run build && node scripts/validate-schema.mjs",
+    "start": "node server.mjs",
+    "dev": "npm run build && node server.mjs"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

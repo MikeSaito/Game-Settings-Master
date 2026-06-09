@@ -1,0 +1,27 @@
+﻿<!-- Budget values are stored in bytes and baselined as Durango values -->
+<!-- Tracks are a semicolon seperated list of tracks, and we must match one of them to match the line -->
+<!-- ExcludeTracks is also semicolon seperated list of tracks, if we match any entry then we don't match the line -->
+<!-- Use 'neg' as a prefix for negative route numbers as '-' indicates the seperator between min and max route -->
+<!-- Use attributes 'Tracks' and 'ExcludeTrack' to support filtering against track name -->
+<Budgets>
+  <Budget Size="157286400" Name="Event Lab" Description="" RouteRange="neg1-neg1" />
+  <Budget Size="31457280" Name="Free-roam" Description="Main free-roam route" RouteRange="0-0" />
+  <!--<Budget Size="0" Name="Dev Routes" Description="Dev Routes. Do not come through to GSR Builds" RouteRange="1-40" /> -->
+  <Budget Size="157286400" Name="Circuit Race Routes" Description="" RouteRange="41-499" />
+  <!--<Budget Size="0" Name="Dev Routes" Description="Dev Routes. Do not come through to GSR Builds" RouteRange="500-999" /> -->
+  <Budget Size="157286400" Name="Race Routes" Description="" RouteRange="1000-32767" />
+  
+  <Budget Size="31457280" Name="Seasonal free-roam routes" Description="Routes used for seasonal set dressing for free-roam. Counts towards free-roam memory usage" RouteRange="40000-49999" />
+  <Budget Size="78643200" Name="Seasonal set dressing race routes" Description="Routes used for seasonal set dressing for races, get the full free-roam budget: 75MB" RouteRange="50000-59999" />
+  <Budget Size="15728640" Name="Story start paraphernalia" Description="Loaded in conjuction with free-roam routes. Counts towards free-roam memory usage." RouteRange="60000-64999" />
+  <Budget Size="15728640" Name="See it Drive it paraphernalia" Description="Loaded in conjuction with free-roam routes. Counts towards free-roam memory usage." RouteRange="65000-69999" />
+  <Budget Size="5242880" Name="Eliminator bonus board route" Description="Loaded in conjunction with free-roam routes when in Eliminator." RouteRange="70000-70000" />
+  <Budget Size="52428800" Name="Playerhome Routes (External Walls)" Description="Routes reserved for Playerhomes external walls" RouteRange="70001" />
+  <Budget Size="157286400" Name="Homespace Routes" Description="Routes reserved for Barnfinds and Autoshow" RouteRange="70002-70048" />
+  <Budget Size="18874368" Name="Event Loading Area Routes" Description="Route reserved for paddock and gas station loading spaces" RouteRange="70049-70050" />
+  <Budget Size="283115520" SizeHQ="440401920" Name="Barnfind Interior Routes" Description="Routes reserved for Barnfind Interiors, assumes traffic memory" RouteRange="70051-70100" />
+  <Budget Size="15728640" Name="Permanently loaded routes" Description="Any route in this range is always loaded. Not all of this budget is actually used. " RouteRange="90000-99999" />
+
+  <UserOffset Size="262144000" Name="BrioEstateEventLabOffset" Description="Amount of Memory we take from the track super optional system when building in the Estate"/>
+  <UserOffset Size="23068672" Name="FirstPreviewEventLabOffset" Description="Amount of Memory we take from the track super optional system when previewing the first prop to place on EventLab"/>
+</Budgets>

@@ -1,0 +1,13 @@
+{
+  "id": "subnautica2",
+  "name": "Subnautica 2",
+  "description": "Настройки SN2 подстраиваются под уровень пресета и видеокарту (DLSS/TSR/FSR).",
+  "files": {
+    "GameUserSettings.ini": {
+      "[/Script/subnautica2.s2gameusersettings]": {
+        "bHasAppliedUserSetting": "True"
+      },
+      "[/Script/subnautica2.sn2settingslocal]": {}
+    }
+  }
+}

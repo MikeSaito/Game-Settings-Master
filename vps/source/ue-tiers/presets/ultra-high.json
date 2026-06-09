@@ -1,0 +1,32 @@
+{
+  "id": "ultra-high",
+  "name": "Ultra High",
+  "description": "Epic в меню (sg=4) + усиленный Engine.ini. Буст через r.* CVars, без фейкового sg=6.",
+  "files": {
+    "GameUserSettings.ini": {
+      "[ScalabilityGroups]": {
+        "sg.ResolutionQuality": "100",
+        "sg.ViewDistanceQuality": "4",
+        "sg.AntiAliasingQuality": "4",
+        "sg.ShadowQuality": "4",
+        "sg.GlobalIlluminationQuality": "4",
+        "sg.ReflectionQuality": "4",
+        "sg.PostProcessQuality": "4",
+        "sg.TextureQuality": "4",
+        "sg.EffectsQuality": "4",
+        "sg.FoliageQuality": "4",
+        "sg.ShadingQuality": "4",
+        "sg.LandscapeQuality": "4",
+        "sg.CloudsQuality": "4"
+      },
+      "[/Script/Engine.GameUserSettings]": {
+        "bUseVSync": "False",
+        "bUseDynamicResolution": "False",
+        "FullscreenMode": "1",
+        "ResolutionSizeX": "{{width}}",
+        "ResolutionSizeY": "{{height}}",
+        "FrameRateLimit": "0.000000"
+      }
+    }
+  }
+}

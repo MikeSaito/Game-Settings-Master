@@ -1,0 +1,26 @@
+{
+  "preserve_settings": [
+    "ResolutionWidth",
+    "ResolutionHeight",
+    "Fullscreen",
+    "PresentInterval",
+    "MonitorRefreshPeriod",
+    "FollowCarsCameraFOV",
+    "DriverCameraFOV",
+    "HoodCameraFOV",
+    "BumperCameraFOV",
+    "DLC1",
+    "MasterVolume",
+    "StreamerMode",
+    "TAASharpness",
+    "EnablePCHDR"
+  ],
+  "preserve_selections": [
+    "EnableHDR",
+    "FrameRate",
+    "ShowFPS",
+    "ResolutionScaling",
+    "MasterVolume",
+    "AudioQuality"
+  ]
+}

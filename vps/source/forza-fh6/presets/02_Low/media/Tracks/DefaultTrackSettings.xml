@@ -1,0 +1,1063 @@
+<TrackSettings Version="93">
+  <SkyboxHeightOffset Version="2" value="-650.000000" rotation="0.000000"/>
+  <SkyboxIndex value="1"/>
+  <SunHeightOffset value="38.000000"/>
+  <LightAmbient r="0.142109" g="0.175171" b="0.197850" a="0.000000"/>
+  <SaturateAmount value="1.000000"/>
+  <DesatLuminosity r="0.212600" g="0.715200" b="0.072200" a="1.000000"/>
+  <DesatPostMod r="1.000000" g="1.000000" b="1.000000" a="1.000000"/>
+  <WorldClear r="0.000000" g="0.000000" b="0.000000"/>
+  <SHLighting Version="6" SHTopRed="0.417786" SHTopGreen="0.426777" SHTopBlue="0.429065" SHBottomRed="0.000000" SHBottomGreen="0.000000" SHBottomBlue="0.000000" SHDirRed="0.007674" SHDirGreen="0.012846" SHDirBlue="0.017932" SHEnvMapTop="1.000000" SHEnvMapBottom="0.150000" CockpitDirectionalScalar="4.999997" CockpitHemisphericalScalar="7.999995"/>
+  <WindDirection x="0.010000" y="0.010000" z="-431602080.000000"/>
+  <WindAmplitude value="0.200000"/>
+  <WindGustinessStrength value="0.000000"/>
+  <WindGustinessFrequency value="0.000000"/>
+  <WindSpeed value="1.450000"/>
+  <Fog Version="4">
+    <SunColor r="0.001821" g="0.002428" b="0.003677" power="90.693184"/>
+    <Curve value="0.000000"/>
+    <Settings0>
+      <Enabled value="1"/>
+      <Angle value="0"/>
+      <Color r="0.000911" g="0.001518" b="0.003035"/>
+      <Near value="852.616943"/>
+      <NearDensity value="0.088890"/>
+      <Far value="76.478348"/>
+      <FarDensity value="0.003444"/>
+      <HeightFogDensity value="0.001322"/>
+      <HeightFogStart value="72.441193"/>
+      <HeightFogEnd value="248.020920"/>
+      <HeightFogColor r="0.006588" g="0.010110" b="0.033564"/>
+    </Settings0>
+    <Settings1>
+      <Enabled value="0"/>
+      <Angle value="95"/>
+      <Color r="0.800000" g="0.820000" b="0.840000"/>
+      <Near value="-10.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="400.000000"/>
+      <FarDensity value="0.150000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings1>
+    <Settings2>
+      <Enabled value="0"/>
+      <Angle value="330"/>
+      <Color r="0.760000" g="0.590000" b="0.440000"/>
+      <Near value="-10.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="290.000000"/>
+      <FarDensity value="1.000000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings2>
+    <Settings3>
+      <Enabled value="0"/>
+      <Angle value="0"/>
+      <Color r="0.500000" g="0.500000" b="0.500000"/>
+      <Near value="100.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="5000.000000"/>
+      <FarDensity value="1.000000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings3>
+    <Settings4>
+      <Enabled value="0"/>
+      <Angle value="0"/>
+      <Color r="0.500000" g="0.500000" b="0.500000"/>
+      <Near value="100.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="5000.000000"/>
+      <FarDensity value="1.000000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings4>
+    <Settings5>
+      <Enabled value="0"/>
+      <Angle value="0"/>
+      <Color r="0.500000" g="0.500000" b="0.500000"/>
+      <Near value="100.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="5000.000000"/>
+      <FarDensity value="1.000000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings5>
+    <Settings6>
+      <Enabled value="0"/>
+      <Angle value="0"/>
+      <Color r="0.500000" g="0.500000" b="0.500000"/>
+      <Near value="100.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="5000.000000"/>
+      <FarDensity value="1.000000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings6>
+    <Settings7>
+      <Enabled value="0"/>
+      <Angle value="0"/>
+      <Color r="0.500000" g="0.500000" b="0.500000"/>
+      <Near value="100.000000"/>
+      <NearDensity value="0.000000"/>
+      <Far value="5000.000000"/>
+      <FarDensity value="1.000000"/>
+      <HeightFogDensity value="0.000000"/>
+      <HeightFogStart value="0.000000"/>
+      <HeightFogEnd value="2.000000"/>
+      <HeightFogColor r="1.000000" g="1.000000" b="1.000000"/>
+    </Settings7>
+    <PatchyFog Version="2">
+      <Enabled value="0"/>
+      <Density value="1.000000"/>
+      <TilingFactor x="70.000000" y="70.000000" z="70.000000"/>
+      <Remapping x="-1.500000" y="1.000000"/>
+      <DistanceBetweenSheets value="5.000000"/>
+      <FogStartDistance value="0.000000"/>
+      <FogEndDistance value="1000.000000"/>
+      <TapsPerSheet value="3"/>
+      <CircleSettings_World Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_World>
+      <CircleSettings_0 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_0>
+      <CircleSettings_1 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_1>
+      <CircleSettings_2 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_2>
+      <CircleSettings_3 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_3>
+      <CircleSettings_4 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_4>
+      <CircleSettings_5 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_5>
+      <CircleSettings_6 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_6>
+      <CircleSettings_7 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_7>
+      <CircleSettings_8 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_8>
+      <CircleSettings_9 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_9>
+      <CircleSettings_10 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_10>
+      <CircleSettings_11 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_11>
+      <CircleSettings_12 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_12>
+      <CircleSettings_13 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_13>
+      <CircleSettings_14 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_14>
+      <CircleSettings_15 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_15>
+      <CircleSettings_16 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_16>
+      <CircleSettings_17 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_17>
+      <CircleSettings_18 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_18>
+      <CircleSettings_19 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_19>
+      <CircleSettings_20 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_20>
+      <CircleSettings_21 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_21>
+      <CircleSettings_22 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_22>
+      <CircleSettings_23 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_23>
+      <CircleSettings_24 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_24>
+      <CircleSettings_25 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_25>
+      <CircleSettings_26 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_26>
+      <CircleSettings_27 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_27>
+      <CircleSettings_28 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_28>
+      <CircleSettings_29 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_29>
+      <CircleSettings_30 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_30>
+      <CircleSettings_31 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_31>
+      <CircleSettings_32 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_32>
+      <CircleSettings_33 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_33>
+      <CircleSettings_34 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_34>
+      <CircleSettings_35 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_35>
+      <CircleSettings_36 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_36>
+      <CircleSettings_37 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_37>
+      <CircleSettings_38 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_38>
+      <CircleSettings_39 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_39>
+      <CircleSettings_40 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_40>
+      <CircleSettings_41 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_41>
+      <CircleSettings_42 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_42>
+      <CircleSettings_43 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_43>
+      <CircleSettings_44 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_44>
+      <CircleSettings_45 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_45>
+      <CircleSettings_46 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_46>
+      <CircleSettings_47 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_47>
+      <CircleSettings_48 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_48>
+      <CircleSettings_49 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_49>
+      <CircleSettings_50 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_50>
+      <CircleSettings_51 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_51>
+      <CircleSettings_52 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_52>
+      <CircleSettings_53 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_53>
+      <CircleSettings_54 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_54>
+      <CircleSettings_55 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_55>
+      <CircleSettings_56 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_56>
+      <CircleSettings_57 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_57>
+      <CircleSettings_58 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_58>
+      <CircleSettings_59 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_59>
+      <CircleSettings_60 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_60>
+      <CircleSettings_61 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_61>
+      <CircleSettings_62 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_62>
+      <CircleSettings_63 Version="2">
+        <Enabled value="0"/>
+        <Density value="1.000000"/>
+        <ExponentialBase value="2.000000"/>
+        <TintIntensity value="1.000000"/>
+        <TintColor0 r="1.000000" g="1.000000" b="1.000000"/>
+        <TintColor1 r="1.000000" g="1.000000" b="1.000000"/>
+        <WindDirection x="0.000000" y="0.000000" z="0.000000"/>
+        <CircleSetup x="0.000000" z="0.000000" radius="100.000000" falloffPower="1.000000"/>
+        <FogBase value="0.000000"/>
+        <FogCap value="100.000000"/>
+      </CircleSettings_63>
+    </PatchyFog>
+  </Fog>
+  <ShadowColor r="0.200000" g="0.200000" b="0.201800" a="1.000000"/>
+  <StaticShadowColor r="0.000000" g="0.000000" b="0.000000" a="1.000000"/>
+  <GrassHeightScale value="1.300000"/>
+  <GlobalSpecularLevel Version="2" value="5.000000"/>
+  <MinSpecLevel value="0.000000"/>
+  <DetailBlurAmount1 value="0.000000"/>
+  <DetailBlurAmount2 value="0.000000"/>
+  <DetailBlurAmount3 value="0.000000"/>
+  <DetailBlurContrastAmount1 value="0.000000"/>
+  <DetailBlurContrastAmount2 value="0.000000"/>
+  <DetailBlurContrastAmount3 value="0.000000"/>
+  <DetailBlurIntensityAmount1 value="0.000000"/>
+  <DetailBlurIntensityAmount2 value="0.000000"/>
+  <DetailBlurIntensityAmount3 value="0.000000"/>
+  <DetailBlurContrastAmountFinal value="0.000000"/>
+  <DetailBlurIntensityAmountFinal value="0.000000"/>
+  <DetailBlurMPHForMaxBlur value="0.000000"/>
+  <bloomCutoffScale value="0.0000"/>
+  <bloomPersist value="0.000000"/>
+  <motionBlurAmount value="0.000000"/>
+  <dofFocalDistance value="4.000000"/>
+  <dofFocalLength value="0.000000"/>
+  <dofFocalMaxBlur value="0.000000"/>
+  <DarkColor r="0.010000" g="0.020000" b="0.030000" a="1.000000"/>
+  <LightColor r="0.900001" g="0.900000" b="0.750001" a="1.000000"/>
+  <CollidableDropDistance value="320.000000"/>
+  <GrassSpacingType value="0"/>
+  <GrassLODDist value="3.000000"/>
+  <GrassLODFadeRange value="3.000000"/>
+  <GrassMinNumShells value="2"/>
+  <GrassFadeStartDistance value="55.000000"/>
+  <GrassFadeEndDistance value="72.000000"/>
+  <GrassLOD value="0"/>
+  <TonemapEnabled value="1"/>
+  <ToneMapAdaptiveExposure Key_ExtraDark="0.000000" Key_Dark="18.000000" Key_Light="85.000000" Key_ExtraLight="160.000000" Exp_ExtraDark="3.00000" Exp_Dark="1.9000" Exp_Light="1.0000" Exp_ExtraLight="0.60000"/>
+  <ToneMapCockpitExposure Key_ExtraDark="0.000000" Key_Dark="7.000000" Key_Light="35.000000" Key_ExtraLight="101.000000" Exp_ExtraDark="3.170000" Exp_Dark="1.900000" Exp_Light="1.00000" Exp_ExtraLight="0.600000"/>
+  <bloomEnable value="1"/>
+  <bloomCutoff value="0.90000"/>
+  <bloomScale value="0.600000"/>    <!-- Bloom_SmallBlurScale -->
+  <bloomPersist value="4.000000"/>  <!-- Bloom_LargeBlurCutoff -->
+  <bloomWeights x="1.700000" y="0.700000" z="4.00000" w="1.000000"/> <!-- x=Bloom_LargeBlurScale, y=Bloom_LargeBlurSpread, z=LargeCap, w=SmallCap -->
+  <cockpitBloomEnable value="1"/>
+  <cockpitBloomCutoff value="1.0000"/>
+  <cockpitBloomScale value="0.300000"/>
+  <cockpitBloomPersist value="4.000000"/>
+  <cockpitBloomWeights x="0.200000" y="0.700000" z="5.000000" w="1.000000"/>
+  <skyGain value="0.000000"/>
+  <sunGainScale threshold="0.000000" power="999900.000000" scale="20000.000000"/>
+  <GrassMaxNumShells value="16.000000"/>
+  <Cubemap Version="4" MeshSizeThreshold="0.070000" MeshLimit="110" LimitPerFace="0" FacesPerFrame="6" FarDistance="280.000000" VisibilityThreshold="4880"/>
+  <CubemapDiffuse Saturation="1.000000" Scale="1.000000"/>
+  <CubemapRenderingParameters x="0.000000" y="0.000000" z="0.000000" AmbientIntensity="1.000000" SunIntensity="1.000000" SkyScale="1.000000"/>
+  <MirrorRenderingParameters x="0.000000" y="0.000000" z="0.000000" AmbientIntensity="1.000000" SunIntensity="1.000000" SkyScale="1.000000"/>
+  <Mirror VisibilityThreshold="32"/>
+  <ShadowLightDirection x="-0.197420" y="-0.302618" z="0.932442"/>
+  <MaxCubemapInShadow value="1.0"/>
+  <TrackMaxCubemapInShadow value="1.0"/>
+  <WetMaterialParams
+    MaterialWetnessScale="99.000000"
+    GlossAtMinPorosity="0.500000"
+    GlossAtMaxPorosity="0.100000"
+    DiffuseDarkeningAtMaxPorosity="0.600000"
+    DarkenRange="0.400000"
+    SaturationRange="0.300000"
+    PuddleRange="0.200000"
+    WetF0="0.020000"
+    SaturatedGloss="0.900000"
+    PuddleGloss="1.000000" />
+  <SunSpecularScale value="1000.0"/>
+  <SunRadius value="2.0"/>
+  <SunCarScale value="1.072785"/>
+  <SunCarSpecularScale value="1000.0"/>
+  <SunCarRadius value="2.0"/>
+  <LensFlareIntensity value="0.400000"/>
+  <CockpitLensFlareIntensity value="0.400000"/>
+  <EmissiveScale value="1.000000"/>
+  <LODGroups StartFade0="50000.000000" FadeDist0="50.000000" StartFade1="50000.000000" FadeDist1="50.000000" StartFade2="50000.000000" FadeDist2="50.000000" StartFade3="50000.000000" FadeDist3="50.000000" StartFade4="50000.000000" FadeDist4="50.000000" StartFade5="50000.000000" FadeDist5="50.000000" StartFade6="50000.000000" FadeDist6="50.000000" StartFade7="50000.000000" FadeDist7="50.000000"/>
+  <MipMapLodBiasModifier value="0.000000"/>
+  <Crowds Version="4" dark_x="0.602000" dark_y="0.602000" dark_z="0.602000" dark_w="1.000000" light_x="0.905000" light_y="0.905000" light_z="0.906000" light_w="1.000000" lod0="5.000000" lod1="0.000000" lod2="10.000000" lod3="0.000000" SpriteDistance="60.000000" VisibleDistance="250.000000" VisibleDistanceForShadow="20.000000" VisibleDistanceForModel="100.000000" DepthFadeStart="180.000000" DepthFadeRange="40.000000"/>
+  <DropShadowColor r="0.000000" g="-0.000000" b="-0.000000" a="1.000000"/>
+  <TrackLightMapTransition MidPoint="0.000000" Width="0.000000" Color="0.000000"/>
+  <TrackLightMapColor r="0.000000" g="0.000000" b="0.000000"/>
+  <GlobalFresnel OpaqueAngle="70.000000" TransparentMultiplier="1.200000"/>
+  <ToneMapeDelay val="0.02"/>
+  <CockpitToneMapeDelay val="0.055000"/>
+  <CameraExposureRange minval="-2.000000" maxval="6.000000"/>
+  <DetailBlurScale Version="2" val="0.000000"/>
+  <SunSize min="0.000000" max="109.000000"/>
+  <SunAdjust Version="2" decay="0.500000" brightness="1.000000" scale="1.000000" cockpitScale="1.000000"/>
+  <Performance DynamicCubemap="1" NonFocusCarProjectedShadows="0" FocusCarProjectedShadows="1" DetailBlur="0" Lightmap="1" CrowdSize="1024"/>
+  <ShadowEnds ShadowNear="25.000000" InGameShadowEnd="72.000000" TrackSegCamShadowEnd="200.000000" ShadowMipBias="-0.750000"/>
+  <CommandBufferRecording TimeAllowed="0.000000" NumTextureFixupsAllowed="0" NumGraphsAllowed="0" PrerecordNextZone="1"/>
+  <RoadSpecular RoadSpecular="-0.059000" RoadSpecular2="0.750000" RoadSkid="-0.050003" RoadSkid2="0.835003" RoadGlossiness="20.000000" RoadGlossiness2="20.000000" RoadLightmapDarkPoint="0.450000" RoadLightmapLightPoint="0.900000"/>
+  <TrackLightMapParams DarkPoint="0.450000" LightPoint="0.800000"/>
+  <skyScale value="1.400001"/>
+  <cubeSkyScale value="0.000999"/>
+  <cubeSkySaturation value="0.650000"/>
+  <homespaceCamLightDirOffset Enabled="0" x="0.000000" y="0.000000" z="0.000000"/>
+  <DropShadowOpacityAdjustment value="0.000000"/>
+  <FileChunkSize value="2097152" limit="8388608"/>
+  <ResourcePriority Texture="0" Model="0"/>
+  <imageBasedLighting Version="3" Enable="0" LogLuvEncode="0" iblAmbientScale="1.099955" iblAmbientSaturation="0.650000" iblDirectScale="0.311111" iblSunColorR="0.049332" iblSunColorG="0.082580" iblSunColorB="0.115279"/>
+  <cubeReflGroundScale value="1.000000"/>
+  <filmicTone Version="2" white="11.000000" shoulderStrength="0.300000" linearStrength="0.100000" linearAngle="0.200000" toeStrength="0.200000" toeNumerator="0.01000" toeDenominator="0.300000" exposure="0.00000"/>
+  <CockpitFilmicTone white="11.0" shoulderStrength="0.3" linearStrength="0.100" linearAngle="0.200" toeStrength="0.20" toeNumerator="0.010" toeDenominator="0.3" exposure="0.5"/>
+  <wholeTrackLightmapRadius value="409.409882"/>
+  <TrackGroundColor r="0.100000" g="0.100000" b="0.100000"/>
+  <TrackSkyColor r="1.000000" g="1.000000" b="1.000000"/>
+  <TrackHorizonBegin value="0.000000"/>
+  <TrackHorizonEnd value="0.100000"/>
+  <Particles>
+    <TintColor r="1.000000" g="1.000000" b="1.000000"/>
+  </Particles>
+  <lightRays>
+    <color r="1.000000" g="0.700000" b="0.220000"/>
+    <params sunColorInfluence="0.000000" gamma="2.280000" enabled="1" intensity="1.000000" intensityDecay="0.100000" length="5.000000" silhouetteDepthMin="0.000000" silhouetteDepthMax="900.000000" silhouetteFalloff="0.900000" angleFalloffStart="0.000000" angleFalloffEnd="60.000000" angleFalloffPower="1.000000"/>
+  </lightRays>
+  <skidmarks materialName="skidmarks"/>
+  <planarReflection numBlurPasses="1" distortionFactor="0.050000"/>
+  <RaceLineIntensity r="1.000000" g="1.000000" b="1.000000" a="1.000000"/>
+  <CrowdMovement2D WaveDistanceStart="40.000000" WaveDistanceRange="40.000000" WaveFrequencyTiling="20.000000" WaveStrengthTiling="10.000000" WaveStrengthMin="0.100000" WaveFrequency="3.000000" HorizontalWave="0.100000" VerticalWave="0.100000"/>
+  <screenAreaDistances mainScene="165.000000" cubeMap="55.000000" mirror="5.000000" depth="60.000000" shadow="85.000000" cinematic="130.000000" groundreflection="22"/>
+  <StaticCubemapOverride diffuse="" specular="" />
+  <SpecAOStepValues carMin="0" carMax="0.4" trackMin="0" trackMax="1.0" />
+  <WaterOnLens RefractionScalar="7" RefractionIndex="0.8" />
+  <TrackRTAOPow value="2.0" />
+  <CarRTAOPow value="2.0" />
+  <RTAODistance value="1.5" />
+  <RTAOCarDistance value="2.0" />
+  <DXRAnimatedModelDistance value="100" />
+  <SurfelCellDataSettings 
+    PCHighQualityMaxSupportedLODs="1"
+    PCLowQualityMaxSupportedLODs="1"
+    PCHighQualityBounceLODOffset="0"
+    PCLowQualityBounceLODOffset="1"
+    DurangoHighQualityMaxSupportedLODs="1"
+    DurangoLowQualityMaxSupportedLODs="1"
+    DurangoHighQualityBounceLODOffset="0"
+    DurangoLowQualityBounceLODOffset="1"
+    ScarlettHighQualityMaxSupportedLODs="1"
+    ScarlettLowQualityMaxSupportedLODs="1"
+    ScarlettHighQualityBounceLODOffset="0"
+    ScarlettLowQualityBounceLODOffset="0" />
+  <WetifyParams 
+    RoughnessDampeningFactorMax="0.75"
+    OverhangWetnessReductionScale="2.0"
+    WetnessMaskThreshold="0.05"
+    PorousDiffuseDarkeningPower="3.0"
+    PorousGlossReductionPower="10.0" />
+  </TrackSettings>

@@ -1,0 +1,45 @@
+name: Release app
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Tauri bundles
+        run: npm run tauri build
+
+      - name: Prepare release assets
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe" | Select-Object -First 1
+          Copy-Item $setup.FullName "Game-Settings-Master_0.1.0_x64-setup.exe"
+          $msi = Get-ChildItem "src-tauri/target/release/bundle/msi/*_x64_*.msi" | Select-Object -First 1
+          Copy-Item $msi.FullName "Game-Settings-Master_0.1.0_x64.msi"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Game Settings Master ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            Game-Settings-Master_0.1.0_x64-setup.exe
+            Game-Settings-Master_0.1.0_x64.msi

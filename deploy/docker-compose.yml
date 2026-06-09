@@ -1,0 +1,32 @@
+services:
+  presets:
+    build:
+      context: ../vps
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - "8787"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./landing:/usr/share/nginx/html:ro
+    depends_on:
+      presets:
+        condition: service_healthy

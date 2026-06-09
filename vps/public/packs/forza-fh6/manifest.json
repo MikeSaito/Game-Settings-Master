@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "pack_id": "forza-fh6",
+  "title": "Forza Horizon 6 — авторские пресеты",
+  "match": {
+    "steam_app_ids": [
+      "2483190"
+    ],
+    "game_ids": [
+      "steam-2483190"
+    ],
+    "engine_families": [
+      "forza"
+    ]
+  },
+  "apply": {
+    "kind": "forza",
+    "presets_root": "presets",
+    "user_config_patch": "Preset.xml",
+    "media_dir": "media",
+    "parameter_catalog": "parameter-catalog.json"
+  },
+  "presets": [
+    {
+      "id": "potato",
+      "name": "Potato",
+      "description": "Минимально играбельные настройки — максимум FPS на слабом железе.",
+      "profile_folder": "06_Potato"
+    },
+    {
+      "id": "minimum",
+      "name": "Minimum",
+      "description": "Производительность для 8 GB VRAM. Без RT, TAA выкл.",
+      "profile_folder": "01_Minimum"
+    },
+    {
+      "id": "low",
+      "name": "Low",
+      "description": "Производительность для 12 GB VRAM. Сбалансированный FPS.",
+      "profile_folder": "02_Low"
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "description": "Фотореализм без ray tracing — баланс картинки и FPS.",
+      "profile_folder": "03_Medium"
+    },
+    {
+      "id": "high",
+      "name": "High",
+      "description": "Высокое качество без RT. DLSS Performance на RTX, FSR на AMD.",
+      "profile_folder": "04_High"
+    },
+    {
+      "id": "ultramax",
+      "name": "Ultra Max",
+      "description": "RT отражения + RTGI. Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.",
+      "profile_folder": "05_UltraMax"
+    }
+  ],
+  "bundle": {
+    "file": "pack.zip",
+    "sha256": "9b18ac1d9b7b839b1f5ee21362bd1840262d0d71a7ddbe32d6c477bfe6ec5087"
+  },
+  "revision": "1.3.0",
+  "updated_at": "2026-06-09T12:18:48.433Z"
+}
