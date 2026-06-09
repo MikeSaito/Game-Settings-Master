@@ -1,8 +1,8 @@
-
 use crate::models::{PresetDefinition, PresetInfo};
 use serde::Deserialize;
 use std::path::PathBuf;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Deserialize)]
 pub struct PresetCatalog {
     pub schema_version: u32,
@@ -15,6 +15,7 @@ pub struct PresetCatalog {
     pub packs: Vec<CatalogPackRef>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Deserialize)]
 pub struct CatalogPackRef {
     pub id: String,
@@ -42,6 +43,7 @@ pub struct PackBundle {
     pub sha256: Option<String>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Deserialize)]
 #[serde(tag = "kind")]
 pub enum PackApply {
@@ -69,9 +71,7 @@ pub enum PackApply {
         engines_root: String,
     },
     #[serde(rename = "catalog")]
-    Catalog {
-        catalog_root: String,
-    },
+    Catalog { catalog_root: String },
 }
 
 fn default_engines_root() -> String {
@@ -111,6 +111,7 @@ pub enum PackPresetEntry {
     Json(JsonPresetEntry),
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct PackManifest {
     pub schema_version: u32,
@@ -203,7 +204,12 @@ impl ResolvedPack {
         engine_family: Option<&str>,
         overlay_id: Option<&str>,
     ) -> bool {
-        pack_matches(&self.manifest.match_rules, game_id, engine_family, overlay_id)
+        pack_matches(
+            &self.manifest.match_rules,
+            game_id,
+            engine_family,
+            overlay_id,
+        )
     }
 
     pub fn forza_parameter_catalog_path(&self) -> Option<PathBuf> {
@@ -314,7 +320,10 @@ impl ResolvedPack {
             })?;
         let path = self.root.join(presets_root).join(&rel);
         if !path.is_file() {
-            let fallback = self.root.join(presets_root).join(format!("{preset_id}.json"));
+            let fallback = self
+                .root
+                .join(presets_root)
+                .join(format!("{preset_id}.json"));
             if fallback.is_file() {
                 return Some(load_preset_json(&fallback));
             }
@@ -346,8 +355,12 @@ impl ResolvedPack {
     pub fn load_engine_ini_sections(
         &self,
         name: &str,
-    ) -> Option<Result<std::collections::HashMap<String, std::collections::HashMap<String, String>>, String>>
-    {
+    ) -> Option<
+        Result<
+            std::collections::HashMap<String, std::collections::HashMap<String, String>>,
+            String,
+        >,
+    > {
         let engines_root = match &self.manifest.apply {
             PackApply::UeJson { engines_root, .. } => engines_root.clone(),
             _ => return None,

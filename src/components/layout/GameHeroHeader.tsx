@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "../../lib/api";
+import { useBackgroundSafeEnabled } from "../../hooks/useBackgroundSafeEnabled";
 import { useGameRunning } from "../../hooks/useGameRunning";
 import {
   gameCoverFallbackLetter,
@@ -49,10 +50,12 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
   const [coverIndex, setCoverIndex] = useState(0);
   const coverSrc = coverCandidates[coverIndex] ?? null;
   const gameRunning = useGameRunning(game.exe_name);
+  const gpuEnabled = useBackgroundSafeEnabled();
 
   const { data: gpu } = useQuery({
     queryKey: ["gpu"],
     queryFn: getGpuInfo,
+    enabled: gpuEnabled,
     staleTime: 300_000,
   });
 

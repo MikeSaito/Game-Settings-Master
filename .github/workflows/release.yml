@@ -4,15 +4,17 @@ on:
   push:
     tags:
       - "v*"
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
   build-windows:
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -25,21 +27,77 @@ jobs:
         run: npm ci
 
       - name: Build Tauri bundles
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: npm run tauri build
 
       - name: Prepare release assets
         shell: pwsh
         run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $version = "${{ github.ref_name }}".TrimStart('v')
+          } else {
+            $conf = Get-Content "src-tauri/tauri.conf.json" -Raw | ConvertFrom-Json
+            $version = $conf.version
+          }
+
           $setup = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe" | Select-Object -First 1
-          Copy-Item $setup.FullName "Game-Settings-Master_0.1.0_x64-setup.exe"
-          $msi = Get-ChildItem "src-tauri/target/release/bundle/msi/*_x64_*.msi" | Select-Object -First 1
-          Copy-Item $msi.FullName "Game-Settings-Master_0.1.0_x64.msi"
+          if (-not $setup) { throw "NSIS setup.exe not found" }
+
+          $sig = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe.sig" | Select-Object -First 1
+          if (-not $sig) { throw "NSIS setup.exe.sig not found" }
+
+          $setupName = "Game-Settings-Master_${version}_x64-setup.exe"
+          Copy-Item $setup.FullName $setupName
+
+          $signature = (Get-Content $sig.FullName -Raw).Trim()
+          $tag = "v$version"
+          $repo = "MikeSaito/Game-Settings-Master"
+          $downloadUrl = "https://github.com/$repo/releases/download/$tag/$setupName"
+
+          $latest = [ordered]@{
+            version   = $version
+            notes     = ""
+            pub_date  = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            platforms = [ordered]@{
+              "windows-x86_64" = [ordered]@{
+                url       = $downloadUrl
+                signature = $signature
+              }
+            }
+          }
+
+          $latestJson = $latest | ConvertTo-Json -Depth 5
+          $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+          [System.IO.File]::WriteAllText("$PWD\latest.json", $latestJson + "`n", $utf8NoBom)
+
+          "SETUP_NAME=$setupName" >> $env:GITHUB_ENV
+          "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Game Settings Master ${{ github.ref_name }}
-          generate_release_notes: true
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
+          name: Game Settings Master v${{ env.VERSION }}
+          body: |
+            ## Game Settings Master v${{ env.VERSION }}
+
+            Windows · бесплатно · без подписи издателя
+
+            **Установщик:** `${{ env.SETUP_NAME }}`
+
+            Обновление внутри приложения: при запуске GSM сам проверит `latest.json` на GitHub Releases.
+
+            При первом запуске SmartScreen: **Подробнее → Выполнить в любом случае**.
+
+            Сайт: https://mikesaito.github.io/Game-Settings-Master/
+          generate_release_notes: false
+          make_latest: true
+          overwrite: true
           files: |
-            Game-Settings-Master_0.1.0_x64-setup.exe
-            Game-Settings-Master_0.1.0_x64.msi
+            ${{ env.SETUP_NAME }}
+            latest.json

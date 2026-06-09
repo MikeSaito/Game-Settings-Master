@@ -4,7 +4,6 @@ mod tune;
 use crate::discovery::overlay_preset_for_game;
 use crate::discovery::UeEngineFamily;
 use crate::ini::platform::{apply_target_dirs, PlatformHints};
-use tune::tune_combined_preset;
 use crate::ini::{merge_ini, read_ini_file, remove_ini_keys, write_ini_file_with_encoding_hint};
 use crate::models::{ConfigDiffEntry, PresetDefinition, PresetInfo};
 use crate::scalability::detect_scalability_limits;
@@ -12,6 +11,7 @@ use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use tune::tune_combined_preset;
 
 const PRESET_IDS: &[&str] = &["ultra-low", "low", "medium", "high", "epic", "ultra-high"];
 const ENGINE_INI: &str = "Engine.ini";
@@ -65,19 +65,19 @@ pub fn list_presets(
         return crate::unity::presets::list_unity_presets();
     }
     if engine_family == Some("forza") {
-        crate::remote_presets::sync_forza_pack_if_needed();
         return crate::forza::list_forza_presets(game_id);
-    }
-
-    if let Some(pack) = crate::remote_presets::find_ue_json_pack(engine_family) {
-        if !pack.manifest.presets.is_empty() {
-            return Ok(pack.manifest.presets_info());
-        }
     }
 
     let family = engine_family
         .map(UeEngineFamily::from_str)
         .unwrap_or(UeEngineFamily::Unknown);
+
+    if let Some(pack) = crate::remote_presets::find_ue_json_pack_cached(engine_family) {
+        if !pack.manifest.presets.is_empty() {
+            return Ok(pack.manifest.presets_info());
+        }
+    }
+
     let mut presets = Vec::new();
     for id in PRESET_IDS {
         if let Ok(preset) = load_preset_for_family(id, family) {
@@ -118,7 +118,9 @@ pub fn load_game_overlay(overlay_id: &str) -> Result<PresetDefinition, String> {
         return result;
     }
 
-    let path = presets_dir().join("games").join(format!("{overlay_id}.json"));
+    let path = presets_dir()
+        .join("games")
+        .join(format!("{overlay_id}.json"));
     let content = fs::read_to_string(&path)
         .map_err(|e| format!("Game overlay '{overlay_id}' не найден: {e}"))?;
     serde_json::from_str(&content).map_err(|e| format!("Некорректный overlay: {e}"))
@@ -133,7 +135,9 @@ pub fn build_combined_preset(
 ) -> Result<PresetDefinition, String> {
     if engine_family == Some("unity") {
         let unity_preset = crate::unity::build_unity_combined_preset(base_id)?;
-        return Ok(crate::unity::presets::unity_preset_as_definition(&unity_preset));
+        return Ok(crate::unity::presets::unity_preset_as_definition(
+            &unity_preset,
+        ));
     }
 
     let family = resolve_engine_family(engine_family, install_dir, config_dir, game_id);
@@ -181,9 +185,7 @@ fn attach_embedded_engine_preset(
     }
 }
 
-fn load_embedded_engine_sections(
-    name: &str,
-) -> Option<HashMap<String, HashMap<String, String>>> {
+fn load_embedded_engine_sections(name: &str) -> Option<HashMap<String, HashMap<String, String>>> {
     for pack in [
         crate::remote_presets::find_ue_json_pack(Some("ue5")),
         crate::remote_presets::find_ue_json_pack(Some("ue4")),
@@ -230,8 +232,7 @@ fn remove_boost_config_files(config_dir: &Path) -> Result<Vec<String>, String> {
     for file in BOOST_CONFIG_FILES {
         let path = config_dir.join(file);
         if path.exists() {
-            fs::remove_file(&path)
-                .map_err(|e| format!("Не удалось удалить {file}: {e}"))?;
+            fs::remove_file(&path).map_err(|e| format!("Не удалось удалить {file}: {e}"))?;
             removed.push(file.to_string());
         }
     }
@@ -389,13 +390,14 @@ pub fn apply_changes_to_dir(
     Ok((changed_files, diff))
 }
 
-fn normalize_removals(
-    sections: &HashMap<String, Vec<String>>,
-) -> HashMap<String, Vec<String>> {
+fn normalize_removals(sections: &HashMap<String, Vec<String>>) -> HashMap<String, Vec<String>> {
     let mut result = HashMap::new();
     for (section, keys) in sections {
         let section_name = normalize_section(section);
-        result.entry(section_name).or_insert_with(Vec::new).extend(keys.clone());
+        result
+            .entry(section_name)
+            .or_insert_with(Vec::new)
+            .extend(keys.clone());
     }
     result
 }
@@ -468,10 +470,17 @@ pub fn apply_custom_to_dir(
     width: u32,
     height: u32,
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
-    apply_changes_to_dir(config_dir, &changes.files, &changes.removals, width, height, None)
+    apply_changes_to_dir(
+        config_dir,
+        &changes.files,
+        &changes.removals,
+        width,
+        height,
+        None,
+    )
 }
 
-/// Применить пресет ко всем платформенным папкам с GUS (Windows + Win64 на UE5).
+/// Применить пресет ко всем платформенным папкам с GUS, если их несколько.
 pub fn apply_preset_to_targets(
     config_dir: &Path,
     hints: &PlatformHints,
@@ -632,10 +641,7 @@ mod tests {
     fn game_user_settings_gets_full_resolution_fields() {
         let sections = HashMap::from([(
             "[/Script/Engine.GameUserSettings]".to_string(),
-            HashMap::from([(
-                "ResolutionSizeX".to_string(),
-                "{{width}}".to_string(),
-            )]),
+            HashMap::from([("ResolutionSizeX".to_string(), "{{width}}".to_string())]),
         )]);
         let resolved = resolve_sections(&sections, 2560, 1440);
         let gus = resolved
@@ -644,7 +650,8 @@ mod tests {
         assert_eq!(gus.get("ResolutionSizeX").map(String::as_str), Some("2560"));
         assert_eq!(gus.get("ResolutionSizeY").map(String::as_str), Some("1440"));
         assert_eq!(
-            gus.get("LastUserConfirmedDesiredScreenWidth").map(String::as_str),
+            gus.get("LastUserConfirmedDesiredScreenWidth")
+                .map(String::as_str),
             Some("2560")
         );
     }
@@ -682,11 +689,15 @@ mod tests {
         let gus = dir.path().join("GameUserSettings.ini");
         fs::write(&gus, "[ScalabilityGroups]\r\nsg.ShadowQuality=1\r\n").unwrap();
 
-        let preset = build_combined_preset("ultra-high", None, None, Some(dir.path()), None).unwrap();
+        let preset =
+            build_combined_preset("ultra-high", None, None, Some(dir.path()), None).unwrap();
         apply_preset_to_dir(dir.path(), &preset, 1920, 1080).unwrap();
         let content = fs::read_to_string(&gus).unwrap();
         assert!(content.contains("sg.ShadowQuality=4"), "got: {content}");
-        assert!(content.contains("sg.ResolutionQuality=100"), "got: {content}");
+        assert!(
+            content.contains("sg.ResolutionQuality=100"),
+            "got: {content}"
+        );
     }
 
     #[test]
@@ -699,7 +710,10 @@ mod tests {
             .and_then(|f| f.get("[ScalabilityGroups]"))
             .expect("epic sg");
         let expected = limits.global_max.to_string();
-        assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some(expected.as_str()));
+        assert_eq!(
+            sg.get("sg.ShadowQuality").map(String::as_str),
+            Some(expected.as_str())
+        );
     }
 
     #[test]
@@ -715,7 +729,9 @@ mod tests {
             .expect("ultra engine");
         assert!(ultra_engine.contains_key("r.Lumen.DiffuseIndirect.Allow"));
         assert_eq!(
-            ultra_engine.get("sg.DefaultScalabilityLevel").map(String::as_str),
+            ultra_engine
+                .get("sg.DefaultScalabilityLevel")
+                .map(String::as_str),
             Some("4")
         );
         let pool: u32 = ultra_engine
@@ -745,8 +761,7 @@ mod tests {
 
     #[test]
     fn subnautica2_low_preset_uses_tsr_not_epic_dlss() {
-        let preset =
-            build_combined_preset("low", Some("steam-1962700"), None, None, None).unwrap();
+        let preset = build_combined_preset("low", Some("steam-1962700"), None, None, None).unwrap();
         let gus = preset.files.get("GameUserSettings.ini").expect("gus");
         let s2 = gus
             .iter()
@@ -760,7 +775,10 @@ mod tests {
             .expect("local section");
         assert_eq!(s2.get("GraphicsLevel").map(String::as_str), Some("Low"));
         assert_eq!(s2.get("DLSSMode").map(String::as_str), Some("Off"));
-        assert_eq!(local.get("UpscalingMethod").map(String::as_str), Some("U_TSR"));
+        assert_eq!(
+            local.get("UpscalingMethod").map(String::as_str),
+            Some("U_TSR")
+        );
         assert_eq!(local.get("TSRQualityMode").map(String::as_str), Some("1"));
     }
 
@@ -770,18 +788,25 @@ mod tests {
         let gus = dir.path().join("GameUserSettings.ini");
         fs::write(&gus, "[ScalabilityGroups]\r\nsg.ShadowQuality=1\r\n").unwrap();
 
-        let preset = build_combined_preset("ultra-high", None, None, Some(dir.path()), None).unwrap();
+        let preset =
+            build_combined_preset("ultra-high", None, None, Some(dir.path()), None).unwrap();
         let sg = preset
             .files
             .get("GameUserSettings.ini")
             .and_then(|f| f.get("[ScalabilityGroups]"))
             .expect("scalability section");
-        assert_eq!(sg.get("sg.ResolutionQuality").map(String::as_str), Some("100"));
+        assert_eq!(
+            sg.get("sg.ResolutionQuality").map(String::as_str),
+            Some("100")
+        );
         assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some("4"));
 
         apply_preset_to_dir(dir.path(), &preset, 1920, 1080).unwrap();
         let content = fs::read_to_string(&gus).unwrap();
-        assert!(content.contains("sg.ResolutionQuality=100"), "got: {content}");
+        assert!(
+            content.contains("sg.ResolutionQuality=100"),
+            "got: {content}"
+        );
     }
 
     #[test]
@@ -851,7 +876,9 @@ mod tests {
 
         let preview = preview_preset(dir.path(), &preset, 1920, 1080).unwrap();
         assert!(
-            preview.iter().any(|d| d.file == "Engine.ini" && d.key == "r.ViewDistanceScale"),
+            preview
+                .iter()
+                .any(|d| d.file == "Engine.ini" && d.key == "r.ViewDistanceScale"),
             "preview must list Engine.ini keys"
         );
 

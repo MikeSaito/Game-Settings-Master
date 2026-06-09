@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { GameCover } from "../components/GameCover";
+import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import {
   addManualGame,
   importGameCover,
@@ -49,11 +50,17 @@ const sourceLabels: Record<string, string> = {
 export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const queriesEnabled = useBackgroundSafeEnabled();
 
-  const { data: games = [], isLoading, refetch, isFetching } = useQuery({
+  const { data: games = [], isLoading, isFetching, refetch } = useQuery({
     queryKey: ["games"],
     queryFn: scanGames,
+    enabled: queriesEnabled,
+    staleTime: 2 * 60_000,
+    refetchOnMount: false,
   });
+
+  const libraryLoading = (isLoading || isFetching) && games.length === 0;
 
   const scanSummary = useMemo(
     () => ({
@@ -342,7 +349,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
         </Button>
       </div>
 
-      {isLoading ? (
+      {libraryLoading ? (
         <div className="flex flex-col items-center gap-4 py-20">
           <span className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
           <p className="text-sm text-body">Сканирование Steam, Epic, LocalAppData…</p>

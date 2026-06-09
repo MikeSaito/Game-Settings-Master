@@ -94,8 +94,14 @@ export const ru: LocaleStrings = {
       cancel: "Отмена",
     },
   },
+  donate: {
+    title: "Поддержать разработку",
+    text: "Сбор средств на сертификат подписи Windows и дальнейшее развитие приложения.",
+    button: "Поддержать проект",
+  },
   footer: {
     version: (v: string) => `Game Settings Master v${v}`,
+    donateLink: "Поддержать проект",
   },
   localeSwitch: {
     label: "Язык",

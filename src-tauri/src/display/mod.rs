@@ -1,5 +1,3 @@
-use std::process::Command;
-
 #[derive(Debug, Clone, Copy, serde::Serialize)]
 pub struct ScreenResolution {
     pub width: u32,
@@ -19,66 +17,53 @@ pub fn primary_resolution() -> Option<ScreenResolution> {
 }
 
 #[cfg(windows)]
+use std::sync::OnceLock;
+
+#[cfg(windows)]
+static RESOLUTION_CACHE: OnceLock<Option<ScreenResolution>> = OnceLock::new();
+
+#[cfg(windows)]
 fn detect_windows_primary() -> Option<ScreenResolution> {
-    if let Some(res) = query_wmi_video_mode() {
-        return Some(res);
+    *RESOLUTION_CACHE
+        .get_or_init(|| query_enum_display_settings().or_else(query_system_metrics_direct))
+}
+
+#[cfg(windows)]
+fn query_enum_display_settings() -> Option<ScreenResolution> {
+    use windows_sys::Win32::Graphics::Gdi::{
+        EnumDisplaySettingsW, DEVMODEW, ENUM_CURRENT_SETTINGS,
+    };
+
+    unsafe {
+        let mut dev_mode: DEVMODEW = std::mem::zeroed();
+        dev_mode.dmSize = std::mem::size_of::<DEVMODEW>() as u16;
+        if EnumDisplaySettingsW(std::ptr::null(), ENUM_CURRENT_SETTINGS, &mut dev_mode) == 0 {
+            return None;
+        }
+        let width = dev_mode.dmPelsWidth;
+        let height = dev_mode.dmPelsHeight;
+        if width > 0 && height > 0 && width <= 16384 && height <= 16384 {
+            Some(ScreenResolution { width, height })
+        } else {
+            None
+        }
     }
-    query_system_metrics()
 }
 
 #[cfg(windows)]
-fn query_wmi_video_mode() -> Option<ScreenResolution> {
-    let script = r#"
-Get-CimInstance Win32_VideoController |
-  Where-Object { $_.CurrentHorizontalResolution -gt 0 -and $_.CurrentVerticalResolution -gt 0 } |
-  Sort-Object CurrentHorizontalResolution -Descending |
-  Select-Object -First 1 |
-  ForEach-Object { "$($_.CurrentHorizontalResolution)x$($_.CurrentVerticalResolution)" }
-"#;
-    parse_wh_output(run_powershell(script)?.trim())
-}
+fn query_system_metrics_direct() -> Option<ScreenResolution> {
+    use windows_sys::Win32::UI::WindowsAndMessaging::{GetSystemMetrics, SM_CXSCREEN, SM_CYSCREEN};
 
-#[cfg(windows)]
-fn query_system_metrics() -> Option<ScreenResolution> {
-    let script = r#"
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-public class DisplayMetrics {
-    [DllImport("user32.dll")] public static extern int GetSystemMetrics(int nIndex);
-    public static int Width => GetSystemMetrics(0);
-    public static int Height => GetSystemMetrics(1);
-}
-"@
-"{0}x{1}" -f [DisplayMetrics]::Width, [DisplayMetrics]::Height
-"#;
-    parse_wh_output(run_powershell(script)?.trim())
-}
-
-#[cfg(windows)]
-fn run_powershell(script: &str) -> Option<String> {
-    let output = Command::new("powershell")
-        .args([
-            "-NoProfile",
-            "-NonInteractive",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-Command",
-            script,
-        ])
-        .output()
-        .ok()?;
-    if !output.status.success() {
-        return None;
-    }
-    let text = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    if text.is_empty() {
-        None
+    let width = unsafe { GetSystemMetrics(SM_CXSCREEN) } as u32;
+    let height = unsafe { GetSystemMetrics(SM_CYSCREEN) } as u32;
+    if width > 0 && height > 0 && width <= 16384 && height <= 16384 {
+        Some(ScreenResolution { width, height })
     } else {
-        Some(text)
+        None
     }
 }
 
+#[cfg(test)]
 fn parse_wh_output(text: &str) -> Option<ScreenResolution> {
     let (w, h) = text.split_once('x')?;
     let width: u32 = w.trim().parse().ok()?;

@@ -17,8 +17,18 @@ pub struct SyncReport {
 }
 
 pub fn sync_now(force: bool) -> Result<SyncReport, String> {
-    let base_url = super::config::effective_base_url()
-        .ok_or("URL сервера пресетов не задан".to_string())?;
+    if !force && crate::process_util::is_app_background() {
+        let version = load_config().ok().and_then(|c| c.catalog_version);
+        return Ok(SyncReport {
+            ok: true,
+            message: "sync skipped while app in background".to_string(),
+            packs_synced: 0,
+            catalog_version: version,
+        });
+    }
+
+    let base_url =
+        super::config::effective_base_url().ok_or("URL сервера пресетов не задан".to_string())?;
 
     let catalog_url = join_url(&base_url, "catalog.json");
     let catalog_raw = fetch_text(&catalog_url)?;
@@ -40,7 +50,12 @@ pub fn sync_now(force: bool) -> Result<SyncReport, String> {
     let mut packs_synced = 0usize;
     let active_ids: Vec<&str> = catalog.packs.iter().map(|p| p.id.as_str()).collect();
     for pack_ref in &catalog.packs {
-        if sync_pack(&base_url, pack_ref.id.as_str(), &pack_ref.manifest_url, force)? {
+        if sync_pack(
+            &base_url,
+            pack_ref.id.as_str(),
+            &pack_ref.manifest_url,
+            force,
+        )? {
             packs_synced += 1;
         }
     }
@@ -101,8 +116,7 @@ fn sync_pack(
         || !pack_cache.join("extracted").is_dir()
         || expected_sha.is_some_and(|sha| sha != cached_sha.trim());
 
-    fs::create_dir_all(&pack_cache)
-        .map_err(|e| format!("Не удалось создать кэш пака: {e}"))?;
+    fs::create_dir_all(&pack_cache).map_err(|e| format!("Не удалось создать кэш пака: {e}"))?;
     fs::write(&manifest_path, &manifest_raw)
         .map_err(|e| format!("Не удалось сохранить manifest: {e}"))?;
 
@@ -135,6 +149,33 @@ fn sync_pack(
     }
 
     Ok(needs_download)
+}
+
+/// Скачать один пак по id (без полного sync_now по всему каталогу).
+pub fn sync_pack_by_id(pack_id: &str, force: bool) -> Result<bool, String> {
+    if !force && crate::process_util::is_app_background() {
+        return Ok(false);
+    }
+
+    let base_url =
+        super::config::effective_base_url().ok_or("URL сервера пресетов не задан".to_string())?;
+
+    let catalog = match load_cached_catalog() {
+        Some(c) => c,
+        None => {
+            sync_now(false)?;
+            load_cached_catalog()
+                .ok_or_else(|| "Каталог пресетов не загружен. Проверьте интернет.".to_string())?
+        }
+    };
+
+    let pack_ref = catalog
+        .packs
+        .iter()
+        .find(|p| p.id == pack_id)
+        .ok_or_else(|| format!("Пак '{pack_id}' не найден в catalog.json"))?;
+
+    sync_pack(&base_url, pack_id, &pack_ref.manifest_url, force)
 }
 
 fn extract_zip(zip_path: &Path, dest: &Path) -> Result<(), String> {
@@ -234,7 +275,9 @@ fn prune_orphan_packs(active_ids: &[&str]) -> Result<(), String> {
     if !packs_dir.is_dir() {
         return Ok(());
     }
-    for entry in fs::read_dir(&packs_dir).map_err(|e| format!("Не удалось прочитать кэш паков: {e}"))? {
+    for entry in
+        fs::read_dir(&packs_dir).map_err(|e| format!("Не удалось прочитать кэш паков: {e}"))?
+    {
         let entry = entry.map_err(|e| e.to_string())?;
         if !entry.file_type().map_err(|e| e.to_string())?.is_dir() {
             continue;

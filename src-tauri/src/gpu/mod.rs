@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
-use std::process::Command;
+use std::sync::OnceLock;
+
+static GPU_CACHE: OnceLock<GpuCapabilities> = OnceLock::new();
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -81,45 +83,64 @@ fn nvidia_rtx_series(lower: &str) -> Option<u8> {
 }
 
 pub fn detect_gpu() -> GpuCapabilities {
-    let names = enumerate_gpu_names();
-    let primary = pick_primary_gpu(&names);
-    GpuCapabilities::from_gpu_name(&primary)
+    GPU_CACHE
+        .get_or_init(|| {
+            let names = enumerate_gpu_names();
+            let primary = pick_primary_gpu(&names);
+            GpuCapabilities::from_gpu_name(&primary)
+        })
+        .clone()
 }
 
 fn enumerate_gpu_names() -> Vec<String> {
     #[cfg(windows)]
     {
-        let script = r#"
-Get-CimInstance Win32_VideoController |
-  Where-Object { $_.Name -and $_.Name -notmatch 'Microsoft Basic|Remote|Parsec|Virtual|VMware|Citrix' } |
-  Sort-Object @{Expression={if($_.AdapterRAM){$_.AdapterRAM}else{0}}; Descending=$true} |
-  Select-Object -ExpandProperty Name
-"#;
-        if let Ok(output) = Command::new("powershell")
-            .args([
-                "-NoProfile",
-                "-NonInteractive",
-                "-Command",
-                script,
-            ])
-            .output()
-        {
-            if output.status.success() {
-                let text = String::from_utf8_lossy(&output.stdout);
-                let names: Vec<String> = text
-                    .lines()
-                    .map(str::trim)
-                    .filter(|l| !l.is_empty())
-                    .map(String::from)
-                    .collect();
-                if !names.is_empty() {
-                    return names;
-                }
+        if let Some(names) = enumerate_gpu_from_registry() {
+            if !names.is_empty() {
+                return names;
             }
         }
     }
 
     vec!["Unknown GPU".to_string()]
+}
+
+#[cfg(windows)]
+fn enumerate_gpu_from_registry() -> Option<Vec<String>> {
+    use winreg::enums::*;
+    use winreg::RegKey;
+
+    const SKIP: &[&str] = &[
+        "microsoft basic",
+        "remote",
+        "parsec",
+        "virtual",
+        "vmware",
+        "citrix",
+        "meta virtual",
+        "spice",
+        "qxl",
+    ];
+
+    let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
+    let class_key = hklm
+        .open_subkey(
+            r"SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}",
+        )
+        .ok()?;
+
+    let mut names = Vec::new();
+    for i in 0..32 {
+        let sub = class_key.open_subkey(format!("{i:04}")).ok()?;
+        let desc = sub.get_value::<String, _>("DriverDesc").ok()?;
+        let lower = desc.to_lowercase();
+        if SKIP.iter().any(|needle| lower.contains(needle)) {
+            continue;
+        }
+        names.push(desc);
+    }
+
+    Some(names)
 }
 
 fn pick_primary_gpu(names: &[String]) -> String {
@@ -133,7 +154,10 @@ fn pick_primary_gpu(names: &[String]) -> String {
             return name.clone();
         }
     }
-    names.first().cloned().unwrap_or_else(|| "Unknown GPU".to_string())
+    names
+        .first()
+        .cloned()
+        .unwrap_or_else(|| "Unknown GPU".to_string())
 }
 
 pub fn adapt_preset_for_gpu(
@@ -157,10 +181,18 @@ pub fn adapt_preset_for_gpu(
                 keys.insert("DLSSQualityMode".to_string(), "0".to_string());
             }
             keys.remove("ResolutionScaleDLSS");
-            if keys.get("AntiAliasingType").map(|s| s.contains("DLAA")).unwrap_or(false) {
+            if keys
+                .get("AntiAliasingType")
+                .map(|s| s.contains("DLAA"))
+                .unwrap_or(false)
+            {
                 keys.insert("AntiAliasingType".to_string(), "AAM_TSR".to_string());
             }
-            if keys.get("UpscalingMethod").map(|s| s.contains("DLSS")).unwrap_or(false) {
+            if keys
+                .get("UpscalingMethod")
+                .map(|s| s.contains("DLSS"))
+                .unwrap_or(false)
+            {
                 keys.insert(
                     "UpscalingMethod".to_string(),
                     if gpu.vendor == GpuVendor::Amd {
@@ -248,14 +280,8 @@ mod tests {
                 "[/Script/subnautica2.s2gameusersettings]".to_string(),
                 std::collections::HashMap::from([
                     ("DLSSMode".to_string(), "Quality".to_string()),
-                    (
-                        "AntiAliasingType".to_string(),
-                        "AAM_DLAA".to_string(),
-                    ),
-                    (
-                        "UpscalingMethod".to_string(),
-                        "U_DLSS".to_string(),
-                    ),
+                    ("AntiAliasingType".to_string(), "AAM_DLAA".to_string()),
+                    ("UpscalingMethod".to_string(), "U_DLSS".to_string()),
                     ("UpscalingFrameGeneration".to_string(), "1".to_string()),
                 ]),
             )]),

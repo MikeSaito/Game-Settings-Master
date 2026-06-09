@@ -25,7 +25,12 @@ pub fn tune_combined_preset(preset_id: &str, files: &mut IniFiles, engine_family
 }
 
 /// Индекс sg.*Quality (0..menu_max, обычно 4=Epic). Не путать с r.* и процентами.
-fn menu_tier_sg_level(preset_id: &str, menu_max: u32, _is_ue4: bool, _game_id: Option<&str>) -> u32 {
+fn menu_tier_sg_level(
+    preset_id: &str,
+    menu_max: u32,
+    _is_ue4: bool,
+    _game_id: Option<&str>,
+) -> u32 {
     match preset_id {
         "ultra-low" => 0,
         "low" => 1.min(menu_max),
@@ -59,9 +64,7 @@ pub fn apply_tier_to_scalability(
             continue;
         }
 
-        let desired = scalability
-            .get(sg_key)
-            .and_then(|s| s.parse::<u32>().ok());
+        let desired = scalability.get(sg_key).and_then(|s| s.parse::<u32>().ok());
 
         let final_val = menu_tier_sg_level(preset_id, *max_level, is_ue4, game_id);
 
@@ -122,11 +125,12 @@ fn tune_engine_for_tier(preset_id: &str, files: &mut IniFiles, is_ue4: bool) {
     let Some(engine) = files.get_mut("Engine.ini") else {
         return;
     };
-    let sys = engine
-        .entry("[SystemSettings]".to_string())
-        .or_default();
+    let sys = engine.entry("[SystemSettings]".to_string()).or_default();
     if is_ue4 {
-        sys.insert("r.DefaultFeature.MotionBlur".to_string(), "False".to_string());
+        sys.insert(
+            "r.DefaultFeature.MotionBlur".to_string(),
+            "False".to_string(),
+        );
         sys.insert("r.MotionBlurQuality".to_string(), "0".to_string());
         return;
     }
@@ -230,14 +234,30 @@ fn tune_subnautica2_for_tier(preset_id: &str, files: &mut IniFiles) {
 }
 
 /// (GraphicsLevel, DLSSMode, DLSSQualityMode, scale, TSRQuality, AA, UpscalingMethod, FG)
-fn subnautica2_tier(preset_id: &str) -> (&'static str, &'static str, &'static str, &'static str, &'static str, &'static str, &'static str, &'static str) {
+fn subnautica2_tier(
+    preset_id: &str,
+) -> (
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+) {
     match preset_id {
         "ultra-low" => (
-            "Low", "Performance", "1", "0.5", "0", "AAM_FXAA", "U_None", "0",
+            "Low",
+            "Performance",
+            "1",
+            "0.5",
+            "0",
+            "AAM_FXAA",
+            "U_None",
+            "0",
         ),
-        "low" => (
-            "Low", "Off", "0", "1.0", "1", "AAM_TSR", "U_TSR", "0",
-        ),
+        "low" => ("Low", "Off", "0", "1.0", "1", "AAM_TSR", "U_TSR", "0"),
         "medium" => (
             "Medium", "Balanced", "2", "0.58", "2", "AAM_TSR", "U_TSR", "0",
         ),
@@ -248,9 +268,18 @@ fn subnautica2_tier(preset_id: &str) -> (&'static str, &'static str, &'static st
             "Epic", "Quality", "3", "0.66", "0", "AAM_TSR", "U_DLSS", "0",
         ),
         "ultra-high" => (
-            "Cinematic", "Quality", "3", "0.66", "0", "AAM_TSR", "U_DLSS", "1",
+            "Cinematic",
+            "Quality",
+            "3",
+            "0.66",
+            "0",
+            "AAM_TSR",
+            "U_DLSS",
+            "1",
         ),
-        _ => ("High", "Balanced", "2", "0.58", "2", "AAM_TSR", "U_TSR", "0"),
+        _ => (
+            "High", "Balanced", "2", "0.58", "2", "AAM_TSR", "U_TSR", "0",
+        ),
     }
 }
 
@@ -262,16 +291,22 @@ fn reconcile_upscaling_chain(files: &mut IniFiles, gpu: &GpuCapabilities) {
     let section_keys: Vec<String> = gus.keys().cloned().collect();
     let s2_key = section_keys
         .iter()
-        .find(|k| gus.get(*k).map(|s| s.contains_key("DLSSMode")).unwrap_or(false))
+        .find(|k| {
+            gus.get(*k)
+                .map(|s| s.contains_key("DLSSMode"))
+                .unwrap_or(false)
+        })
         .cloned();
     let local_key = section_keys
         .iter()
         .find(|k| {
-            gus.get(*k).map(|s| {
-                s.contains_key("UpscalingMethod")
-                    || s.contains_key("DLSSQualityMode")
-                    || s.contains_key("TSRQualityMode")
-            }).unwrap_or(false)
+            gus.get(*k)
+                .map(|s| {
+                    s.contains_key("UpscalingMethod")
+                        || s.contains_key("DLSSQualityMode")
+                        || s.contains_key("TSRQualityMode")
+                })
+                .unwrap_or(false)
         })
         .cloned();
 
@@ -310,7 +345,11 @@ fn reconcile_upscaling_chain(files: &mut IniFiles, gpu: &GpuCapabilities) {
                         "UpscalingMethod".to_string(),
                         if use_fsr { "U_FSR" } else { "U_TSR" }.to_string(),
                     );
-                    if local.get("TSRQualityMode").map(|s| s == "0").unwrap_or(true) {
+                    if local
+                        .get("TSRQualityMode")
+                        .map(|s| s == "0")
+                        .unwrap_or(true)
+                    {
                         local.insert("TSRQualityMode".to_string(), "2".to_string());
                     }
                 }
@@ -340,7 +379,10 @@ fn reconcile_upscaling_chain(files: &mut IniFiles, gpu: &GpuCapabilities) {
                 .get("UpscalingMethod")
                 .map(|s| s.contains("TSR"))
                 .unwrap_or(false)
-                && local.get("TSRQualityMode").map(|s| s == "0").unwrap_or(true)
+                && local
+                    .get("TSRQualityMode")
+                    .map(|s| s == "0")
+                    .unwrap_or(true)
             {
                 local.insert("TSRQualityMode".to_string(), "2".to_string());
             }
@@ -365,13 +407,22 @@ mod tests {
         let mut sections = HashMap::new();
         sections.insert("[ScalabilityGroups]".to_string(), HashMap::new());
         let limits = detect_scalability_limits(None, None);
-        apply_tier_to_scalability(&mut sections, &limits, "ultra-high", UeEngineFamily::Ue5, None);
+        apply_tier_to_scalability(
+            &mut sections,
+            &limits,
+            "ultra-high",
+            UeEngineFamily::Ue5,
+            None,
+        );
         let sg = sections.get("[ScalabilityGroups]").unwrap();
         assert_eq!(
             sg.get("sg.ShadowQuality").map(String::as_str),
             Some(limits.global_max.to_string().as_str())
         );
-        assert_eq!(sg.get("sg.ResolutionQuality").map(String::as_str), Some("100"));
+        assert_eq!(
+            sg.get("sg.ResolutionQuality").map(String::as_str),
+            Some("100")
+        );
     }
 
     #[test]
@@ -382,7 +433,10 @@ mod tests {
         apply_tier_to_scalability(&mut sections, &limits, "low", UeEngineFamily::Ue5, None);
         let sg = sections.get("[ScalabilityGroups]").unwrap();
         assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some("1"));
-        assert_eq!(sg.get("sg.ResolutionQuality").map(String::as_str), Some("70"));
+        assert_eq!(
+            sg.get("sg.ResolutionQuality").map(String::as_str),
+            Some("70")
+        );
     }
 
     #[test]
@@ -405,12 +459,27 @@ mod tests {
         let gus = &files["GameUserSettings.ini"];
         let s2 = &gus["/Script/subnautica2.s2gameusersettings"];
         let local = &gus["/Script/subnautica2.sn2settingslocal"];
-        assert_eq!(s2.get("GraphicsLevel").map(String::as_str), Some("Cinematic"));
+        assert_eq!(
+            s2.get("GraphicsLevel").map(String::as_str),
+            Some("Cinematic")
+        );
         assert_eq!(s2.get("DLSSMode").map(String::as_str), Some("Quality"));
-        assert_eq!(local.get("UpscalingMethod").map(String::as_str), Some("U_DLSS"));
-        assert_eq!(local.get("ResolutionScaleMin").map(String::as_str), Some("1.0"));
-        assert_eq!(local.get("ResolutionScaleMax").map(String::as_str), Some("1.0"));
-        assert_eq!(s2.get("UpscalingFrameGeneration").map(String::as_str), Some("1"));
+        assert_eq!(
+            local.get("UpscalingMethod").map(String::as_str),
+            Some("U_DLSS")
+        );
+        assert_eq!(
+            local.get("ResolutionScaleMin").map(String::as_str),
+            Some("1.0")
+        );
+        assert_eq!(
+            local.get("ResolutionScaleMax").map(String::as_str),
+            Some("1.0")
+        );
+        assert_eq!(
+            s2.get("UpscalingFrameGeneration").map(String::as_str),
+            Some("1")
+        );
     }
 
     #[test]
@@ -436,7 +505,13 @@ mod tests {
 
         let mut medium_sg = HashMap::new();
         medium_sg.insert("[ScalabilityGroups]".to_string(), HashMap::new());
-        apply_tier_to_scalability(&mut medium_sg, &limits, "medium", UeEngineFamily::Unknown, None);
+        apply_tier_to_scalability(
+            &mut medium_sg,
+            &limits,
+            "medium",
+            UeEngineFamily::Unknown,
+            None,
+        );
         let medium_val: u32 = medium_sg["[ScalabilityGroups]"]["sg.ShadowQuality"]
             .parse()
             .unwrap();
@@ -448,10 +523,19 @@ mod tests {
         let mut sections = HashMap::new();
         sections.insert("[ScalabilityGroups]".to_string(), HashMap::new());
         let limits = detect_scalability_limits(None, None);
-        apply_tier_to_scalability(&mut sections, &limits, "ultra-low", UeEngineFamily::Unknown, None);
+        apply_tier_to_scalability(
+            &mut sections,
+            &limits,
+            "ultra-low",
+            UeEngineFamily::Unknown,
+            None,
+        );
         let sg = sections.get("[ScalabilityGroups]").unwrap();
         assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some("0"));
-        assert_eq!(sg.get("sg.ResolutionQuality").map(String::as_str), Some("45"));
+        assert_eq!(
+            sg.get("sg.ResolutionQuality").map(String::as_str),
+            Some("45")
+        );
     }
 
     #[test]
@@ -476,8 +560,14 @@ mod tests {
         let local = &gus["/Script/subnautica2.sn2settingslocal"];
         assert_eq!(s2.get("DLSSMode").map(String::as_str), Some("Performance"));
         assert_eq!(s2.get("GraphicsLevel").map(String::as_str), Some("Low"));
-        assert_eq!(local.get("ResolutionScaleMin").map(String::as_str), Some("0.25"));
-        assert_eq!(local.get("ResolutionScaleMax").map(String::as_str), Some("0.5"));
+        assert_eq!(
+            local.get("ResolutionScaleMin").map(String::as_str),
+            Some("0.25")
+        );
+        assert_eq!(
+            local.get("ResolutionScaleMax").map(String::as_str),
+            Some("0.5")
+        );
     }
 
     #[test]
@@ -504,8 +594,14 @@ mod tests {
         let gpu = GpuCapabilities::from_gpu_name("AMD Radeon RX 7800 XT");
         reconcile_upscaling_chain(&mut files, &gpu);
         let local = &files["GameUserSettings.ini"]["/Script/subnautica2.sn2settingslocal"];
-        assert_eq!(local.get("UpscalingMethod").map(String::as_str), Some("U_None"));
-        assert_eq!(local.get("ResolutionScaleMin").map(String::as_str), Some("1.5"));
+        assert_eq!(
+            local.get("UpscalingMethod").map(String::as_str),
+            Some("U_None")
+        );
+        assert_eq!(
+            local.get("ResolutionScaleMin").map(String::as_str),
+            Some("1.5")
+        );
     }
 
     #[test]
@@ -524,6 +620,9 @@ mod tests {
         reconcile_upscaling_chain(&mut files, &gpu);
 
         let local = &files["GameUserSettings.ini"]["/Script/subnautica2.sn2settingslocal"];
-        assert_eq!(local.get("UpscalingMethod").map(String::as_str), Some("U_FSR"));
+        assert_eq!(
+            local.get("UpscalingMethod").map(String::as_str),
+            Some("U_FSR")
+        );
     }
 }

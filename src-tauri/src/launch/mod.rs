@@ -117,7 +117,10 @@ fn find_steamapps_dir(install: &Path) -> Option<PathBuf> {
             return Some(current);
         }
         if current.file_name().and_then(|n| n.to_str()) == Some("common")
-            && current.parent().map(|p| p.ends_with("steamapps")).unwrap_or(false)
+            && current
+                .parent()
+                .map(|p| p.ends_with("steamapps"))
+                .unwrap_or(false)
         {
             return current.parent().map(Path::to_path_buf);
         }

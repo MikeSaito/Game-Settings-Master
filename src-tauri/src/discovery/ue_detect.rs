@@ -11,11 +11,7 @@ pub enum UeDetectResult {
 const UE_PAK_EXTENSIONS: &[&str] = &["pak", "ucas", "utoc"];
 
 /// Установка движка UE, Fab Plugin и прочие инструменты — не игры для библиотеки.
-pub fn is_non_game_install(
-    install_dir: &Path,
-    display_name: &str,
-    app_name: Option<&str>,
-) -> bool {
+pub fn is_non_game_install(install_dir: &Path, display_name: &str, app_name: Option<&str>) -> bool {
     if is_tool_by_display_name(display_name) {
         return true;
     }
@@ -47,9 +43,7 @@ fn is_tool_by_display_name(name: &str) -> bool {
 
 fn is_engine_app_name(app_name: &str) -> bool {
     let lower = app_name.trim().to_lowercase();
-    lower.starts_with("ue_")
-        || lower == "unrealeditor"
-        || lower.starts_with("unrealengine")
+    lower.starts_with("ue_") || lower == "unrealeditor" || lower.starts_with("unrealengine")
 }
 
 fn is_epic_engine_install_path(install_dir: &Path) -> bool {
@@ -195,7 +189,11 @@ fn has_ue_content_paks(install_dir: &Path) -> bool {
 fn is_ue_pak_file(path: &Path) -> bool {
     path.extension()
         .and_then(|e| e.to_str())
-        .map(|ext| UE_PAK_EXTENSIONS.iter().any(|u| ext.eq_ignore_ascii_case(u)))
+        .map(|ext| {
+            UE_PAK_EXTENSIONS
+                .iter()
+                .any(|u| ext.eq_ignore_ascii_case(u))
+        })
         .unwrap_or(false)
 }
 
@@ -235,7 +233,11 @@ fn fs_read_dir_any_exe(dir: &Path) -> bool {
                 .and_then(|e| e.to_str())
                 .is_some_and(|e| e.eq_ignore_ascii_case("exe"))
         {
-            let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("").to_lowercase();
+            let name = path
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or("")
+                .to_lowercase();
             if !name.contains("uninstall")
                 && !name.contains("setup")
                 && !name.contains("redist")
@@ -326,11 +328,7 @@ mod tests {
     #[test]
     fn epic_ue_engine_install_is_not_a_game() {
         let dir = TempDir::new().unwrap();
-        let engine = dir
-            .path()
-            .join("Engine")
-            .join("Binaries")
-            .join("Win64");
+        let engine = dir.path().join("Engine").join("Binaries").join("Win64");
         fs::create_dir_all(&engine).unwrap();
         fs::write(engine.join("UnrealEditor.exe"), b"").unwrap();
 

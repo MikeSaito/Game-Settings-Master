@@ -47,6 +47,12 @@ export interface LocaleStrings {
   };
   footer: {
     version: (v: string) => string;
+    donateLink: string;
+  };
+  donate: {
+    title: string;
+    text: string;
+    button: string;
   };
   localeSwitch: {
     label: string;

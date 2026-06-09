@@ -80,6 +80,7 @@ export interface ApplyResult {
   backup_id: string;
   changed_files: string[];
   diff: ConfigDiffEntry[];
+  effective_config_dir?: string | null;
 }
 
 export interface BackupInfo {

@@ -51,9 +51,8 @@ pub fn import_custom_cover(game_id: &str, source: &Path) -> Result<String, Strin
         return Err("Файл изображения не найден".to_string());
     }
 
-    let ext = extension_from_path(source).ok_or_else(|| {
-        "Поддерживаются PNG, JPG, WEBP, GIF".to_string()
-    })?;
+    let ext = extension_from_path(source)
+        .ok_or_else(|| "Поддерживаются PNG, JPG, WEBP, GIF".to_string())?;
 
     let dest = covers_dir()?.join(cover_filename(game_id, &ext));
     fs::copy(source, &dest).map_err(|e| format!("Не удалось сохранить обложку: {e}"))?;
@@ -92,7 +91,10 @@ pub fn enrich_cover(profile: &mut crate::models::GameProfile) {
     }
 }
 
-pub fn merge_saved_cover(existing: &mut crate::models::GameProfile, saved: &crate::models::GameProfile) {
+pub fn merge_saved_cover(
+    existing: &mut crate::models::GameProfile,
+    saved: &crate::models::GameProfile,
+) {
     if let Some(custom) = &saved.custom_cover {
         if Path::new(custom).exists() {
             existing.custom_cover = Some(custom.clone());

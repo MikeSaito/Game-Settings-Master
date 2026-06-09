@@ -1,7 +1,7 @@
 {
   "name": "ue-settings-master",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,13 +10,18 @@
     "tauri": "tauri",
     "icons": "npm run generate --prefix brand",
     "landing:build": "npm run build --prefix landing",
-    "landing:dev": "npm run dev --prefix landing"
+    "landing:dev": "npm run dev --prefix landing",
+    "updater:keys": "powershell -ExecutionPolicy Bypass -File scripts/open-keygen-terminal.ps1",
+    "updater:sync-pubkey": "powershell -ExecutionPolicy Bypass -File scripts/sync-updater-pubkey.ps1",
+    "updater:build": "powershell -ExecutionPolicy Bypass -File scripts/build-signed.ps1"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.12",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.7.1",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.10.1",
     "lucide-react": "^0.562.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

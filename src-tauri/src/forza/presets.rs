@@ -1,7 +1,6 @@
 use crate::forza::user_config::{
-    backup_forza_media, copy_preset_media, parse_user_config_patch,
-    preview_forza_diff, preview_media_diff, read_user_config, tune_forza_selections,
-    write_user_config,
+    backup_forza_media, copy_preset_media, parse_user_config_patch, preview_forza_diff,
+    preview_media_diff, read_user_config, tune_forza_selections, write_user_config,
 };
 use crate::gpu::detect_gpu;
 use crate::models::{ConfigDiffEntry, PresetInfo};
@@ -16,7 +15,10 @@ pub fn ensure_forza_profiles_synced(game_id: Option<&str>) -> Result<(), String>
     if crate::remote_presets::effective_base_url().is_none() {
         return Err("Не удалось загрузить пресеты Forza.".into());
     }
-    crate::remote_presets::sync_now(true)?;
+    crate::remote_presets::sync_forza_pack_if_needed(false)?;
+    if !crate::remote_presets::forza_pack_ready(game_id) {
+        crate::remote_presets::sync_forza_pack_if_needed(true)?;
+    }
     if !crate::remote_presets::forza_pack_ready(game_id) {
         return Err(
             "Пресеты Forza недоступны. Проверьте подключение к интернету и попробуйте позже."
@@ -33,32 +35,39 @@ fn resolve_forza_pack(game_id: Option<&str>) -> Result<ResolvedPack, String> {
 }
 
 pub fn list_forza_presets(game_id: Option<&str>) -> Result<Vec<PresetInfo>, String> {
+    if let Some(presets) = crate::remote_presets::forza_presets_from_cache(game_id) {
+        if !presets.is_empty() {
+            return Ok(presets);
+        }
+    }
+
+    if crate::remote_presets::effective_base_url().is_some()
+        && !crate::process_util::is_app_background()
+    {
+        let _ = crate::remote_presets::sync_forza_pack_if_needed(false);
+        if let Some(presets) = crate::remote_presets::forza_presets_from_cache(game_id) {
+            if !presets.is_empty() {
+                return Ok(presets);
+            }
+        }
+    }
+
     ensure_forza_profiles_synced(game_id)?;
-    crate::remote_presets::forza_presets(game_id).ok_or_else(|| {
-        "На сервере нет списка пресетов Forza (pack forza-fh6).".to_string()
-    })
+    crate::remote_presets::forza_presets_from_cache(game_id)
+        .ok_or_else(|| "На сервере нет списка пресетов Forza (pack forza-fh6).".to_string())
 }
 
-fn preset_profile_dir(
-    pack: &ResolvedPack,
-    preset_id: &str,
-) -> Result<PathBuf, String> {
+fn preset_profile_dir(pack: &ResolvedPack, preset_id: &str) -> Result<PathBuf, String> {
     pack.forza_profile_dir(preset_id)
         .ok_or_else(|| format!("Профиль пресета '{preset_id}' не найден в кэше сервера"))
 }
 
-fn load_profile_user_config_patch(
-    pack: &ResolvedPack,
-    preset_id: &str,
-) -> Result<String, String> {
+fn load_profile_user_config_patch(pack: &ResolvedPack, preset_id: &str) -> Result<String, String> {
     let profile_dir = preset_profile_dir(pack, preset_id)?;
-    let patch_name = pack
-        .forza_user_config_patch_file()
-        .unwrap_or("Preset.xml");
+    let patch_name = pack.forza_user_config_patch_file().unwrap_or("Preset.xml");
     let path = profile_dir.join(patch_name);
-    fs::read_to_string(&path).map_err(|e| {
-        format!("Не удалось прочитать снимок UserConfig ({patch_name}): {e}")
-    })
+    fs::read_to_string(&path)
+        .map_err(|e| format!("Не удалось прочитать снимок UserConfig ({patch_name}): {e}"))
 }
 
 pub fn preview_forza_preset(
@@ -146,7 +155,10 @@ mod tests {
     fn parses_user_config_patch_from_profile_file() {
         let (settings, selections) = parse_user_config_patch(HIGH_PATCH).unwrap();
         assert!(settings.contains_key("CubemapDrawDistanceScalar"));
-        assert_eq!(selections.get("ShadowQuality").map(String::as_str), Some("4"));
+        assert_eq!(
+            selections.get("ShadowQuality").map(String::as_str),
+            Some("4")
+        );
         assert_eq!(selections.get("DLSSMode").map(String::as_str), Some("2"));
     }
 }

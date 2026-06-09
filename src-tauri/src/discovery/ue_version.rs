@@ -29,7 +29,6 @@ impl UeEngineFamily {
             _ => Self::Unknown,
         }
     }
-
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -104,7 +103,9 @@ fn resolve_family_score(score_ue4: i32, score_ue5: i32) -> UeEngineFamily {
 }
 
 fn known_engine_family(game_id: &str) -> Option<UeEngineFamily> {
-    let app_id = game_id.strip_prefix("steam-").or_else(|| game_id.strip_prefix("epic-"))?;
+    let app_id = game_id
+        .strip_prefix("steam-")
+        .or_else(|| game_id.strip_prefix("epic-"))?;
     let known = load_known_games();
     let entry = known.get(app_id)?;
     entry
@@ -192,7 +193,10 @@ fn parse_engine_version_from_ini(content: &str) -> Option<UeVersionInfo> {
 }
 
 fn version_from_string(value: &str) -> Option<UeVersionInfo> {
-    let digits: String = value.chars().filter(|c| c.is_ascii_digit() || *c == '.').collect();
+    let digits: String = value
+        .chars()
+        .filter(|c| c.is_ascii_digit() || *c == '.')
+        .collect();
     let major = digits.split('.').next()?.parse::<u32>().ok()?;
     let family = if major >= 5 {
         UeEngineFamily::Ue5

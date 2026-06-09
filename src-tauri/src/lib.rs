@@ -1,45 +1,53 @@
-mod display;
 mod backup;
 mod catalog;
 mod commands;
 mod covers;
 mod discovery;
-mod gpu;
+mod display;
+mod forza;
 mod fs_util;
+mod gpu;
 mod ini;
 mod launch;
 mod models;
 mod presets;
+mod process_util;
 mod profiles;
+mod remote_presets;
 mod scalability;
 mod unity;
-mod forza;
-mod remote_presets;
 
 use commands::{
-    add_manual_game, apply_custom_cmd, apply_game_override, apply_game_preset_cmd, apply_preset_cmd,
-    delete_game_override, get_game_config, get_game_overrides,
-    get_desktop_resolution_cmd, get_game_parameters_cmd, get_gpu_info_cmd, get_scalability_limits_cmd,
-    is_game_running_cmd,
-    close_game_cmd,
-    launch_game_cmd,
-    import_game_cover_cmd,
-    list_backups_cmd, list_presets_cmd,
-    get_preset_server_status_cmd, set_preset_server_url_cmd, sync_presets_cmd,
-    open_config_folder, preview_preset_cmd,
-    remove_game_cover_cmd, remove_game_profile, resolve_config_from_path,
-    reset_config_to_user_cmd, restore_backup_cmd, save_game_override, save_game_profile,
-    scan_games, set_game_config_dir,
+    add_manual_game, apply_custom_cmd, apply_game_override, apply_game_preset_cmd,
+    apply_preset_cmd, close_game_cmd, delete_game_override, get_desktop_resolution_cmd,
+    get_game_config, get_game_overrides, get_game_parameters_cmd, get_gpu_info_cmd,
+    get_preset_server_status_cmd, get_scalability_limits_cmd, import_game_cover_cmd,
+    is_game_running_cmd, launch_game_cmd, list_backups_cmd, list_presets_cmd, open_config_folder,
+    preview_preset_cmd, remove_game_cover_cmd, remove_game_profile, reset_config_to_user_cmd,
+    resolve_config_from_path, restore_backup_cmd, save_game_override, save_game_profile,
+    scan_games, set_app_background_mode_cmd, set_game_config_dir, set_preset_server_url_cmd,
+    sync_presets_cmd,
 };
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .setup(|_| {
             if remote_presets::effective_base_url().is_some() {
                 std::thread::spawn(|| {
+                    #[cfg(windows)]
+                    {
+                        use windows_sys::Win32::System::Threading::{
+                            GetCurrentThread, SetThreadPriority, THREAD_PRIORITY_LOWEST,
+                        };
+                        unsafe {
+                            SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_LOWEST);
+                        }
+                    }
                     let _ = remote_presets::sync_now(false);
                 });
             }
@@ -50,6 +58,7 @@ pub fn run() {
             get_gpu_info_cmd,
             get_desktop_resolution_cmd,
             is_game_running_cmd,
+            set_app_background_mode_cmd,
             close_game_cmd,
             launch_game_cmd,
             get_game_config,

@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import { getGameConfig } from "../lib/api";
 import { formatPresetLabel, getLastPreset } from "../lib/lastPreset";
 import type { AppTab, GameProfile } from "../lib/types";
@@ -59,12 +60,15 @@ interface ProviderProps {
 export function GameWorkspaceProvider({ game, activeTab, children }: ProviderProps) {
   const [override, setOverride] = useState<WorkspacePreset | null>(null);
   const configDir = game.config_dir ?? "";
+  const isGameTab = activeTab !== "library";
+  const queriesEnabled = useBackgroundSafeEnabled(!!configDir && isGameTab);
 
   const { data: gameConfig } = useQuery({
-    queryKey: ["game-config", configDir],
-    queryFn: () => getGameConfig(configDir),
-    enabled: !!configDir,
-    staleTime: 20_000,
+    queryKey: ["game-config", configDir, game.id, game.engine_family],
+    queryFn: () => getGameConfig(configDir, game.id, game.engine_family),
+    enabled: queriesEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnMount: false,
   });
 
   const userOnly = detectUserOnly(gameConfig?.files);

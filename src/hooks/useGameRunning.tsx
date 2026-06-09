@@ -1,16 +1,39 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { usePollingEnabled } from "./useBackgroundSafeEnabled";
 import { isGameRunning } from "../lib/api";
 import { Alert } from "../components/ui/Alert";
 
-const POLL_MS = 3000;
+const REFOCUS_CHECK_MS = 800;
 
 export function useGameRunning(exeName: string | null | undefined): boolean {
+  const windowFocused = usePollingEnabled(!!exeName);
+  const queryClient = useQueryClient();
+  const wasBackground = useRef(false);
+
+  useEffect(() => {
+    if (!windowFocused || !exeName) {
+      wasBackground.current = true;
+      return;
+    }
+    if (!wasBackground.current) return;
+    wasBackground.current = false;
+
+    const timer = window.setTimeout(() => {
+      void queryClient.invalidateQueries({ queryKey: ["game-running", exeName] });
+    }, REFOCUS_CHECK_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [windowFocused, exeName, queryClient]);
+
   const { data: running = false } = useQuery({
     queryKey: ["game-running", exeName],
     queryFn: () => isGameRunning(exeName!),
-    enabled: !!exeName,
-    refetchInterval: POLL_MS,
+    enabled: !!exeName && windowFocused,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   });
   return running;
 }

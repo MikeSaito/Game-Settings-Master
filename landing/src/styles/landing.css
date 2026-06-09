@@ -348,6 +348,30 @@ body {
   margin-bottom: 1.75rem;
 }
 
+.download__donate {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.download__donate-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.download__donate-text {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.download__donate-btn {
+  width: 100%;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -463,6 +487,20 @@ body {
   text-align: center;
   color: var(--color-text-faint);
   font-size: 0.8rem;
+}
+
+.site-footer__donate {
+  margin: 0.65rem 0 0;
+}
+
+.site-footer__donate a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.site-footer__donate a:hover {
+  color: var(--color-accent);
 }
 
 @media (max-width: 768px) {

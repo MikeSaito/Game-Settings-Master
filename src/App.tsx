@@ -1,44 +1,61 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { UpdateGate } from "./components/UpdateGate";
 import { AppShell } from "./components/layout/AppShell";
+import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
 import { usePresetCatalogRefresh } from "./hooks/usePresetCatalogRefresh";
+import { scanGames } from "./lib/api";
+import { prefetchGameWorkspace } from "./lib/prefetchGameWorkspace";
+import { isAuthorCuratedGame } from "./lib/gameEngine";
+import { queryClient } from "./lib/queryClient";
 import { AdvancedEditor } from "./pages/AdvancedEditor";
 import { GameLibrary } from "./pages/GameLibrary";
 import { SettingsWizard } from "./pages/SettingsWizard";
 import { Backups } from "./pages/Backups";
-import { isAuthorCuratedGame } from "./lib/gameEngine";
 import type { AppTab, GameProfile } from "./lib/types";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      retry: 1,
-    },
-  },
-});
+function resolveGameTab(game: GameProfile): AppTab {
+  if (
+    game.config_dir &&
+    (game.is_ue || game.is_unity || isAuthorCuratedGame(game))
+  ) {
+    return "wizard";
+  }
+  return "library";
+}
 
 function AppContent() {
   usePresetCatalogRefresh();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<AppTab>("library");
   const [selectedGame, setSelectedGame] = useState<GameProfile | null>(null);
 
-  const handleSelectGame = (game: GameProfile) => {
-    setSelectedGame(game);
-    setTab((prev) => {
-      if (prev !== "library") return prev;
-      if (
-        game.config_dir &&
-        (game.is_ue || game.is_unity || isAuthorCuratedGame(game))
-      ) {
-        return "wizard";
-      }
-      return "library";
+  useEffect(() => {
+    void queryClient.prefetchQuery({
+      queryKey: ["games"],
+      queryFn: scanGames,
+      staleTime: 2 * 60_000,
     });
+  }, [queryClient]);
+
+  useEffect(() => {
+    if (selectedGame && tab !== "library") {
+      prefetchGameWorkspace(queryClient, selectedGame, tab);
+    }
+  }, [queryClient, selectedGame, tab]);
+
+  const handleSelectGame = (game: GameProfile) => {
+    const nextTab = tab !== "library" ? tab : resolveGameTab(game);
+    prefetchGameWorkspace(queryClient, game, nextTab);
+    setSelectedGame(game);
+    setTab((prev) => (prev !== "library" ? prev : resolveGameTab(game)));
   };
 
   const handleGameUpdated = (game: GameProfile) => {
     setSelectedGame((prev) => (prev?.id === game.id ? game : prev));
+    if (game.config_dir && tab !== "library") {
+      prefetchGameWorkspace(queryClient, game, tab);
+    }
   };
 
   return (
@@ -60,7 +77,11 @@ function AppContent() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContent />
+      <UpdateGate>
+        <AppWindowFocusProvider>
+          <AppContent />
+        </AppWindowFocusProvider>
+      </UpdateGate>
     </QueryClientProvider>
   );
 }

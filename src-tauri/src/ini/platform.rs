@@ -75,20 +75,24 @@ pub fn pick_platform_config_dir(config_root: &Path, hints: &PlatformHints) -> Op
 
 fn platform_preference_order(engine_family: Option<&str>) -> &'static [&'static str] {
     match engine_family {
-        Some("ue5") => &["Win64", "WinGDK", "Windows", "WindowsNoEditor"],
-        Some("ue4") => &["WindowsNoEditor", "Windows", "Win64", "WinGDK"],
-        _ => &["Win64", "WindowsNoEditor", "Windows", "WinGDK"],
+        // Saved/Config/Windows — типичный путь UE5 (Subnautica 2 и др.). Win64 — папка exe, не config.
+        Some("ue5") => &["Windows", "WinGDK", "Win64", "WindowsNoEditor"],
+        Some("ue4") => &["WindowsNoEditor", "Windows", "WinGDK", "Win64"],
+        _ => &["Windows", "WindowsNoEditor", "WinGDK", "Win64"],
     }
 }
 
-/// Куда писать пресеты: все папки с GUS, если их несколько (UE5 Windows+Win64).
+/// Куда писать пресеты: все платформенные папки с GUS, если их несколько.
 pub fn apply_target_dirs(config_dir: &Path, hints: &PlatformHints) -> Vec<PathBuf> {
     let Some(root) = config_root_from_platform_dir(config_dir) else {
         return vec![config_dir.to_path_buf()];
     };
     let with_gus = platform_dirs_with_gus(&root);
-    if with_gus.len() <= 1 {
+    if with_gus.is_empty() {
         return vec![config_dir.to_path_buf()];
+    }
+    if with_gus.len() == 1 {
+        return vec![with_gus[0].clone()];
     }
     let primary =
         pick_platform_config_dir(&root, hints).unwrap_or_else(|| config_dir.to_path_buf());
@@ -115,13 +119,17 @@ mod tests {
     use std::fs;
 
     #[test]
-    fn ue5_prefers_win64_when_both_exist() {
+    fn ue5_prefers_windows_when_both_exist() {
         let root = tempfile::tempdir().unwrap();
         let windows = root.path().join("Windows");
         let win64 = root.path().join("Win64");
         fs::create_dir_all(&windows).unwrap();
         fs::create_dir_all(&win64).unwrap();
-        fs::write(windows.join("GameUserSettings.ini"), "[ScalabilityGroups]\n").unwrap();
+        fs::write(
+            windows.join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\n",
+        )
+        .unwrap();
         fs::write(win64.join("GameUserSettings.ini"), "[ScalabilityGroups]\n").unwrap();
 
         let hints = PlatformHints {
@@ -129,7 +137,26 @@ mod tests {
             ..Default::default()
         };
         let picked = pick_platform_config_dir(root.path(), &hints).unwrap();
-        assert!(ends_with_platform(&picked, "Win64"));
+        assert!(ends_with_platform(&picked, "Windows"));
+    }
+
+    #[test]
+    fn config_platform_hint_overrides_ue5_default() {
+        let root = tempfile::tempdir().unwrap();
+        let windows = root.path().join("Windows");
+        let wingdk = root.path().join("WinGDK");
+        fs::create_dir_all(&windows).unwrap();
+        fs::create_dir_all(&wingdk).unwrap();
+        fs::write(windows.join("GameUserSettings.ini"), "w").unwrap();
+        fs::write(wingdk.join("GameUserSettings.ini"), "g").unwrap();
+
+        let hints = PlatformHints {
+            engine_family: Some("ue5".to_string()),
+            config_platform: Some("WinGDK".to_string()),
+            ..Default::default()
+        };
+        let picked = pick_platform_config_dir(root.path(), &hints).unwrap();
+        assert!(ends_with_platform(&picked, "WinGDK"));
     }
 
     #[test]

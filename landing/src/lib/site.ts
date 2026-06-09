@@ -13,9 +13,11 @@ export const githubUrl = `https://github.com/${githubRepo}`;
 /** Прямая ссылка на установщик в GitHub Releases (latest). */
 export const downloadUrl =
   import.meta.env.VITE_DOWNLOAD_URL ??
-  `https://github.com/${githubRepo}/releases/latest/download/Game-Settings-Master_0.1.0_x64-setup.exe`;
+  `https://github.com/${githubRepo}/releases/latest/download/Game-Settings-Master_0.1.2_x64-setup.exe`;
 
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.0";
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.1.2";
+
+export const donateUrl = "https://dalink.to/mike_saito";
 
 export function joinBase(...segments: string[]): string {
   const base = basePath.endsWith("/") ? basePath : `${basePath}/`;

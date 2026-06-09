@@ -26,17 +26,15 @@ pub fn resolve_config_dir(
             .map(|e| e.local_app_folder.clone())
     });
 
-    let candidates = build_match_candidates(
-        install_dir,
-        exe_name,
-        game_name,
-        local_folder.as_deref(),
-    );
+    let candidates =
+        build_match_candidates(install_dir, exe_name, game_name, local_folder.as_deref());
     if let Some(matched) = match_config_from_index(&index, &candidates) {
         return Some(matched);
     }
 
-    if let Some(local) = resolve_local_appdata_config(install_dir, exe_name, game_name, steam_app_id) {
+    if let Some(local) =
+        resolve_local_appdata_config(install_dir, exe_name, game_name, steam_app_id)
+    {
         return Some(local);
     }
 
@@ -79,12 +77,8 @@ fn resolve_local_appdata_config(
             .get(id)
             .map(|e| e.local_app_folder.clone())
     });
-    let candidates = build_match_candidates(
-        install_dir,
-        exe_name,
-        game_name,
-        local_folder.as_deref(),
-    );
+    let candidates =
+        build_match_candidates(install_dir, exe_name, game_name, local_folder.as_deref());
     let hints = platform_hints_for_game(
         steam_app_id.map(|id| format!("steam-{id}")).as_deref(),
         None,
@@ -103,7 +97,11 @@ fn resolve_local_appdata_config(
 }
 
 fn search_for_game_user_settings(root: &Path, max_depth: usize) -> Option<PathBuf> {
-    for entry in WalkDir::new(root).max_depth(max_depth).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(root)
+        .max_depth(max_depth)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         if entry.file_name().to_str() == Some("GameUserSettings.ini") {
             return entry.path().parent().map(|p| p.to_path_buf());
         }

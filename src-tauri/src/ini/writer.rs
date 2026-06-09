@@ -4,10 +4,6 @@ use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::Path;
 
-pub fn write_ini_file(path: &Path, ini: &IniFile) -> Result<(), String> {
-    write_ini_file_with_encoding_hint(path, ini, None)
-}
-
 /// При создании нового ini в папке конфига наследует UTF-8/UTF-16 от `encoding_hint`
 /// (обычно GameUserSettings.ini), чтобы игра не игнорировала Engine.ini.
 pub fn write_ini_file_with_encoding_hint(
@@ -32,10 +28,7 @@ fn resolve_write_encoding(path: &Path, encoding_hint: Option<&Path>) -> IniEncod
     IniEncoding::Utf8
 }
 
-pub fn remove_ini_keys(
-    ini: &mut IniFile,
-    removals: &HashMap<String, Vec<String>>,
-) {
+pub fn remove_ini_keys(ini: &mut IniFile, removals: &HashMap<String, Vec<String>>) {
     for (section_name, keys) in removals {
         if let Some(section) = ini.sections.get_mut(section_name) {
             for key in keys {
@@ -45,16 +38,20 @@ pub fn remove_ini_keys(
     }
 }
 
-pub fn merge_ini(existing: &IniFile, updates: &IndexMap<String, IndexMap<String, String>>) -> IniFile {
+pub fn merge_ini(
+    existing: &IniFile,
+    updates: &IndexMap<String, IndexMap<String, String>>,
+) -> IniFile {
     let mut result = existing.clone();
 
     for (section_name, entries) in updates {
-        let section = result.sections.entry(section_name.clone()).or_insert_with(|| {
-            crate::models::IniSection {
+        let section = result
+            .sections
+            .entry(section_name.clone())
+            .or_insert_with(|| crate::models::IniSection {
                 entries: IndexMap::new(),
                 preamble: Vec::new(),
-            }
-        });
+            });
         for (key, value) in entries {
             section.entries.insert(key.clone(), value.clone());
         }
@@ -141,7 +138,10 @@ mod tests {
         write_ini_file_with_encoding_hint(&engine, &merged, Some(&gus)).unwrap();
 
         let bytes = fs::read(&engine).unwrap();
-        assert!(bytes.starts_with(&[0xFF, 0xFE]), "Engine.ini must inherit UTF-16 LE");
+        assert!(
+            bytes.starts_with(&[0xFF, 0xFE]),
+            "Engine.ini must inherit UTF-16 LE"
+        );
         let content = String::from_utf16_lossy(
             &bytes[2..]
                 .chunks_exact(2)
@@ -155,10 +155,19 @@ mod tests {
     fn remove_ini_keys_drops_entries() {
         let mut ini = parse_ini("[SystemSettings]\nr.ViewDistanceScale=1.5\nr.BloomQuality=3\n");
         let mut removals = HashMap::new();
-        removals.insert("SystemSettings".to_string(), vec!["r.BloomQuality".to_string()]);
+        removals.insert(
+            "SystemSettings".to_string(),
+            vec!["r.BloomQuality".to_string()],
+        );
         remove_ini_keys(&mut ini, &removals);
         let section = &ini.sections["SystemSettings"];
-        assert_eq!(section.entries.get("r.ViewDistanceScale").map(String::as_str), Some("1.5"));
+        assert_eq!(
+            section
+                .entries
+                .get("r.ViewDistanceScale")
+                .map(String::as_str),
+            Some("1.5")
+        );
         assert!(!section.entries.contains_key("r.BloomQuality"));
     }
 }

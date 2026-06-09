@@ -18,16 +18,12 @@ pub struct UnityPresetDefinition {
 }
 
 pub fn presets_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("presets").join("unity")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("presets")
+        .join("unity")
 }
 
 pub fn list_unity_presets() -> Result<Vec<PresetInfo>, String> {
-    if let Some(pack) = crate::remote_presets::find_unity_pack() {
-        if !pack.manifest.presets.is_empty() {
-            return Ok(pack.manifest.presets_info());
-        }
-    }
-
     let mut presets = Vec::new();
     for id in UNITY_PRESET_IDS {
         if let Ok(preset) = load_unity_preset(id) {
@@ -38,6 +34,13 @@ pub fn list_unity_presets() -> Result<Vec<PresetInfo>, String> {
             });
         }
     }
+
+    if let Some(pack) = crate::remote_presets::find_unity_pack_cached() {
+        if !pack.manifest.presets.is_empty() {
+            return Ok(pack.manifest.presets_info());
+        }
+    }
+
     Ok(presets)
 }
 
@@ -52,7 +55,8 @@ pub fn load_unity_preset(id: &str) -> Result<UnityPresetDefinition, String> {
     }
 
     let path = presets_dir().join(format!("{id}.json"));
-    let content = fs::read_to_string(&path).map_err(|e| format!("Unity-пресет '{id}' не найден: {e}"))?;
+    let content =
+        fs::read_to_string(&path).map_err(|e| format!("Unity-пресет '{id}' не найден: {e}"))?;
     serde_json::from_str(&content).map_err(|e| format!("Некорректный Unity-пресет '{id}': {e}"))
 }
 

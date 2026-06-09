@@ -1,6 +1,6 @@
 [package]
 name = "ue-settings-master"
-version = "0.1.0"
+version = "0.1.2"
 description = "UE Settings Master — мастер настроек для игр Unreal Engine"
 authors = ["Mike"]
 edition = "2021"
@@ -29,6 +29,20 @@ roxmltree = "0.20"
 ureq = "2"
 zip = "2"
 sha2 = "0.10"
+tauri-plugin-process = "2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Gdi",
+  "Win32_System_Diagnostics_ToolHelp",
+  "Win32_System_Threading",
+  "Win32_UI_WindowsAndMessaging",
+] }
+winreg = "0.55"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
 
 [dev-dependencies]
 tempfile = "3"

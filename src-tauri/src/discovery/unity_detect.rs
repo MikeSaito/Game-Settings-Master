@@ -30,7 +30,11 @@ pub fn find_unity_data_dir(install_dir: &Path) -> Option<PathBuf> {
         return Some(dir);
     }
 
-    for entry in WalkDir::new(install_dir).max_depth(3).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(install_dir)
+        .max_depth(3)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         if !entry.file_type().is_dir() {
             continue;
         }
@@ -69,7 +73,11 @@ pub fn is_unity_data_folder(path: &Path) -> bool {
 }
 
 fn has_unity_player_dll(install_dir: &Path) -> bool {
-    for entry in WalkDir::new(install_dir).max_depth(4).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(install_dir)
+        .max_depth(4)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         if !entry.file_type().is_file() {
             continue;
         }
@@ -93,7 +101,10 @@ mod tests {
         let data = dir.path().join("MyGame_Data");
         fs::create_dir_all(&data).unwrap();
         fs::write(data.join("globalgamemanagers"), b"x").unwrap();
-        assert_eq!(detect_unity_engine(dir.path()), UnityDetectResult::Confirmed);
+        assert_eq!(
+            detect_unity_engine(dir.path()),
+            UnityDetectResult::Confirmed
+        );
         assert_eq!(find_unity_data_dir(dir.path()).unwrap(), data);
     }
 

@@ -19,10 +19,12 @@ pub fn parse_ini(content: &str) -> IniFile {
 
         if trimmed.starts_with('[') && trimmed.ends_with(']') {
             current_section = trimmed[1..trimmed.len() - 1].to_string();
-            sections.entry(current_section.clone()).or_insert_with(|| IniSection {
-                entries: IndexMap::new(),
-                preamble: Vec::new(),
-            });
+            sections
+                .entry(current_section.clone())
+                .or_insert_with(|| IniSection {
+                    entries: IndexMap::new(),
+                    preamble: Vec::new(),
+                });
             continue;
         }
 
@@ -85,7 +87,11 @@ pub fn ini_to_data(ini: &IniFile) -> HashMap<String, HashMap<String, String>> {
         .map(|(name, section)| {
             (
                 name.clone(),
-                section.entries.iter().map(|(k, v)| (k.clone(), v.clone())).collect(),
+                section
+                    .entries
+                    .iter()
+                    .map(|(k, v)| (k.clone(), v.clone()))
+                    .collect(),
             )
         })
         .collect()

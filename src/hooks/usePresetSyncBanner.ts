@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getPresetServerStatus } from "../lib/api";
 import { formatInvokeError } from "../lib/errors";
+import { usePresetServerStatus } from "./usePresetServerStatus";
 
 export interface SyncBanner {
   tone: "info" | "warning" | "error";
@@ -10,11 +9,7 @@ export interface SyncBanner {
 
 /** Пользовательский статус синхронизации пресетов (без URL и техдеталей). */
 export function usePresetSyncBanner(): SyncBanner | null {
-  const { data: status, isLoading, error } = useQuery({
-    queryKey: ["preset-server-status"],
-    queryFn: getPresetServerStatus,
-    refetchInterval: 15_000,
-  });
+  const { data: status, isLoading, error } = usePresetServerStatus();
 
   if (isLoading && !status) {
     return {

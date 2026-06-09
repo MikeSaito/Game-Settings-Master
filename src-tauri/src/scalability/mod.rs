@@ -50,10 +50,7 @@ pub struct ScalabilityLimits {
 
 impl ScalabilityLimits {
     pub fn max_for(&self, sg_key: &str) -> u32 {
-        self.groups
-            .get(sg_key)
-            .copied()
-            .unwrap_or(self.global_max)
+        self.groups.get(sg_key).copied().unwrap_or(self.global_max)
     }
 }
 
@@ -107,14 +104,12 @@ pub fn detect_scalability_limits(
     }
 
     for group in QUALITY_INDEX_GROUPS {
-        max_by_group
-            .entry((*group).to_string())
-            .or_insert_with(|| {
-                max_from_ini
-                    .get(*group)
-                    .copied()
-                    .unwrap_or(UE_DEFAULT_SCALABILITY_MAX)
-            });
+        max_by_group.entry((*group).to_string()).or_insert_with(|| {
+            max_from_ini
+                .get(*group)
+                .copied()
+                .unwrap_or(UE_DEFAULT_SCALABILITY_MAX)
+        });
     }
 
     // Дополнительные группы из DefaultScalability.ini (кроме ResolutionQuality).
@@ -160,9 +155,17 @@ pub fn detect_scalability_limits(
 }
 
 fn find_scalability_files(install_dir: &Path) -> Vec<PathBuf> {
-    let names = ["DefaultScalability.ini", "Scalability.ini", "BaseScalability.ini"];
+    let names = [
+        "DefaultScalability.ini",
+        "Scalability.ini",
+        "BaseScalability.ini",
+    ];
     let mut found = Vec::new();
-    for entry in WalkDir::new(install_dir).max_depth(6).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(install_dir)
+        .max_depth(6)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         if !entry.file_type().is_file() {
             continue;
         }
@@ -184,7 +187,10 @@ fn parse_scalability_ini(content: &str) -> HashMap<String, u32> {
         let trimmed = line.trim();
         if let Some(cap) = re.captures(trimmed) {
             let group = cap.get(1).map(|m| m.as_str()).unwrap_or("");
-            let level: u32 = cap.get(2).and_then(|m| m.as_str().parse().ok()).unwrap_or(0);
+            let level: u32 = cap
+                .get(2)
+                .and_then(|m| m.as_str().parse().ok())
+                .unwrap_or(0);
             max_by_group
                 .entry(group.to_string())
                 .and_modify(|v| *v = (*v).max(level))
@@ -229,7 +235,10 @@ fn read_observed_max_from_gus(path: &Path) -> Result<HashMap<String, u32>, Strin
 
 fn merge_max_map(target: &mut HashMap<String, u32>, source: HashMap<String, u32>) {
     for (k, v) in source {
-        target.entry(k).and_modify(|m| *m = (*m).max(v)).or_insert(v);
+        target
+            .entry(k)
+            .and_modify(|m| *m = (*m).max(v))
+            .or_insert(v);
     }
 }
 
@@ -310,11 +319,7 @@ r.ViewDistanceScale=1.0
         let dir = tempfile::tempdir().unwrap();
         let config = dir.path();
         let gus = config.join("GameUserSettings.ini");
-        std::fs::write(
-            &gus,
-            "[ScalabilityGroups]\nsg.ShadowQuality=6\n",
-        )
-        .unwrap();
+        std::fs::write(&gus, "[ScalabilityGroups]\nsg.ShadowQuality=6\n").unwrap();
         let limits = detect_scalability_limits(None, Some(config));
         assert_eq!(limits.groups.get("sg.ShadowQuality"), Some(&6));
         assert_eq!(limits.global_max, 6);
@@ -346,7 +351,10 @@ r.ViewDistanceScale=1.0
         apply_limits_to_preset_sections(&mut sections, &limits, "ultra-high");
 
         let sg = sections.get("[ScalabilityGroups]").unwrap();
-        assert_eq!(sg.get("sg.ResolutionQuality").map(String::as_str), Some("100"));
+        assert_eq!(
+            sg.get("sg.ResolutionQuality").map(String::as_str),
+            Some("100")
+        );
         assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some("4"));
     }
 }

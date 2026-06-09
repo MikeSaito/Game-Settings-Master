@@ -36,7 +36,8 @@ pub fn save_profile(profile: &GameProfile) -> Result<(), String> {
         games.push(profile.clone());
     }
     let path = profiles_path()?;
-    let content = serde_json::to_string_pretty(&SavedProfiles { games }).map_err(|e| e.to_string())?;
+    let content =
+        serde_json::to_string_pretty(&SavedProfiles { games }).map_err(|e| e.to_string())?;
     fs::write(path, content).map_err(|e| e.to_string())
 }
 
@@ -44,7 +45,8 @@ pub fn remove_profile(id: &str) -> Result<(), String> {
     let mut games = load_saved_profiles()?;
     games.retain(|g| g.id != id);
     let path = profiles_path()?;
-    let content = serde_json::to_string_pretty(&SavedProfiles { games }).map_err(|e| e.to_string())?;
+    let content =
+        serde_json::to_string_pretty(&SavedProfiles { games }).map_err(|e| e.to_string())?;
     fs::write(path, content).map_err(|e| e.to_string())
 }
 
@@ -60,24 +62,32 @@ pub fn load_overrides() -> Result<Vec<GameOverride>, String> {
 
 pub fn save_override(override_def: &GameOverride) -> Result<(), String> {
     let mut overrides = load_overrides()?;
-    if let Some(existing) = overrides.iter_mut().find(|o| o.game_id == override_def.game_id && o.name == override_def.name) {
+    if let Some(existing) = overrides
+        .iter_mut()
+        .find(|o| o.game_id == override_def.game_id && o.name == override_def.name)
+    {
         *existing = override_def.clone();
     } else {
         overrides.push(override_def.clone());
     }
     let path = overrides_path()?;
-    let content = serde_json::to_string_pretty(&SavedOverrides { overrides }).map_err(|e| e.to_string())?;
+    let content =
+        serde_json::to_string_pretty(&SavedOverrides { overrides }).map_err(|e| e.to_string())?;
     fs::write(path, content).map_err(|e| e.to_string())
 }
 
 pub fn get_overrides_for_game(game_id: &str) -> Result<Vec<GameOverride>, String> {
-    Ok(load_overrides()?.into_iter().filter(|o| o.game_id == game_id).collect())
+    Ok(load_overrides()?
+        .into_iter()
+        .filter(|o| o.game_id == game_id)
+        .collect())
 }
 
 pub fn delete_override(game_id: &str, name: &str) -> Result<(), String> {
     let mut overrides = load_overrides()?;
     overrides.retain(|o| !(o.game_id == game_id && o.name == name));
     let path = overrides_path()?;
-    let content = serde_json::to_string_pretty(&SavedOverrides { overrides }).map_err(|e| e.to_string())?;
+    let content =
+        serde_json::to_string_pretty(&SavedOverrides { overrides }).map_err(|e| e.to_string())?;
     fs::write(path, content).map_err(|e| e.to_string())
 }

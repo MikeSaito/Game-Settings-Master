@@ -15,12 +15,8 @@ const INI_FILES: [&str; 5] = [
 ];
 
 /// Override-файлы пресетов; при сбросе удаляются, GameUserSettings.ini остаётся.
-pub const OVERRIDE_INI_FILES: [&str; 4] = [
-    "Engine.ini",
-    "Game.ini",
-    "Scalability.ini",
-    "Input.ini",
-];
+pub const OVERRIDE_INI_FILES: [&str; 4] =
+    ["Engine.ini", "Game.ini", "Scalability.ini", "Input.ini"];
 
 pub fn backup_store_dir(config_dir: &Path) -> PathBuf {
     let canonical = config_dir
@@ -55,9 +51,8 @@ pub fn backup_forza_config_dir(config_dir: &Path) -> Result<String, String> {
     if src.is_file() {
         let dst = backup_path.join("UserConfigSelections");
         let bytes = read_file_bytes(&src)?;
-        write_file_bytes(&dst, &bytes).map_err(|e| {
-            format!("Не удалось сохранить backup UserConfigSelections: {e}")
-        })?;
+        write_file_bytes(&dst, &bytes)
+            .map_err(|e| format!("Не удалось сохранить backup UserConfigSelections: {e}"))?;
     }
 
     Ok(backup_id)
@@ -82,9 +77,8 @@ pub fn backup_config_dir(config_dir: &Path) -> Result<String, String> {
         }
         let dst = backup_path.join(file);
         let bytes = read_file_bytes(&src)?;
-        write_file_bytes(&dst, &bytes).map_err(|e| {
-            format!("Не удалось сохранить backup {file}: {e}")
-        })?;
+        write_file_bytes(&dst, &bytes)
+            .map_err(|e| format!("Не удалось сохранить backup {file}: {e}"))?;
     }
 
     Ok(backup_id)
@@ -173,12 +167,10 @@ pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>,
         if entry.file_type().map_err(|e| e.to_string())?.is_file() {
             let name = entry.file_name().to_string_lossy().to_string();
             let dst = config_dir.join(&name);
-            let bytes = read_file_bytes(&entry.path()).map_err(|e| {
-                format!("Не удалось прочитать backup {name}: {e}")
-            })?;
-            write_file_bytes(&dst, &bytes).map_err(|e| {
-                format!("Не удалось восстановить {name}: {e}")
-            })?;
+            let bytes = read_file_bytes(&entry.path())
+                .map_err(|e| format!("Не удалось прочитать backup {name}: {e}"))?;
+            write_file_bytes(&dst, &bytes)
+                .map_err(|e| format!("Не удалось восстановить {name}: {e}"))?;
             restored.push(name);
         }
     }
@@ -201,7 +193,11 @@ mod tests {
         let tmp = tempfile::tempdir().expect("tempdir");
         let config = tmp.path();
         fs::write(config.join("GameUserSettings.ini"), b"[Settings]\nFoo=1\n").unwrap();
-        fs::write(config.join("Engine.ini"), b"[SystemSettings]\nr.Streaming=1\n").unwrap();
+        fs::write(
+            config.join("Engine.ini"),
+            b"[SystemSettings]\nr.Streaming=1\n",
+        )
+        .unwrap();
         fs::write(config.join("Scalability.ini"), b"[ScalabilityGroups]\n").unwrap();
 
         let (_, deleted) = reset_config_to_user_settings(config).expect("reset");

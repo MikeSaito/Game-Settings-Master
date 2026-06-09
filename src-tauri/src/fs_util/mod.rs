@@ -104,22 +104,94 @@ fn write_file_shared(path: &Path, bytes: &[u8]) -> Result<(), std::io::Error> {
 }
 
 #[cfg(windows)]
+use std::sync::Mutex;
+#[cfg(windows)]
+use std::time::{Duration, Instant};
+
+#[cfg(windows)]
+struct RunningCache {
+    exe: String,
+    result: bool,
+    at: Instant,
+}
+
+#[cfg(windows)]
+static RUNNING_CACHE: Mutex<Option<RunningCache>> = Mutex::new(None);
+
+#[cfg(windows)]
 pub fn is_exe_running(exe_name: &str) -> bool {
     let filter = if exe_name.to_ascii_lowercase().ends_with(".exe") {
-        exe_name.to_string()
+        exe_name.to_ascii_lowercase()
     } else {
-        format!("{exe_name}.exe")
+        format!("{exe_name}.exe").to_ascii_lowercase()
     };
 
-    std::process::Command::new("tasklist")
-        .args(["/FI", &format!("IMAGENAME eq {filter}"), "/FO", "CSV", "/NH"])
-        .output()
-        .map(|output| {
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            stdout.to_ascii_lowercase().contains(&filter.to_ascii_lowercase())
-                && !stdout.contains("INFO: No tasks")
-        })
-        .unwrap_or(false)
+    if crate::process_util::is_app_background() {
+        if let Ok(guard) = RUNNING_CACHE.lock() {
+            if let Some(cache) = guard.as_ref() {
+                if cache.exe == filter && cache.at.elapsed() < Duration::from_secs(120) {
+                    return cache.result;
+                }
+            }
+        }
+    }
+
+    if let Ok(guard) = RUNNING_CACHE.lock() {
+        if let Some(cache) = guard.as_ref() {
+            if cache.exe == filter && cache.at.elapsed() < Duration::from_secs(30) {
+                return cache.result;
+            }
+        }
+    }
+
+    let result = process_snapshot_contains(&filter);
+
+    if let Ok(mut guard) = RUNNING_CACHE.lock() {
+        *guard = Some(RunningCache {
+            exe: filter,
+            result,
+            at: Instant::now(),
+        });
+    }
+
+    result
+}
+
+#[cfg(windows)]
+fn process_snapshot_contains(filter: &str) -> bool {
+    use windows_sys::Win32::Foundation::{CloseHandle, INVALID_HANDLE_VALUE};
+    use windows_sys::Win32::System::Diagnostics::ToolHelp::{
+        CreateToolhelp32Snapshot, Process32FirstW, Process32NextW, PROCESSENTRY32W,
+        TH32CS_SNAPPROCESS,
+    };
+
+    unsafe {
+        let snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        if snap == INVALID_HANDLE_VALUE {
+            return false;
+        }
+
+        let mut entry: PROCESSENTRY32W = std::mem::zeroed();
+        entry.dwSize = std::mem::size_of::<PROCESSENTRY32W>() as u32;
+
+        let mut ok = Process32FirstW(snap, &mut entry) != 0;
+        while ok {
+            let end = entry
+                .szExeFile
+                .iter()
+                .position(|&ch| ch == 0)
+                .unwrap_or(entry.szExeFile.len());
+            let name = String::from_utf16_lossy(&entry.szExeFile[..end]);
+            if name.eq_ignore_ascii_case(filter) {
+                CloseHandle(snap);
+                return true;
+            }
+            ok = Process32NextW(snap, &mut entry) != 0;
+        }
+
+        CloseHandle(snap);
+        false
+    }
 }
 
 #[cfg(not(windows))]
@@ -135,7 +207,7 @@ pub fn kill_exe(exe_name: &str) -> Result<(), String> {
         format!("{exe_name}.exe")
     };
 
-    let output = std::process::Command::new("taskkill")
+    let output = crate::process_util::hidden_command("taskkill")
         .args(["/F", "/IM", &filter])
         .output()
         .map_err(|e| format!("Не удалось завершить процесс: {e}"))?;
@@ -240,7 +312,10 @@ mod tests {
     fn clears_readonly_before_write() {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join("ro.ini");
-        std::fs::File::create(&path).unwrap().write_all(b"old").unwrap();
+        std::fs::File::create(&path)
+            .unwrap()
+            .write_all(b"old")
+            .unwrap();
         let mut perms = std::fs::metadata(&path).unwrap().permissions();
         perms.set_readonly(true);
         std::fs::set_permissions(&path, perms).unwrap();

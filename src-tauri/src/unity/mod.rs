@@ -8,9 +8,7 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 pub use boot_config::{apply_boot_config, parse_boot_config, preview_boot_config_diff};
-pub use presets::{
-    apply_unity_preset, build_unity_combined_preset, preview_unity_preset,
-};
+pub use presets::{apply_unity_preset, build_unity_combined_preset, preview_unity_preset};
 
 /// Каталог конфигурации Unity: папка `*_Data` (boot.config) или LocalLow.
 pub fn resolve_unity_config_dir(
@@ -112,9 +110,7 @@ fn resolve_local_low_dir(
 
 fn local_low_root() -> Option<PathBuf> {
     let user_profile = env::var("USERPROFILE").ok()?;
-    let path = PathBuf::from(user_profile)
-        .join("AppData")
-        .join("LocalLow");
+    let path = PathBuf::from(user_profile).join("AppData").join("LocalLow");
     if path.is_dir() {
         Some(path)
     } else {
@@ -161,7 +157,11 @@ pub fn backup_unity_config(config_dir: &Path) -> Result<String, String> {
             .map_err(|e| format!("Не удалось сохранить backup boot.config: {e}"))?;
     }
 
-    for entry in WalkDir::new(config_dir).max_depth(1).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(config_dir)
+        .max_depth(1)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         if !entry.file_type().is_file() {
             continue;
         }

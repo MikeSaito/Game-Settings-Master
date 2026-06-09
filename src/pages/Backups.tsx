@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   AlertTriangle,
   History,
@@ -15,6 +20,7 @@ import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
+import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import { listBackups, resetConfigToUser, restoreBackup } from "../lib/api";
 import type { BackupInfo, GameProfile } from "../lib/types";
 
@@ -39,12 +45,16 @@ export function Backups({ game }: Props) {
 
   const configDir = game?.config_dir ?? "";
   const gameRunning = useGameRunning(game?.exe_name);
+  const backupsEnabled = useBackgroundSafeEnabled(!!configDir);
 
-  const { data: backups = [], isFetching, refetch } = useQuery({
+  const { data: backups = [], isLoading, isFetching, refetch } = useQuery({
     queryKey: ["backups", configDir],
     queryFn: () => listBackups(configDir),
-    enabled: !!configDir,
+    enabled: backupsEnabled,
+    placeholderData: keepPreviousData,
   });
+
+  const backupsLoading = (isLoading || isFetching) && backups.length === 0;
 
   const restore = useMutation({
     mutationFn: (backupId: string) => {
@@ -190,9 +200,12 @@ export function Backups({ game }: Props) {
           }
         />
 
-        {isFetching && backups.length === 0 ? (
+        {backupsLoading ? (
           <Card padding="md">
-            <p className="text-sm text-muted">Загрузка списка…</p>
+            <div className="flex flex-col items-center gap-3 py-6">
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
+              <p className="text-sm text-muted">Загрузка списка…</p>
+            </div>
           </Card>
         ) : backups.length === 0 ? (
           <EmptyState

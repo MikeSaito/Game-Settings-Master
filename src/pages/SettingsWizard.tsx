@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AlertTriangle, Check, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
 import { BackupBanner } from "../components/BackupBanner";
@@ -10,6 +15,8 @@ import { Button } from "../components/ui/Button";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
 import { SectionHeader } from "../components/ui/SectionHeader";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import {
   applyPreset,
   getDesktopResolution,
@@ -58,45 +65,61 @@ export function SettingsWizard({ game }: Props) {
 
   const configDir = game?.config_dir ?? "";
   const engineFamily = game?.engine_family;
+  const presetsEnabled = !!engineFamily;
+  const limitsEnabled = useBackgroundSafeEnabled(!!configDir && !!game);
+  const gpuEnabled = useBackgroundSafeEnabled();
+  const desktopEnabled = useBackgroundSafeEnabled(engineFamily !== "unity");
 
   const {
     data: presets = [],
     isLoading: presetsLoading,
+    isFetching: presetsFetching,
     error: presetsError,
   } = useQuery({
     queryKey: ["presets", engineFamily, game?.id],
     queryFn: () => listPresets(engineFamily, game?.id),
-    enabled: !!engineFamily,
+    enabled: presetsEnabled,
+    staleTime: 10 * 60_000,
+    refetchOnMount: false,
+    retry: 1,
+    placeholderData: keepPreviousData,
   });
 
   const activePresetId = selectedPresetId || presets[0]?.id || "";
+  const previewPresetId = useDebouncedValue(activePresetId, 450);
+  const previewEnabled = useBackgroundSafeEnabled(
+    !!configDir && !!previewPresetId && !!game?.id,
+  );
 
   const {
     data: diff = [],
     isFetching: diffLoading,
     error: previewError,
   } = useQuery({
-    queryKey: ["preview", configDir, activePresetId, game?.id, engineFamily],
+    queryKey: ["preview", configDir, previewPresetId, game?.id, engineFamily],
     queryFn: () =>
       previewPreset(
         configDir,
-        activePresetId,
+        previewPresetId,
         game?.id,
         game?.install_dir,
         engineFamily,
       ),
-    enabled: !!configDir && !!activePresetId && !!game?.id,
+    enabled: previewEnabled,
+    staleTime: Infinity,
+    refetchOnMount: false,
   });
 
   const { data: limits } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir],
     queryFn: () => getScalabilityLimits(configDir, game!.install_dir),
-    enabled: !!configDir && !!game,
+    enabled: limitsEnabled,
   });
 
   const { data: gpu } = useQuery({
     queryKey: ["gpu"],
     queryFn: getGpuInfo,
+    enabled: gpuEnabled,
     staleTime: 300_000,
   });
 
@@ -104,7 +127,7 @@ export function SettingsWizard({ game }: Props) {
     queryKey: ["desktop-resolution"],
     queryFn: getDesktopResolution,
     staleTime: 300_000,
-    enabled: engineFamily !== "unity",
+    enabled: desktopEnabled,
   });
 
   const gpuHint = gpu ? gpuFilterHint(gpu) : null;
@@ -149,8 +172,18 @@ export function SettingsWizard({ game }: Props) {
           `Пресет применён: ${filesLabel} (${result.diff.length} изменений). Перезапустите игру.${engineNote}`,
         );
       }
+      queryClient.invalidateQueries({ queryKey: ["games"] });
+      queryClient.invalidateQueries({ queryKey: ["game-config"] });
       queryClient.invalidateQueries({ queryKey: ["backups", configDir] });
       queryClient.invalidateQueries({ queryKey: ["parameters", configDir] });
+      if (result.effective_config_dir && result.effective_config_dir !== configDir) {
+        queryClient.invalidateQueries({
+          queryKey: ["preview", result.effective_config_dir],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["parameters", result.effective_config_dir],
+        });
+      }
       await queryClient.refetchQueries({ queryKey: ["preview", configDir] });
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
@@ -267,8 +300,11 @@ export function SettingsWizard({ game }: Props) {
           hint={presetStepHint(presets)}
         />
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {presetsLoading && presets.length === 0 ? (
-            <p className="col-span-full text-sm text-muted">Загрузка пресетов…</p>
+          {presetsLoading || (presetsFetching && presets.length === 0) ? (
+            <div className="col-span-full flex flex-col items-center gap-3 py-12">
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
+              <p className="text-sm text-muted">Загрузка пресетов…</p>
+            </div>
           ) : (
             presets.map((preset) => (
               <PresetCard

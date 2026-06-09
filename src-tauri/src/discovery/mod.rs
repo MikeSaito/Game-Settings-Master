@@ -246,6 +246,16 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
         if crate::discovery::known_games::is_author_curated_app(app_id) {
             profile.is_author_curated = true;
         }
+        if let Some(entry) = known.get(app_id) {
+            match entry.engine_family.as_deref() {
+                Some("ue4") | Some("ue5") => {
+                    profile.is_ue = true;
+                    profile.possible_ue = false;
+                    profile.engine_family = entry.engine_family.clone().unwrap_or_default();
+                }
+                _ => {}
+            }
+        }
     }
 
     let unity = detect_unity_engine(&install);
@@ -260,8 +270,12 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
     }
 
     let ue = detect_unreal_engine(&install);
-    profile.is_ue = ue != UeDetectResult::NotUe;
-    profile.possible_ue = ue == UeDetectResult::Probable;
+    if !profile.is_ue {
+        profile.is_ue = ue != UeDetectResult::NotUe;
+        profile.possible_ue = ue == UeDetectResult::Probable;
+    } else {
+        profile.possible_ue = false;
+    }
 }
 
 pub fn enrich_config_dir(profile: &mut GameProfile) {

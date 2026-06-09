@@ -67,11 +67,9 @@ struct CatalogIndex {
     key_hints: HashMap<String, KeyHintEntry>,
 }
 
-pub fn load_parameter_catalog() -> Vec<ParameterCatalogEntry> {
-    load_parameter_catalog_for_family(None)
-}
-
-pub fn load_parameter_catalog_for_family(engine_family: Option<&str>) -> Vec<ParameterCatalogEntry> {
+pub fn load_parameter_catalog_for_family(
+    engine_family: Option<&str>,
+) -> Vec<ParameterCatalogEntry> {
     let is_ue4 = engine_family == Some("ue4");
     let mut entries = load_remote_parameter_catalog(is_ue4);
     entries.extend(load_bundled_parameter_catalog(is_ue4));
@@ -180,7 +178,10 @@ fn load_key_hints() -> HashMap<String, KeyHintEntry> {
         .join("key_hints.json");
     let content = fs::read_to_string(&path).unwrap_or_else(|_| "[]".to_string());
     let hints: Vec<KeyHintEntry> = serde_json::from_str(&content).unwrap_or_default();
-    hints.into_iter().map(|h| (h.key.to_lowercase(), h)).collect()
+    hints
+        .into_iter()
+        .map(|h| (h.key.to_lowercase(), h))
+        .collect()
 }
 
 fn build_catalog_index(catalog: Vec<ParameterCatalogEntry>) -> CatalogIndex {
@@ -195,9 +196,7 @@ fn build_catalog_index(catalog: Vec<ParameterCatalogEntry>) -> CatalogIndex {
             let file_key = format!("{}::{}", file.to_lowercase(), entry.key.to_lowercase());
             by_file_key.entry(file_key).or_insert(entry.clone());
         }
-        by_key
-            .entry(entry.key.to_lowercase())
-            .or_insert(entry);
+        by_key.entry(entry.key.to_lowercase()).or_insert(entry);
     }
 
     CatalogIndex {
@@ -286,7 +285,12 @@ pub fn get_game_parameters(
     catalog.extend(load_author_catalog(game_id, ini_has_subnautica));
     let index = build_catalog_index(catalog);
 
-    let ini_files = ["GameUserSettings.ini", "Engine.ini", "Game.ini", "Scalability.ini"];
+    let ini_files = [
+        "GameUserSettings.ini",
+        "Engine.ini",
+        "Game.ini",
+        "Scalability.ini",
+    ];
     let mut parameters = Vec::new();
     let mut seen = HashMap::new();
     for file in ini_files {
@@ -426,7 +430,8 @@ fn catalog_default_value(entry: &ParameterCatalogEntry) -> String {
 }
 
 fn extract_hint_number(hint: &str) -> Option<String> {
-    let token = hint.split(|c: char| c == ',' || c == '—' || c == '-' || c == ' ')
+    let token = hint
+        .split(|c: char| c == ',' || c == '—' || c == '-' || c == ' ')
         .find_map(|part| {
             let t = part.trim();
             if t.parse::<f64>().is_ok() || t.parse::<i64>().is_ok() {
@@ -807,7 +812,9 @@ fn is_ue5_only_catalog_key(key: &str) -> bool {
 }
 
 fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String> {
-    let catalog_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("catalog").join("unity.json");
+    let catalog_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("catalog")
+        .join("unity.json");
     let entries = parse_catalog_file(&catalog_path);
     let boot_path = crate::unity::boot_config_path(config_dir);
     let boot_map = if boot_path.exists() {
@@ -821,16 +828,13 @@ fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String>
     let mut parameters = Vec::new();
     for entry in entries {
         let present = boot_map.contains_key(&entry.key);
-        let value = boot_map
-            .get(&entry.key)
-            .cloned()
-            .unwrap_or_else(|| {
-                if present {
-                    String::new()
-                } else {
-                    catalog_default_value(&entry)
-                }
-            });
+        let value = boot_map.get(&entry.key).cloned().unwrap_or_else(|| {
+            if present {
+                String::new()
+            } else {
+                catalog_default_value(&entry)
+            }
+        });
         parameters.push(entry_to_parameter(
             &entry,
             &entry.key,
@@ -849,11 +853,7 @@ fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String>
         parameters.push(unknown_parameter(key, "", "boot.config", value));
     }
 
-    parameters.sort_by(|a, b| {
-        a.category
-            .cmp(&b.category)
-            .then_with(|| a.key.cmp(&b.key))
-    });
+    parameters.sort_by(|a, b| a.category.cmp(&b.category).then_with(|| a.key.cmp(&b.key)));
     Ok(parameters)
 }
 
@@ -898,22 +898,13 @@ fn get_forza_parameters(
                 "копируется пресетом".to_string()
             };
             parameters.push(entry_to_parameter(
-                &entry,
-                &entry.key,
-                section,
-                file,
-                &value,
-                true,
-                installed,
+                &entry, &entry.key, section, file, &value, true, installed,
             ));
             continue;
         }
 
         let value = if section == "selections" {
-            selections
-                .get(&entry.key)
-                .cloned()
-                .unwrap_or_default()
+            selections.get(&entry.key).cloned().unwrap_or_default()
         } else {
             forza_setting_display_value(settings.get(&entry.key))
         };
@@ -923,13 +914,7 @@ fn get_forza_parameters(
             settings.contains_key(&entry.key)
         };
         parameters.push(entry_to_parameter(
-            &entry,
-            &entry.key,
-            section,
-            file,
-            &value,
-            true,
-            present,
+            &entry, &entry.key, section, file, &value, true, present,
         ));
     }
 
@@ -1033,7 +1018,7 @@ mod tests {
 
     #[test]
     fn loads_split_catalog() {
-        let catalog = load_parameter_catalog();
+        let catalog = load_parameter_catalog_for_family(None);
         assert!(catalog.len() > 50);
         assert!(catalog.iter().any(|e| e.key == "r.Streaming.PoolSize"));
         assert!(catalog.iter().any(|e| e.key == "sg.LandscapeQuality"));
@@ -1045,7 +1030,9 @@ mod tests {
 
     #[test]
     fn unity_catalog_has_boot_params() {
-        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("catalog").join("unity.json");
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("catalog")
+            .join("unity.json");
         let entries = parse_catalog_file(&path);
         assert!(entries.len() >= 30);
         assert!(entries.iter().any(|e| e.key == "job-worker-count"));
@@ -1053,7 +1040,7 @@ mod tests {
 
     #[test]
     fn file_key_fallback_matches_engine_cvar() {
-        let catalog = load_parameter_catalog();
+        let catalog = load_parameter_catalog_for_family(None);
         let index = build_catalog_index(catalog);
         let matched = lookup_entry(
             &index,
@@ -1066,7 +1053,7 @@ mod tests {
 
     #[test]
     fn by_key_matches_cvar_in_different_section() {
-        let catalog = load_parameter_catalog();
+        let catalog = load_parameter_catalog_for_family(None);
         let index = build_catalog_index(catalog);
         let matched = lookup_entry(
             &index,

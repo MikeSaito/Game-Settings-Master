@@ -41,7 +41,9 @@ pub struct XmlNode {
     pub attrs: BTreeMap<String, String>,
 }
 
-pub fn read_user_config(config_dir: &Path) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
+pub fn read_user_config(
+    config_dir: &Path,
+) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
     let path = user_config_file(config_dir);
     let raw = fs::read_to_string(&path)
         .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))?;
@@ -49,27 +51,26 @@ pub fn read_user_config(config_dir: &Path) -> Result<(BTreeMap<String, XmlNode>,
 }
 
 /// Парсит снимок UserConfig из файла профиля (корень `<Preset>` или `<UserConfig>`).
-pub fn parse_user_config_patch(raw: &str) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
+pub fn parse_user_config_patch(
+    raw: &str,
+) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
     let repaired = repair_user_config_raw(raw);
-    let doc = Document::parse(&repaired)
-        .map_err(|e| format!("Некорректный снимок UserConfig: {e}"))?;
+    let doc =
+        Document::parse(&repaired).map_err(|e| format!("Некорректный снимок UserConfig: {e}"))?;
     let root = doc.root_element();
     let patch_root = match root.tag_name().name() {
         "Preset" | "UserConfig" => root,
         _ => root
             .children()
-            .find(|n| {
-                n.is_element()
-                    && matches!(n.tag_name().name(), "Preset" | "UserConfig")
-            })
-            .ok_or_else(|| {
-                "В профиле нет корня <Preset> или <UserConfig>".to_string()
-            })?,
+            .find(|n| n.is_element() && matches!(n.tag_name().name(), "Preset" | "UserConfig"))
+            .ok_or_else(|| "В профиле нет корня <Preset> или <UserConfig>".to_string())?,
     };
     parse_settings_and_selections(patch_root)
 }
 
-fn parse_user_config_xml(raw: &str) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
+fn parse_user_config_xml(
+    raw: &str,
+) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
     let repaired = repair_user_config_raw(raw);
     let doc = Document::parse(&repaired)
         .map_err(|e| format!("Некорректный UserConfigSelections: {e}"))?;
@@ -103,7 +104,10 @@ fn parse_settings_and_selections(
         .children()
         .find(|n| n.is_element() && n.tag_name().name() == "selections")
     {
-        for child in sel_node.children().filter(|n| n.is_element() && n.tag_name().name() == "option") {
+        for child in sel_node
+            .children()
+            .filter(|n| n.is_element() && n.tag_name().name() == "option")
+        {
             let id = child
                 .attribute("id")
                 .ok_or_else(|| "option без id".to_string())?
@@ -195,12 +199,16 @@ pub fn merge_preset_with_policy(
 }
 
 /// Безопасный clamp по GPU: значения из VPS не переписываются, только отключается неподдерживаемое.
-pub fn tune_forza_selections(
-    selections: &mut BTreeMap<String, String>,
-    gpu: &GpuCapabilities,
-) {
+pub fn tune_forza_selections(selections: &mut BTreeMap<String, String>, gpu: &GpuCapabilities) {
     if !gpu.supports_dlss {
-        for key in ["DLSSMode", "DLSSGMode", "DLAA", "NVIDIATech", "XeSSMode", "XeSSAA"] {
+        for key in [
+            "DLSSMode",
+            "DLSSGMode",
+            "DLAA",
+            "NVIDIATech",
+            "XeSSMode",
+            "XeSSAA",
+        ] {
             if selections.contains_key(key) {
                 selections.insert(key.into(), "0".into());
             }
@@ -220,11 +228,7 @@ pub fn tune_forza_selections(
     }
 }
 
-pub fn set_setting_value(
-    settings: &mut BTreeMap<String, XmlNode>,
-    tag: &str,
-    value: &str,
-) {
+pub fn set_setting_value(settings: &mut BTreeMap<String, XmlNode>, tag: &str, value: &str) {
     let node = settings.entry(tag.to_string()).or_insert_with(|| XmlNode {
         tag: tag.to_string(),
         attrs: BTreeMap::new(),
@@ -238,8 +242,17 @@ pub fn write_user_config(
     selections: &BTreeMap<String, String>,
 ) -> Result<(), String> {
     let path = user_config_file(config_dir);
+    crate::fs_util::clear_readonly(&path);
     let text = serialize_user_config(settings, selections);
-    fs::write(&path, text).map_err(|e| format!("Не удалось записать {}: {e}", path.display()))
+    crate::fs_util::write_file_bytes(path.as_path(), text.as_bytes())?;
+    let read_back = crate::fs_util::read_file_bytes(&path)?;
+    if read_back != text.as_bytes() {
+        return Err(format!(
+            "UserConfigSelections не сохранился ({}). Закройте игру и повторите.",
+            path.display()
+        ));
+    }
+    Ok(())
 }
 
 fn serialize_user_config(
@@ -339,16 +352,14 @@ fn media_file_differs(src: &Path, dest: &Path) -> Result<bool, String> {
     if !dest.is_file() {
         return Ok(true);
     }
-    let src_bytes = fs::read(src)
-        .map_err(|e| format!("Не удалось прочитать {}: {e}", src.display()))?;
-    let dest_bytes = fs::read(dest)
-        .map_err(|e| format!("Не удалось прочитать {}: {e}", dest.display()))?;
+    let src_bytes =
+        fs::read(src).map_err(|e| format!("Не удалось прочитать {}: {e}", src.display()))?;
+    let dest_bytes =
+        fs::read(dest).map_err(|e| format!("Не удалось прочитать {}: {e}", dest.display()))?;
     Ok(src_bytes != dest_bytes)
 }
 
-fn iter_preset_media_files(
-    media_src: &Path,
-) -> Result<Vec<(std::path::PathBuf, String)>, String> {
+fn iter_preset_media_files(media_src: &Path) -> Result<Vec<(std::path::PathBuf, String)>, String> {
     if !media_src.is_dir() {
         return Ok(Vec::new());
     }
@@ -384,9 +395,7 @@ pub fn preview_media_diff(
         }
         let new_size = src.metadata().map(|m| m.len()).unwrap_or(0);
         let old_value = if dest.is_file() {
-            dest.metadata()
-                .ok()
-                .map(|m| format!("{} B", m.len()))
+            dest.metadata().ok().map(|m| format!("{} B", m.len()))
         } else {
             None
         };

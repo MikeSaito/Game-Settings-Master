@@ -80,7 +80,8 @@ pub fn apply_boot_config(
     }
 
     let serialized = serialize_boot_config(&map);
-    fs::write(&boot_path, serialized).map_err(|e| format!("Не удалось записать boot.config: {e}"))?;
+    fs::write(&boot_path, serialized)
+        .map_err(|e| format!("Не удалось записать boot.config: {e}"))?;
 
     Ok((vec!["boot.config".to_string()], diff))
 }

@@ -94,8 +94,14 @@ export const en: LocaleStrings = {
       cancel: "Cancel",
     },
   },
+  donate: {
+    title: "Support development",
+    text: "Help fund a Windows code signing certificate and future updates.",
+    button: "Donate",
+  },
   footer: {
     version: (v: string) => `Game Settings Master v${v}`,
+    donateLink: "Support the project",
   },
   localeSwitch: {
     label: "Language",

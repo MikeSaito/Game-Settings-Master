@@ -39,7 +39,9 @@ fn known_forza_config_dir(app_id: &str) -> Option<PathBuf> {
         .forza_config_subpath
         .as_deref()
         .unwrap_or("LocalStorage_Shared/ForzaUserConfigSelections");
-    let dir = PathBuf::from(local).join(&entry.local_app_folder).join(subpath);
+    let dir = PathBuf::from(local)
+        .join(&entry.local_app_folder)
+        .join(subpath);
     let file = dir.join("UserConfigSelections");
     if file.is_file() {
         Some(dir)
@@ -89,10 +91,7 @@ fn find_user_config_in_tree(root: &Path) -> Option<PathBuf> {
         .max_depth(12)
         .into_iter()
         .filter_map(Result::ok)
-        .find(|e| {
-            e.file_type().is_file()
-                && e.file_name() == "UserConfigSelections"
-        })
+        .find(|e| e.file_type().is_file() && e.file_name() == "UserConfigSelections")
         .map(|e| e.into_path())
 }
 

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { GameParameter } from "../lib/types";
 import { cn } from "../lib/cn";
 import {
@@ -39,7 +40,7 @@ function qualityLabel(value: string, max: number): string | null {
 
 const inputClass = "input-field rounded-lg px-3 py-2 font-mono text-sm";
 
-export function ParameterCard({
+export const ParameterCard = memo(function ParameterCard({
   param,
   selected,
   onSelect,
@@ -277,4 +278,4 @@ export function ParameterCard({
       </div>
     </Card>
   );
-}
+});

@@ -40,7 +40,11 @@ pub fn scan_local_appdata_configs() -> Vec<ConfigIndexEntry> {
         }
     }
 
-    results.sort_by(|a, b| a.folder_name.to_lowercase().cmp(&b.folder_name.to_lowercase()));
+    results.sort_by(|a, b| {
+        a.folder_name
+            .to_lowercase()
+            .cmp(&b.folder_name.to_lowercase())
+    });
     results
 }
 

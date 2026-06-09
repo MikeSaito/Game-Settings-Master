@@ -3,9 +3,9 @@ use crate::discovery::dedupe_paths;
 use crate::discovery::known_games::load_known_games;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
 use crate::discovery::unity_detect::{detect_unity_engine, UnityDetectResult};
-use crate::unity::resolve_unity_config_dir;
 use crate::ini::paths::resolve_config_dir;
 use crate::models::GameProfile;
+use crate::unity::resolve_unity_config_dir;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
@@ -56,13 +56,8 @@ fn find_steam_install_paths() -> Vec<PathBuf> {
 
     #[cfg(windows)]
     {
-        if let Ok(output) = std::process::Command::new("reg")
-            .args([
-                "query",
-                r"HKCU\Software\Valve\Steam",
-                "/v",
-                "SteamPath",
-            ])
+        if let Ok(output) = crate::process_util::hidden_command("reg")
+            .args(["query", r"HKCU\Software\Valve\Steam", "/v", "SteamPath"])
             .output()
         {
             if output.status.success() {
@@ -152,10 +147,7 @@ fn parse_steam_manifest(
         return None;
     }
 
-    let known_forza = known
-        .get(&app_id)
-        .and_then(|k| k.engine_family.as_deref())
-        == Some("forza");
+    let known_forza = known.get(&app_id).and_then(|k| k.engine_family.as_deref()) == Some("forza");
     let is_forza = known_forza || crate::forza::is_forza_install(&install_path);
 
     let unity = detect_unity_engine(&install_path);
@@ -207,7 +199,8 @@ fn parse_steam_manifest(
         exe_name,
         is_ue,
         is_unity,
-        is_author_curated: is_forza || crate::discovery::known_games::is_author_curated_app(&app_id),
+        is_author_curated: is_forza
+            || crate::discovery::known_games::is_author_curated_app(&app_id),
         possible_unity: unity == UnityDetectResult::Probable,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: Some(crate::covers::steam_header_url(&app_id)),

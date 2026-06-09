@@ -3,9 +3,7 @@ use crate::discovery::platform_hints_for_game;
 use crate::fs_util::ensure_config_writable;
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
 use crate::models::{ApplyResult, PresetDefinition};
-use crate::presets::{
-    apply_preset_to_targets, build_combined_preset, resolve_apply_resolution,
-};
+use crate::presets::{apply_preset_to_targets, build_combined_preset, resolve_apply_resolution};
 use crate::unity::{apply_unity_preset, backup_unity_config, build_unity_combined_preset};
 use std::path::{Path, PathBuf};
 
@@ -47,6 +45,7 @@ fn apply_ue_with_strategy(
         backup_id,
         changed_files,
         diff,
+        effective_config_dir: Some(path.to_string_lossy().to_string()),
     })
 }
 
@@ -75,6 +74,7 @@ fn apply_forza_with_strategy(
         backup_id,
         changed_files,
         diff,
+        effective_config_dir: Some(path.to_string_lossy().to_string()),
     })
 }
 
@@ -92,6 +92,7 @@ fn apply_unity_with_strategy(
         backup_id,
         changed_files,
         diff,
+        effective_config_dir: Some(path.to_string_lossy().to_string()),
     })
 }
 

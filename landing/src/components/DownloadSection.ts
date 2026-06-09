@@ -1,4 +1,4 @@
-import { APP_VERSION } from "../lib/site";
+import { APP_VERSION, donateUrl } from "../lib/site";
 import type { LocaleStrings } from "../i18n/types";
 import { createCtaButtons } from "./CtaButtons";
 
@@ -17,6 +17,16 @@ export function createDownloadSection(t: LocaleStrings): HTMLElement {
     </div>
   `;
   card.appendChild(createCtaButtons(t, "download"));
+
+  const donate = document.createElement("div");
+  donate.className = "download__donate";
+  donate.innerHTML = `
+    <p class="download__donate-title">${t.donate.title}</p>
+    <p class="download__donate-text">${t.donate.text}</p>
+    <a class="btn btn--ghost download__donate-btn" href="${donateUrl}" target="_blank" rel="noopener noreferrer">${t.donate.button}</a>
+  `;
+  card.appendChild(donate);
+
   section.appendChild(card);
 
   return section;

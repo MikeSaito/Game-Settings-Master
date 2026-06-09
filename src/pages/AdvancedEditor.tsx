@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Save, Search, SlidersHorizontal, Trash2, Zap } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { BackupBanner } from "../components/BackupBanner";
@@ -12,6 +17,7 @@ import { Input } from "../components/ui/Input";
 import { PageHeader } from "../components/ui/PageHeader";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import { useWorkspacePreset } from "../context/GameWorkspaceContext";
+import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
 import {
   applyCustom,
@@ -123,6 +129,9 @@ export function AdvancedEditor({ game }: Props) {
   const isUnity = game?.is_unity || game?.engine_family === "unity";
   const isForza = game?.engine_family === "forza";
   const gameRunning = useGameRunning(game?.exe_name);
+  const queriesEnabled = useBackgroundSafeEnabled(!!configDir && !!game?.id);
+  const overridesEnabled = useBackgroundSafeEnabled(!!game?.id);
+  const gpuEnabled = useBackgroundSafeEnabled();
 
   useWorkspacePreset("Ручной", "selected", !!configDir);
   const [params, setParams] = useState<GameParameter[]>([]);
@@ -135,7 +144,7 @@ export function AdvancedEditor({ game }: Props) {
   const [search, setSearch] = useState("");
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
 
-  const { data: parameters = [], isLoading } = useQuery({
+  const { data: parameters = [], isLoading, isFetching } = useQuery({
     queryKey: ["parameters", configDir, game?.id, game?.engine_family],
     queryFn: () =>
       getGameParameters(
@@ -144,24 +153,30 @@ export function AdvancedEditor({ game }: Props) {
         game?.install_dir,
         game?.engine_family,
       ),
-    enabled: !!configDir && !!game?.id,
+    enabled: queriesEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnMount: false,
+    placeholderData: keepPreviousData,
   });
+
+  const parametersLoading = (isLoading || isFetching) && parameters.length === 0;
 
   const { data: limits } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir],
     queryFn: () => getScalabilityLimits(configDir, game!.install_dir),
-    enabled: !!configDir && !!game,
+    enabled: queriesEnabled && !!game,
   });
 
   const { data: overrides = [] } = useQuery({
     queryKey: ["overrides", game?.id],
     queryFn: () => getGameOverrides(game!.id),
-    enabled: !!game?.id,
+    enabled: overridesEnabled,
   });
 
   const { data: gpu } = useQuery({
     queryKey: ["gpu"],
     queryFn: getGpuInfo,
+    enabled: gpuEnabled,
     staleTime: 300_000,
   });
 
@@ -455,7 +470,7 @@ export function AdvancedEditor({ game }: Props) {
         </Alert>
       )}
 
-      {isLoading ? (
+      {parametersLoading ? (
         <div className="flex flex-col items-center gap-3 py-16">
           <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
           <p className="text-sm text-body">Загрузка параметров…</p>

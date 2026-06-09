@@ -76,6 +76,9 @@ pub struct ApplyResult {
     pub backup_id: String,
     pub changed_files: Vec<String>,
     pub diff: Vec<ConfigDiffEntry>,
+    /// Актуальный каталог config после reconcile (может отличаться от сохранённого в профиле).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_config_dir: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
