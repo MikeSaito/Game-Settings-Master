@@ -13,15 +13,34 @@ const DLSS_SCALE: &[(&str, &str, &str)] = &[
     ("DLAA", "5", "1.0"),
 ];
 
-pub fn tune_combined_preset(preset_id: &str, files: &mut IniFiles, engine_family: UeEngineFamily) {
+pub fn tune_combined_preset(
+    preset_id: &str,
+    files: &mut IniFiles,
+    engine_family: UeEngineFamily,
+    author_tiers: bool,
+) {
     let is_ue4 = engine_family == UeEngineFamily::Ue4;
-    tune_engine_for_tier(preset_id, files, is_ue4);
-    if !is_ue4 {
-        tune_subnautica2_for_tier(preset_id, files);
+    if !author_tiers {
+        tune_engine_for_tier(preset_id, files, is_ue4);
+        if !is_ue4 {
+            tune_subnautica2_for_tier(preset_id, files);
+        }
     }
     let gpu = detect_gpu();
     crate::gpu::adapt_preset_for_gpu(files, &gpu);
-    reconcile_upscaling_chain(files, &gpu);
+    if !author_tiers || has_sn2_sections(files) {
+        reconcile_upscaling_chain(files, &gpu);
+    }
+}
+
+fn has_sn2_sections(files: &IniFiles) -> bool {
+    files
+        .get("GameUserSettings.ini")
+        .map(|gus| {
+            gus.keys()
+                .any(|k| k.to_lowercase().contains("subnautica2"))
+        })
+        .unwrap_or(false)
 }
 
 /// Индекс sg.*Quality (0..menu_max, обычно 4=Epic). Не путать с r.* и процентами.
@@ -110,8 +129,8 @@ fn is_ue5_only_sg(sg_key: &str) -> bool {
 
 fn resolution_quality_for_tier(preset_id: &str, _is_ue4: bool) -> Option<&'static str> {
     match preset_id {
-        "ultra-low" => Some("45"),
-        "low" => Some("70"),
+        "ultra-low" => Some("40"),
+        "low" => Some("60"),
         "medium" => Some("85"),
         "high" | "epic" | "ultra-high" => Some("100"),
         _ => None,
@@ -119,14 +138,14 @@ fn resolution_quality_for_tier(preset_id: &str, _is_ue4: bool) -> Option<&'stati
 }
 
 fn tune_engine_for_tier(preset_id: &str, files: &mut IniFiles, is_ue4: bool) {
-    if !matches!(preset_id, "high" | "ultra-high") {
-        return;
-    }
     let Some(engine) = files.get_mut("Engine.ini") else {
         return;
     };
     let sys = engine.entry("[SystemSettings]".to_string()).or_default();
     if is_ue4 {
+        if !matches!(preset_id, "high" | "ultra-high") {
+            return;
+        }
         sys.insert(
             "r.DefaultFeature.MotionBlur".to_string(),
             "False".to_string(),
@@ -435,7 +454,7 @@ mod tests {
         assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some("1"));
         assert_eq!(
             sg.get("sg.ResolutionQuality").map(String::as_str),
-            Some("70")
+            Some("60")
         );
     }
 
@@ -534,7 +553,7 @@ mod tests {
         assert_eq!(sg.get("sg.ShadowQuality").map(String::as_str), Some("0"));
         assert_eq!(
             sg.get("sg.ResolutionQuality").map(String::as_str),
-            Some("45")
+            Some("40")
         );
     }
 

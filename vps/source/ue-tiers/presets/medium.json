@@ -1,7 +1,7 @@
 {
   "id": "medium",
   "name": "Medium",
-  "description": "Medium: sg.* = 2, 85% разрешения. Только GameUserSettings — без Engine.ini.",
+  "description": "Medium: sg.* = 2, 85% разрешения, Engine.ini с частичным Lumen.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {

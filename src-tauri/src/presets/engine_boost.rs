@@ -28,10 +28,101 @@ pub fn tune_engine_system_settings(
     }
 
     match preset_id {
+        "ultra-low" => apply_ultra_low_performance(sys, gpu),
+        "low" => apply_low_performance(sys, gpu),
+        "medium" => apply_medium_performance(sys, gpu),
         "high" => apply_high_boost(sys, gpu),
         "ultra-high" => apply_ultra_boost(sys, gpu),
         _ => {}
     }
+}
+
+fn apply_ultra_low_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
+    let pool = performance_pool_mb(gpu, "ultra-low");
+    merge(
+        sys,
+        &[
+            ("r.DynamicGlobalIlluminationMethod", "0"),
+            ("r.ReflectionMethod", "0"),
+            ("r.Lumen.DiffuseIndirect.Allow", "0"),
+            ("r.Lumen.Reflections.Allow", "0"),
+            ("r.Lumen.HardwareRayTracing", "0"),
+            ("r.Lumen.TraceMeshSDFs", "0"),
+            ("r.Lumen.ScreenProbeGather.RadianceCache", "0"),
+            ("r.ViewDistanceScale", "0.35"),
+            ("r.CastShadows", "0"),
+            ("r.ShadowQuality", "0"),
+            ("r.Shadow.Virtual.Enable", "0"),
+            ("r.AsyncCompute", "0"),
+            ("r.VolumetricFog", "0"),
+            ("r.PostProcessAAQuality", "0"),
+            ("sg.DefaultScalabilityLevel", "0"),
+            ("foliage.DensityScale", "0.0"),
+            ("grass.DensityScale", "0.0"),
+            ("r.OneFrameThreadLag", "1"),
+        ],
+    );
+    sys.insert("r.Streaming.PoolSize".to_string(), pool);
+    if gpu.vendor == GpuVendor::Amd || gpu.vendor == GpuVendor::Intel {
+        sys.insert("r.NGX.Enable".to_string(), "0".to_string());
+    }
+}
+
+fn apply_low_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
+    let pool = performance_pool_mb(gpu, "low");
+    merge(
+        sys,
+        &[
+            ("r.DynamicGlobalIlluminationMethod", "0"),
+            ("r.ReflectionMethod", "0"),
+            ("r.Lumen.DiffuseIndirect.Allow", "0"),
+            ("r.Lumen.Reflections.Allow", "0"),
+            ("r.Lumen.HardwareRayTracing", "0"),
+            ("r.ViewDistanceScale", "0.6"),
+            ("r.ShadowQuality", "1"),
+            ("r.Shadow.Virtual.Enable", "0"),
+            ("r.AsyncCompute", "0"),
+            ("r.VolumetricFog", "0"),
+            ("sg.DefaultScalabilityLevel", "1"),
+            ("foliage.DensityScale", "0.5"),
+            ("grass.DensityScale", "0.5"),
+            ("r.Shadow.CSM.MaxCascades", "2"),
+            ("r.Shadow.MaxResolution", "512"),
+        ],
+    );
+    sys.insert("r.Streaming.PoolSize".to_string(), pool);
+}
+
+fn apply_medium_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
+    let pool = performance_pool_mb(gpu, "medium");
+    merge(
+        sys,
+        &[
+            ("r.DynamicGlobalIlluminationMethod", "1"),
+            ("r.ReflectionMethod", "0"),
+            ("r.Lumen.DiffuseIndirect.Allow", "1"),
+            ("r.Lumen.Reflections.Allow", "0"),
+            ("r.ViewDistanceScale", "1.0"),
+            ("r.Shadow.Virtual.Enable", "1"),
+            ("sg.DefaultScalabilityLevel", "2"),
+            ("foliage.DensityScale", "0.75"),
+            ("grass.DensityScale", "0.75"),
+            ("r.Shadow.CSM.MaxCascades", "3"),
+            ("r.Shadow.MaxResolution", "1024"),
+        ],
+    );
+    sys.insert("r.Streaming.PoolSize".to_string(), pool);
+}
+
+fn performance_pool_mb(gpu: &GpuCapabilities, tier: &str) -> String {
+    let base: u32 = streaming_pool_mb(gpu, "high").parse().unwrap_or(3072);
+    let mb = match tier {
+        "ultra-low" => (base / 4).max(512),
+        "low" => (base / 2).max(1024),
+        "medium" => (base * 3 / 4).max(2048),
+        _ => base,
+    };
+    mb.to_string()
 }
 
 fn apply_high_boost(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
@@ -235,6 +326,21 @@ mod tests {
             Some("4")
         );
         assert_eq!(sys.get("r.ShadowQuality").map(String::as_str), Some("5"));
+    }
+
+    #[test]
+    fn low_performance_disables_lumen() {
+        let mut sys = HashMap::new();
+        let gpu = GpuCapabilities::from_gpu_name("NVIDIA GeForce RTX 4060 Ti");
+        apply_low_performance(&mut sys, &gpu);
+        assert_eq!(
+            sys.get("r.Lumen.DiffuseIndirect.Allow").map(String::as_str),
+            Some("0")
+        );
+        assert_eq!(
+            sys.get("r.ViewDistanceScale").map(String::as_str),
+            Some("0.6")
+        );
     }
 
     #[test]

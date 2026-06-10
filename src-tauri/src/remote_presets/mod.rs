@@ -139,20 +139,44 @@ where
     all_resolved_packs().into_iter().filter(predicate).collect()
 }
 
-pub fn find_ue_json_pack(engine_family: Option<&str>) -> Option<ResolvedPack> {
-    find_packs(|pack| {
-        matches!(pack.manifest.apply, PackApply::UeJson { .. })
-            && pack.matches(None, engine_family, None)
-    })
-    .into_iter()
-    .next()
+pub const SN2_AUTHOR_PACK_ID: &str = "subnautica2-tiers";
+
+pub fn is_author_tier_pack(pack: &ResolvedPack) -> bool {
+    pack.manifest.pack_id == SN2_AUTHOR_PACK_ID
 }
 
-pub fn find_ue_json_pack_cached(engine_family: Option<&str>) -> Option<ResolvedPack> {
-    all_resolved_packs().into_iter().find(|pack| {
-        matches!(pack.manifest.apply, PackApply::UeJson { .. })
-            && pack.matches(None, engine_family, None)
-    })
+fn ue_json_packs() -> Vec<ResolvedPack> {
+    all_resolved_packs()
+        .into_iter()
+        .filter(|pack| matches!(pack.manifest.apply, PackApply::UeJson { .. }))
+        .collect()
+}
+
+pub fn find_ue_json_pack(
+    game_id: Option<&str>,
+    engine_family: Option<&str>,
+) -> Option<ResolvedPack> {
+    ensure_synced();
+    find_ue_json_pack_cached(game_id, engine_family)
+}
+
+pub fn find_ue_json_pack_cached(
+    game_id: Option<&str>,
+    engine_family: Option<&str>,
+) -> Option<ResolvedPack> {
+    let packs = ue_json_packs();
+
+    if let Some(gid) = game_id {
+        if let Some(pack) = packs.iter().find(|pack| {
+            pack.manifest.pack_id != "ue-tiers" && pack.matches(Some(gid), engine_family, None)
+        }) {
+            return Some(pack.clone());
+        }
+    }
+
+    packs
+        .into_iter()
+        .find(|pack| pack.manifest.pack_id == "ue-tiers" && pack.matches(None, engine_family, None))
 }
 
 pub fn find_unity_pack() -> Option<ResolvedPack> {
@@ -226,6 +250,35 @@ mod tests {
             None
         ));
         assert!(pack_matches(&rules, None, Some("forza"), None));
+    }
+
+    #[test]
+    fn ue_json_pack_prefers_game_specific_match() {
+        let sn2 = PackMatch {
+            steam_app_ids: vec!["1962700".into()],
+            game_ids: vec!["steam-1962700".into()],
+            engine_families: vec!["ue5".into()],
+            overlay_ids: vec![],
+        };
+        let generic = PackMatch {
+            steam_app_ids: vec![],
+            game_ids: vec![],
+            engine_families: vec!["ue5".into(), "ue4".into()],
+            overlay_ids: vec![],
+        };
+        assert!(pack_matches(
+            &sn2,
+            Some("steam-1962700"),
+            Some("ue5"),
+            None
+        ));
+        assert!(pack_matches(&generic, None, Some("ue5"), None));
+        assert!(pack_matches(
+            &generic,
+            Some("steam-1962700"),
+            Some("ue5"),
+            None
+        ));
     }
 
     #[test]

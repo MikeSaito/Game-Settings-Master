@@ -28,7 +28,16 @@ const FORZA_PRESETS = [
   { id: "ultramax", name: "Ultra Max", description: "RT отражения + RTGI. Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.", profile_folder: "05_UltraMax" },
 ];
 
-const CATALOG_VERSION = "1.3.0";
+const CATALOG_VERSION = "1.4.0";
+
+const SN2_TIER_PRESETS = [
+  { id: "ultra-low", name: "Ultra Low", description: "Potato tier — минимум нагрузки для SN2.", definition_file: "ultra-low.json" },
+  { id: "low", name: "Low", description: "Low: DLSS 60%, Lumen off.", definition_file: "low.json" },
+  { id: "medium", name: "Medium", description: "Medium: частичный Lumen, DLSS 75%.", definition_file: "medium.json" },
+  { id: "high", name: "High", description: "High: Lumen on, DLSS 90%.", definition_file: "high.json" },
+  { id: "epic", name: "Epic", description: "Epic: максимум меню SN2.", definition_file: "epic.json" },
+  { id: "ultra-high", name: "Ultra High", description: "Ultra Max: полный ultramax профиль SN2.", definition_file: "ultra-high.json" },
+];
 
 async function sha256File(filePath) {
   const data = await fs.readFile(filePath);
@@ -94,6 +103,35 @@ async function buildForzaPack() {
         parameter_catalog: "parameter-catalog.json",
       },
       presets: FORZA_PRESETS,
+    },
+  });
+}
+
+async function buildSubnauticaTiersPack() {
+  return buildPack({
+    packId: "subnautica2-tiers",
+    stagingFn: async (staging) => {
+      await fs.cp(
+        path.join(SOURCE, "subnautica2-tiers", "presets"),
+        path.join(staging, "presets"),
+        { recursive: true },
+      );
+    },
+    manifest: {
+      schema_version: 1,
+      pack_id: "subnautica2-tiers",
+      title: "Subnautica 2 — авторские UE пресеты",
+      match: {
+        steam_app_ids: ["1962700"],
+        game_ids: ["steam-1962700"],
+        engine_families: ["ue5"],
+      },
+      apply: {
+        kind: "ue_json",
+        presets_root: "presets",
+        engines_root: "engines",
+      },
+      presets: SN2_TIER_PRESETS,
     },
   });
 }
@@ -169,6 +207,7 @@ async function main() {
   await fs.mkdir(PUBLIC, { recursive: true });
   const packs = [];
   packs.push(await buildForzaPack());
+  packs.push(await buildSubnauticaTiersPack());
   packs.push(await buildSubnauticaOverlayPack());
   packs.push(await buildUeTiersPack());
   packs.push(await buildUnityTiersPack());

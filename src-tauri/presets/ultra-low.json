@@ -1,11 +1,11 @@
 {
   "id": "ultra-low",
   "name": "Ultra Low",
-  "description": "Картошка: 45% разрешения, sg.* на нуле. Только меню — без Engine.ini, чтобы не конфликтовать с игрой.",
+  "description": "Картошка: 40% разрешения, sg.* на нуле, Engine.ini с отключённым Lumen.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
-        "sg.ResolutionQuality": "45",
+        "sg.ResolutionQuality": "40",
         "sg.ViewDistanceQuality": "0",
         "sg.AntiAliasingQuality": "0",
         "sg.ShadowQuality": "0",

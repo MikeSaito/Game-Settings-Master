@@ -11,18 +11,55 @@ use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use tune::tune_combined_preset;
 
 const PRESET_IDS: &[&str] = &["ultra-low", "low", "medium", "high", "epic", "ultra-high"];
 const ENGINE_INI: &str = "Engine.ini";
-const BOOST_CONFIG_FILES: &[&str] = &["Engine.ini", "Scalability.ini", "DeviceProfiles.ini"];
+/// Снимаются при apply Epic без Engine.ini в пресете — иначе CVars от boost/performance остаются активными.
+const MENU_OVERRIDE_CONFIG_FILES: &[&str] = &["Engine.ini", "Scalability.ini", "DeviceProfiles.ini"];
 
-fn is_menu_only_preset(preset_id: &str) -> bool {
-    matches!(preset_id, "ultra-low" | "low" | "medium" | "epic")
+fn is_performance_preset(preset_id: &str) -> bool {
+    matches!(preset_id, "ultra-low" | "low" | "medium")
+}
+
+fn is_menu_preset(preset_id: &str) -> bool {
+    preset_id == "epic"
 }
 
 fn is_boost_preset(preset_id: &str) -> bool {
     matches!(preset_id, "high" | "ultra-high")
+}
+
+/// Performance и boost задают полный Engine.ini — merge оставляет CVars от другого tier.
+fn replaces_engine_ini(preset_id: &str) -> bool {
+    is_performance_preset(preset_id) || is_boost_preset(preset_id)
+}
+
+fn uses_engine_ini(preset_id: &str, family: UeEngineFamily) -> bool {
+    family != UeEngineFamily::Ue4 && (is_performance_preset(preset_id) || is_boost_preset(preset_id))
+}
+
+fn engine_preset_name(preset_id: &str) -> Option<&'static str> {
+    match preset_id {
+        "ultra-low" => Some("ultra-low"),
+        "low" => Some("low"),
+        "medium" => Some("medium"),
+        "high" => Some("high"),
+        "ultra-high" => Some("ultra-high"),
+        _ => None,
+    }
+}
+
+fn embedded_author_tier_path(game_id: Option<&str>, id: &str) -> Option<PathBuf> {
+    if game_id == Some("steam-1962700") {
+        let path = presets_dir()
+            .join("games")
+            .join("subnautica2-tiers")
+            .join(format!("{id}.json"));
+        if path.exists() {
+            return Some(path);
+        }
+    }
+    None
 }
 
 pub fn presets_dir() -> PathBuf {
@@ -72,7 +109,9 @@ pub fn list_presets(
         .map(UeEngineFamily::from_str)
         .unwrap_or(UeEngineFamily::Unknown);
 
-    if let Some(pack) = crate::remote_presets::find_ue_json_pack_cached(engine_family) {
+    if let Some(pack) =
+        crate::remote_presets::find_ue_json_pack_cached(game_id, engine_family)
+    {
         if !pack.manifest.presets.is_empty() {
             return Ok(pack.manifest.presets_info());
         }
@@ -80,7 +119,7 @@ pub fn list_presets(
 
     let mut presets = Vec::new();
     for id in PRESET_IDS {
-        if let Ok(preset) = load_preset_for_family(id, family) {
+        if let Ok(preset) = load_preset_for_family(id, family, game_id) {
             presets.push(PresetInfo {
                 id: preset.id,
                 name: preset.name,
@@ -94,6 +133,7 @@ pub fn list_presets(
 pub fn load_preset_for_family(
     id: &str,
     engine_family: UeEngineFamily,
+    game_id: Option<&str>,
 ) -> Result<PresetDefinition, String> {
     let family_str = if engine_family == UeEngineFamily::Ue4 {
         Some("ue4")
@@ -102,7 +142,39 @@ pub fn load_preset_for_family(
     } else {
         None
     };
-    if let Some(pack) = crate::remote_presets::find_ue_json_pack(family_str) {
+    if game_id == Some("steam-1962700") {
+        if let Some(pack) = crate::remote_presets::find_ue_json_pack(game_id, family_str) {
+            if crate::remote_presets::is_author_tier_pack(&pack) {
+                match pack.load_ue_json_preset(id, engine_family == UeEngineFamily::Ue4) {
+                    Some(Ok(preset)) => return Ok(preset),
+                    Some(Err(remote_err)) => {
+                        if let Some(path) = embedded_author_tier_path(game_id, id) {
+                            let content = fs::read_to_string(&path).map_err(|e| {
+                                format!(
+                                    "Пресет '{id}' не найден (remote: {remote_err}; embedded: {e})"
+                                )
+                            })?;
+                            return serde_json::from_str(&content).map_err(|e| {
+                                format!(
+                                    "Некорректный пресет '{id}' (remote: {remote_err}; embedded: {e})"
+                                )
+                            });
+                        }
+                        return Err(remote_err);
+                    }
+                    None => {}
+                }
+            }
+        }
+        if let Some(path) = embedded_author_tier_path(game_id, id) {
+            let content = fs::read_to_string(&path)
+                .map_err(|e| format!("Пресет '{id}' не найден: {e}"))?;
+            return serde_json::from_str(&content)
+                .map_err(|e| format!("Некорректный пресет '{id}': {e}"));
+        }
+    }
+
+    if let Some(pack) = crate::remote_presets::find_ue_json_pack(game_id, family_str) {
         if let Some(result) = pack.load_ue_json_preset(id, engine_family == UeEngineFamily::Ue4) {
             return result;
         }
@@ -141,28 +213,44 @@ pub fn build_combined_preset(
     }
 
     let family = resolve_engine_family(engine_family, install_dir, config_dir, game_id);
-    let mut preset = load_preset_for_family(base_id, family)?;
-    if let Some(gid) = game_id {
-        if let Some(overlay_id) = overlay_preset_for_game(gid) {
-            let overlay = load_game_overlay(&overlay_id)?;
-            preset.files = merge_preset_files(preset.files, overlay.files);
+    let family_str = match family {
+        UeEngineFamily::Ue4 => Some("ue4"),
+        UeEngineFamily::Ue5 => Some("ue5"),
+        UeEngineFamily::Unknown => None,
+    };
+    let author_tiers = if let Some(pack) =
+        crate::remote_presets::find_ue_json_pack(game_id, family_str)
+    {
+        crate::remote_presets::is_author_tier_pack(&pack)
+    } else {
+        game_id == Some("steam-1962700")
+            && embedded_author_tier_path(game_id, base_id).is_some()
+    };
+
+    let mut preset = load_preset_for_family(base_id, family, game_id)?;
+
+    if !author_tiers {
+        if let Some(gid) = game_id {
+            if let Some(overlay_id) = overlay_preset_for_game(gid) {
+                let overlay = load_game_overlay(&overlay_id)?;
+                preset.files = merge_preset_files(preset.files, overlay.files);
+            }
+        }
+        attach_embedded_engine_preset(base_id, family, &mut preset.files);
+    }
+
+    if is_menu_preset(base_id) && !author_tiers {
+        preset.files.remove(ENGINE_INI);
+    }
+
+    if !author_tiers {
+        let limits = detect_scalability_limits(install_dir, config_dir);
+        if let Some(gus) = preset.files.get_mut("GameUserSettings.ini") {
+            tune::apply_tier_to_scalability(gus, &limits, base_id, family, game_id);
         }
     }
 
-    attach_embedded_engine_preset(base_id, family, &mut preset.files);
-
-    if is_menu_only_preset(base_id) {
-        for file in BOOST_CONFIG_FILES {
-            preset.files.remove(*file);
-        }
-    }
-
-    let limits = detect_scalability_limits(install_dir, config_dir);
-    if let Some(gus) = preset.files.get_mut("GameUserSettings.ini") {
-        tune::apply_tier_to_scalability(gus, &limits, base_id, family, game_id);
-    }
-
-    tune_combined_preset(base_id, &mut preset.files, family);
+    tune::tune_combined_preset(base_id, &mut preset.files, family, author_tiers);
 
     Ok(preset)
 }
@@ -172,13 +260,11 @@ fn attach_embedded_engine_preset(
     family: UeEngineFamily,
     files: &mut HashMap<String, HashMap<String, HashMap<String, String>>>,
 ) {
-    if family == UeEngineFamily::Ue4 || !is_boost_preset(preset_id) {
+    if !uses_engine_ini(preset_id, family) {
         return;
     }
-    let engine_name = if preset_id == "ultra-high" {
-        "ultra-high"
-    } else {
-        "high"
+    let Some(engine_name) = engine_preset_name(preset_id) else {
+        return;
     };
     if let Some(sections) = load_embedded_engine_sections(engine_name) {
         files.insert(ENGINE_INI.to_string(), sections);
@@ -187,8 +273,8 @@ fn attach_embedded_engine_preset(
 
 fn load_embedded_engine_sections(name: &str) -> Option<HashMap<String, HashMap<String, String>>> {
     for pack in [
-        crate::remote_presets::find_ue_json_pack(Some("ue5")),
-        crate::remote_presets::find_ue_json_pack(Some("ue4")),
+        crate::remote_presets::find_ue_json_pack(None, Some("ue5")),
+        crate::remote_presets::find_ue_json_pack(None, Some("ue4")),
     ]
     .into_iter()
     .flatten()
@@ -227,11 +313,12 @@ fn normalize_engine_sections(
         .collect()
 }
 
-fn remove_boost_config_files(config_dir: &Path) -> Result<Vec<String>, String> {
+fn remove_menu_override_files(config_dir: &Path) -> Result<Vec<String>, String> {
     let mut removed = Vec::new();
-    for file in BOOST_CONFIG_FILES {
+    for file in MENU_OVERRIDE_CONFIG_FILES {
         let path = config_dir.join(file);
         if path.exists() {
+            crate::fs_util::clear_readonly(&path);
             fs::remove_file(&path).map_err(|e| format!("Не удалось удалить {file}: {e}"))?;
             removed.push(file.to_string());
         }
@@ -264,15 +351,16 @@ pub fn apply_preset_to_dir(
     height: u32,
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
     let mut changed_files = Vec::new();
-    if is_menu_only_preset(&preset.id) {
-        changed_files.extend(remove_boost_config_files(config_dir)?);
+    if is_menu_preset(&preset.id) && !preset.files.contains_key(ENGINE_INI) {
+        changed_files.extend(remove_menu_override_files(config_dir)?);
     }
-    if is_boost_preset(&preset.id) && preset.files.contains_key(ENGINE_INI) {
+    if replaces_engine_ini(&preset.id) && preset.files.contains_key(ENGINE_INI) {
         let engine_path = config_dir.join(ENGINE_INI);
         if engine_path.exists() {
             crate::fs_util::clear_readonly(&engine_path);
-            fs::remove_file(&engine_path)
-                .map_err(|e| format!("Не удалось удалить {ENGINE_INI} перед буст-пресетом: {e}"))?;
+            fs::remove_file(&engine_path).map_err(|e| {
+                format!("Не удалось удалить {ENGINE_INI} перед пресетом с Engine.ini: {e}")
+            })?;
         }
     }
     let (applied, diff) = apply_changes_to_dir(
@@ -287,7 +375,7 @@ pub fn apply_preset_to_dir(
     changed_files.sort();
     changed_files.dedup();
 
-    if is_boost_preset(&preset.id) && preset.files.contains_key(ENGINE_INI) {
+    if replaces_engine_ini(&preset.id) && preset.files.contains_key(ENGINE_INI) {
         let engine_path = config_dir.join(ENGINE_INI);
         if !engine_path.exists() {
             return Err(format!(
@@ -334,7 +422,7 @@ pub fn apply_changes_to_dir(
 
     for file_name in touched {
         let file_path = config_dir.join(&file_name);
-        let treat_engine_as_new = preset_id.is_some_and(is_boost_preset)
+        let treat_engine_as_new = preset_id.is_some_and(replaces_engine_ini)
             && file_name == ENGINE_INI
             && files.contains_key(ENGINE_INI);
         let existing = if treat_engine_as_new {
@@ -437,7 +525,7 @@ pub fn preview_preset(
     for (file_name, sections) in &preset.files {
         if file_name == ENGINE_INI
             && !config_dir.join(file_name).exists()
-            && !is_boost_preset(&preset.id)
+            && !uses_engine_ini(&preset.id, UeEngineFamily::Ue5)
         {
             continue;
         }
@@ -675,7 +763,7 @@ mod tests {
         )
         .unwrap();
 
-        let preset = load_preset_for_family("ultra-low", UeEngineFamily::Unknown).unwrap();
+        let preset = load_preset_for_family("ultra-low", UeEngineFamily::Unknown, None).unwrap();
         let (_, diff) = apply_preset_to_dir(dir.path(), &preset, 1920, 1080).unwrap();
         let content = fs::read_to_string(&gus).unwrap();
 
@@ -718,8 +806,8 @@ mod tests {
 
     #[test]
     fn ultra_high_has_engine_boost_epic_does_not() {
-        let epic = build_combined_preset("epic", None, None, None, None).unwrap();
-        let ultra = build_combined_preset("ultra-high", None, None, None, None).unwrap();
+        let epic = build_combined_preset("epic", None, None, None, Some("ue5")).unwrap();
+        let ultra = build_combined_preset("ultra-high", None, None, None, Some("ue5")).unwrap();
 
         assert!(!epic.files.contains_key("Engine.ini"));
         let ultra_engine = ultra
@@ -743,43 +831,132 @@ mod tests {
     }
 
     #[test]
-    fn menu_only_preset_removes_engine_ini() {
+    fn performance_preset_replaces_stale_boost_engine_ini() {
         let dir = tempfile::tempdir().unwrap();
         let engine = dir.path().join("Engine.ini");
-        fs::write(&engine, "[SystemSettings]\r\nr.ViewDistanceScale=2\r\n").unwrap();
+        fs::write(
+            &engine,
+            "[SystemSettings]\r\n\
+             dp.DeviceProfileSelectionOverride=Custom\r\n\
+             r.ViewDistanceScale=1.85\r\n\
+             r.ScreenSpaceReflections=1\r\n\
+             r.Lumen.DiffuseIndirect.Allow=1\r\n",
+        )
+        .unwrap();
         fs::write(
             dir.path().join("GameUserSettings.ini"),
             "[ScalabilityGroups]\r\nsg.ShadowQuality=4\r\n",
         )
         .unwrap();
 
-        let preset = build_combined_preset("medium", None, None, Some(dir.path()), None).unwrap();
+        let preset = build_combined_preset(
+            "medium",
+            None,
+            None,
+            Some(dir.path()),
+            Some("ue5"),
+        )
+        .unwrap();
+        assert!(preset.files.contains_key("Engine.ini"));
         let (changed, _) = apply_preset_to_dir(dir.path(), &preset, 1920, 1080).unwrap();
-        assert!(!engine.exists());
+        assert!(engine.exists(), "performance tier must not delete Engine.ini");
+        assert!(changed.iter().any(|f| f == "Engine.ini"));
+        let content = fs::read_to_string(&engine).unwrap();
+        assert!(
+            !content.contains("dp.DeviceProfileSelectionOverride"),
+            "stale boost DeviceProfile must be removed: {content}"
+        );
+        assert!(
+            !content.contains("r.ScreenSpaceReflections"),
+            "stale boost SSR must be removed: {content}"
+        );
+        assert!(
+            content.contains("r.Lumen.DiffuseIndirect.Allow=1"),
+            "medium performance Lumen missing: {content}"
+        );
+        assert!(
+            content.contains("r.ViewDistanceScale=1.0"),
+            "performance CVars missing: {content}"
+        );
+    }
+
+    #[test]
+    fn ue5_low_preset_includes_lumen_off_engine() {
+        let preset =
+            build_combined_preset("low", None, None, None, Some("ue5")).unwrap();
+        assert!(preset.files.contains_key("Engine.ini"));
+        let sys = preset
+            .files
+            .get("Engine.ini")
+            .and_then(|f| f.get("[SystemSettings]"))
+            .expect("system settings");
+        assert_eq!(
+            sys.get("r.Lumen.DiffuseIndirect.Allow").map(String::as_str),
+            Some("0")
+        );
+    }
+
+    #[test]
+    fn epic_apply_removes_stale_engine_ini() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("Engine.ini"),
+            "[SystemSettings]\r\nr.ViewDistanceScale=1.85\r\nr.Lumen.DiffuseIndirect.Allow=1\r\n",
+        )
+        .unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=1\r\n",
+        )
+        .unwrap();
+
+        let preset =
+            build_combined_preset("epic", None, None, Some(dir.path()), Some("ue5")).unwrap();
+        assert!(!preset.files.contains_key("Engine.ini"));
+
+        let (changed, _) = apply_preset_to_dir(dir.path(), &preset, 1920, 1080).unwrap();
+        assert!(!dir.path().join("Engine.ini").exists());
         assert!(changed.iter().any(|f| f == "Engine.ini"));
     }
 
     #[test]
-    fn subnautica2_low_preset_uses_tsr_not_epic_dlss() {
+    fn subnautica2_epic_keeps_author_engine_ini() {
+        let preset =
+            build_combined_preset("epic", Some("steam-1962700"), None, None, None).unwrap();
+        assert!(preset.files.contains_key("Engine.ini"));
+        let engine = preset
+            .files
+            .get("Engine.ini")
+            .and_then(|f| f.get("SystemSettings"))
+            .expect("epic engine");
+        assert_eq!(
+            engine.get("sg.DefaultScalabilityLevel").map(String::as_str),
+            Some("4")
+        );
+    }
+
+    #[test]
+    fn subnautica2_low_preset_uses_author_pack() {
         let preset = build_combined_preset("low", Some("steam-1962700"), None, None, None).unwrap();
         let gus = preset.files.get("GameUserSettings.ini").expect("gus");
-        let s2 = gus
-            .iter()
-            .find(|(_, s)| s.contains_key("DLSSMode"))
-            .map(|(_, s)| s)
-            .expect("s2 section");
         let local = gus
             .iter()
-            .find(|(_, s)| s.contains_key("UpscalingMethod"))
+            .find(|(_, s)| s.contains_key("ResolutionScaleFixed"))
             .map(|(_, s)| s)
             .expect("local section");
-        assert_eq!(s2.get("GraphicsLevel").map(String::as_str), Some("Low"));
-        assert_eq!(s2.get("DLSSMode").map(String::as_str), Some("Off"));
         assert_eq!(
-            local.get("UpscalingMethod").map(String::as_str),
-            Some("U_TSR")
+            local.get("ResolutionScaleFixed").map(String::as_str),
+            Some("0.600000")
         );
-        assert_eq!(local.get("TSRQualityMode").map(String::as_str), Some("1"));
+        let engine = preset
+            .files
+            .get("Engine.ini")
+            .and_then(|f| f.get("SystemSettings"))
+            .expect("engine");
+        assert_eq!(
+            engine.get("r.Lumen.DiffuseIndirect.Allow").map(String::as_str),
+            Some("0")
+        );
     }
 
     #[test]

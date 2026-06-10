@@ -1,10 +1,15 @@
 {
   "schema_version": 1,
-  "pack_id": "ue-tiers",
-  "title": "UE tier presets",
+  "pack_id": "subnautica2-tiers",
+  "title": "Subnautica 2 — авторские UE пресеты",
   "match": {
+    "steam_app_ids": [
+      "1962700"
+    ],
+    "game_ids": [
+      "steam-1962700"
+    ],
     "engine_families": [
-      "ue4",
       "ue5"
     ]
   },
@@ -17,44 +22,44 @@
     {
       "id": "ultra-low",
       "name": "Ultra Low",
-      "description": "",
+      "description": "Potato tier — минимум нагрузки для SN2.",
       "definition_file": "ultra-low.json"
     },
     {
       "id": "low",
       "name": "Low",
-      "description": "",
+      "description": "Low: DLSS 60%, Lumen off.",
       "definition_file": "low.json"
     },
     {
       "id": "medium",
       "name": "Medium",
-      "description": "",
+      "description": "Medium: частичный Lumen, DLSS 75%.",
       "definition_file": "medium.json"
     },
     {
       "id": "high",
       "name": "High",
-      "description": "",
+      "description": "High: Lumen on, DLSS 90%.",
       "definition_file": "high.json"
     },
     {
       "id": "epic",
       "name": "Epic",
-      "description": "",
+      "description": "Epic: максимум меню SN2.",
       "definition_file": "epic.json"
     },
     {
       "id": "ultra-high",
       "name": "Ultra High",
-      "description": "",
+      "description": "Ultra Max: полный ultramax профиль SN2.",
       "definition_file": "ultra-high.json"
     }
   ],
   "bundle": {
     "file": "pack.zip",
-    "sha256": "1612386e7462a07fc02e10dfbab0fb98aefec4482b004039cec34bad25ec5254"
+    "sha256": "9135b8dfa5400a6d155cba1536b176663ac840ac00a8a4a75234dd01d9e88a63"
   },
   "revision": "1.4.0",
-  "updated_at": "2026-06-10T15:00:31.100Z"
+  "updated_at": "2026-06-10T15:00:31.066Z"
 }

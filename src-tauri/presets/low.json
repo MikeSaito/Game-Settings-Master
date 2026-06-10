@@ -1,11 +1,11 @@
 {
   "id": "low",
   "name": "Low",
-  "description": "Low: sg.* = 1, 70% разрешения. Только GameUserSettings — без Engine.ini.",
+  "description": "Low: sg.* = 1, 60% разрешения, Engine.ini performance (Lumen off).",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
-        "sg.ResolutionQuality": "70",
+        "sg.ResolutionQuality": "60",
         "sg.ViewDistanceQuality": "1",
         "sg.AntiAliasingQuality": "1",
         "sg.ShadowQuality": "1",
