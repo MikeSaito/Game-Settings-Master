@@ -6,11 +6,12 @@ on:
       - "v*"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -76,10 +77,9 @@ jobs:
           "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v3
         with:
+          token: ${{ github.token }}
           tag_name: v${{ env.VERSION }}
           target_commitish: ${{ github.sha }}
           name: Game Settings Master v${{ env.VERSION }}
@@ -97,7 +97,7 @@ jobs:
             Сайт: https://mikesaito.github.io/Game-Settings-Master/
           generate_release_notes: false
           make_latest: true
-          overwrite: true
+          overwrite_files: true
           files: |
             ${{ env.SETUP_NAME }}
             latest.json
