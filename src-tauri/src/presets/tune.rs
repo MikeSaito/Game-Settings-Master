@@ -13,6 +13,26 @@ const DLSS_SCALE: &[(&str, &str, &str)] = &[
     ("DLAA", "5", "1.0"),
 ];
 
+const UE5_STUTTER_PRONE_ENGINE_KEYS: &[&str] = &[
+    "r.FinishCurrentFrame",
+    "r.OneFrameThreadLag",
+    "r.RHICmdUseThread",
+    "r.RHICmdUseParallelAlgorithms",
+    "r.RHICmdBypass",
+    "r.AsyncCompute",
+    "r.IO.UseDirectStorage",
+    "r.D3D12.ExecuteContextInParallel",
+    "r.D3D12.UseAllowTearing",
+    "s.AsyncLoadingThreadEnabled",
+    "r.SkyAtmosphereAsyncCompute",
+    "r.SceneDepthHZBAsyncCompute",
+    "r.Fog.HZBAsyncCompute",
+    "r.Streaming.PoolSize",
+    "r.Streaming.LimitPoolSizeToVRAM",
+    "r.Streaming.UseFixedPoolSize",
+    "r.VSync",
+];
+
 pub fn tune_combined_preset(
     preset_id: &str,
     files: &mut IniFiles,
@@ -22,12 +42,49 @@ pub fn tune_combined_preset(
     tune_engine_for_tier(preset_id, files, is_ue4);
     if !is_ue4 {
         tune_subnautica2_for_tier(preset_id, files);
+        sanitize_ue5_stutter_prone_settings(files);
     }
     let gpu = detect_gpu();
     crate::gpu::adapt_preset_for_gpu(files, &gpu);
     if has_sn2_sections(files) {
         strip_sn2_resolution_quality(files);
         reconcile_upscaling_chain(files, &gpu);
+    }
+}
+
+fn sanitize_ue5_stutter_prone_settings(files: &mut IniFiles) {
+    if let Some(engine) = files.get_mut("Engine.ini") {
+        for section in engine.values_mut() {
+            remove_keys_case_insensitive(section, UE5_STUTTER_PRONE_ENGINE_KEYS);
+        }
+    }
+
+    if let Some(gus) = files.get_mut("GameUserSettings.ini") {
+        for section in gus.values_mut() {
+            normalize_game_user_frame_sync(section);
+        }
+    }
+}
+
+fn normalize_game_user_frame_sync(section: &mut HashMap<String, String>) {
+    let keys: Vec<String> = section.keys().cloned().collect();
+    for key in keys {
+        if key.eq_ignore_ascii_case("bUseVSync") {
+            section.insert(key, "False".to_string());
+        } else if key.eq_ignore_ascii_case("FrameRateLimit") {
+            section.insert(key, "0.000000".to_string());
+        }
+    }
+}
+
+fn remove_keys_case_insensitive(section: &mut HashMap<String, String>, keys: &[&str]) {
+    let to_remove: Vec<String> = section
+        .keys()
+        .filter(|existing| keys.iter().any(|blocked| existing.eq_ignore_ascii_case(blocked)))
+        .cloned()
+        .collect();
+    for key in to_remove {
+        section.remove(&key);
     }
 }
 
@@ -531,6 +588,67 @@ mod tests {
         assert_eq!(
             sg.get("sg.ResolutionQuality").map(String::as_str),
             Some("52")
+        );
+    }
+
+    #[test]
+    fn ue5_sanitize_removes_frame_stall_engine_keys() {
+        let mut files = IniFiles::new();
+        files.insert(
+            "Engine.ini".to_string(),
+            HashMap::from([(
+                "[SystemSettings]".to_string(),
+                HashMap::from([
+                    ("r.FinishCurrentFrame".to_string(), "1".to_string()),
+                    ("r.OneFrameThreadLag".to_string(), "0".to_string()),
+                    ("r.RHICmdUseThread".to_string(), "1".to_string()),
+                    ("r.AsyncCompute".to_string(), "1".to_string()),
+                    ("r.IO.UseDirectStorage".to_string(), "1".to_string()),
+                    ("r.D3D12.ExecuteContextInParallel".to_string(), "1".to_string()),
+                    ("r.Streaming.PoolSize".to_string(), "2048".to_string()),
+                    ("r.ViewDistanceScale".to_string(), "0.5".to_string()),
+                ]),
+            )]),
+        );
+
+        sanitize_ue5_stutter_prone_settings(&mut files);
+        let sys = &files["Engine.ini"]["[SystemSettings]"];
+        for key in [
+            "r.FinishCurrentFrame",
+            "r.OneFrameThreadLag",
+            "r.RHICmdUseThread",
+            "r.AsyncCompute",
+            "r.IO.UseDirectStorage",
+            "r.D3D12.ExecuteContextInParallel",
+            "r.Streaming.PoolSize",
+        ] {
+            assert!(!sys.contains_key(key), "{key} must not be emitted by UE5 presets");
+        }
+        assert_eq!(sys.get("r.ViewDistanceScale").map(String::as_str), Some("0.5"));
+    }
+
+    #[test]
+    fn ue5_sanitize_keeps_game_user_settings_uncapped_and_vsync_off() {
+        let mut files = IniFiles::new();
+        files.insert(
+            "GameUserSettings.ini".to_string(),
+            HashMap::from([(
+                "[/Script/Engine.GameUserSettings]".to_string(),
+                HashMap::from([
+                    ("bUseVSync".to_string(), "True".to_string()),
+                    ("FrameRateLimit".to_string(), "60.000000".to_string()),
+                    ("FrameRateLimit_WhenBackgrounded".to_string(), "30.000000".to_string()),
+                ]),
+            )]),
+        );
+
+        sanitize_ue5_stutter_prone_settings(&mut files);
+        let gus = &files["GameUserSettings.ini"]["[/Script/Engine.GameUserSettings]"];
+        assert_eq!(gus.get("bUseVSync").map(String::as_str), Some("False"));
+        assert_eq!(gus.get("FrameRateLimit").map(String::as_str), Some("0.000000"));
+        assert_eq!(
+            gus.get("FrameRateLimit_WhenBackgrounded").map(String::as_str),
+            Some("30.000000")
         );
     }
 

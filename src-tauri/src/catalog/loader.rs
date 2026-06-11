@@ -1081,6 +1081,19 @@ mod tests {
     }
 
     #[test]
+    fn frame_thread_lag_is_read_only_in_catalog() {
+        let catalog = load_parameter_catalog_for_family(Some("ue5"));
+        let entry = catalog
+            .iter()
+            .find(|e| e.key == "r.OneFrameThreadLag")
+            .expect("catalog entry");
+        assert!(
+            !entry.editable,
+            "r.OneFrameThreadLag should not be exposed as a safe manual tweak"
+        );
+    }
+
+    #[test]
     fn unity_catalog_has_boot_params() {
         let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("catalog")
