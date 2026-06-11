@@ -80,12 +80,10 @@ fn filter_catalog_entries(
     entries: Vec<ParameterCatalogEntry>,
     is_ue4: bool,
 ) -> Vec<ParameterCatalogEntry> {
-    if !is_ue4 {
-        return entries;
-    }
     entries
         .into_iter()
-        .filter(|entry| !is_ue5_only_catalog_key(&entry.key))
+        .filter(|entry| !is_hidden_ue_manual_key(&entry.key))
+        .filter(|entry| !is_ue4 || !is_ue5_only_catalog_key(&entry.key))
         .collect()
 }
 
@@ -176,6 +174,7 @@ fn load_key_hints() -> HashMap<String, KeyHintEntry> {
     let hints: Vec<KeyHintEntry> = serde_json::from_str(&content).unwrap_or_default();
     hints
         .into_iter()
+        .filter(|h| !is_hidden_ue_manual_key(&h.key))
         .map(|h| (h.key.to_lowercase(), h))
         .collect()
 }
@@ -261,6 +260,42 @@ const UE5_ONLY_CVAR_KEYS: &[&str] = &[
     "r.VolumetricCloud",
 ];
 
+const HIDDEN_UE_MANUAL_KEYS: &[&str] = &[
+    "BenchmarkResolutionX",
+    "BenchmarkResolutionY",
+    "bUseDesiredScreenHeight",
+    "bUseDesiredScreenWidth",
+    "DesiredScreenHeight",
+    "DesiredScreenWidth",
+    "InstallGUID",
+    "LastCPUBenchmarkResult",
+    "LastCPUBenchmarkSteps",
+    "LastGPUBenchmarkMultiplier",
+    "LastGPUBenchmarkResult",
+    "LastGPUBenchmarkSteps",
+    "LastRecommendedScreenHeight",
+    "LastRecommendedScreenWidth",
+    "RunNumber",
+    "Version",
+    "WindowPosX",
+    "WindowPosY",
+    "r.AsyncCompute",
+    "r.D3D12.ExecuteContextInParallel",
+    "r.D3D12.UseAllowTearing",
+    "r.FinishCurrentFrame",
+    "r.Fog.HZBAsyncCompute",
+    "r.IO.UseDirectStorage",
+    "r.OneFrameThreadLag",
+    "r.RHICmdBypass",
+    "r.RHICmdUseParallelAlgorithms",
+    "r.RHICmdUseThread",
+    "r.SceneDepthHZBAsyncCompute",
+    "r.SkyAtmosphereAsyncCompute",
+    "r.Streaming.LimitPoolSizeToVRAM",
+    "r.Streaming.PoolSize",
+    "r.Streaming.UseFixedPoolSize",
+];
+
 pub fn get_game_parameters(
     config_dir: &Path,
     game_id: Option<&str>,
@@ -299,16 +334,19 @@ pub fn get_game_parameters(
         for (section, entries) in data {
             for (key, value) in entries {
                 let id = catalog_id(file, &section, &key);
-                seen.insert(id.clone(), true);
-                parameters.push(match lookup_entry(&index, file, &section, &key) {
-                    Some(CatalogMatch::Entry(entry)) => {
-                        entry_to_parameter(entry, &key, &section, file, &value, true, true)
-                    }
+                let parameter = match lookup_entry(&index, file, &section, &key) {
+                    Some(CatalogMatch::Entry(entry)) => Some(entry_to_parameter(
+                        entry, &key, &section, file, &value, true, true,
+                    )),
                     Some(CatalogMatch::Hint(hint)) => {
-                        hint_to_parameter(hint, &key, &section, file, &value)
+                        Some(hint_to_parameter(hint, &key, &section, file, &value))
                     }
-                    None => unknown_parameter(&key, &section, file, &value),
-                });
+                    None => unknown_ue_parameter(&key, &section, file, &value),
+                };
+                if let Some(parameter) = parameter {
+                    seen.insert(id, true);
+                    parameters.push(parameter);
+                }
             }
         }
     }
@@ -614,6 +652,22 @@ fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameP
     param
 }
 
+fn unknown_ue_parameter(key: &str, section: &str, file: &str, value: &str) -> Option<GameParameter> {
+    if is_hidden_ue_manual_key(key) {
+        return None;
+    }
+    if file == "GameUserSettings.ini"
+        && section
+            .trim_matches(|c| c == '[' || c == ']')
+            .eq_ignore_ascii_case("ScalabilityGroups")
+    {
+        if key == "sg.ResolutionQuality" || is_scalability_quality_index(key) {
+            return Some(unknown_parameter(key, section, file, value));
+        }
+    }
+    None
+}
+
 fn humanize_cvar_key(key: &str) -> String {
     let stripped = key
         .strip_prefix("r.")
@@ -864,6 +918,12 @@ fn is_ue5_only_catalog_key(key: &str) -> bool {
     UE5_ONLY_SG_KEYS.contains(&key) || UE5_ONLY_CVAR_KEYS.contains(&key)
 }
 
+fn is_hidden_ue_manual_key(key: &str) -> bool {
+    HIDDEN_UE_MANUAL_KEYS
+        .iter()
+        .any(|hidden| key.eq_ignore_ascii_case(hidden))
+}
+
 fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String> {
     let catalog_path = crate::resource_paths::catalog_dir().join("unity.json");
     let entries = parse_catalog_file(&catalog_path);
@@ -1043,6 +1103,7 @@ fn infer_value_type(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
     use std::path::PathBuf;
 
     #[test]
@@ -1072,7 +1133,7 @@ mod tests {
     fn loads_split_catalog() {
         let catalog = load_parameter_catalog_for_family(None);
         assert!(catalog.len() > 50);
-        assert!(catalog.iter().any(|e| e.key == "r.Streaming.PoolSize"));
+        assert!(!catalog.iter().any(|e| e.key == "r.Streaming.PoolSize"));
         assert!(catalog.iter().any(|e| e.key == "sg.LandscapeQuality"));
         assert!(
             catalog.iter().any(|e| e.key == "gfx-enable-gfx-jobs"),
@@ -1081,16 +1142,40 @@ mod tests {
     }
 
     #[test]
-    fn frame_thread_lag_is_read_only_in_catalog() {
+    fn dangerous_frame_keys_are_hidden_from_catalog() {
         let catalog = load_parameter_catalog_for_family(Some("ue5"));
-        let entry = catalog
-            .iter()
-            .find(|e| e.key == "r.OneFrameThreadLag")
-            .expect("catalog entry");
-        assert!(
-            !entry.editable,
-            "r.OneFrameThreadLag should not be exposed as a safe manual tweak"
-        );
+        for key in [
+            "r.OneFrameThreadLag",
+            "r.FinishCurrentFrame",
+            "r.Streaming.PoolSize",
+            "r.AsyncCompute",
+        ] {
+            assert!(
+                !catalog.iter().any(|e| e.key == key),
+                "{key} must not be exposed in manual UE catalog"
+            );
+        }
+    }
+
+    #[test]
+    fn ue_parameters_hide_unknown_engine_cvars() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=2\r\nsg.CustomQuality=3\r\n",
+        )
+        .unwrap();
+        fs::write(
+            dir.path().join("Engine.ini"),
+            "[SystemSettings]\r\nr.ViewDistanceScale=1.0\r\nr.UnknownDanger=1\r\nr.AsyncCompute=1\r\n",
+        )
+        .unwrap();
+
+        let params = get_game_parameters(dir.path(), None, None, Some("ue5")).unwrap();
+        assert!(params.iter().any(|p| p.key == "r.ViewDistanceScale"));
+        assert!(params.iter().any(|p| p.key == "sg.CustomQuality"));
+        assert!(!params.iter().any(|p| p.key == "r.UnknownDanger"));
+        assert!(!params.iter().any(|p| p.key == "r.AsyncCompute"));
     }
 
     #[test]
