@@ -51,6 +51,7 @@ jobs:
           if ($LASTEXITCODE -eq 0) {
             throw "GitHub release $tag already exists"
           }
+          exit 0
 
       - name: Ensure 7-Zip (ReShade Setup extraction)
         shell: pwsh
