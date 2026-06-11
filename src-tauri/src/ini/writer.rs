@@ -30,7 +30,15 @@ fn resolve_write_encoding(path: &Path, encoding_hint: Option<&Path>) -> IniEncod
 
 pub fn remove_ini_keys(ini: &mut IniFile, removals: &HashMap<String, Vec<String>>) {
     for (section_name, keys) in removals {
-        if let Some(section) = ini.sections.get_mut(section_name) {
+        let target_key = ini
+            .sections
+            .keys()
+            .find(|k| k.eq_ignore_ascii_case(section_name))
+            .cloned();
+        let Some(target_key) = target_key else {
+            continue;
+        };
+        if let Some(section) = ini.sections.get_mut(&target_key) {
             for key in keys {
                 section.entries.shift_remove(key);
             }
@@ -176,5 +184,27 @@ mod tests {
             Some("1.5")
         );
         assert!(!section.entries.contains_key("r.BloomQuality"));
+    }
+
+    #[test]
+    fn remove_ini_keys_case_insensitive_section() {
+        let mut ini = parse_ini(
+            "[/Script/Subnautica2.SN2SettingsLocal]\r\nGammaValue=1.0\r\nResolutionScaleMax=0.9\r\n",
+        );
+        let mut removals = HashMap::new();
+        removals.insert(
+            "/script/subnautica2.sn2settingslocal".to_string(),
+            vec!["GammaValue".to_string()],
+        );
+        remove_ini_keys(&mut ini, &removals);
+        let section = ini
+            .sections
+            .get("/Script/Subnautica2.SN2SettingsLocal")
+            .expect("section");
+        assert!(!section.entries.contains_key("GammaValue"));
+        assert_eq!(
+            section.entries.get("ResolutionScaleMax").map(String::as_str),
+            Some("0.9")
+        );
     }
 }

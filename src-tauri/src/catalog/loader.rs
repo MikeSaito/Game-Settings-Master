@@ -344,6 +344,8 @@ pub fn get_game_parameters(
             .then(a.key.cmp(&b.key))
     });
 
+    dedupe_parameters_by_file_key(&mut parameters, &index);
+
     let limits = detect_scalability_limits(install_dir, Some(config_dir));
     for param in &mut parameters {
         if is_scalability_quality_index(&param.key) {
@@ -365,6 +367,61 @@ pub fn get_game_parameters(
     }
 
     Ok(parameters)
+}
+
+fn param_match_score(param: &GameParameter, index: &CatalogIndex) -> i32 {
+    match lookup_entry(index, &param.file, &param.section, &param.key) {
+        Some(CatalogMatch::Entry(entry)) => {
+            if entry
+                .section
+                .as_deref()
+                .is_some_and(|s| s.eq_ignore_ascii_case(&param.section))
+            {
+                3
+            } else {
+                2
+            }
+        }
+        Some(CatalogMatch::Hint(_)) => 1,
+        None => 0,
+    }
+}
+
+/// Один ключ в нескольких секциях GUS (SN2) — оставляем совпадение с каталогом.
+fn dedupe_parameters_by_file_key(parameters: &mut Vec<GameParameter>, index: &CatalogIndex) {
+    let mut keep: HashMap<String, usize> = HashMap::new();
+    let mut result = Vec::with_capacity(parameters.len());
+
+    for param in parameters.drain(..) {
+        let fk = format!(
+            "{}::{}",
+            param.file.to_lowercase(),
+            param.key.to_lowercase()
+        );
+        let score = param_match_score(&param, index);
+
+        match keep.get(&fk) {
+            None => {
+                let idx = result.len();
+                keep.insert(fk, idx);
+                result.push(param);
+            }
+            Some(&existing_idx) => {
+                let existing = &result[existing_idx];
+                let existing_score = param_match_score(existing, index);
+                let replace = score > existing_score
+                    || (score == existing_score
+                        && score > 0
+                        && param.section.chars().any(|c| c.is_uppercase())
+                        && !existing.section.chars().any(|c| c.is_uppercase()));
+                if replace {
+                    result[existing_idx] = param;
+                }
+            }
+        }
+    }
+
+    *parameters = result;
 }
 
 fn entry_to_parameter(

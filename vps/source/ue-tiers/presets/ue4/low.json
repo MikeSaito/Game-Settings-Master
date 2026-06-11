@@ -1,7 +1,7 @@
 {
   "id": "low",
   "name": "Low",
-  "description": "UE4 — минимум из меню (пресет Low): sg.* на нуле, 75% разрешения.",
+  "description": "UE4 — минимум меню: sg.*=0, 75% разрешения, лёгкий Engine.ini без r.ShadowQuality.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
@@ -29,16 +29,13 @@
         "r.Streaming.PoolSize": "2000",
         "r.Streaming.MipBias": "1",
         "r.MaxAnisotropy": "8",
-        "r.ShadowQuality": "0",
         "r.Shadow.MaxResolution": "512",
         "r.Shadow.CSM.MaxCascades": "2",
         "r.DefaultFeature.MotionBlur": "False",
         "r.DefaultFeature.Bloom": "False",
         "r.DefaultFeature.LensFlare": "False",
         "r.MaterialQualityLevel": "0",
-        "r.PostProcessAAQuality": "1",
-        "r.ScreenSpaceReflections": "0",
-        "r.FoliageQuality": "0"
+        "r.ScreenSpaceReflections": "0"
       }
     }
   }

@@ -1,7 +1,7 @@
 {
   "id": "ultra-high",
   "name": "Ultra High",
-  "description": "UE4 — Epic + 110% разрешения и усиленные Engine CVars. Потолок sg.* = Epic (4), без UE5-групп.",
+  "description": "UE4 — Epic + 110% разрешения. Только sg.* — без Engine.ini.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
@@ -23,29 +23,6 @@
         "LastUserConfirmedResolutionSizeX": "{{width}}",
         "LastUserConfirmedResolutionSizeY": "{{height}}",
         "FrameRateLimit": "0.000000"
-      }
-    },
-    "Engine.ini": {
-      "[SystemSettings]": {
-        "r.ViewDistanceScale": "1.15",
-        "r.Streaming.PoolSize": "5000",
-        "r.Streaming.MipBias": "0",
-        "r.MaxAnisotropy": "16",
-        "r.ShadowQuality": "4",
-        "r.Shadow.MaxResolution": "4096",
-        "r.Shadow.DistanceScale": "1.2",
-        "r.Shadow.CSM.MaxCascades": "4",
-        "r.MaterialQualityLevel": "1",
-        "r.PostProcessAAQuality": "5",
-        "r.DefaultFeature.MotionBlur": "False",
-        "r.DefaultFeature.Bloom": "True",
-        "r.DefaultFeature.AutoExposure": "True",
-        "r.ScreenSpaceReflections": "1",
-        "r.SSR.Quality": "3",
-        "r.AmbientOcclusionLevels": "3",
-        "r.FoliageQuality": "4",
-        "r.ReflectionEnvironment": "1",
-        "r.Atmosphere": "1"
       }
     }
   }

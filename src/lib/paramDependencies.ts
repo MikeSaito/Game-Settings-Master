@@ -29,20 +29,27 @@ const DLSS_MODE_TO_SCALE: Record<string, string> = {
   DLAA: "1.0",
 };
 
-function findParam(
+function findInFile(
   params: GameParameter[],
+  file: string,
   key: string,
 ): GameParameter | undefined {
-  return params.find((p) => p.key === key);
+  return params.find((p) => p.file === file && p.key === key);
 }
 
-function setValue(
+function setInFile(
   params: GameParameter[],
+  file: string,
   key: string,
   value: string,
 ): GameParameter[] {
-  return params.map((p) => (p.key === key ? { ...p, value } : p));
+  return params.map((p) =>
+    p.file === file && p.key === key ? { ...p, value } : p,
+  );
 }
+
+const GUS = "GameUserSettings.ini";
+const ENGINE = "Engine.ini";
 
 function normalizeDlssMode(value: string): string {
   const v = value.trim();
@@ -110,7 +117,7 @@ export function applyParamDependencies(
     next = syncMotionBlurQuality(next, changed.value);
   } else if (changedKey === "EnableMotionBlur") {
     if (changed.value === "Off") {
-      next = setValue(next, "r.DefaultFeature.MotionBlur", "False");
+      next = setInFile(next, ENGINE, "r.DefaultFeature.MotionBlur", "False");
       next = syncMotionBlurQuality(next, "False");
     }
   }
@@ -125,9 +132,9 @@ export function reconcileAllParams(
 ): GameParameter[] {
   let next = [...params];
 
-  const dlssMode = findParam(next, "DLSSMode");
-  const upscaling = findParam(next, "UpscalingMethod");
-  const tsr = findParam(next, "TSRQualityMode");
+  const dlssMode = findInFile(next, GUS, "DLSSMode");
+  const upscaling = findInFile(next, GUS, "UpscalingMethod");
+  const tsr = findInFile(next, GUS, "TSRQualityMode");
 
   if (upscaling) {
     next = syncFromUpscalingMethod(next, upscaling.value, gpu);
@@ -141,20 +148,20 @@ export function reconcileAllParams(
 
   next = syncResolutionScaleBounds(next);
 
-  const ssr = findParam(next, "r.ScreenSpaceReflections");
+  const ssr = findInFile(next, ENGINE, "r.ScreenSpaceReflections");
   if (ssr) next = syncSsrQuality(next, ssr.value);
 
-  const mb = findParam(next, "r.DefaultFeature.MotionBlur");
+  const mb = findInFile(next, ENGINE, "r.DefaultFeature.MotionBlur");
   if (mb) next = syncMotionBlurQuality(next, mb.value);
 
-  const fg = findParam(next, "UpscalingFrameGeneration");
-  const mode = findParam(next, "DLSSMode");
+  const fg = findInFile(next, GUS, "UpscalingFrameGeneration");
+  const mode = findInFile(next, GUS, "DLSSMode");
   if (fg && mode) {
     const fgOn = fg.value === "1" || fg.value === "True";
     const dlssOn = !dlssIsOff(mode.value);
     const fgAllowed = gpu?.supports_dlss_fg ?? true;
     if (fgOn && (!dlssOn || !fgAllowed)) {
-      next = setValue(next, "UpscalingFrameGeneration", "0");
+      next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
     }
   }
 
@@ -170,24 +177,24 @@ function syncFromDlssMode(
   const num = DLSS_MODE_TO_NUM[mode] ?? "0";
   const scale = DLSS_MODE_TO_SCALE[mode] ?? "1.0";
 
-  next = setValue(next, "DLSSQualityMode", num);
+  next = setInFile(next, GUS, "DLSSQualityMode", num);
 
   if (dlssIsOff(mode)) {
-    next = setValue(next, "UpscalingMethod", "U_None");
-    next = setValue(next, "UpscalingFrameGeneration", "0");
-    if (findParam(next, "TSRQualityMode") && findParam(next, "TSRQualityMode")!.value === "0") {
+    next = setInFile(next, GUS, "UpscalingMethod", "U_None");
+    next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
+    if (findInFile(next, GUS, "TSRQualityMode") && findInFile(next, GUS, "TSRQualityMode")!.value === "0") {
       // оставить TSR как есть, если пользователь выбрал TSR отдельно
     }
   } else {
     if (gpu?.supports_dlss !== false) {
-      next = setValue(next, "UpscalingMethod", "U_DLSS");
+      next = setInFile(next, GUS, "UpscalingMethod", "U_DLSS");
     }
-    next = setValue(next, "ResolutionScaleDLSS", scale);
-    next = setValue(next, "TSRQualityMode", "0");
+    next = setInFile(next, GUS, "ResolutionScaleDLSS", scale);
+    next = setInFile(next, GUS, "TSRQualityMode", "0");
     if (mode === "DLAA") {
-      next = setValue(next, "AntiAliasingType", "AAM_DLAA");
-    } else if (findParam(next, "AntiAliasingType")?.value === "AAM_DLAA") {
-      next = setValue(next, "AntiAliasingType", "AAM_TemporalAA");
+      next = setInFile(next, GUS, "AntiAliasingType", "AAM_DLAA");
+    } else if (findInFile(next, GUS, "AntiAliasingType")?.value === "AAM_DLAA") {
+      next = setInFile(next, GUS, "AntiAliasingType", "AAM_TemporalAA");
     }
   }
 
@@ -200,7 +207,7 @@ function syncFromDlssQualityNum(
   gpu?: GpuCapabilities,
 ): GameParameter[] {
   const mode = DLSS_NUM_TO_MODE[num.trim()] ?? "Off";
-  let next = setValue(params, "DLSSMode", mode);
+  let next = setInFile(params, GUS, "DLSSMode", mode);
   return syncFromDlssMode(next, mode, gpu);
 }
 
@@ -213,48 +220,48 @@ function syncFromUpscalingMethod(
   const m = method.trim();
 
   if (m === "U_DLSS" || m.includes("DLSS")) {
-    const mode = findParam(next, "DLSSMode");
+    const mode = findInFile(next, GUS, "DLSSMode");
     if (!mode || dlssIsOff(mode.value)) {
-      next = setValue(next, "DLSSMode", "Quality");
+      next = setInFile(next, GUS, "DLSSMode", "Quality");
     }
-    next = setValue(next, "TSRQualityMode", "0");
-    const current = findParam(next, "DLSSMode")!.value;
+    next = setInFile(next, GUS, "TSRQualityMode", "0");
+    const current = findInFile(next, GUS, "DLSSMode")!.value;
     next = syncFromDlssMode(next, normalizeDlssMode(current), gpu);
     return next;
   }
 
   if (m === "U_TSR" || m.includes("TSR")) {
-    next = setValue(next, "DLSSMode", "Off");
-    next = setValue(next, "DLSSQualityMode", "0");
-    next = setValue(next, "UpscalingFrameGeneration", "0");
-    const tsr = findParam(next, "TSRQualityMode");
+    next = setInFile(next, GUS, "DLSSMode", "Off");
+    next = setInFile(next, GUS, "DLSSQualityMode", "0");
+    next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
+    const tsr = findInFile(next, GUS, "TSRQualityMode");
     if (tsr && (tsr.value === "0" || tsr.value === "-1")) {
-      next = setValue(next, "TSRQualityMode", "2");
+      next = setInFile(next, GUS, "TSRQualityMode", "2");
     }
-    if (findParam(next, "AntiAliasingType")?.value === "AAM_DLAA") {
-      next = setValue(next, "AntiAliasingType", "AAM_TSR");
-    } else if (findParam(next, "AntiAliasingType")) {
-      const aa = findParam(next, "AntiAliasingType")!.value;
+    if (findInFile(next, GUS, "AntiAliasingType")?.value === "AAM_DLAA") {
+      next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
+    } else if (findInFile(next, GUS, "AntiAliasingType")) {
+      const aa = findInFile(next, GUS, "AntiAliasingType")!.value;
       if (aa === "AAM_None" || aa === "AAM_FXAA") {
-        next = setValue(next, "AntiAliasingType", "AAM_TSR");
+        next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
       }
     }
     return next;
   }
 
   if (m === "U_FSR" || m.includes("FSR")) {
-    next = setValue(next, "DLSSMode", "Off");
-    next = setValue(next, "DLSSQualityMode", "0");
-    next = setValue(next, "UpscalingFrameGeneration", "0");
-    next = setValue(next, "TSRQualityMode", "0");
+    next = setInFile(next, GUS, "DLSSMode", "Off");
+    next = setInFile(next, GUS, "DLSSQualityMode", "0");
+    next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
+    next = setInFile(next, GUS, "TSRQualityMode", "0");
     return next;
   }
 
   if (m === "U_None" || m === "None") {
-    next = setValue(next, "DLSSMode", "Off");
-    next = setValue(next, "DLSSQualityMode", "0");
-    next = setValue(next, "UpscalingFrameGeneration", "0");
-    next = setValue(next, "TSRQualityMode", "0");
+    next = setInFile(next, GUS, "DLSSMode", "Off");
+    next = setInFile(next, GUS, "DLSSQualityMode", "0");
+    next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
+    next = setInFile(next, GUS, "TSRQualityMode", "0");
   }
 
   return next;
@@ -269,14 +276,14 @@ function syncFromTsrQuality(
   if (!Number.isFinite(n) || n <= 0) {
     return params;
   }
-  let next = setValue(params, "UpscalingMethod", "U_TSR");
-  next = setValue(next, "DLSSMode", "Off");
-  next = setValue(next, "DLSSQualityMode", "0");
-  next = setValue(next, "UpscalingFrameGeneration", "0");
-  if (findParam(next, "AntiAliasingType")) {
-    const aa = findParam(next, "AntiAliasingType")!.value;
+  let next = setInFile(params, GUS, "UpscalingMethod", "U_TSR");
+  next = setInFile(next, GUS, "DLSSMode", "Off");
+  next = setInFile(next, GUS, "DLSSQualityMode", "0");
+  next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
+  if (findInFile(next, GUS, "AntiAliasingType")) {
+    const aa = findInFile(next, GUS, "AntiAliasingType")!.value;
     if (aa !== "AAM_TSR" && aa !== "AAM_TemporalAA") {
-      next = setValue(next, "AntiAliasingType", "AAM_TSR");
+      next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
     }
   }
   return syncFromUpscalingMethod(next, "U_TSR", gpu);
@@ -289,14 +296,14 @@ function syncFromAntiAliasing(
 ): GameParameter[] {
   let next = params;
   if (value.includes("DLAA")) {
-    next = setValue(next, "DLSSMode", "DLAA");
+    next = setInFile(next, GUS, "DLSSMode", "DLAA");
     return syncFromDlssMode(next, "DLAA", gpu);
   }
   if (value.includes("TSR")) {
-    next = setValue(next, "UpscalingMethod", "U_TSR");
-    const tsr = findParam(next, "TSRQualityMode");
+    next = setInFile(next, GUS, "UpscalingMethod", "U_TSR");
+    const tsr = findInFile(next, GUS, "TSRQualityMode");
     if (tsr && Number(tsr.value) <= 0) {
-      next = setValue(next, "TSRQualityMode", "2");
+      next = setInFile(next, GUS, "TSRQualityMode", "2");
     }
     return syncFromUpscalingMethod(next, "U_TSR", gpu);
   }
@@ -304,8 +311,8 @@ function syncFromAntiAliasing(
 }
 
 function syncResolutionScaleBounds(params: GameParameter[]): GameParameter[] {
-  const minP = findParam(params, "ResolutionScaleMin");
-  const maxP = findParam(params, "ResolutionScaleMax");
+  const minP = findInFile(params, GUS, "ResolutionScaleMin");
+  const maxP = findInFile(params, GUS, "ResolutionScaleMax");
   if (!minP || !maxP) return params;
 
   let min = Number(minP.value);
@@ -314,7 +321,7 @@ function syncResolutionScaleBounds(params: GameParameter[]): GameParameter[] {
 
   let next = params;
   if (min > max) {
-    next = setValue(next, "ResolutionScaleMin", String(max));
+    next = setInFile(next, GUS, "ResolutionScaleMin", String(max));
   }
   return next;
 }
@@ -322,9 +329,9 @@ function syncResolutionScaleBounds(params: GameParameter[]): GameParameter[] {
 function syncSsrQuality(params: GameParameter[], ssrValue: string): GameParameter[] {
   const off = ssrValue === "0" || ssrValue === "False";
   if (!off) return params;
-  const q = findParam(params, "r.SSR.Quality");
+  const q = findInFile(params, ENGINE, "r.SSR.Quality");
   if (q && q.value !== "0") {
-    return setValue(params, "r.SSR.Quality", "0");
+    return setInFile(params, ENGINE, "r.SSR.Quality", "0");
   }
   return params;
 }
@@ -332,13 +339,13 @@ function syncSsrQuality(params: GameParameter[], ssrValue: string): GameParamete
 function syncMotionBlurQuality(params: GameParameter[], mbValue: string): GameParameter[] {
   const off = mbValue === "False" || mbValue === "0" || mbValue === "Off";
   if (!off) return params;
-  const q = findParam(params, "r.MotionBlurQuality");
+  const q = findInFile(params, ENGINE, "r.MotionBlurQuality");
   if (q && q.value !== "0") {
-    return setValue(params, "r.MotionBlurQuality", "0");
+    return setInFile(params, ENGINE, "r.MotionBlurQuality", "0");
   }
-  const scale = findParam(params, "r.MotionBlur.Scale");
+  const scale = findInFile(params, ENGINE, "r.MotionBlur.Scale");
   if (scale && scale.value !== "0") {
-    return setValue(params, "r.MotionBlur.Scale", "0");
+    return setInFile(params, ENGINE, "r.MotionBlur.Scale", "0");
   }
   return params;
 }

@@ -41,15 +41,6 @@ export function ReShadeWizardFooter({ page }: Props) {
         Запуск игры — кнопка <strong>Играть</strong> в шапке. В игре — <strong>Home</strong> для
         меню ReShade.
       </p>
-      <Button
-        variant="ghost"
-        className="!px-0 text-sm"
-        loading={page.launchSkipMutation.isPending}
-        disabled={!page.canLaunchWithoutReShade}
-        onClick={() => page.launchWithoutReShade()}
-      >
-        Играть без ReShade
-      </Button>
     </section>
   );
 }

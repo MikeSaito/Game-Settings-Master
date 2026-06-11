@@ -1,23 +1,23 @@
 {
   "id": "high",
   "name": "High",
-  "description": "High: sg.* = 3 (индекс High), 100% + Engine.ini. Буст через r.* (тени, Lumen, стриминг).",
+  "description": "High: sg.* = 2, 82% разрешения. Ближе к Medium — только меню.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
-        "sg.ResolutionQuality": "100",
-        "sg.ViewDistanceQuality": "3",
-        "sg.AntiAliasingQuality": "3",
-        "sg.ShadowQuality": "3",
-        "sg.GlobalIlluminationQuality": "3",
-        "sg.ReflectionQuality": "3",
-        "sg.PostProcessQuality": "3",
-        "sg.TextureQuality": "3",
-        "sg.EffectsQuality": "3",
-        "sg.FoliageQuality": "3",
-        "sg.ShadingQuality": "3",
-        "sg.LandscapeQuality": "3",
-        "sg.CloudsQuality": "3"
+        "sg.ResolutionQuality": "82",
+        "sg.ViewDistanceQuality": "2",
+        "sg.AntiAliasingQuality": "2",
+        "sg.ShadowQuality": "2",
+        "sg.GlobalIlluminationQuality": "2",
+        "sg.ReflectionQuality": "2",
+        "sg.PostProcessQuality": "2",
+        "sg.TextureQuality": "2",
+        "sg.EffectsQuality": "2",
+        "sg.FoliageQuality": "2",
+        "sg.ShadingQuality": "2",
+        "sg.LandscapeQuality": "2",
+        "sg.CloudsQuality": "2"
       },
       "[/Script/Engine.GameUserSettings]": {
         "bUseVSync": "False",

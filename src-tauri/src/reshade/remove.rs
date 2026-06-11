@@ -33,7 +33,18 @@ pub(crate) fn remove_installed_proxy(path: &Path, file: &str) -> Result<(), Stri
 }
 
 pub fn remove_reshade(profile: &GameProfile) -> Result<RemoveResult, String> {
-    ensure_game_not_running(profile)?;
+    remove_reshade_inner(profile, true)
+}
+
+/// Удаление proxy перед запуском «Без ReShade» — без блокировки по процессу (best-effort в install.rs).
+pub(crate) fn remove_reshade_for_launch(profile: &GameProfile) -> Result<RemoveResult, String> {
+    remove_reshade_inner(profile, false)
+}
+
+fn remove_reshade_inner(profile: &GameProfile, require_not_running: bool) -> Result<RemoveResult, String> {
+    if require_not_running {
+        ensure_game_not_running(profile)?;
+    }
     let target_dir = resolve_install_target(profile)?;
     let marker = read_marker(&target_dir);
     let fallback_proxy_files = known_proxy_files_present(&target_dir);
@@ -111,13 +122,23 @@ pub fn remove_reshade(profile: &GameProfile) -> Result<RemoveResult, String> {
     })
 }
 
-fn known_proxy_files_present(target_dir: &Path) -> Vec<String> {
+pub(crate) fn known_proxy_files_present(target_dir: &Path) -> Vec<String> {
     GraphicsApi::all()
         .iter()
         .flat_map(|api| api.files_to_install())
         .filter(|file| target_dir.join(file).exists())
         .map(|file| (*file).to_string())
         .collect()
+}
+
+pub(crate) fn broken_proxy_files_present(target_dir: &Path) -> bool {
+    known_proxy_files_present(target_dir)
+        .iter()
+        .any(|file| !super::bundle::is_installed_proxy_valid(&target_dir.join(file)))
+}
+
+pub(crate) fn gsm_managed_proxy_artifacts(target_dir: &Path) -> bool {
+    read_marker(target_dir).is_some() || backup_dir(target_dir).is_dir()
 }
 
 pub(crate) fn restore_file_from_backup(target_dir: &Path, file: &str) -> Result<bool, String> {

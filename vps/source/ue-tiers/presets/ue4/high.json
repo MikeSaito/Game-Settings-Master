@@ -1,18 +1,18 @@
 {
   "id": "high",
   "name": "High",
-  "description": "UE4 — ~75% от Epic: 100% разрешения, высокие тени и текстуры. Без motion blur.",
+  "description": "UE4 — sg.*=2, 92% разрешения. Ближе к Medium — только меню.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
-        "sg.ResolutionQuality": "100",
-        "sg.ViewDistanceQuality": "3",
-        "sg.AntiAliasingQuality": "3",
-        "sg.ShadowQuality": "3",
-        "sg.PostProcessQuality": "3",
-        "sg.TextureQuality": "3",
-        "sg.EffectsQuality": "3",
-        "sg.FoliageQuality": "3"
+        "sg.ResolutionQuality": "92",
+        "sg.ViewDistanceQuality": "2",
+        "sg.AntiAliasingQuality": "2",
+        "sg.ShadowQuality": "2",
+        "sg.PostProcessQuality": "2",
+        "sg.TextureQuality": "2",
+        "sg.EffectsQuality": "2",
+        "sg.FoliageQuality": "2"
       },
       "[/Script/Engine.GameUserSettings]": {
         "bUseVSync": "False",
@@ -20,27 +20,6 @@
         "ResolutionSizeX": "{{width}}",
         "ResolutionSizeY": "{{height}}",
         "FrameRateLimit": "0.000000"
-      }
-    },
-    "Engine.ini": {
-      "[SystemSettings]": {
-        "r.ViewDistanceScale": "1.0",
-        "r.Streaming.PoolSize": "3000",
-        "r.Streaming.MipBias": "0",
-        "r.MaxAnisotropy": "16",
-        "r.ShadowQuality": "2",
-        "r.Shadow.MaxResolution": "2048",
-        "r.Shadow.DistanceScale": "1.0",
-        "r.Shadow.CSM.MaxCascades": "3",
-        "r.MaterialQualityLevel": "1",
-        "r.PostProcessAAQuality": "4",
-        "r.DefaultFeature.MotionBlur": "False",
-        "r.DefaultFeature.Bloom": "True",
-        "r.DefaultFeature.AutoExposure": "True",
-        "r.ScreenSpaceReflections": "1",
-        "r.SSR.Quality": "2",
-        "r.FoliageQuality": "2",
-        "r.AmbientOcclusionLevels": "2"
       }
     }
   }

@@ -167,18 +167,18 @@ pub fn is_safe_backup_id(id: &str) -> bool {
         .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
 }
 
-/// Process basename for taskkill — no path separators.
+/// Process basename for running/kill checks — single filename, no path separators.
 pub fn is_safe_exe_basename(name: &str) -> bool {
     let trimmed = name.trim();
     if trimmed.is_empty() || trimmed.len() > 260 {
         return false;
     }
-    if trimmed.contains('\\') || trimmed.contains('/') || trimmed.contains("..") {
+    if trimmed.contains("..") {
         return false;
     }
-    trimmed
-        .chars()
-        .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '_' || c == '-')
+    !trimmed.chars().any(|c| {
+        c.is_control() || matches!(c, '\\' | '/' | ':' | '*' | '?' | '"' | '<' | '>' | '|')
+    })
 }
 
 pub fn resolve_file_within_root(root: &Path, rel: &str) -> Option<PathBuf> {
@@ -651,8 +651,10 @@ mod tests {
     fn safe_exe_basename_rejects_paths() {
         assert!(is_safe_exe_basename("Game.exe"));
         assert!(is_safe_exe_basename("Game"));
+        assert!(is_safe_exe_basename("The Stanley Parable Ultra Deluxe.exe"));
         assert!(!is_safe_exe_basename(r"C:\Game.exe"));
         assert!(!is_safe_exe_basename("../evil.exe"));
+        assert!(!is_safe_exe_basename("bad|name.exe"));
     }
 
     #[test]

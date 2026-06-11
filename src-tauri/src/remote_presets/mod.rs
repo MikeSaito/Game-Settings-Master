@@ -185,10 +185,9 @@ where
     all_resolved_packs().into_iter().filter(predicate).collect()
 }
 
-pub const SN2_AUTHOR_PACK_ID: &str = "subnautica2-tiers";
-
-pub fn is_author_tier_pack(pack: &ResolvedPack) -> bool {
-    pack.manifest.pack_id == SN2_AUTHOR_PACK_ID
+/// Исключённые UE JSON packs — не подменяют общий ue-tiers (авторские SN2 tier отключены).
+pub fn is_skipped_ue_json_pack(pack_id: &str) -> bool {
+    pack_id == "subnautica2-tiers"
 }
 
 fn ue_json_packs() -> Vec<ResolvedPack> {
@@ -214,7 +213,9 @@ pub fn find_ue_json_pack_cached(
 
     if let Some(gid) = game_id {
         if let Some(pack) = packs.iter().find(|pack| {
-            pack.manifest.pack_id != "ue-tiers" && pack.matches(Some(gid), engine_family, None)
+            pack.manifest.pack_id != "ue-tiers"
+                && !is_skipped_ue_json_pack(&pack.manifest.pack_id)
+                && pack.matches(Some(gid), engine_family, None)
         }) {
             return Some(pack.clone());
         }
@@ -378,6 +379,12 @@ mod tests {
             Some("ue4"),
             None
         ));
+    }
+
+    #[test]
+    fn skipped_sn2_author_pack_not_selected_for_game() {
+        assert!(super::is_skipped_ue_json_pack("subnautica2-tiers"));
+        assert!(!super::is_skipped_ue_json_pack("ue-tiers"));
     }
 
     #[test]

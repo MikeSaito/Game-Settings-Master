@@ -1,7 +1,7 @@
 {
   "id": "ultra-low",
   "name": "Ultra Low",
-  "description": "UE4 — режим «картошки»: 40% разрешения, sg.* на нуле, агрессивные Engine CVars. Для слабых ПК.",
+  "description": "UE4 — картошка: 40% разрешения, sg.*=0, минимальный Engine.ini (без дублирования sg.*).",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
@@ -39,10 +39,7 @@
         "r.AmbientOcclusionLevels": "0",
         "r.SSR.Quality": "0",
         "r.DetailMode": "0",
-        "r.ScreenSpaceReflections": "0",
-        "r.ShadowQuality": "0",
-        "r.PostProcessAAQuality": "0",
-        "r.FoliageQuality": "0"
+        "r.ScreenSpaceReflections": "0"
       }
     }
   }

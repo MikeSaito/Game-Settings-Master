@@ -245,7 +245,6 @@ async function main() {
   await fs.mkdir(PUBLIC, { recursive: true });
   const packs = [];
   packs.push(await buildForzaPack());
-  packs.push(await buildSubnauticaTiersPack());
   packs.push(await buildSubnauticaOverlayPack());
   packs.push(await buildSubnautica2ReShadePack());
   packs.push(await buildUeTiersPack());

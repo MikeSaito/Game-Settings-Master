@@ -3,8 +3,6 @@ use crate::app_error::running_game_reshade_blocked;
 use crate::fs_util::is_exe_running;
 use crate::models::GameProfile;
 
-pub(crate) use crate::app_error::is_running_game_error;
-
 /// Имя exe для проверки процесса: из профиля или поиск в папке установки.
 pub(crate) fn running_exe_name(profile: &GameProfile) -> Option<String> {
     if let Some(exe) = profile.exe_name.as_deref().filter(|s| !s.is_empty()) {
@@ -92,10 +90,4 @@ mod tests {
         assert!(ensure_game_not_running(&profile(dir.path(), None)).is_err());
     }
 
-    #[test]
-    fn detects_running_game_error_message() {
-        let msg = crate::app_error::running_game_reshade_blocked("Game.exe");
-        assert!(is_running_game_error(&msg));
-        assert!(!is_running_game_error("не удалось удалить proxy DLL"));
-    }
 }

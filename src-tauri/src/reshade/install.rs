@@ -1,5 +1,8 @@
 use super::api::GraphicsApi;
-use super::remove::{remove_installed_proxy, remove_reshade, restore_file_from_backup};
+use super::remove::{
+    broken_proxy_files_present, gsm_managed_proxy_artifacts, known_proxy_files_present,
+    remove_installed_proxy, remove_reshade, remove_reshade_for_launch, restore_file_from_backup,
+};
 use super::config::{effective_preset_for_game, install_preset_for_game};
 use super::detect::{backup_dir, read_marker, safe_marker_path, write_marker, InstallMarker};
 use super::bundle::validate_bundled_file;
@@ -228,11 +231,16 @@ fn skip_launch_should_remove_reshade(
     profile: &GameProfile,
     status: Result<super::detect::ReShadeGameStatus, String>,
 ) -> bool {
-    if resolve_install_target(profile)
-        .ok()
-        .is_some_and(|dir| super::detect::read_marker(&dir).is_some())
-    {
-        return true;
+    if let Ok(dir) = resolve_install_target(profile) {
+        if super::detect::read_marker(&dir).is_some() {
+            return true;
+        }
+        if broken_proxy_files_present(&dir) {
+            return true;
+        }
+        if gsm_managed_proxy_artifacts(&dir) && !known_proxy_files_present(&dir).is_empty() {
+            return true;
+        }
     }
     match status {
         Ok(status) => status.installed || status.broken_install,
@@ -254,12 +262,14 @@ pub fn prepare_launch_without_reshade(profile: &GameProfile) -> Result<Option<St
         return Ok(None);
     }
 
-    if let Err(e) = remove_reshade(profile) {
-        if super::guard::is_running_game_error(&e) {
-            let warning = best_effort_cleanup_while_running(profile, &e);
-            return Ok(Some(warning));
+    if let Err(e) = remove_reshade_for_launch(profile) {
+        let warning = best_effort_cleanup_while_running(profile, &e);
+        if let Ok(dir) = resolve_install_target(profile) {
+            if super::detect::read_marker(&dir).is_some() {
+                return Ok(Some(format!("{PROXY_CLEANUP_FAILED_MSG} ({e})")));
+            }
         }
-        return Ok(Some(format!("{PROXY_CLEANUP_FAILED_MSG} ({e})")));
+        return Ok(Some(warning));
     }
 
     // remove_reshade already verifies GSM proxy removal before restore; restored originals are OK.
@@ -869,6 +879,31 @@ mod tests {
             &profile(dir.path()),
             Err("status unavailable".to_string()),
         ));
+    }
+
+    #[test]
+    fn skip_launch_should_remove_on_broken_proxy_without_marker() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("Game.exe"), b"").unwrap();
+        fs::write(dir.path().join("dxgi.dll"), b"stub").unwrap();
+        let status = super::super::detect::get_status(&profile(dir.path())).unwrap();
+        assert!(!status.broken_install);
+        assert!(skip_launch_should_remove_reshade(
+            &profile(dir.path()),
+            Ok(status),
+        ));
+    }
+
+    #[test]
+    fn prepare_launch_without_reshade_clears_stub_proxy_without_marker() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("Game.exe"), b"").unwrap();
+        fs::write(dir.path().join("dxgi.dll"), b"original").unwrap();
+        fs::write(dir.path().join("dxgi.dll"), b"stub").unwrap();
+
+        let warning = prepare_launch_without_reshade(&profile(dir.path())).unwrap();
+        assert!(warning.is_none());
+        assert!(!dir.path().join("dxgi.dll").exists());
     }
 
     #[test]

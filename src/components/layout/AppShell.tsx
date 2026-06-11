@@ -23,24 +23,26 @@ export function AppShell({ tab, onTabChange, selectedGame, children }: Props) {
         onGoLibrary={() => onTabChange("library")}
       />
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        {showGameChrome && selectedGame && (
-          <GameHeroHeader
-            game={selectedGame}
-            activeTab={tab}
-            onTabChange={onTabChange}
-          />
-        )}
-        <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-6xl px-8 py-8">
-            {showGameChrome && selectedGame ? (
-              <GameWorkspaceProvider game={selectedGame} activeTab={tab}>
+        {showGameChrome ? (
+          <GameWorkspaceProvider game={selectedGame} activeTab={tab}>
+            <div className="flex-1 overflow-y-auto">
+              <GameHeroHeader
+                game={selectedGame}
+                activeTab={tab}
+                onTabChange={onTabChange}
+              />
+              <div className="mx-auto max-w-6xl animate-fade-in px-8 py-8">
                 {children}
-              </GameWorkspaceProvider>
-            ) : (
-              children
-            )}
+              </div>
+            </div>
+          </GameWorkspaceProvider>
+        ) : (
+          <div className="flex-1 overflow-y-auto">
+            <div className="mx-auto max-w-6xl animate-fade-in px-8 py-8">
+              {children}
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );

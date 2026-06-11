@@ -1,7 +1,7 @@
 {
   "id": "ultra-high",
   "name": "Ultra High",
-  "description": "Epic в меню (sg=4) + усиленный Engine.ini. Буст через r.* CVars, без фейкового sg=6.",
+  "description": "Ultra: sg.* = Epic (4), 100% + лёгкий Engine.ini буст. Видимый скачок над Epic.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {

@@ -208,10 +208,10 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
 
   const isStaleLaunchSession = (session: number) => session !== launchSessionRef.current;
 
-  const runLaunch = async (skipReShade = false) => {
+  const runLaunch = async () => {
     const session = launchSessionRef.current;
     try {
-      await launchMutation.mutateAsync({ skipReShade, session });
+      await launchMutation.mutateAsync({ skipReShade: false, session });
       if (isStaleLaunchSession(session)) return;
     } catch {
       // ошибка показана в launchMutation.onError
@@ -254,7 +254,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
       if (isStaleLaunchSession(session)) return;
       syncReShadeSettingsCache(updated);
       setApiPickerOpen(false);
-      await runLaunch(false);
+      await runLaunch();
     } catch (err) {
       setLaunchError(formatInvokeError(err));
       setApiPickerOpen(false);
@@ -294,7 +294,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
       }
 
       if (!isReShadeActiveForGame(settingsResp.settings, game.id)) {
-        await runLaunch(false);
+        await runLaunch();
         return;
       }
 
@@ -336,7 +336,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         return;
       }
 
-      await runLaunch(false);
+      await runLaunch();
     } finally {
       setPlayPreflightPending(false);
     }
@@ -382,7 +382,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         return;
       }
 
-      await runLaunch(false);
+      await runLaunch();
     } catch (err) {
       setLaunchError(formatInvokeError(err));
       setLaunchDisclaimerOpen(false);
@@ -475,16 +475,6 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               >
                 Играть
               </Button>
-              {reshadeOk && (
-                <button
-                  type="button"
-                  onClick={() => void runLaunch(true)}
-                  disabled={launchBusy || gameRunning}
-                  className="text-xs text-muted underline-offset-2 hover:text-[var(--color-text-secondary)] hover:underline disabled:opacity-50"
-                >
-                  Без ReShade
-                </button>
-              )}
             </>
           )}
         </div>

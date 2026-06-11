@@ -1,23 +1,23 @@
 {
   "id": "medium",
   "name": "Medium",
-  "description": "Medium: sg.* = 2, 85% разрешения, Engine.ini с частичным Lumen.",
+  "description": "Medium: sg.* = 1, 68% разрешения. Ближе к Low — только меню.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
-        "sg.ResolutionQuality": "85",
-        "sg.ViewDistanceQuality": "2",
-        "sg.AntiAliasingQuality": "2",
-        "sg.ShadowQuality": "2",
-        "sg.GlobalIlluminationQuality": "2",
-        "sg.ReflectionQuality": "2",
-        "sg.PostProcessQuality": "2",
-        "sg.TextureQuality": "2",
-        "sg.EffectsQuality": "2",
-        "sg.FoliageQuality": "2",
-        "sg.ShadingQuality": "2",
-        "sg.LandscapeQuality": "2",
-        "sg.CloudsQuality": "2"
+        "sg.ResolutionQuality": "68",
+        "sg.ViewDistanceQuality": "1",
+        "sg.AntiAliasingQuality": "1",
+        "sg.ShadowQuality": "1",
+        "sg.GlobalIlluminationQuality": "1",
+        "sg.ReflectionQuality": "1",
+        "sg.PostProcessQuality": "1",
+        "sg.TextureQuality": "1",
+        "sg.EffectsQuality": "1",
+        "sg.FoliageQuality": "1",
+        "sg.ShadingQuality": "1",
+        "sg.LandscapeQuality": "1",
+        "sg.CloudsQuality": "1"
       },
       "[/Script/Engine.GameUserSettings]": {
         "bUseVSync": "False",

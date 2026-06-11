@@ -1,23 +1,23 @@
 {
   "id": "epic",
   "name": "Epic",
-  "description": "Максимум из меню игры (Epic/Cinematic). Только sg.* — без Engine.ini, якорь шкалы.",
+  "description": "Epic: sg.* = 3, 94% разрешения. Ближе к High — только меню.",
   "files": {
     "GameUserSettings.ini": {
       "[ScalabilityGroups]": {
-        "sg.ResolutionQuality": "100",
-        "sg.ViewDistanceQuality": "4",
-        "sg.AntiAliasingQuality": "4",
-        "sg.ShadowQuality": "4",
-        "sg.GlobalIlluminationQuality": "4",
-        "sg.ReflectionQuality": "4",
-        "sg.PostProcessQuality": "4",
-        "sg.TextureQuality": "4",
-        "sg.EffectsQuality": "4",
-        "sg.FoliageQuality": "4",
-        "sg.ShadingQuality": "4",
-        "sg.LandscapeQuality": "4",
-        "sg.CloudsQuality": "4"
+        "sg.ResolutionQuality": "94",
+        "sg.ViewDistanceQuality": "3",
+        "sg.AntiAliasingQuality": "3",
+        "sg.ShadowQuality": "3",
+        "sg.GlobalIlluminationQuality": "3",
+        "sg.ReflectionQuality": "3",
+        "sg.PostProcessQuality": "3",
+        "sg.TextureQuality": "3",
+        "sg.EffectsQuality": "3",
+        "sg.FoliageQuality": "3",
+        "sg.ShadingQuality": "3",
+        "sg.LandscapeQuality": "3",
+        "sg.CloudsQuality": "3"
       },
       "[/Script/Engine.GameUserSettings]": {
         "bUseVSync": "False",

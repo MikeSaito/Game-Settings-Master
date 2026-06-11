@@ -10,10 +10,6 @@
       "manifest_url": "packs/forza-fh6/manifest.json"
     },
     {
-      "id": "subnautica2-tiers",
-      "manifest_url": "packs/subnautica2-tiers/manifest.json"
-    },
-    {
       "id": "subnautica2-overlay",
       "manifest_url": "packs/subnautica2-overlay/manifest.json"
     },
