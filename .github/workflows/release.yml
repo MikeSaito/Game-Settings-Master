@@ -44,7 +44,9 @@ jobs:
         shell: pwsh
         run: |
           $tag = "v${{ env.VERSION }}"
+          # gh exits 1 when release is missing — must not fail the step (GHA pwsh native error preference).
           $ErrorActionPreference = "Continue"
+          $PSNativeCommandUseErrorActionPreference = $false
           gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
           if ($LASTEXITCODE -eq 0) {
             throw "GitHub release $tag already exists"
