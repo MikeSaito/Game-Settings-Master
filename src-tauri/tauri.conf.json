@@ -35,13 +35,9 @@
       "icons/icon.ico"
     ],
     "resources": {
-      "presets/*": "presets/",
-      "presets/ue4/*": "presets/ue4/",
-      "presets/unity/*": "presets/unity/",
-      "presets/games/*": "presets/games/",
-      "presets/reshade/**/*": "presets/reshade/",
-      "catalog/*": "catalog/",
-      "games/*": "games/"
+      "presets/": "presets/",
+      "catalog/": "catalog/",
+      "games/": "games/"
     },
     "windows": {
       "nsis": {

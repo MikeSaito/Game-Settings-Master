@@ -15,8 +15,21 @@ fn compile_time_src_root() -> PathBuf {
 fn exe_resources_root() -> Option<PathBuf> {
     let exe = std::env::current_exe().ok()?;
     let dir = exe.parent()?;
+    // Tauri on Windows кладёт resources рядом с exe (не в подпапку resources/).
+    #[cfg(windows)]
+    if dir.join("presets").is_dir() {
+        return Some(dir.to_path_buf());
+    }
     let resources = dir.join("resources");
-    resources.is_dir().then_some(resources)
+    if resources.is_dir() {
+        return Some(resources);
+    }
+    #[cfg(windows)]
+    {
+        return None;
+    }
+    #[cfg(not(windows))]
+    None
 }
 
 /// Корень бандла Tauri (`resources/` рядом с exe в релизе).
