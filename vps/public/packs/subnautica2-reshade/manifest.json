@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "pack_id": "subnautica2-reshade",
+  "title": "Subnautica 2 — ReShade presets",
+  "match": {
+    "steam_app_ids": [
+      "1962700"
+    ],
+    "game_ids": [
+      "steam-1962700"
+    ],
+    "engine_families": [
+      "ue5"
+    ]
+  },
+  "apply": {
+    "kind": "reshade_ini",
+    "presets_root": "presets"
+  },
+  "presets": [
+    {
+      "id": "sn2-underwater-clarity",
+      "name": "Underwater Clarity",
+      "description": "Чёткость под водой для Subnautica 2.",
+      "ini_file": "sn2-underwater-clarity.ini"
+    }
+  ],
+  "bundle": {
+    "file": "pack.zip",
+    "sha256": "eb99fd1fdd0ad92db0fce93b474e7c703e7ea52e9cdf5274fde7a546359dc649"
+  },
+  "revision": "1.4.0",
+  "updated_at": "2026-06-11T14:52:58.050Z"
+}

@@ -58,8 +58,8 @@
   ],
   "bundle": {
     "file": "pack.zip",
-    "sha256": "9135b8dfa5400a6d155cba1536b176663ac840ac00a8a4a75234dd01d9e88a63"
+    "sha256": "707e31601e1af139b04f30d6d0f84ec6588b37e75f0738722d2937cd7b012042"
   },
   "revision": "1.4.0",
-  "updated_at": "2026-06-10T15:00:31.066Z"
+  "updated_at": "2026-06-11T14:52:58.039Z"
 }

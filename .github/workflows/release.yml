@@ -44,7 +44,8 @@ jobs:
         shell: pwsh
         run: |
           $tag = "v${{ env.VERSION }}"
-          gh release view $tag --repo "${{ github.repository }}"
+          $ErrorActionPreference = "Continue"
+          gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
           if ($LASTEXITCODE -eq 0) {
             throw "GitHub release $tag already exists"
           }

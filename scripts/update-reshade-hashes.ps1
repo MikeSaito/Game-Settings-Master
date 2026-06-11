@@ -2,6 +2,7 @@
 # Run after npm run reshade:setup when bumping ReShade version.
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "reshade-common.ps1")
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $BinDir = Join-Path $RepoRoot "src-tauri\presets\reshade\bin"
 $ManifestPath = Join-Path $RepoRoot "src-tauri\presets\reshade\binary-hashes.json"
@@ -22,7 +23,7 @@ $files = @{}
 foreach ($name in $names) {
     $path = Join-Path $BinDir $name
     if (Test-Path $path) {
-        $files[$name] = (Get-FileHash -Path $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        $files[$name] = (Get-Sha256Hex $path).ToLowerInvariant()
     }
 }
 
@@ -32,7 +33,7 @@ if (-not $setupPath) {
     $setupPath = Join-Path $env:TEMP "ReShade_Setup_Addon.exe"
 }
 if (Test-Path $setupPath) {
-    $setupSha = (Get-FileHash -Path $setupPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    $setupSha = (Get-Sha256Hex $setupPath).ToLowerInvariant()
 }
 
 $manifest = [ordered]@{

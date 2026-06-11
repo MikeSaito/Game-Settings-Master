@@ -4,6 +4,7 @@
 # ReShade 6.7+ ships ReShade64.dll + ReShade64.json for Vulkan (no VkLayer_reshade.dll).
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "reshade-common.ps1")
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $BinDir = Join-Path $RepoRoot "src-tauri\presets\reshade\bin"
 
@@ -91,7 +92,7 @@ if (Test-Path $ManifestPath) {
     $manifest = Get-Content $ManifestPath -Raw | ConvertFrom-Json
     $expectedSetupSha = $manifest.setup.sha256
     if ($expectedSetupSha -and $expectedSetupSha.Trim().Length -gt 0) {
-        $actualSetupSha = (Get-FileHash -Path $Setup -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualSetupSha = (Get-Sha256Hex $Setup).ToLowerInvariant()
         $expectedNorm = $expectedSetupSha.ToLowerInvariant()
         if ($actualSetupSha -ne $expectedNorm) {
             Write-Error "ReShade Setup SHA256 mismatch. Expected $expectedNorm, got $actualSetupSha. Bump binary-hashes.json or use a matching Setup.exe."
@@ -165,7 +166,7 @@ if (Test-Path $ManifestPath) {
                 Write-Error "ReShade bundle hash check: missing $name"
                 exit 1
             }
-            $actual = (Get-FileHash -Path $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            $actual = (Get-Sha256Hex $path).ToLowerInvariant()
             if ($actual -ne $expected.ToLowerInvariant()) {
                 Write-Error "ReShade bundle hash mismatch for ${name}: expected $expected, got $actual"
                 exit 1

@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "reshade-common.ps1")
 
 function Invoke-SetupScript {
     param(
@@ -13,7 +14,8 @@ function Invoke-SetupScript {
 
     # Child .ps1 via call operator does not reliably set $LASTEXITCODE in Windows PowerShell.
     # Run in a subprocess so exit codes from fetch-reshade-*.ps1 propagate correctly.
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ScriptPath
+    $psExe = Get-ReShadePowerShellExe
+    & $psExe -NoProfile -ExecutionPolicy Bypass -File $ScriptPath
     if ($LASTEXITCODE -ne 0) {
         return $false
     }
@@ -32,7 +34,7 @@ foreach ($name in $scripts) {
         if ($name -eq "fetch-reshade-binaries.ps1" -or $name -eq "verify-reshade-bundle.ps1") {
             $hint = Join-Path $PSScriptRoot "reshade-dll-hint.ps1"
             if (Test-Path $hint) {
-                powershell.exe -NoProfile -ExecutionPolicy Bypass -File $hint
+                & (Get-ReShadePowerShellExe) -NoProfile -ExecutionPolicy Bypass -File $hint
             }
         }
         exit 1

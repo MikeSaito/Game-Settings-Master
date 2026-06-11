@@ -2,7 +2,7 @@
   "schema_version": 1,
   "catalog_id": "gsm-author-presets",
   "version": "1.4.0",
-  "updated_at": "2026-06-10T15:00:31.161Z",
+  "updated_at": "2026-06-11T14:52:58.114Z",
   "base_url": ".",
   "packs": [
     {
@@ -16,6 +16,10 @@
     {
       "id": "subnautica2-overlay",
       "manifest_url": "packs/subnautica2-overlay/manifest.json"
+    },
+    {
+      "id": "subnautica2-reshade",
+      "manifest_url": "packs/subnautica2-reshade/manifest.json"
     },
     {
       "id": "ue-tiers",

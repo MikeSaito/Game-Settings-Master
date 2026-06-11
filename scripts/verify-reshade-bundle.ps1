@@ -1,5 +1,6 @@
 # Fail CI/local build if ReShade bundle is missing or contains stubs.
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "reshade-common.ps1")
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $BinDir = Join-Path $RepoRoot "src-tauri\presets\reshade\bin"
 $ShadersDir = Join-Path $RepoRoot "src-tauri\presets\reshade\shaders\Shaders"
@@ -56,7 +57,7 @@ if (Test-Path $ManifestPath) {
                 Write-Error "ReShade bundle invalid: $name missing (pinned in binary-hashes.json)."
                 exit 1
             }
-            $actual = (Get-FileHash -Path $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            $actual = (Get-Sha256Hex $path).ToLowerInvariant()
             if ($actual -ne $expected.ToLowerInvariant()) {
                 Write-Error "ReShade bundle SHA256 mismatch for ${name}."
                 exit 1

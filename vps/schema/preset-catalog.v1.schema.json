@@ -103,6 +103,14 @@
         "parameter_catalog": { "type": "string" }
       }
     },
+    "reshade_ini_apply": {
+      "type": "object",
+      "required": ["kind", "presets_root"],
+      "properties": {
+        "kind": { "const": "reshade_ini" },
+        "presets_root": { "type": "string" }
+      }
+    },
     "forza_preset_entry": {
       "type": "object",
       "required": ["id", "name", "profile_folder"],
@@ -123,6 +131,16 @@
         "definition_file": { "type": "string" }
       }
     },
+    "reshade_ini_preset_entry": {
+      "type": "object",
+      "required": ["id", "name", "ini_file"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "ini_file": { "type": "string" }
+      }
+    },
     "pack_manifest": {
       "type": "object",
       "required": ["schema_version", "pack_id", "match", "apply"],
@@ -139,7 +157,8 @@
             { "$ref": "#/$defs/ue_overlay_apply" },
             { "$ref": "#/$defs/unity_apply" },
             { "$ref": "#/$defs/ue_json_apply" },
-            { "$ref": "#/$defs/catalog_apply" }
+            { "$ref": "#/$defs/catalog_apply" },
+            { "$ref": "#/$defs/reshade_ini_apply" }
           ]
         },
         "policy": { "$ref": "#/$defs/pack_policy" },
@@ -149,7 +168,8 @@
           "items": {
             "oneOf": [
               { "$ref": "#/$defs/forza_preset_entry" },
-              { "$ref": "#/$defs/json_preset_entry" }
+              { "$ref": "#/$defs/json_preset_entry" },
+              { "$ref": "#/$defs/reshade_ini_preset_entry" }
             ]
           }
         }
