@@ -23,14 +23,14 @@ pub fn tune_engine_system_settings(
     }
 
     match preset_id {
-        "ultra-low" => apply_ultra_low_performance(sys, gpu),
-        "low" => apply_low_performance(sys, gpu),
-        "ultra-high" => apply_ultra_boost(sys, gpu),
+        "ultra-low" => apply_ultra_low_performance(sys),
+        "low" => apply_low_performance(sys),
+        "ultra-high" => apply_ultra_boost(sys),
         _ => {}
     }
 }
 
-fn apply_ultra_low_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
+fn apply_ultra_low_performance(sys: &mut HashMap<String, String>) {
     merge(
         sys,
         &[
@@ -49,13 +49,9 @@ fn apply_ultra_low_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapab
             ("grass.DensityScale", "0.0"),
         ],
     );
-    sys.insert(
-        "r.Streaming.PoolSize".to_string(),
-        performance_pool_mb(gpu, "ultra-low"),
-    );
 }
 
-fn apply_low_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
+fn apply_low_performance(sys: &mut HashMap<String, String>) {
     merge(
         sys,
         &[
@@ -69,13 +65,9 @@ fn apply_low_performance(sys: &mut HashMap<String, String>, gpu: &GpuCapabilitie
             ("grass.DensityScale", "0.5"),
         ],
     );
-    sys.insert(
-        "r.Streaming.PoolSize".to_string(),
-        performance_pool_mb(gpu, "low"),
-    );
 }
 
-fn apply_ultra_boost(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
+fn apply_ultra_boost(sys: &mut HashMap<String, String>) {
     merge(
         sys,
         &[
@@ -83,55 +75,6 @@ fn apply_ultra_boost(sys: &mut HashMap<String, String>, gpu: &GpuCapabilities) {
             ("r.Lumen.ScreenProbeGather.DownsampleFactor", "16"),
         ],
     );
-    sys.insert(
-        "r.Streaming.PoolSize".to_string(),
-        streaming_pool_mb(gpu),
-    );
-}
-
-fn streaming_pool_mb(gpu: &GpuCapabilities) -> String {
-    let name = gpu.name.to_lowercase();
-    let vram_tier = if name.contains("4090")
-        || name.contains("4080")
-        || name.contains("7900 xtx")
-        || name.contains("5090")
-        || name.contains("5080")
-    {
-        3
-    } else if name.contains("4070")
-        || name.contains("4060 ti")
-        || name.contains("3070")
-        || name.contains("7800")
-        || name.contains("6900")
-    {
-        2
-    } else if name.contains("4060")
-        || name.contains("3060")
-        || name.contains("2080")
-        || name.contains("7700")
-        || name.contains("6700")
-    {
-        1
-    } else {
-        2
-    };
-    let mb = match vram_tier {
-        3 => 7000,
-        2 => 5500,
-        1 => 4096,
-        _ => 5120,
-    };
-    mb.to_string()
-}
-
-fn performance_pool_mb(_gpu: &GpuCapabilities, tier: &str) -> String {
-    let base: u32 = 4096;
-    let mb = match tier {
-        "ultra-low" => (base / 4).max(512),
-        "low" => (base / 2).max(1024),
-        _ => base,
-    };
-    mb.to_string()
 }
 
 fn merge(sys: &mut HashMap<String, String>, pairs: &[(&str, &str)]) {
@@ -147,8 +90,7 @@ mod tests {
     #[test]
     fn low_performance_disables_lumen() {
         let mut sys = HashMap::new();
-        let gpu = GpuCapabilities::from_gpu_name("NVIDIA GeForce RTX 4060 Ti");
-        apply_low_performance(&mut sys, &gpu);
+        apply_low_performance(&mut sys);
         assert_eq!(
             sys.get("r.Lumen.DiffuseIndirect.Allow").map(String::as_str),
             Some("0")
@@ -157,18 +99,22 @@ mod tests {
             sys.get("r.ViewDistanceScale").map(String::as_str),
             Some("0.5")
         );
+        assert!(
+            !sys.contains_key("r.Streaming.PoolSize"),
+            "UE5 presets must let the engine size the streaming pool automatically"
+        );
     }
 
     #[test]
     fn ultra_high_minimal_boost_only() {
         let mut sys = HashMap::new();
-        let gpu = GpuCapabilities::from_gpu_name("NVIDIA GeForce RTX 4070");
-        apply_ultra_boost(&mut sys, &gpu);
+        apply_ultra_boost(&mut sys);
         assert_eq!(
             sys.get("r.ViewDistanceScale").map(String::as_str),
             Some("1.25")
         );
         assert!(!sys.contains_key("sg.DefaultScalabilityLevel"));
+        assert!(!sys.contains_key("r.Streaming.PoolSize"));
     }
 
     #[test]

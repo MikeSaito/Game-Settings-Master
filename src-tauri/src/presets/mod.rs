@@ -999,6 +999,87 @@ mod tests {
     }
 
     #[test]
+    fn ue5_combined_presets_do_not_emit_stutter_prone_cvars() {
+        let blocked_engine_keys = [
+            "r.FinishCurrentFrame",
+            "r.OneFrameThreadLag",
+            "r.RHICmdUseThread",
+            "r.RHICmdUseParallelAlgorithms",
+            "r.AsyncCompute",
+            "r.IO.UseDirectStorage",
+            "r.D3D12.ExecuteContextInParallel",
+            "r.D3D12.UseAllowTearing",
+            "s.AsyncLoadingThreadEnabled",
+            "r.Streaming.PoolSize",
+            "r.Streaming.LimitPoolSizeToVRAM",
+            "r.VSync",
+        ];
+
+        for id in PRESET_IDS {
+            let preset = build_combined_preset(id, None, None, None, Some("ue5")).unwrap();
+            if let Some(engine) = preset.files.get("Engine.ini") {
+                for section in engine.values() {
+                    for key in blocked_engine_keys {
+                        assert!(
+                            !section.contains_key(key),
+                            "{id} must not emit {key} in Engine.ini"
+                        );
+                    }
+                }
+            }
+
+            let gus = preset
+                .files
+                .get("GameUserSettings.ini")
+                .and_then(|f| f.get("[/Script/Engine.GameUserSettings]"))
+                .expect("game user settings");
+            assert_eq!(
+                gus.get("bUseVSync").map(String::as_str),
+                Some("False"),
+                "{id} must keep VSync disabled"
+            );
+            assert_eq!(
+                gus.get("FrameRateLimit").map(String::as_str),
+                Some("0.000000"),
+                "{id} must keep the preset uncapped"
+            );
+        }
+    }
+
+    #[test]
+    fn subnautica2_combined_presets_do_not_reintroduce_stall_cvars() {
+        for id in ["low", "high", "ultra-high"] {
+            let preset =
+                build_combined_preset(id, Some("steam-1962700"), None, None, Some("ue5")).unwrap();
+            if let Some(engine) = preset.files.get("Engine.ini") {
+                let sys = engine.get("[SystemSettings]").expect("system settings");
+                for key in [
+                    "r.OneFrameThreadLag",
+                    "r.RHICmdUseThread",
+                    "r.RHICmdUseParallelAlgorithms",
+                    "r.AsyncCompute",
+                    "r.IO.UseDirectStorage",
+                    "r.D3D12.ExecuteContextInParallel",
+                    "r.Streaming.PoolSize",
+                ] {
+                    assert!(!sys.contains_key(key), "{id} SN2 preset must not emit {key}");
+                }
+            }
+
+            let gus = preset
+                .files
+                .get("GameUserSettings.ini")
+                .and_then(|f| f.get("[/Script/Engine.GameUserSettings]"))
+                .expect("game user settings");
+            assert_eq!(
+                gus.get("bUseVSync").map(String::as_str),
+                Some("False"),
+                "{id} SN2 preset must keep VSync off"
+            );
+        }
+    }
+
+    #[test]
     fn performance_preset_replaces_stale_boost_engine_ini() {
         let dir = tempfile::tempdir().unwrap();
         let engine = dir.path().join("Engine.ini");

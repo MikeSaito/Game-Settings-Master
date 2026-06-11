@@ -699,7 +699,8 @@
     "value_hint": "0 — минимальный lag, 1 — стандарт",
     "file": "Engine.ini",
     "section": "SystemSettings",
-    "value_type": "int"
+    "value_type": "int",
+    "editable": false
   },
   {
     "key": "r.VSync",
