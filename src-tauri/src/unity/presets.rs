@@ -18,9 +18,7 @@ pub struct UnityPresetDefinition {
 }
 
 pub fn presets_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("presets")
-        .join("unity")
+    crate::resource_paths::presets_dir().join("unity")
 }
 
 pub fn list_unity_presets() -> Result<Vec<PresetInfo>, String> {

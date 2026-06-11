@@ -90,9 +90,7 @@ static KNOWN_GAMES: OnceLock<HashMap<String, KnownGameEntry>> = OnceLock::new();
 pub fn load_known_games() -> HashMap<String, KnownGameEntry> {
     KNOWN_GAMES
         .get_or_init(|| {
-            let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                .join("games")
-                .join("known.json");
+            let path = crate::resource_paths::games_dir().join("known.json");
             let content = fs::read_to_string(&path).unwrap_or_else(|_| "{}".to_string());
             serde_json::from_str(&content).unwrap_or_default()
         })

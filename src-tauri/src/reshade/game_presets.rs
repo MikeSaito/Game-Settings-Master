@@ -126,8 +126,7 @@ pub fn game_pack_dir(game_id: &str) -> Option<PathBuf> {
     let pack_id = load_known_games()
         .get(&app_id)
         .and_then(|e| e.reshade_pack.clone())?;
-    let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("presets")
+    let dir = crate::resource_paths::presets_dir()
         .join("games")
         .join(pack_id);
     if dir.is_dir() { Some(dir) } else { None }

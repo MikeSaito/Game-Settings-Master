@@ -47,9 +47,7 @@ pub fn parse_parameters(ini: &str) -> Vec<PresetParameter> {
 }
 
 pub fn reshade_bundle_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("presets")
-        .join("reshade")
+    crate::resource_paths::reshade_bundle_dir()
 }
 
 pub fn preset_ini_path(preset_id: &str) -> Result<PathBuf, String> {

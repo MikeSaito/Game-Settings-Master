@@ -4,7 +4,7 @@ use crate::scalability::{detect_scalability_limits, is_scalability_quality_index
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ParameterCatalogEntry {
@@ -116,7 +116,7 @@ fn load_remote_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
 }
 
 fn load_bundled_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
-    let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("catalog");
+    let dir = crate::resource_paths::catalog_dir();
     let mut entries = Vec::new();
 
     let legacy = dir.join("parameters.json");
@@ -148,9 +148,7 @@ fn load_author_catalog(
     if game_id != Some("steam-1962700") && !ini_has_subnautica {
         return Vec::new();
     }
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("catalog")
-        .join("subnautica2.json");
+    let path = crate::resource_paths::catalog_dir().join("subnautica2.json");
     parse_catalog_file(&path)
 }
 
@@ -173,9 +171,7 @@ pub fn parse_catalog_file(path: &Path) -> Vec<ParameterCatalogEntry> {
 }
 
 fn load_key_hints() -> HashMap<String, KeyHintEntry> {
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("catalog")
-        .join("key_hints.json");
+    let path = crate::resource_paths::catalog_dir().join("key_hints.json");
     let content = fs::read_to_string(&path).unwrap_or_else(|_| "[]".to_string());
     let hints: Vec<KeyHintEntry> = serde_json::from_str(&content).unwrap_or_default();
     hints
@@ -812,9 +808,7 @@ fn is_ue5_only_catalog_key(key: &str) -> bool {
 }
 
 fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String> {
-    let catalog_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("catalog")
-        .join("unity.json");
+    let catalog_path = crate::resource_paths::catalog_dir().join("unity.json");
     let entries = parse_catalog_file(&catalog_path);
     let boot_path = crate::unity::boot_config_path(config_dir);
     let boot_map = if boot_path.exists() {
@@ -992,6 +986,7 @@ fn infer_value_type(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn forza_catalog_parses_with_optional_impact() {

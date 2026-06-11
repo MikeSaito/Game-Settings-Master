@@ -71,7 +71,7 @@ fn embedded_author_tier_path(game_id: Option<&str>, id: &str) -> Option<PathBuf>
 }
 
 pub fn presets_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("presets")
+    crate::resource_paths::presets_dir()
 }
 
 pub fn resolve_engine_family(

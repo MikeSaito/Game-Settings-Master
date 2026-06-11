@@ -1,5 +1,6 @@
 mod app_error;
 mod backup;
+mod resource_paths;
 mod catalog;
 mod commands;
 mod covers;
@@ -36,6 +37,8 @@ use commands::{
     sync_presets_cmd, update_reshade_preset_cmd,
 };
 
+use tauri::Manager;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -43,7 +46,10 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
-        .setup(|_| {
+        .setup(|app| {
+            if let Ok(resource_dir) = app.path().resource_dir() {
+                resource_paths::init_resource_root(resource_dir);
+            }
             if remote_presets::effective_base_url().is_some() {
                 std::thread::spawn(|| {
                     #[cfg(windows)]

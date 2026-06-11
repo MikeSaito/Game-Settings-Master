@@ -407,7 +407,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
           {p.status?.installed_files?.length ? (
             <p>files: {p.status.installed_files.join(", ")}</p>
           ) : null}
-          <p>dll в приложении: {p.bundleBinValid ? "да" : "нет (dev)"}</p>
+          <p>dll в приложении: {p.bundleBinValid ? "да" : "нет"}</p>
           <p>шейдеры в приложении: {p.status?.shaders_in_bundle ? "да" : "нет"}</p>
           <p>шейдеры в игре: {p.status?.shaders_present ? "да" : "нет"}</p>
           {!p.bundleBinValid && (

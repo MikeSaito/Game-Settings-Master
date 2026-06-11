@@ -285,7 +285,7 @@ export function resolvePrimaryAlert(input: {
       tone: "warning",
       title: "ReShade не готов к установке",
       message:
-        "В приложении нет настоящих ReShade DLL (режим разработки). Установка недоступна — используйте «Играть без ReShade».",
+        "ReShade DLL не найдены в установке приложения. Переустановите Game Settings Master или используйте «Играть без ReShade».",
     };
   }
   if (input.showDisclaimer) {
