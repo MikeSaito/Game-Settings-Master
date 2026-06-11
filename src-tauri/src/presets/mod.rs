@@ -1037,9 +1037,20 @@ mod tests {
         )
         .unwrap();
 
-        let preset =
-            build_combined_preset("high", Some("steam-1962700"), None, Some(dir.path()), Some("ue5"))
-                .unwrap();
+        // Embedded author tier only — без remote_presets cache (иначе flaky на CI/локально).
+        let path = presets_dir()
+            .join("games")
+            .join("subnautica2-tiers")
+            .join("high.json");
+        let mut preset: PresetDefinition =
+            serde_json::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+        crate::presets::tune::tune_combined_preset(
+            "high",
+            &mut preset.files,
+            UeEngineFamily::Ue5,
+            true,
+        );
+
         let before = preview_preset(dir.path(), &preset, 1920, 1080).unwrap();
         assert!(!before.is_empty(), "initial preview should list changes");
 

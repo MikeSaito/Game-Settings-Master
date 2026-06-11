@@ -6,7 +6,9 @@ use std::path::Path;
 
 pub fn read_ini_file(path: &Path) -> Result<IniFile, String> {
     let (content, _) = read_text(path)?;
-    Ok(parse_ini(&content))
+    let mut ini = parse_ini(&content);
+    coalesce_ini_sections(&mut ini);
+    Ok(ini)
 }
 
 pub fn parse_ini(content: &str) -> IniFile {
