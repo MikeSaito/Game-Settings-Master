@@ -79,7 +79,6 @@
         "r.AmbientOcclusionLevels": "1",
         "r.AmbientOcclusionMaxQuality": "25",
         "r.SSR.Quality": "1",
-        "r.VolumetricFog": "0",
         "r.VolumetricFog.GridPixelSize": "16",
         "r.TextureStreaming": "1",
         "r.Streaming.DefragDynamicBounds": "1",

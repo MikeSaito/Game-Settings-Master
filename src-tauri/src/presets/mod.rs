@@ -941,6 +941,10 @@ mod tests {
                 .expect("system settings");
             assert!(!sys.contains_key("sg.ShadowQuality"));
             assert!(!sys.contains_key("r.ViewDistanceScale"));
+            assert!(
+                !sys.contains_key("r.VolumetricFog"),
+                "{id} must preserve fog for distant skyline blending"
+            );
         }
         for family in ["ue5", "ue4"] {
             let preset = build_combined_preset("epic", None, None, None, Some(family)).unwrap();

@@ -215,16 +215,15 @@ fn is_gi_or_reflection_sg(sg_key: &str) -> bool {
     )
 }
 
-/// Lumen/RT включаем позже по лестнице — medium без GI снижает CPU-хичи.
+/// Lumen/RT включаем поздно и умеренно — high без GI снижает CPU-хичи и фризы.
 fn menu_tier_gi_level(preset_id: &str, menu_max: u32, is_ue4: bool) -> u32 {
     if is_ue4 {
         return 0;
     }
     match preset_id {
-        "ultra-low" | "low" | "medium" => 0,
-        "high" => 1.min(menu_max),
-        "epic" => 2.min(menu_max),
-        "ultra-high" => menu_max,
+        "ultra-low" | "low" | "medium" | "high" => 0,
+        "epic" => 1.min(menu_max),
+        "ultra-high" => 2.min(menu_max),
         _ => menu_max,
     }
 }
@@ -848,25 +847,65 @@ mod tests {
     }
 
     #[test]
-    fn medium_gi_and_reflection_stay_off() {
+    fn high_gi_and_reflection_stay_off() {
+        let limits = detect_scalability_limits(None, None);
+        for preset_id in ["medium", "high"] {
+            let mut sections = HashMap::new();
+            sections.insert("[ScalabilityGroups]".to_string(), HashMap::new());
+            apply_tier_to_scalability(
+                &mut sections,
+                &limits,
+                preset_id,
+                UeEngineFamily::Ue5,
+                None,
+            );
+            let sg = sections.get("[ScalabilityGroups]").unwrap();
+            assert_eq!(
+                sg.get("sg.GlobalIlluminationQuality").map(String::as_str),
+                Some("0"),
+                "{preset_id} must keep GI off"
+            );
+            assert_eq!(
+                sg.get("sg.ReflectionQuality").map(String::as_str),
+                Some("0"),
+                "{preset_id} must keep reflections off"
+            );
+        }
+    }
+
+    #[test]
+    fn epic_and_ultra_high_limit_gi_for_frame_pacing() {
         let mut sections = HashMap::new();
         sections.insert("[ScalabilityGroups]".to_string(), HashMap::new());
         let limits = detect_scalability_limits(None, None);
+        apply_tier_to_scalability(&mut sections, &limits, "epic", UeEngineFamily::Ue5, None);
+        let sg = sections.get("[ScalabilityGroups]").unwrap();
+        assert_eq!(
+            sg.get("sg.GlobalIlluminationQuality").map(String::as_str),
+            Some("1")
+        );
+        assert_eq!(
+            sg.get("sg.ReflectionQuality").map(String::as_str),
+            Some("1")
+        );
+
+        let mut sections = HashMap::new();
+        sections.insert("[ScalabilityGroups]".to_string(), HashMap::new());
         apply_tier_to_scalability(
             &mut sections,
             &limits,
-            "medium",
+            "ultra-high",
             UeEngineFamily::Ue5,
             None,
         );
         let sg = sections.get("[ScalabilityGroups]").unwrap();
         assert_eq!(
             sg.get("sg.GlobalIlluminationQuality").map(String::as_str),
-            Some("0")
+            Some("2")
         );
         assert_eq!(
             sg.get("sg.ReflectionQuality").map(String::as_str),
-            Some("0")
+            Some("2")
         );
     }
 

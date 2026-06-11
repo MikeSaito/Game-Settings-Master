@@ -42,7 +42,6 @@ fn apply_ultra_low_performance(sys: &mut HashMap<String, String>) {
             ("r.CastShadows", "0"),
             ("r.ShadowQuality", "0"),
             ("r.Shadow.Virtual.Enable", "0"),
-            ("r.VolumetricFog", "0"),
             ("r.Nanite", "0"),
             ("r.Streaming.MipBias", "2"),
             ("foliage.DensityScale", "0.0"),
@@ -60,7 +59,6 @@ fn apply_low_performance(sys: &mut HashMap<String, String>) {
             ("r.ViewDistanceScale", "0.5"),
             ("r.ShadowQuality", "1"),
             ("r.Shadow.Virtual.Enable", "0"),
-            ("r.VolumetricFog", "0"),
             ("foliage.DensityScale", "0.5"),
             ("grass.DensityScale", "0.5"),
         ],
@@ -102,6 +100,10 @@ mod tests {
         assert!(
             !sys.contains_key("r.Streaming.PoolSize"),
             "UE5 presets must let the engine size the streaming pool automatically"
+        );
+        assert!(
+            !sys.contains_key("r.VolumetricFog"),
+            "UE5 presets must preserve game fog/skyline defaults"
         );
     }
 
