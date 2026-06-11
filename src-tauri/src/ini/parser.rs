@@ -97,9 +97,98 @@ pub fn ini_to_data(ini: &IniFile) -> HashMap<String, HashMap<String, String>> {
         .collect()
 }
 
+/// Сравнение значений ini: точное совпадение или эквивалентные числа (`2.2` == `2.200000`).
+pub fn ini_values_equal(a: &str, b: &str) -> bool {
+    if a == b {
+        return true;
+    }
+    if a.eq_ignore_ascii_case(b) {
+        return true;
+    }
+    match (a.parse::<f64>(), b.parse::<f64>()) {
+        (Ok(fa), Ok(fb)) if fa.is_finite() && fb.is_finite() => (fa - fb).abs() < 1e-4,
+        _ => false,
+    }
+}
+
+pub fn find_section_key<'a>(
+    sections: &'a HashMap<String, HashMap<String, String>>,
+    section: &str,
+) -> Option<&'a str> {
+    sections
+        .keys()
+        .find(|k| k.eq_ignore_ascii_case(section))
+        .map(String::as_str)
+}
+
+pub fn pick_canonical_section_name(a: &str, b: &str) -> String {
+    let a_mixed = a.chars().any(|c| c.is_uppercase());
+    let b_mixed = b.chars().any(|c| c.is_uppercase());
+    if a_mixed && !b_mixed {
+        a.to_string()
+    } else if b_mixed && !a_mixed {
+        b.to_string()
+    } else {
+        a.to_string()
+    }
+}
+
+/// Схлопывает дубли секций, отличающихся только регистром (типично для SN2).
+pub fn coalesce_ini_sections(ini: &mut IniFile) {
+    let mut merged: IndexMap<String, IniSection> = IndexMap::new();
+    for (name, mut section) in ini.sections.drain(..) {
+        if name.is_empty() {
+            merged.insert(name, section);
+            continue;
+        }
+        let existing_key = merged
+            .keys()
+            .find(|k| k.eq_ignore_ascii_case(&name))
+            .cloned();
+        if let Some(key) = existing_key {
+            let canonical = pick_canonical_section_name(&key, &name);
+            let mut existing = merged.shift_remove(&key).expect("section key");
+            for (k, v) in section.entries.drain(..) {
+                existing.entries.insert(k, v);
+            }
+            existing.preamble.extend(section.preamble);
+            merged.insert(canonical, existing);
+        } else {
+            merged.insert(name, section);
+        }
+    }
+    ini.sections = merged;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn ini_values_equal_treats_float_precision() {
+        assert!(ini_values_equal("2.200000", "2.2"));
+        assert!(ini_values_equal("0.900000", "0.9"));
+        assert!(!ini_values_equal("0.900000", "0.8"));
+    }
+
+    #[test]
+    fn coalesce_merges_case_insensitive_sections() {
+        let mut ini = parse_ini(
+            "[/Script/subnautica2.sn2settingslocal]\r\nGammaValue=1.0\r\n\r\n[/Script/Subnautica2.SN2SettingsLocal]\r\nResolutionScaleFixed=0.5\r\n",
+        );
+        coalesce_ini_sections(&mut ini);
+        assert_eq!(ini.sections.len(), 1);
+        let section = ini
+            .sections
+            .get("/Script/Subnautica2.SN2SettingsLocal")
+            .or_else(|| ini.sections.get("/Script/subnautica2.sn2settingslocal"))
+            .expect("merged section");
+        assert_eq!(section.entries.get("GammaValue").map(String::as_str), Some("1.0"));
+        assert_eq!(
+            section.entries.get("ResolutionScaleFixed").map(String::as_str),
+            Some("0.5")
+        );
+    }
 
     #[test]
     fn parses_ue_sections() {

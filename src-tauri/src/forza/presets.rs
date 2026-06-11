@@ -1,6 +1,7 @@
 use crate::forza::user_config::{
     backup_forza_media, copy_preset_media, parse_user_config_patch, preview_forza_diff,
-    preview_media_diff, read_user_config, tune_forza_selections, write_user_config,
+    preview_media_diff, read_user_config, rollback_media_from_snapshot, snapshot_media_for_rollback,
+    tune_forza_selections, write_user_config,
 };
 use crate::gpu::detect_gpu;
 use crate::models::{ConfigDiffEntry, PresetInfo};
@@ -58,6 +59,9 @@ pub fn list_forza_presets(game_id: Option<&str>) -> Result<Vec<PresetInfo>, Stri
 }
 
 fn preset_profile_dir(pack: &ResolvedPack, preset_id: &str) -> Result<PathBuf, String> {
+    if !crate::fs_util::is_safe_pack_id(preset_id) {
+        return Err(format!("Недопустимый идентификатор пресета: {preset_id}"));
+    }
     pack.forza_profile_dir(preset_id)
         .ok_or_else(|| format!("Профиль пресета '{preset_id}' не найден в кэше сервера"))
 }
@@ -82,14 +86,15 @@ pub fn preview_forza_preset(
     let gpu = detect_gpu();
     tune_forza_selections(&mut patch_selections, &gpu);
     let mut diff = preview_forza_diff(config_dir, &patch_settings, &patch_selections)?;
-    let install = install_dir.ok_or_else(|| {
+    let install_raw = install_dir.ok_or_else(|| {
         "Укажите папку установки Forza — без неё предпросмотр media-файлов неполный.".to_string()
     })?;
+    let install = crate::forza::validate_forza_install_dir(install_raw)?;
     let profile_dir = preset_profile_dir(&pack, preset_id)?;
     let media_src = pack
         .forza_media_src(&profile_dir)
         .ok_or_else(|| "В manifest пака не задан media_dir.".to_string())?;
-    diff.extend(preview_media_diff(install, &media_src)?);
+    diff.extend(preview_media_diff(&install, &media_src)?);
     Ok(diff)
 }
 
@@ -107,6 +112,9 @@ pub fn apply_forza_preset(
     tune_forza_selections(&mut patch_selections, &gpu);
 
     let diff = preview_forza_diff(config_dir, &patch_settings, &patch_selections)?;
+    let user_config_path = crate::forza::detect::user_config_file(config_dir);
+    let original_user_config = crate::fs_util::read_file_bytes(&user_config_path)
+        .map_err(|e| format!("Не удалось прочитать исходный UserConfigSelections: {e}"))?;
 
     let policy = pack.load_policy();
     let (mut settings, mut selections) = read_user_config(config_dir)?;
@@ -117,21 +125,46 @@ pub fn apply_forza_preset(
         &patch_selections,
         policy.as_ref(),
     );
-    write_user_config(config_dir, &settings, &selections)?;
 
     let profile_dir = preset_profile_dir(&pack, preset_id)?;
     let media_src = pack
         .forza_media_src(&profile_dir)
         .ok_or_else(|| "В manifest пака не задан media_dir.".to_string())?;
+    let media_snapshot = snapshot_media_for_rollback(install_dir, &media_src)?;
+
     if let Some(backup) = backup_path {
         backup_forza_media(install_dir, backup, &media_src)?;
     }
-    let mut changed = vec![crate::forza::detect::user_config_file(config_dir)
+    let media_changed = match copy_preset_media(install_dir, &media_src) {
+        Ok(changed) => changed,
+        Err(e) => {
+            if let Err(rb) = rollback_media_from_snapshot(&media_snapshot) {
+                return Err(format!("{e} (откат media: {rb})"));
+            }
+            return Err(e);
+        }
+    };
+
+    if let Err(e) = write_user_config(config_dir, &settings, &selections) {
+        let mut rollback_errors = Vec::new();
+        if let Err(rb) = rollback_media_from_snapshot(&media_snapshot) {
+            rollback_errors.push(rb);
+        }
+        if let Err(rb) = crate::fs_util::write_file_bytes(&user_config_path, &original_user_config) {
+            rollback_errors.push(rb);
+        }
+        if rollback_errors.is_empty() {
+            return Err(e);
+        }
+        return Err(format!("{e} (откат: {})", rollback_errors.join("; ")));
+    }
+
+    let mut changed = vec![user_config_path
         .file_name()
         .unwrap_or_default()
         .to_string_lossy()
         .to_string()];
-    changed.extend(copy_preset_media(install_dir, &media_src)?);
+    changed.extend(media_changed);
 
     Ok((changed, diff))
 }

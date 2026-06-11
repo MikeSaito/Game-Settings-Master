@@ -1,23 +1,22 @@
 use crate::backup::backup_config_dir;
+use chrono::Local;
 use crate::discovery::platform_hints_for_game;
 use crate::fs_util::ensure_config_writable;
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
-use crate::models::{ApplyResult, PresetDefinition};
+use crate::models::{ApplyResult, GameProfile, PresetDefinition};
 use crate::presets::{apply_preset_to_targets, build_combined_preset, resolve_apply_resolution};
+use crate::profiles::resolve_trusted_profile;
 use crate::unity::{apply_unity_preset, backup_unity_config, build_unity_combined_preset};
 use std::path::{Path, PathBuf};
 
-use super::validate_config_dir;
+use crate::ini::paths::validate_config_dir;
 
 pub(crate) fn backup_all_targets(targets: &[PathBuf]) -> Result<String, String> {
-    let mut primary_id = String::new();
-    for (i, target) in targets.iter().enumerate() {
-        let id = backup_config_dir(target)?;
-        if i == 0 {
-            primary_id = id;
-        }
+    let shared_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    for target in targets {
+        backup_config_dir(target, Some(&shared_id))?;
     }
-    Ok(primary_id)
+    Ok(shared_id)
 }
 
 fn apply_ue_with_strategy(
@@ -40,7 +39,8 @@ fn apply_ue_with_strategy(
     }
 
     let (width, height) = resolve_apply_resolution(&path);
-    let (changed_files, diff) = apply_preset_to_targets(&path, &hints, preset, width, height)?;
+    let (changed_files, diff) =
+        apply_preset_to_targets(&path, &hints, preset, width, height, Some(&backup_id))?;
     Ok(ApplyResult {
         backup_id,
         changed_files,
@@ -56,18 +56,45 @@ fn apply_forza_with_strategy(
     install_dir: Option<&Path>,
     exe_name: Option<&str>,
 ) -> Result<ApplyResult, String> {
-    let install = install_dir.ok_or_else(|| {
+    let gid = game_id.ok_or_else(|| {
+        "Для применения пресета Forza укажите game_id".to_string()
+    })?;
+    let install_raw = install_dir.ok_or_else(|| {
         "Не указана папка установки Forza — нужна для копирования media/ (DefaultTrackSettings и др.).".to_string()
     })?;
+    let install = crate::forza::validate_forza_install_dir(install_raw)?;
+    let trusted = resolve_trusted_profile(&GameProfile {
+        id: gid.to_string(),
+        name: gid.to_string(),
+        source: "ipc".to_string(),
+        install_dir: install.to_string_lossy().to_string(),
+        config_dir: Some(path.to_string_lossy().to_string()),
+        exe_name: None,
+        is_ue: false,
+        is_unity: false,
+        is_author_curated: true,
+        possible_unity: false,
+        possible_ue: false,
+        cover_url: None,
+        custom_cover: None,
+        build_id: None,
+        engine_family: "forza".to_string(),
+        engine_version: None,
+    })?;
+    if crate::discovery::normalize_install_dir(&trusted.install_dir)
+        != crate::discovery::normalize_install_dir(&install.to_string_lossy())
+    {
+        return Err("install_dir не соответствует доверенному профилю game_id".to_string());
+    }
     ensure_config_writable(path, exe_name)?;
     let backup_id = crate::forza::backup_forza_config(path)?;
     let backup_path = crate::backup::backup_store_dir(path).join(&backup_id);
     ensure_config_writable(path, exe_name)?;
     let (changed_files, diff) = crate::forza::apply_forza_preset(
         path,
-        install,
+        &install,
         preset_id,
-        game_id,
+        Some(gid),
         Some(backup_path.as_path()),
     )?;
     Ok(ApplyResult {
@@ -107,12 +134,19 @@ pub fn apply_game_preset(
 ) -> Result<ApplyResult, String> {
     let path = validate_config_dir(&config_dir)?;
     let install = install_dir.map(PathBuf::from);
+    let effective_engine = if crate::forza::is_forza_config_dir(&path) {
+        Some("forza".to_string())
+    } else if crate::unity::is_unity_config_dir(&path) {
+        Some("unity".to_string())
+    } else {
+        engine_family
+    };
 
-    if engine_family.as_deref() == Some("unity") {
+    if effective_engine.as_deref() == Some("unity") {
         return apply_unity_with_strategy(&path, &preset_id, exe_name.as_deref());
     }
 
-    if engine_family.as_deref() == Some("forza") {
+    if effective_engine.as_deref() == Some("forza") {
         return apply_forza_with_strategy(
             &path,
             &preset_id,
@@ -122,18 +156,20 @@ pub fn apply_game_preset(
         );
     }
 
+    let hints = platform_hints_for_game(game_id.as_deref(), effective_engine.as_deref());
+    let resolved_path = reconcile_config_dir(&path, &hints);
     let preset = build_combined_preset(
         &preset_id,
         game_id.as_deref(),
         install.as_deref(),
-        Some(path.as_path()),
-        engine_family.as_deref(),
+        Some(resolved_path.as_path()),
+        effective_engine.as_deref(),
     )?;
     apply_ue_with_strategy(
-        &path,
+        &resolved_path,
         &preset,
         exe_name.as_deref(),
         game_id.as_deref(),
-        engine_family.as_deref(),
+        effective_engine.as_deref(),
     )
 }

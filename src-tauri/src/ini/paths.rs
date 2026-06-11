@@ -4,7 +4,7 @@ use crate::discovery::{
 };
 use crate::ini::platform::{pick_platform_config_dir, PlatformHints};
 use std::env;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 use walkdir::WalkDir;
 
 pub fn resolve_config_dir(
@@ -107,4 +107,71 @@ fn search_for_game_user_settings(root: &Path, max_depth: usize) -> Option<PathBu
         }
     }
     None
+}
+
+pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
+    let path = PathBuf::from(config_dir.trim());
+    if !path.exists() {
+        return Err(format!("Каталог конфигурации не существует: {config_dir}"));
+    }
+
+    let resolved = path.canonicalize().unwrap_or_else(|_| path.clone());
+
+    if crate::unity::is_unity_config_dir(&resolved) {
+        return Ok(resolved);
+    }
+
+    if crate::forza::is_forza_config_dir(&resolved) {
+        return Ok(resolved);
+    }
+
+    let gus = resolved.join("GameUserSettings.ini");
+    if !ue_path_has_saved_segment(&resolved) && !gus.exists() {
+        return Err(
+            "Каталог не похож на UE Saved/Config — нужен GameUserSettings.ini или путь .../Saved/Config/Windows"
+                .to_string(),
+        );
+    }
+
+    if !gus.exists() {
+        return Err(format!(
+            "GameUserSettings.ini не найден в {}",
+            resolved.display()
+        ));
+    }
+
+    Ok(resolved)
+}
+
+fn ue_path_has_saved_segment(path: &Path) -> bool {
+    path.components().any(|c| {
+        matches!(c, Component::Normal(s) if s.eq_ignore_ascii_case("Saved"))
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn saved_segment_requires_path_component_not_substring() {
+        let dir = TempDir::new().unwrap();
+        let fake = dir.path().join("SavedGames");
+        fs::create_dir_all(&fake).unwrap();
+        assert!(!ue_path_has_saved_segment(&fake));
+
+        let real = dir.path().join("Saved").join("Config").join("Windows");
+        fs::create_dir_all(&real).unwrap();
+        assert!(ue_path_has_saved_segment(&real));
+    }
+
+    #[test]
+    fn validate_rejects_non_ue_without_gus_or_saved() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("RandomConfig");
+        fs::create_dir_all(&path).unwrap();
+        assert!(validate_config_dir(path.to_str().unwrap()).is_err());
+    }
 }

@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { setAppBackgroundMode } from "../lib/api";
+import { isTauriRuntime } from "../lib/tauriRuntime";
 
 const HIDE_DELAY_MS = 400;
 const SHOW_DELAY_MS = 120;
@@ -20,6 +21,7 @@ export function useAppWindowFocused(): boolean {
 
 /** Фокус ОС + скрытие окна в фоне (WebView2 не конкурирует с fullscreen-игрой). */
 export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
+  const inTauri = isTauriRuntime();
   const [tauriFocused, setTauriFocused] = useState(true);
   const [docVisible, setDocVisible] = useState(
     () => typeof document !== "undefined" && document.visibilityState === "visible",
@@ -28,11 +30,13 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   const showTimer = useRef<number | undefined>(undefined);
   const hiddenRef = useRef(false);
   const focusedRef = useRef(true);
-  const focused = tauriFocused && docVisible;
+  const focused = inTauri ? tauriFocused && docVisible : docVisible;
 
   focusedRef.current = focused;
 
   useEffect(() => {
+    if (!inTauri) return;
+
     let unlisten: (() => void) | undefined;
     const window = getCurrentWindow();
 
@@ -44,7 +48,7 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
     return () => {
       unlisten?.();
     };
-  }, []);
+  }, [inTauri]);
 
   useEffect(() => {
     const onVisibility = () => setDocVisible(document.visibilityState === "visible");
@@ -53,6 +57,8 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (!inTauri) return;
+
     window.clearTimeout(hideTimer.current);
     window.clearTimeout(showTimer.current);
 
@@ -77,7 +83,7 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
     }, HIDE_DELAY_MS);
 
     return () => window.clearTimeout(hideTimer.current);
-  }, [focused]);
+  }, [focused, inTauri]);
 
   return (
     <AppWindowFocusContext.Provider value={focused}>

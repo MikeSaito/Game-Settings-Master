@@ -5,6 +5,7 @@ use std::sync::Mutex;
 
 const APP_DIR: &str = "UESettingsMaster";
 const CONFIG_FILE: &str = "preset-server.json";
+const MAX_CONFIG_JSON_BYTES: usize = 64 * 1024;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PresetServerConfig {
@@ -47,6 +48,15 @@ pub fn load_config() -> Result<PresetServerConfig, String> {
 
     let path = config_path()?;
     let cfg = if path.is_file() {
+        let meta = fs::metadata(&path)
+            .map_err(|e| format!("Не удалось прочитать preset-server.json: {e}"))?;
+        if meta.len() as usize > MAX_CONFIG_JSON_BYTES {
+            return Err(format!(
+                "preset-server.json слишком большой ({} KB, лимит {} KB)",
+                meta.len() / 1024,
+                MAX_CONFIG_JSON_BYTES / 1024
+            ));
+        }
         let raw = fs::read_to_string(&path)
             .map_err(|e| format!("Не удалось прочитать preset-server.json: {e}"))?;
         serde_json::from_str(&raw).map_err(|e| format!("Некорректный preset-server.json: {e}"))?
@@ -68,7 +78,8 @@ pub fn save_config(cfg: &PresetServerConfig) -> Result<(), String> {
     }
     let raw = serde_json::to_string_pretty(cfg)
         .map_err(|e| format!("Не удалось сериализовать настройки: {e}"))?;
-    fs::write(&path, raw).map_err(|e| format!("Не удалось сохранить настройки: {e}"))?;
+    crate::fs_util::write_file_bytes_opts(&path, raw.as_bytes(), true)
+        .map_err(|e| format!("Не удалось сохранить настройки: {e}"))?;
 
     if let Ok(mut guard) = CONFIG.lock() {
         *guard = Some(cfg.clone());
@@ -110,11 +121,42 @@ pub fn effective_base_url() -> Option<String> {
 
 pub fn set_base_url(url: Option<String>) -> Result<PresetServerConfig, String> {
     let mut cfg = load_config()?;
-    cfg.base_url = url
-        .map(|u| u.trim().trim_end_matches('/').to_string())
-        .filter(|u| !u.is_empty());
+    cfg.base_url = match url {
+        Some(u) => {
+            let trimmed = u.trim().trim_end_matches('/').to_string();
+            if trimmed.is_empty() {
+                None
+            } else {
+                validate_preset_server_url(&trimmed)?;
+                Some(trimmed)
+            }
+        }
+        None => None,
+    };
     save_config(&cfg)?;
     Ok(cfg)
+}
+
+/// HTTPS in production; http only for localhost dev servers.
+pub fn validate_preset_server_url(url: &str) -> Result<(), String> {
+    let trimmed = url.trim();
+    if trimmed.is_empty() {
+        return Ok(());
+    }
+    if trimmed.starts_with("https://") {
+        return Ok(());
+    }
+    if trimmed.starts_with("http://") {
+        let rest = trimmed.strip_prefix("http://").unwrap_or("");
+        let host = rest.split('/').next().unwrap_or("");
+        let host = host.split(':').next().unwrap_or(host);
+        if host.eq_ignore_ascii_case("localhost") || host.starts_with("127.0.0.1") {
+            return Ok(());
+        }
+    }
+    Err(
+        "URL сервера пресетов должен быть https:// (http:// только для localhost)".to_string(),
+    )
 }
 
 #[allow(dead_code)]

@@ -5,6 +5,7 @@ pub mod user_config;
 
 pub use detect::{
     is_forza_config_dir, is_forza_install, resolve_forza_config_dir, user_config_file,
+    validate_forza_install_dir,
 };
 pub use presets::{apply_forza_preset, list_forza_presets, preview_forza_preset};
-pub use user_config::backup_forza_config;
+pub use user_config::{backup_forza_config, restore_forza_media};

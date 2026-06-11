@@ -14,6 +14,15 @@ import type {
   PresetInfo,
   PresetServerConfig,
   RemotePresetStatus,
+  ReShadeGameStatus,
+  ReShadeInstallResult,
+  ReShadePresetDetails,
+  ReShadePresetOverrides,
+  ReShadePerGameSettings,
+  ReShadeRemoveResult,
+  ReShadeSettings,
+  ReShadeSettingsResponse,
+  ReShadeWorkspace,
   ScalabilityLimits,
   SyncPresetsReport,
 } from "./types";
@@ -71,10 +80,12 @@ export function getGameParameters(
 export function getScalabilityLimits(
   configDir: string,
   installDir?: string,
+  gameId?: string,
 ): Promise<ScalabilityLimits> {
   return invoke("get_scalability_limits_cmd", {
     configDir,
     installDir: installDir ?? null,
+    gameId: gameId ?? null,
   });
 }
 
@@ -127,37 +138,57 @@ export function applyCustom(
   files: Record<string, Record<string, Record<string, string>>>,
   exeName?: string,
   removals?: Record<string, Record<string, string[]>>,
+  gameId?: string,
+  engineFamily?: string,
 ): Promise<ApplyResult> {
   return invoke("apply_custom_cmd", {
     configDir,
     changes: { files, removals: removals ?? {} },
     exeName: exeName ?? null,
+    gameId: gameId ?? null,
+    engineFamily: engineFamily ?? null,
   });
 }
 
-export function listBackups(configDir: string): Promise<BackupInfo[]> {
-  return invoke("list_backups_cmd", { configDir });
+export function listBackups(
+  configDir: string,
+  gameId?: string,
+): Promise<BackupInfo[]> {
+  return invoke("list_backups_cmd", {
+    configDir,
+    gameId: gameId ?? null,
+  });
 }
 
 export function restoreBackup(
   configDir: string,
   backupId: string,
   exeName?: string,
+  gameId?: string,
+  engineFamily?: string,
+  installDir?: string,
 ): Promise<string[]> {
   return invoke("restore_backup_cmd", {
     configDir,
     backupId,
     exeName: exeName ?? null,
+    gameId: gameId ?? null,
+    engineFamily: engineFamily ?? null,
+    installDir: installDir ?? null,
   });
 }
 
 export function resetConfigToUser(
   configDir: string,
   exeName?: string,
+  gameId?: string,
+  engineFamily?: string,
 ): Promise<ConfigResetResult> {
   return invoke("reset_config_to_user_cmd", {
     configDir,
     exeName: exeName ?? null,
+    gameId: gameId ?? null,
+    engineFamily: engineFamily ?? null,
   });
 }
 
@@ -224,12 +255,21 @@ export function applyGameOverride(
   });
 }
 
-export function openConfigFolder(configDir: string): Promise<void> {
-  return invoke("open_config_folder", { configDir });
+export function openConfigFolder(
+  configDir: string,
+  gameId?: string,
+): Promise<void> {
+  return invoke("open_config_folder", {
+    configDir,
+    gameId: gameId ?? null,
+  });
 }
 
-export function launchGame(profile: GameProfile): Promise<LaunchResult> {
-  return invoke("launch_game_cmd", { profile });
+export function launchGame(
+  profile: GameProfile,
+  skipReShade = false,
+): Promise<LaunchResult> {
+  return invoke("launch_game_cmd", { profile, skip_reshade: skipReShade });
 }
 
 export function getPresetServerStatus(): Promise<RemotePresetStatus> {
@@ -244,4 +284,97 @@ export function setPresetServerUrl(
 
 export function syncPresets(force = false): Promise<SyncPresetsReport> {
   return invoke("sync_presets_cmd", { force });
+}
+
+export function getReShadeSettings(
+  gameId?: string,
+  engineFamily?: string,
+): Promise<ReShadeSettingsResponse> {
+  return invoke("get_reshade_settings_cmd", {
+    gameId: gameId ?? null,
+    engineFamily: engineFamily ?? null,
+  });
+}
+
+export function getReShadeWorkspace(profile: GameProfile): Promise<ReShadeWorkspace> {
+  return invoke("get_reshade_workspace_cmd", { profile });
+}
+
+export function setReShadeSettings(settings: ReShadeSettings): Promise<ReShadeSettings> {
+  return invoke("set_reshade_settings_cmd", { settings });
+}
+
+export function getReShadeStatus(profile: GameProfile): Promise<ReShadeGameStatus> {
+  return invoke("get_reshade_status_cmd", { profile });
+}
+
+export function shouldPromptReShadeApi(gameId: string): Promise<boolean> {
+  return invoke("should_prompt_reshade_api_cmd", { gameId });
+}
+
+export function installReShade(
+  profile: GameProfile,
+  api: string,
+  presetId?: string,
+): Promise<ReShadeInstallResult> {
+  return invoke("install_reshade_cmd", { profile, api, presetId: presetId ?? null });
+}
+
+export function ensureReShadeInstalled(
+  profile: GameProfile,
+  api: string,
+  presetId?: string,
+): Promise<void> {
+  return invoke("ensure_reshade_installed_cmd", {
+    profile,
+    api,
+    presetId: presetId ?? null,
+  });
+}
+
+export function removeReShade(profile: GameProfile): Promise<ReShadeRemoveResult> {
+  return invoke("remove_reshade_cmd", { profile });
+}
+
+export function updateReShadePreset(
+  profile: GameProfile,
+  api: string,
+  presetId: string,
+): Promise<ReShadeInstallResult> {
+  return invoke("update_reshade_preset_cmd", { profile, api, presetId });
+}
+
+export function getReShadePresetDetails(
+  presetId: string,
+  gameId?: string,
+): Promise<ReShadePresetDetails> {
+  return invoke("get_reshade_preset_details_cmd", {
+    presetId,
+    gameId: gameId ?? null,
+  });
+}
+
+export function updateReShadePresetParameters(
+  profile: GameProfile,
+  api: string,
+  presetId: string,
+  overrides: ReShadePresetOverrides,
+): Promise<ReShadeInstallResult> {
+  return invoke("update_reshade_preset_parameters_cmd", {
+    profile,
+    api,
+    presetId,
+    overrides,
+  });
+}
+
+export function openGameFolder(profile: GameProfile): Promise<void> {
+  return invoke("open_game_folder_cmd", { profile });
+}
+
+export function setReShadePerGame(
+  gameId: string,
+  perGame: ReShadePerGameSettings,
+): Promise<ReShadeSettings> {
+  return invoke("set_reshade_per_game_cmd", { gameId, perGame });
 }

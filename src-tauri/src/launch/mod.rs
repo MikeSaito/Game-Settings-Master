@@ -7,17 +7,22 @@ use std::path::{Path, PathBuf};
 pub struct LaunchResult {
     pub launcher: String,
     pub detail: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub warning: Option<String>,
 }
 
-pub fn launch_game(profile: &GameProfile) -> Result<LaunchResult, String> {
-    match profile.source.as_str() {
+pub fn launch_game(profile: &GameProfile, skip_reshade: bool) -> Result<LaunchResult, String> {
+    let warning = crate::reshade::apply_launch_reshade_policy(profile, skip_reshade)?;
+    let mut result = match profile.source.as_str() {
         "steam" => launch_steam_profile(profile),
         "epic" => launch_epic_profile(profile),
         "manual" => launch_manual_profile(profile),
         other => Err(format!(
             "Запуск через магазин не поддерживается для источника «{other}»"
         )),
-    }
+    }?;
+    result.warning = warning;
+    Ok(result)
 }
 
 fn launch_steam_profile(profile: &GameProfile) -> Result<LaunchResult, String> {
@@ -67,18 +72,38 @@ pub fn launch_steam_app_id(app_id: &str) -> Result<LaunchResult, String> {
     Ok(LaunchResult {
         launcher: "Steam".to_string(),
         detail: format!("steam://run/{app_id}"),
+        warning: None,
     })
 }
 
-pub fn launch_epic_app_name(app_name: &str) -> Result<LaunchResult, String> {
+pub const MAX_EPIC_APP_NAME_LEN: usize = 128;
+
+pub fn validate_epic_app_name(app_name: &str) -> Result<(), String> {
     if app_name.is_empty() {
         return Err("Некорректный AppName Epic".to_string());
     }
+    if app_name.len() > MAX_EPIC_APP_NAME_LEN {
+        return Err(format!(
+            "Некорректный AppName Epic: длина > {MAX_EPIC_APP_NAME_LEN}"
+        ));
+    }
+    if !app_name
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '.' || c == '-')
+    {
+        return Err("Некорректный AppName Epic: недопустимые символы".to_string());
+    }
+    Ok(())
+}
+
+pub fn launch_epic_app_name(app_name: &str) -> Result<LaunchResult, String> {
+    validate_epic_app_name(app_name)?;
     let url = format!("com.epicgames.launcher://apps/{app_name}?action=launch");
     open_launch_url(&url)?;
     Ok(LaunchResult {
         launcher: "Epic Games".to_string(),
         detail: url,
+        warning: None,
     })
 }
 
@@ -131,6 +156,8 @@ fn find_steamapps_dir(install: &Path) -> Option<PathBuf> {
     None
 }
 
+const MAX_EPIC_MANIFEST_BYTES: u64 = 512 * 1024;
+
 fn find_epic_app_name_for_install(install_dir: &str) -> Option<String> {
     let normalized = normalize_install_dir(install_dir);
     for dir in epic_manifest_dirs() {
@@ -140,6 +167,10 @@ fn find_epic_app_name_for_install(install_dir: &str) -> Option<String> {
             if path.extension().and_then(|e| e.to_str()) != Some("item") {
                 continue;
             }
+            let meta = fs::metadata(&path).ok()?;
+            if meta.len() > MAX_EPIC_MANIFEST_BYTES {
+                continue;
+            }
             let content = fs::read_to_string(&path).ok()?;
             let json: serde_json::Value = serde_json::from_str(&content).ok()?;
             let install_location = json.get("InstallLocation")?.as_str()?;
@@ -147,10 +178,11 @@ fn find_epic_app_name_for_install(install_dir: &str) -> Option<String> {
             if normalize_install_dir(&install_path.to_string_lossy()) != normalized {
                 continue;
             }
-            return json
-                .get("AppName")
-                .and_then(|v| v.as_str())
-                .map(|s| s.to_string());
+            let app_name = json.get("AppName").and_then(|v| v.as_str())?;
+            if validate_epic_app_name(app_name).is_err() {
+                continue;
+            }
+            return Some(app_name.to_string());
         }
     }
     None
@@ -228,5 +260,18 @@ mod tests {
             engine_version: None,
         })
         .is_ok());
+    }
+
+    #[test]
+    fn rejects_oversized_epic_app_name() {
+        let long = "a".repeat(MAX_EPIC_APP_NAME_LEN + 1);
+        assert!(validate_epic_app_name(&long).is_err());
+        assert!(launch_epic_app_name(&long).is_err());
+    }
+
+    #[test]
+    fn rejects_epic_app_name_with_invalid_chars() {
+        assert!(validate_epic_app_name("Fortnite/../x").is_err());
+        assert!(validate_epic_app_name("app name").is_err());
     }
 }

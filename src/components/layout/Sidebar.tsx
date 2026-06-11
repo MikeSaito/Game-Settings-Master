@@ -1,4 +1,5 @@
 import { Monitor } from "lucide-react";
+import { supportsIniPresets, supportsReShade } from "../../lib/gameEngine";
 import type { AppTab, GameProfile } from "../../lib/types";
 import { cn } from "../../lib/cn";
 import { GameCover } from "../GameCover";
@@ -31,7 +32,7 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
             <div className="truncate text-sm font-semibold text-[var(--color-text)]">
               Game Settings Master
             </div>
-            <div className="mt-0.5 text-xs text-muted">UE · Unity · от автора</div>
+            <div className="mt-0.5 text-xs text-muted">UE · Unity · ReShade</div>
           </div>
         </div>
       </div>
@@ -86,9 +87,13 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
                 {selectedGame.name}
               </div>
               <div className="mt-2">
-                <Badge tone={selectedGame.config_dir ? "success" : "warning"}>
-                  {selectedGame.config_dir ? "Config OK" : "Нужен config"}
-                </Badge>
+                {supportsIniPresets(selectedGame) ? (
+                  <Badge tone="success">Config OK</Badge>
+                ) : supportsReShade(selectedGame) ? (
+                  <Badge tone="accent">ReShade</Badge>
+                ) : (
+                  <Badge tone="warning">Нужен install_dir</Badge>
+                )}
               </div>
             </div>
           </button>

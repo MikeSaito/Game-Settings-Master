@@ -1,0 +1,43 @@
+ReShade — third-party components in Game Settings Master
+=========================================================
+
+ReShade addon (DLL / JSON)
+--------------------------
+  Project:  ReShade — https://reshade.me
+  Author:   Patrick Mours (crosire)
+  License:  BSD 3-Clause License
+  Full text: LICENSE-ReShade.txt (this directory)
+
+  GSM copies official ReShade addon files into the game folder when the user
+  installs ReShade from the app. Game Settings Master is not affiliated with
+  or endorsed by ReShade or its authors.
+
+ReShade shaders (HLSL / .fx)
+----------------------------
+  Collection: https://github.com/crosire/reshade-shaders (branch: nvidia)
+  Pin:        scripts/fetch-reshade-shaders.ps1 (GSM_RESHADE_SHADERS_COMMIT)
+  Details:    shaders/THIRD-PARTY-NOTICES.txt
+
+  Preset effects (Clarity, Vignette, AdaptiveSharpen, etc.) are authored by
+  third parties; see headers inside each .fx file.
+
+Developer setup (not required for end users)
+--------------------------------------------
+  Place official ReShade addon DLLs in presets/reshade/bin/ before release:
+    - dxgi.dll   (DXGI / DX11 / DX12)
+    - d3d11.dll  (optional legacy D3D11 proxy)
+    - ReShade64.dll + ReShade64.json (Vulkan implicit layer, ReShade 6.7+)
+    - others per API — see src-tauri/src/reshade/api.rs
+
+  GSM rejects install if bundled DLL < 64 KB (dev stubs). Stubs must never
+  reach the game folder.
+
+  Fetch scripts (repo root):
+    .\scripts\fetch-reshade-shaders.ps1
+    .\scripts\fetch-reshade-binaries.ps1
+    .\scripts\update-reshade-hashes.ps1  (regenerate binary-hashes.json after bump)
+
+  SHA256 pins: presets/reshade/binary-hashes.json
+
+  Without shaders GSM installs a safe preset (Techniques= empty) so the game
+  still starts.

@@ -5,7 +5,7 @@ use regex::Regex;
 use roxmltree::Document;
 use std::collections::BTreeMap;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 const USER_CONFIG_FILE: &str = "UserConfigSelections";
 
@@ -374,6 +374,9 @@ fn iter_preset_media_files(media_src: &Path) -> Result<Vec<(std::path::PathBuf, 
             .strip_prefix(media_src)
             .map_err(|e| e.to_string())?;
         let rel_s = rel.to_string_lossy().replace('\\', "/");
+        if !crate::fs_util::is_safe_manifest_relative_path(&rel_s) {
+            return Err(format!("Недопустимый путь media в preset: {rel_s}"));
+        }
         files.push((rel.to_path_buf(), rel_s));
     }
     files.sort_by(|a, b| a.1.cmp(&b.1));
@@ -390,6 +393,8 @@ pub fn preview_media_diff(
     for (rel, rel_s) in iter_preset_media_files(&media_src)? {
         let src = media_src.join(&rel);
         let dest = media_dest_root.join(&rel);
+        crate::fs_util::ensure_path_within_root(&media_dest_root, &dest)
+            .map_err(|_| format!("Недопустимый путь media/{rel_s}"))?;
         if !media_file_differs(&src, &dest)? {
             continue;
         }
@@ -449,6 +454,8 @@ pub fn copy_preset_media(install_dir: &Path, media_src: &Path) -> Result<Vec<Str
     for (rel, rel_s) in iter_preset_media_files(&media_src)? {
         let src = media_src.join(&rel);
         let dest = media_dest.join(&rel);
+        crate::fs_util::ensure_path_within_root(&media_dest, &dest)
+            .map_err(|_| format!("Недопустимый путь media/{rel_s}"))?;
         if !media_file_differs(&src, &dest)? {
             continue;
         }
@@ -456,7 +463,9 @@ pub fn copy_preset_media(install_dir: &Path, media_src: &Path) -> Result<Vec<Str
             fs::create_dir_all(parent)
                 .map_err(|e| format!("Не удалось создать {}: {e}", parent.display()))?;
         }
-        fs::copy(&src, &dest)
+        let bytes = crate::fs_util::read_file_bytes(&src)
+            .map_err(|e| format!("Не удалось прочитать media {}: {e}", rel.display()))?;
+        crate::fs_util::write_file_bytes(&dest, &bytes)
             .map_err(|e| format!("Не удалось скопировать media {}: {e}", rel.display()))?;
         changed.push(format!("media/{rel_s}"));
     }
@@ -464,8 +473,118 @@ pub fn copy_preset_media(install_dir: &Path, media_src: &Path) -> Result<Vec<Str
     Ok(changed)
 }
 
+#[derive(Debug, Clone)]
+pub struct MediaRollbackEntry {
+    pub rel: String,
+    pub dst: PathBuf,
+    pub previous: Option<Vec<u8>>,
+}
+
+pub fn snapshot_media_for_rollback(
+    install_dir: &Path,
+    media_src: &Path,
+) -> Result<Vec<MediaRollbackEntry>, String> {
+    let media_dest = install_dir.join("media");
+    let mut snapshot = Vec::new();
+    for (rel, rel_s) in iter_preset_media_files(media_src)? {
+        let dst = media_dest.join(&rel);
+        crate::fs_util::ensure_path_within_root(&media_dest, &dst)
+            .map_err(|_| format!("Недопустимый путь media/{rel_s}"))?;
+        let previous = if dst.is_file() {
+            Some(
+                crate::fs_util::read_file_bytes(&dst)
+                    .map_err(|e| format!("Не удалось прочитать media/{rel_s}: {e}"))?,
+            )
+        } else {
+            None
+        };
+        snapshot.push(MediaRollbackEntry {
+            rel: rel_s,
+            dst,
+            previous,
+        });
+    }
+    Ok(snapshot)
+}
+
+pub fn rollback_media_from_snapshot(snapshot: &[MediaRollbackEntry]) -> Result<(), String> {
+    for entry in snapshot {
+        if let Some(bytes) = &entry.previous {
+            if let Some(parent) = entry.dst.parent() {
+                fs::create_dir_all(parent).map_err(|e| {
+                    format!(
+                        "Не удалось создать каталог для rollback media/{}: {e}",
+                        entry.rel
+                    )
+                })?;
+            }
+            crate::fs_util::write_file_bytes(&entry.dst, bytes).map_err(|e| {
+                format!(
+                    "Не удалось откатить media/{} к предыдущей версии: {e}",
+                    entry.rel
+                )
+            })?;
+        } else if entry.dst.exists() {
+            crate::fs_util::clear_readonly(&entry.dst);
+            fs::remove_file(&entry.dst)
+                .map_err(|e| format!("Не удалось удалить media/{} при rollback: {e}", entry.rel))?;
+        }
+    }
+    Ok(())
+}
+
+pub fn restore_forza_media(
+    install_dir: &Path,
+    backup_path: &Path,
+) -> Result<Vec<String>, String> {
+    use crate::fs_util::{
+        ensure_path_within_root, is_safe_manifest_relative_path, read_file_bytes, write_file_bytes,
+    };
+
+    let install_dir = crate::forza::validate_forza_install_dir(install_dir)?;
+
+    let media_backup = backup_path.join("media");
+    if !media_backup.is_dir() {
+        return Ok(Vec::new());
+    }
+
+    let install_media = install_dir.join("media");
+    let mut restored = Vec::new();
+
+    for entry in walkdir::WalkDir::new(&media_backup)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        let rel = entry
+            .path()
+            .strip_prefix(&media_backup)
+            .map_err(|e| e.to_string())?;
+        let rel_s = rel.to_string_lossy().replace('\\', "/");
+        if !is_safe_manifest_relative_path(&rel_s) {
+            return Err(format!("Недопустимый путь media в backup: {rel_s}"));
+        }
+        let dst = install_media.join(rel);
+        if let Some(parent) = dst.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("Не удалось создать media/{rel_s}: {e}"))?;
+        }
+        ensure_path_within_root(&install_media, &dst)
+            .map_err(|_| format!("Недопустимый путь восстановления media: {rel_s}"))?;
+        let bytes = read_file_bytes(entry.path())
+            .map_err(|e| format!("Не удалось прочитать backup media {rel_s}: {e}"))?;
+        write_file_bytes(&dst, &bytes)
+            .map_err(|e| format!("Не удалось восстановить media {rel_s}: {e}"))?;
+        restored.push(format!("media/{rel_s}"));
+    }
+
+    Ok(restored)
+}
+
 pub fn backup_forza_config(config_dir: &Path) -> Result<String, String> {
-    crate::backup::backup_forza_config_dir(config_dir)
+    crate::backup::backup_forza_config_dir(config_dir, None)
 }
 
 #[cfg(test)]
@@ -494,6 +613,27 @@ mod tests {
     }
 
     #[test]
+    fn restore_forza_media_roundtrip() {
+        let install = tempfile::tempdir().unwrap();
+        std::fs::write(install.path().join("forzahorizon6.exe"), b"").unwrap();
+        let backup = tempfile::tempdir().unwrap();
+        let rel = Path::new("Tracks").join("test.xml");
+        let backup_file = backup.path().join("media").join(&rel);
+        fs::create_dir_all(backup_file.parent().unwrap()).unwrap();
+        fs::write(&backup_file, b"<original/>").unwrap();
+        let dest = install.path().join("media").join(&rel);
+        fs::create_dir_all(dest.parent().unwrap()).unwrap();
+        fs::write(&dest, b"<changed/>").unwrap();
+
+        let restored = restore_forza_media(install.path(), backup.path()).unwrap();
+        assert!(restored.iter().any(|f| f.contains("Tracks/test.xml")));
+        assert_eq!(
+            fs::read_to_string(install.path().join("media").join(&rel)).unwrap(),
+            "<original/>"
+        );
+    }
+
+    #[test]
     fn copy_media_skips_identical_files() {
         let install = tempfile::tempdir().unwrap();
         let media_src = tempfile::tempdir().unwrap();
@@ -507,5 +647,31 @@ mod tests {
 
         let changed = copy_preset_media(install.path(), media_src.path()).unwrap();
         assert!(changed.is_empty());
+    }
+
+    #[test]
+    fn media_snapshot_rolls_back_new_and_existing_files() {
+        let install = tempfile::tempdir().unwrap();
+        let media_src = tempfile::tempdir().unwrap();
+        let rel_existing = Path::new("Tracks").join("existing.xml");
+        let rel_new = Path::new("Tracks").join("new.xml");
+
+        let src_existing = media_src.path().join(&rel_existing);
+        let src_new = media_src.path().join(&rel_new);
+        fs::create_dir_all(src_existing.parent().unwrap()).unwrap();
+        fs::write(&src_existing, b"<preset-existing/>").unwrap();
+        fs::write(&src_new, b"<preset-new/>").unwrap();
+
+        let dst_existing = install.path().join("media").join(&rel_existing);
+        fs::create_dir_all(dst_existing.parent().unwrap()).unwrap();
+        fs::write(&dst_existing, b"<old/>").unwrap();
+
+        let snapshot = snapshot_media_for_rollback(install.path(), media_src.path()).unwrap();
+        let changed = copy_preset_media(install.path(), media_src.path()).unwrap();
+        assert_eq!(changed.len(), 2);
+
+        rollback_media_from_snapshot(&snapshot).unwrap();
+        assert_eq!(fs::read_to_string(&dst_existing).unwrap(), "<old/>");
+        assert!(!install.path().join("media").join(&rel_new).exists());
     }
 }

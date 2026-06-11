@@ -1,12 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Game Settings Master",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "identifier": "com.mike.ue-settings-master",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run build && npm run reshade:verify",
     "frontendDist": "../dist"
   },
   "app": {
@@ -20,7 +20,7 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: data: https://cdn.cloudflare.steamstatic.com; connect-src 'self' https://github.com https://raw.githubusercontent.com ipc: http://localhost:* http://127.0.0.1:*; style-src 'self' 'unsafe-inline'; script-src 'self'"
     }
   },
   "bundle": {
@@ -39,6 +39,7 @@
       "presets/ue4/*": "presets/ue4/",
       "presets/unity/*": "presets/unity/",
       "presets/games/*": "presets/games/",
+      "presets/reshade/**/*": "presets/reshade/",
       "catalog/*": "catalog/",
       "games/*": "games/"
     },

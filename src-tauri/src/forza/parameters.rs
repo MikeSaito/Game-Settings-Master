@@ -3,6 +3,20 @@ use crate::models::{ConfigDiffEntry, CustomChanges};
 use std::path::Path;
 
 pub const FORZA_CONFIG_FILE: &str = "UserConfigSelections";
+const MAX_FORZA_KEY_LEN: usize = 256;
+
+fn validate_forza_key(key: &str, kind: &str) -> Result<(), String> {
+    if key.is_empty() {
+        return Err(format!("Пустой ключ Forza ({kind})"));
+    }
+    if key.len() > MAX_FORZA_KEY_LEN {
+        return Err(format!(
+            "Слишком длинный ключ Forza ({kind}): {} > {MAX_FORZA_KEY_LEN}",
+            key.len()
+        ));
+    }
+    Ok(())
+}
 
 pub fn apply_forza_custom(
     config_dir: &Path,
@@ -15,6 +29,7 @@ pub fn apply_forza_custom(
     if let Some(sections) = changes.files.get(FORZA_CONFIG_FILE) {
         if let Some(sel_changes) = sections.get("selections") {
             for (id, value) in sel_changes {
+                validate_forza_key(id, "selections")?;
                 if value.trim().is_empty() {
                     selections.remove(id);
                 } else {
@@ -24,6 +39,7 @@ pub fn apply_forza_custom(
         }
         if let Some(set_changes) = sections.get("settings") {
             for (tag, value) in set_changes {
+                validate_forza_key(tag, "settings")?;
                 if value.trim().is_empty() {
                     settings.remove(tag);
                 } else {

@@ -50,12 +50,35 @@ pub fn import_custom_cover(game_id: &str, source: &Path) -> Result<String, Strin
     if !source.exists() {
         return Err("Файл изображения не найден".to_string());
     }
+    if source.is_dir() {
+        return Err("Укажите файл изображения, а не папку".to_string());
+    }
+    let canonical = source
+        .canonicalize()
+        .map_err(|e| format!("Некорректный путь к изображению: {e}"))?;
+    if canonical.is_dir() {
+        return Err("Укажите файл изображения, а не папку".to_string());
+    }
+    let size = fs::metadata(&canonical)
+        .map_err(|e| format!("Не удалось прочитать изображение: {e}"))?
+        .len();
+    const MAX_COVER_BYTES: u64 = 10 * 1024 * 1024;
+    if size > MAX_COVER_BYTES {
+        return Err("Изображение слишком большое (макс. 10 МБ)".to_string());
+    }
+    if canonical
+        .symlink_metadata()
+        .map(|m| m.file_type().is_symlink())
+        .unwrap_or(false)
+    {
+        return Err("Символические ссылки не поддерживаются".to_string());
+    }
 
-    let ext = extension_from_path(source)
+    let ext = extension_from_path(&canonical)
         .ok_or_else(|| "Поддерживаются PNG, JPG, WEBP, GIF".to_string())?;
 
     let dest = covers_dir()?.join(cover_filename(game_id, &ext));
-    fs::copy(source, &dest).map_err(|e| format!("Не удалось сохранить обложку: {e}"))?;
+    fs::copy(&canonical, &dest).map_err(|e| format!("Не удалось сохранить обложку: {e}"))?;
 
     Ok(dest.to_string_lossy().to_string())
 }

@@ -4,6 +4,7 @@ import illGpu from "../svg/ill-gpu.svg?raw";
 import illEditor from "../svg/ill-editor.svg?raw";
 import illBackup from "../svg/ill-backup.svg?raw";
 import illCloud from "../svg/ill-cloud.svg?raw";
+import illReshade from "../svg/ill-reshade.svg?raw";
 import type { LocaleStrings } from "./types";
 
 export const ru: LocaleStrings = {
@@ -13,9 +14,9 @@ export const ru: LocaleStrings = {
   meta: {
     title: "Game Settings Master — мастер графики для игр",
     description:
-      "Пресеты, ручной редактор и облачная синхронизация настроек для Unreal Engine, Unity и авторских разборов.",
+      "Пресеты, ручной редактор, ReShade и облачная синхронизация настроек для Unreal Engine, Unity и авторских разборов.",
     keywords:
-      "game settings, пресеты графики, Unreal Engine, Unity, настройки игр, DLSS, FSR",
+      "game settings, пресеты графики, Unreal Engine, Unity, настройки игр, DLSS, FSR, ReShade",
     ogLocale: "ru_RU",
   },
   nav: {
@@ -30,7 +31,7 @@ export const ru: LocaleStrings = {
     subtitle:
       "Мастер графики для Unreal Engine, Unity и авторских разборов других игр — без ручного ковыряния в конфигах.",
   },
-  engineTags: ["UE 4", "UE 5", "Unity", "Авторские разборы"],
+  engineTags: ["UE 4", "UE 5", "Unity", "ReShade", "Авторские разборы"],
   features: [
     {
       id: "library",
@@ -76,6 +77,13 @@ export const ru: LocaleStrings = {
       text: "Контент с сервера синхронизируется без релиза приложения. Offline — встроенный fallback из кэша.",
       illustration: illCloud,
       reverse: true,
+    },
+    {
+      id: "reshade",
+      step: "07",
+      title: "ReShade",
+      text: "Установка post-processing в папку игры: пресеты Performance, Clarity и Cinematic, авторские ini для отдельных игр. Запуск с ReShade или без — proxy снимается автоматически.",
+      illustration: illReshade,
     },
   ],
   download: {

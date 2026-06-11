@@ -1,5 +1,5 @@
-import { convertFileSrc } from "@tauri-apps/api/core";
 import type { GameProfile } from "./types";
+import { safeConvertFileSrc } from "./tauriRuntime";
 
 const STEAM_CDN = "https://cdn.cloudflare.steamstatic.com/steam/apps";
 
@@ -18,7 +18,7 @@ export function steamLibraryHeroUrl(appId: string): string {
 /** Кандидаты для карточек: small header → large hero. */
 export function resolveGameCoverCandidates(game: GameProfile): string[] {
   if (game.custom_cover) {
-    return [convertFileSrc(game.custom_cover)];
+    return [safeConvertFileSrc(game.custom_cover)];
   }
 
   const candidates: string[] = [];
@@ -43,7 +43,7 @@ export function resolveGameCoverSrc(game: GameProfile): string | null {
 /** Кандидаты для широкой шапки: сначала HQ hero, затем обычная обложка. */
 export function resolveGameHeroCoverCandidates(game: GameProfile): string[] {
   if (game.custom_cover) {
-    return [convertFileSrc(game.custom_cover)];
+    return [safeConvertFileSrc(game.custom_cover)];
   }
 
   const candidates: string[] = [];

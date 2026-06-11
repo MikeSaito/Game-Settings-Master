@@ -24,6 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Read app version
+        id: app_version
+        shell: bash
+        run: |
+          echo "value=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@v5
         with:
           node-version: "22"
@@ -36,7 +42,7 @@ jobs:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
           VITE_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
           VITE_GITHUB_REPO: ${{ github.repository }}
-          VITE_APP_VERSION: "0.1.3"
+          VITE_APP_VERSION: ${{ steps.app_version.outputs.value }}
         run: |
           npm ci
           npm run build

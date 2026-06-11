@@ -3,11 +3,14 @@ use crate::discovery::merge_game_profile;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
 use crate::discovery::unity_detect::{detect_unity_engine, UnityDetectResult};
 use crate::ini::paths::resolve_config_dir;
+use crate::launch::validate_epic_app_name;
 use crate::models::GameProfile;
 use crate::unity::resolve_unity_config_dir;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+
+const MAX_EPIC_MANIFEST_BYTES: u64 = 512 * 1024;
 
 pub fn scan_epic_games() -> Vec<GameProfile> {
     let mut games: HashMap<String, GameProfile> = HashMap::new();
@@ -59,8 +62,16 @@ fn epic_manifest_dirs() -> Vec<PathBuf> {
     dirs
 }
 
+fn read_epic_manifest_limited(path: &Path) -> Option<String> {
+    let meta = fs::metadata(path).ok()?;
+    if meta.len() > MAX_EPIC_MANIFEST_BYTES {
+        return None;
+    }
+    fs::read_to_string(path).ok()
+}
+
 fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
-    let content = fs::read_to_string(path).ok()?;
+    let content = read_epic_manifest_limited(path)?;
     let json: serde_json::Value = serde_json::from_str(&content).ok()?;
 
     let install_location = json.get("InstallLocation")?.as_str()?.to_string();
@@ -74,6 +85,9 @@ fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
         .and_then(|v| v.as_str())
         .unwrap_or("unknown")
         .to_string();
+    if validate_epic_app_name(&app_name).is_err() {
+        return None;
+    }
     let build_id = json
         .get("BuildVersion")
         .or_else(|| json.get("AppVersionString"))
@@ -156,4 +170,39 @@ fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
         engine_version: None,
     };
     Some(profile)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Write;
+    use tempfile::NamedTempFile;
+
+    fn write_manifest(json: &str) -> NamedTempFile {
+        let mut file = NamedTempFile::new().unwrap();
+        write!(file, "{json}").unwrap();
+        file
+    }
+
+    #[test]
+    fn skips_manifest_with_invalid_app_name() {
+        let install = tempfile::tempdir().unwrap();
+        let loc = install
+            .path()
+            .to_string_lossy()
+            .replace('\\', "\\\\");
+        let file = write_manifest(&format!(
+            r#"{{"InstallLocation":"{loc}","DisplayName":"Test","AppName":"bad name"}}"#
+        ));
+        assert!(parse_epic_manifest(file.path()).is_none());
+    }
+
+    #[test]
+    fn skips_oversized_manifest_file() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("huge.item");
+        let mut file = fs::File::create(&path).unwrap();
+        file.write_all(&[b'{'; MAX_EPIC_MANIFEST_BYTES as usize + 1]).unwrap();
+        assert!(parse_epic_manifest(&path).is_none());
+    }
 }

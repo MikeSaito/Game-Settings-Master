@@ -45,6 +45,9 @@ pub fn list_unity_presets() -> Result<Vec<PresetInfo>, String> {
 }
 
 pub fn load_unity_preset(id: &str) -> Result<UnityPresetDefinition, String> {
+    if !crate::fs_util::is_safe_pack_id(id) {
+        return Err(format!("Недопустимый идентификатор пресета: {id}"));
+    }
     if let Some(pack) = crate::remote_presets::find_unity_pack() {
         if let Some(result) = pack.load_unity_preset_json(id) {
             return result.and_then(|content| {

@@ -58,6 +58,13 @@ ehthumbs.db
 *.sw?
 .cursor/
 
+# ─── ReShade бинарники/шейдеры (не в git, но нужны на диске перед tauri build) ─
+# Локально и в CI: npm run reshade:setup → tauri bundle кладёт presets/reshade/**/* в установщик.
+src-tauri/presets/reshade/bin/*.dll
+src-tauri/presets/reshade/bin/ReShade64.json
+src-tauri/presets/reshade/shaders/Shaders/
+src-tauri/presets/reshade/shaders/Textures/
+
 # ─── Прочее ─────────────────────────────────────────────────────────────────
 *.orig
 *.bak

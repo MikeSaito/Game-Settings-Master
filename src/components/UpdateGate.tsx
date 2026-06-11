@@ -8,8 +8,16 @@ interface Props {
 }
 
 export function UpdateGate({ children }: Props) {
-  const { status, update, error, progress, retry, installUpdate } =
-    useAppUpdater();
+  const {
+    status,
+    update,
+    error,
+    progress,
+    retry,
+    installUpdate,
+    canBypassOnError,
+    continueWithoutUpdate,
+  } = useAppUpdater();
 
   if (status === "ready") {
     return <>{children}</>;
@@ -85,6 +93,11 @@ export function UpdateGate({ children }: Props) {
             >
               Повторить
             </Button>
+            {canBypassOnError && (
+              <Button variant="ghost" onClick={continueWithoutUpdate} className="w-full">
+                Продолжить без обновления (офлайн)
+              </Button>
+            )}
           </div>
         )}
       </div>

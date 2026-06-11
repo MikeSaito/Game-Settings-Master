@@ -1,11 +1,6 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Check, Sparkles, Zap } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BackupBanner } from "../components/BackupBanner";
 import { IniDiffView } from "../components/IniDiffView";
 import { PresetCard } from "../components/PresetCard";
@@ -27,6 +22,7 @@ import {
 } from "../lib/api";
 import { useWorkspacePreset } from "../context/GameWorkspaceContext";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
+import { useRunningExeName } from "../hooks/useRunningExeName";
 import { usePresetSyncBanner } from "../hooks/usePresetSyncBanner";
 import { formatInvokeError } from "../lib/errors";
 import { gpuFilterHint } from "../lib/gpuCompat";
@@ -57,6 +53,8 @@ function presetStepHint(
 
 export function SettingsWizard({ game }: Props) {
   const queryClient = useQueryClient();
+  const activeGameIdRef = useRef(game?.id);
+  activeGameIdRef.current = game?.id;
   const [selectedPresetId, setSelectedPresetId] = useState<string>("");
   const [lastBackupId, setLastBackupId] = useState<string>();
   const [successMessage, setSuccessMessage] = useState<string>();
@@ -65,7 +63,7 @@ export function SettingsWizard({ game }: Props) {
 
   const configDir = game?.config_dir ?? "";
   const engineFamily = game?.engine_family;
-  const presetsEnabled = !!engineFamily;
+  const presetsEnabled = !!engineFamily && engineFamily !== "unknown";
   const limitsEnabled = useBackgroundSafeEnabled(!!configDir && !!game);
   const gpuEnabled = useBackgroundSafeEnabled();
   const desktopEnabled = useBackgroundSafeEnabled(engineFamily !== "unity");
@@ -82,7 +80,8 @@ export function SettingsWizard({ game }: Props) {
     staleTime: 10 * 60_000,
     refetchOnMount: false,
     retry: 1,
-    placeholderData: keepPreviousData,
+    placeholderData: (previousData, previousQuery) =>
+      previousQuery?.queryKey?.[2] === game?.id ? previousData : undefined,
   });
 
   const activePresetId = selectedPresetId || presets[0]?.id || "";
@@ -112,7 +111,7 @@ export function SettingsWizard({ game }: Props) {
 
   const { data: limits } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir],
-    queryFn: () => getScalabilityLimits(configDir, game!.install_dir),
+    queryFn: () => getScalabilityLimits(configDir, game!.install_dir, game!.id),
     enabled: limitsEnabled,
   });
 
@@ -131,7 +130,15 @@ export function SettingsWizard({ game }: Props) {
   });
 
   const gpuHint = gpu ? gpuFilterHint(gpu) : null;
-  const gameRunning = useGameRunning(game?.exe_name);
+  const runningExeName = useRunningExeName(game);
+  const gameRunning = useGameRunning(runningExeName);
+
+  useEffect(() => {
+    setSelectedPresetId("");
+    setLastBackupId(undefined);
+    setSuccessMessage(undefined);
+    setApplyError(undefined);
+  }, [game?.id]);
 
   useWorkspacePreset(
     activePresetId ? formatPresetLabel(activePresetId) : "—",
@@ -140,19 +147,27 @@ export function SettingsWizard({ game }: Props) {
   );
 
   const apply = useMutation({
-    mutationFn: () =>
-      applyPreset(
+    mutationFn: async () => {
+      const snapshot = {
+        gameId: game!.id,
         configDir,
-        activePresetId,
-        game!.id,
+        presetId: activePresetId,
+      };
+      const result = await applyPreset(
+        snapshot.configDir,
+        snapshot.presetId,
+        snapshot.gameId,
         game!.install_dir,
-        game!.exe_name ?? undefined,
+        runningExeName ?? undefined,
         game!.engine_family,
-      ),
+      );
+      return { result, snapshot };
+    },
     onMutate: () => setApplyError(undefined),
-    onSuccess: async (result) => {
+    onSuccess: async ({ result, snapshot }) => {
+      if (activeGameIdRef.current !== snapshot.gameId) return;
       setLastBackupId(result.backup_id);
-      if (game) saveLastPreset(game.id, activePresetId);
+      saveLastPreset(snapshot.gameId, snapshot.presetId);
       const filesLabel =
         result.changed_files.length > 0
           ? result.changed_files.join(", ")
@@ -174,17 +189,26 @@ export function SettingsWizard({ game }: Props) {
       }
       queryClient.invalidateQueries({ queryKey: ["games"] });
       queryClient.invalidateQueries({ queryKey: ["game-config"] });
-      queryClient.invalidateQueries({ queryKey: ["backups", configDir] });
-      queryClient.invalidateQueries({ queryKey: ["parameters", configDir] });
-      if (result.effective_config_dir && result.effective_config_dir !== configDir) {
+      queryClient.invalidateQueries({
+        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
+      });
+      if (
+        result.effective_config_dir &&
+        result.effective_config_dir !== snapshot.configDir
+      ) {
         queryClient.invalidateQueries({
           queryKey: ["preview", result.effective_config_dir],
         });
         queryClient.invalidateQueries({
-          queryKey: ["parameters", result.effective_config_dir],
+          queryKey: ["parameters", result.effective_config_dir, snapshot.gameId],
         });
       }
-      await queryClient.refetchQueries({ queryKey: ["preview", configDir] });
+      await queryClient.refetchQueries({
+        queryKey: ["preview", snapshot.configDir],
+      });
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
@@ -209,8 +233,14 @@ export function SettingsWizard({ game }: Props) {
     );
   }
 
+  const previewMatchesSelection = previewPresetId === activePresetId;
   const canApply =
-    presets.length > 0 && !!activePresetId && !diffLoading && !gameRunning;
+    presets.length > 0 &&
+    !!activePresetId &&
+    !diffLoading &&
+    !previewError &&
+    previewMatchesSelection &&
+    !gameRunning;
 
   return (
     <div className="space-y-8">
@@ -271,7 +301,7 @@ export function SettingsWizard({ game }: Props) {
         </Alert>
       )}
 
-      <GameRunningAlert exeName={game?.exe_name} gameName={game?.name} />
+      <GameRunningAlert exeName={runningExeName} gameName={game?.name} />
 
       {applyError && (
         <Alert tone="error" title="Ошибка применения">

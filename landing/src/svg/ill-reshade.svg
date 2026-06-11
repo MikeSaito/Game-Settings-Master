@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200" fill="none">
+  <!-- game frame -->
+  <rect x="44" y="36" width="192" height="108" rx="10" fill="#1a1f28" stroke="#434b58" stroke-width="1.5"/>
+  <rect x="56" y="48" width="168" height="72" rx="6" fill="#0f1115" stroke="#2f3642"/>
+  <rect x="68" y="60" width="48" height="32" rx="4" fill="#212733" stroke="#434b58"/>
+  <rect x="124" y="68" width="88" height="8" rx="2" fill="#212733"/>
+  <rect x="124" y="84" width="64" height="8" rx="2" fill="#212733"/>
+
+  <!-- ReShade overlay layer -->
+  <rect x="56" y="48" width="168" height="72" rx="6" fill="rgba(91,141,239,0.07)" stroke="#5b8def" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <path d="M 72 72 C 88 58 104 88 120 72 C 136 56 152 86 168 70" stroke="#5b8def" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.85"/>
+  <circle cx="96" cy="66" r="5" fill="rgba(147,112,219,0.35)" stroke="#9370db"/>
+  <circle cx="136" cy="78" r="4" fill="rgba(91,141,239,0.3)" stroke="#5b8def"/>
+
+  <!-- palette badge -->
+  <circle cx="208" cy="52" r="16" fill="rgba(91,141,239,0.15)" stroke="#5b8def" stroke-width="1.5"/>
+  <circle cx="202" cy="48" r="3" fill="#5b8def"/>
+  <circle cx="214" cy="46" r="3" fill="#9370db"/>
+  <circle cx="210" cy="58" r="3" fill="#727b8a"/>
+
+  <!-- preset chips -->
+  <rect x="52" y="152" width="56" height="22" rx="6" fill="#212733" stroke="#434b58"/>
+  <text x="80" y="166" fill="#727b8a" font-size="6.5" font-family="JetBrains Mono, monospace" text-anchor="middle">Perf</text>
+  <rect x="114" y="152" width="56" height="22" rx="6" fill="rgba(91,141,239,0.12)" stroke="#5b8def" stroke-width="1.5"/>
+  <text x="142" y="166" fill="#5b8def" font-size="6.5" font-family="JetBrains Mono, monospace" text-anchor="middle">Clarity</text>
+  <rect x="176" y="152" width="56" height="22" rx="6" fill="#212733" stroke="#434b58"/>
+  <text x="204" y="166" fill="#727b8a" font-size="6.5" font-family="JetBrains Mono, monospace" text-anchor="middle">Cine</text>
+
+  <!-- sliders -->
+  <rect x="68" y="128" width="72" height="5" rx="2.5" fill="#212733"/>
+  <rect x="68" y="128" width="48" height="5" rx="2.5" fill="#5b8def" opacity="0.8"/>
+  <rect x="148" y="128" width="72" height="5" rx="2.5" fill="#212733"/>
+  <rect x="148" y="128" width="28" height="5" rx="2.5" fill="#9370db" opacity="0.65"/>
+
+  <text x="140" y="24" fill="#727b8a" font-size="7" font-family="JetBrains Mono, monospace" text-anchor="middle">ReShade</text>
+</svg>

@@ -1,7 +1,7 @@
 {
   "name": "ue-settings-master",
   "private": true,
-  "version": "0.1.3",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,9 @@
     "landing:dev": "npm run dev --prefix landing",
     "updater:keys": "powershell -ExecutionPolicy Bypass -File scripts/open-keygen-terminal.ps1",
     "updater:sync-pubkey": "powershell -ExecutionPolicy Bypass -File scripts/sync-updater-pubkey.ps1",
-    "updater:build": "powershell -ExecutionPolicy Bypass -File scripts/build-signed.ps1"
+    "updater:build": "powershell -ExecutionPolicy Bypass -File scripts/build-signed.ps1",
+    "reshade:setup": "powershell -ExecutionPolicy Bypass -File scripts/reshade-setup.ps1",
+    "reshade:verify": "powershell -ExecutionPolicy Bypass -File scripts/verify-reshade-bundle.ps1"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.12",

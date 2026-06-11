@@ -1,0 +1,15 @@
+﻿{
+    "version":  "6.7.3",
+    "setup":  {
+                  "url":  "https://reshade.me/downloads/ReShade_Setup_6.7.3_Addon.exe",
+                  "sha256":  "c78db69bd127e98054bd496fb422655f4a1cc664e28f8d12ce9835b2647bc571"
+              },
+    "files":  {
+                  "opengl32.dll":  "ec9245d05c11751f2ac0d2256e6921ad8fb36be9172ef6d587856591eb729a25",
+                  "dxgi.dll":  "ec9245d05c11751f2ac0d2256e6921ad8fb36be9172ef6d587856591eb729a25",
+                  "d3d11.dll":  "ec9245d05c11751f2ac0d2256e6921ad8fb36be9172ef6d587856591eb729a25",
+                  "ReShade64.dll":  "ec9245d05c11751f2ac0d2256e6921ad8fb36be9172ef6d587856591eb729a25",
+                  "ReShade64.json":  "aa21713718843e531da396e2bfc80772c9cb3c369d6c30b836be6b0ae812d503",
+                  "d3d9.dll":  "ec9245d05c11751f2ac0d2256e6921ad8fb36be9172ef6d587856591eb729a25"
+              }
+}

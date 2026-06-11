@@ -1,60 +1,106 @@
-import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 import { UpdateGate } from "./components/UpdateGate";
 import { AppShell } from "./components/layout/AppShell";
 import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
 import { usePresetCatalogRefresh } from "./hooks/usePresetCatalogRefresh";
 import { scanGames } from "./lib/api";
 import { prefetchGameWorkspace } from "./lib/prefetchGameWorkspace";
-import { isAuthorCuratedGame } from "./lib/gameEngine";
+import { isGameTabAvailable, resolveGameTab } from "./lib/gameEngine";
 import { queryClient } from "./lib/queryClient";
 import { AdvancedEditor } from "./pages/AdvancedEditor";
 import { GameLibrary } from "./pages/GameLibrary";
 import { SettingsWizard } from "./pages/SettingsWizard";
 import { Backups } from "./pages/Backups";
+import { ReShade } from "./pages/ReShade";
 import type { AppTab, GameProfile } from "./lib/types";
-
-function resolveGameTab(game: GameProfile): AppTab {
-  if (
-    game.config_dir &&
-    (game.is_ue || game.is_unity || isAuthorCuratedGame(game))
-  ) {
-    return "wizard";
-  }
-  return "library";
-}
 
 function AppContent() {
   usePresetCatalogRefresh();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<AppTab>("library");
   const [selectedGame, setSelectedGame] = useState<GameProfile | null>(null);
+  const previousGameIdRef = useRef<string | null>(null);
+
+  const { data: games = [] } = useQuery({
+    queryKey: ["games"],
+    queryFn: scanGames,
+    staleTime: 2 * 60_000,
+  });
 
   useEffect(() => {
-    void queryClient.prefetchQuery({
-      queryKey: ["games"],
-      queryFn: scanGames,
-      staleTime: 2 * 60_000,
-    });
-  }, [queryClient]);
+    if (!selectedGame) return;
+    const fresh = games.find((g) => g.id === selectedGame.id);
+    if (!fresh) {
+      setSelectedGame(null);
+      setTab("library");
+      return;
+    }
+    if (fresh !== selectedGame) {
+      setSelectedGame(fresh);
+    }
+  }, [games, selectedGame]);
 
   useEffect(() => {
-    if (selectedGame && tab !== "library") {
+    if (
+      selectedGame &&
+      tab !== "library" &&
+      isGameTabAvailable(selectedGame, tab)
+    ) {
       prefetchGameWorkspace(queryClient, selectedGame, tab);
     }
   }, [queryClient, selectedGame, tab]);
 
+  useEffect(() => {
+    const currentGameId = selectedGame?.id ?? null;
+    if (currentGameId === previousGameIdRef.current) return;
+    previousGameIdRef.current = currentGameId;
+
+    if (!selectedGame) {
+      setTab("library");
+      return;
+    }
+
+    setTab((currentTab) => {
+      if (currentTab !== "library" && isGameTabAvailable(selectedGame, currentTab)) {
+        return currentTab;
+      }
+      return resolveGameTab(selectedGame);
+    });
+  }, [selectedGame]);
+
   const handleSelectGame = (game: GameProfile) => {
-    const nextTab = tab !== "library" ? tab : resolveGameTab(game);
+    const nextTab =
+      tab === "library"
+        ? resolveGameTab(game)
+        : isGameTabAvailable(game, tab)
+          ? tab
+          : resolveGameTab(game);
     prefetchGameWorkspace(queryClient, game, nextTab);
     setSelectedGame(game);
-    setTab((prev) => (prev !== "library" ? prev : resolveGameTab(game)));
+    setTab(nextTab);
   };
 
   const handleGameUpdated = (game: GameProfile) => {
-    setSelectedGame((prev) => (prev?.id === game.id ? game : prev));
-    if (game.config_dir && tab !== "library") {
-      prefetchGameWorkspace(queryClient, game, tab);
+    void queryClient.invalidateQueries({ queryKey: ["reshade-workspace", game.id] });
+    void queryClient.invalidateQueries({ queryKey: ["reshade-status", game.id] });
+    void queryClient.invalidateQueries({ queryKey: ["reshade-settings", game.id] });
+    void queryClient.invalidateQueries({ queryKey: ["reshade-preset-details"] });
+
+    setSelectedGame((prev) => {
+      if (prev?.id !== game.id) return prev;
+      const targetTab = tab === "library" ? resolveGameTab(game) : tab;
+      if (targetTab !== "library" && isGameTabAvailable(game, targetTab)) {
+        prefetchGameWorkspace(queryClient, game, targetTab);
+      }
+      return game;
+    });
+  };
+
+  const handleGameRemoved = (id: string) => {
+    if (selectedGame?.id === id) {
+      setSelectedGame(null);
+      setTab("library");
     }
   };
 
@@ -65,11 +111,21 @@ function AppContent() {
           selectedGame={selectedGame}
           onSelectGame={handleSelectGame}
           onGameUpdated={handleGameUpdated}
+          onGameRemoved={handleGameRemoved}
         />
       )}
-      {tab === "wizard" && <SettingsWizard game={selectedGame} />}
-      {tab === "advanced" && <AdvancedEditor game={selectedGame} />}
-      {tab === "backups" && <Backups game={selectedGame} />}
+      {selectedGame && tab === "wizard" && (
+        <SettingsWizard game={selectedGame} />
+      )}
+      {selectedGame && tab === "advanced" && (
+        <AdvancedEditor game={selectedGame} />
+      )}
+      {selectedGame && tab === "backups" && (
+        <Backups game={selectedGame} />
+      )}
+      {selectedGame && tab === "reshade" && (
+        <ReShade game={selectedGame} />
+      )}
     </AppShell>
   );
 }

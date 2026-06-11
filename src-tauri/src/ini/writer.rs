@@ -45,9 +45,15 @@ pub fn merge_ini(
     let mut result = existing.clone();
 
     for (section_name, entries) in updates {
+        let target_name = result
+            .sections
+            .keys()
+            .find(|k| k.eq_ignore_ascii_case(section_name))
+            .cloned()
+            .unwrap_or_else(|| section_name.clone());
         let section = result
             .sections
-            .entry(section_name.clone())
+            .entry(target_name)
             .or_insert_with(|| crate::models::IniSection {
                 entries: IndexMap::new(),
                 preamble: Vec::new(),
@@ -57,6 +63,7 @@ pub fn merge_ini(
         }
     }
 
+    crate::ini::parser::coalesce_ini_sections(&mut result);
     result
 }
 

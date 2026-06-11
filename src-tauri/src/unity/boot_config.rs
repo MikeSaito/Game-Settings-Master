@@ -1,6 +1,5 @@
 use crate::models::ConfigDiffEntry;
 use std::collections::HashMap;
-use std::fs;
 use std::path::Path;
 
 pub fn parse_boot_config(content: &str) -> HashMap<String, String> {
@@ -34,8 +33,9 @@ pub fn preview_boot_config_diff(
 ) -> Result<Vec<ConfigDiffEntry>, String> {
     let boot_path = super::boot_config_path(config_dir);
     let old_map = if boot_path.exists() {
-        let content = fs::read_to_string(&boot_path)
-            .map_err(|e| format!("Не удалось прочитать boot.config: {e}"))?;
+        let bytes = crate::fs_util::read_file_bytes(&boot_path)?;
+        let content = String::from_utf8(bytes)
+            .map_err(|e| format!("Некорректный boot.config (не UTF-8): {e}"))?;
         parse_boot_config(&content)
     } else {
         HashMap::new()
@@ -64,12 +64,14 @@ pub fn apply_boot_config(
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
     let boot_path = super::boot_config_path(config_dir);
     let mut map = if boot_path.exists() {
-        let content = fs::read_to_string(&boot_path)
-            .map_err(|e| format!("Не удалось прочитать boot.config: {e}"))?;
+        let bytes = crate::fs_util::read_file_bytes(&boot_path)?;
+        let content = String::from_utf8(bytes)
+            .map_err(|e| format!("Некорректный boot.config (не UTF-8): {e}"))?;
         parse_boot_config(&content)
     } else {
         if let Some(parent) = boot_path.parent() {
-            fs::create_dir_all(parent).map_err(|e| format!("Не удалось создать каталог: {e}"))?;
+            std::fs::create_dir_all(parent)
+                .map_err(|e| format!("Не удалось создать каталог: {e}"))?;
         }
         HashMap::new()
     };
@@ -80,8 +82,7 @@ pub fn apply_boot_config(
     }
 
     let serialized = serialize_boot_config(&map);
-    fs::write(&boot_path, serialized)
-        .map_err(|e| format!("Не удалось записать boot.config: {e}"))?;
+    crate::fs_util::write_file_bytes(&boot_path, serialized.as_bytes())?;
 
     Ok((vec!["boot.config".to_string()], diff))
 }

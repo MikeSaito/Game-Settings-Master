@@ -126,16 +126,10 @@ pub fn boot_config_path(config_dir: &Path) -> PathBuf {
 }
 
 pub fn is_unity_config_dir(path: &Path) -> bool {
-    if path.join("boot.config").exists() {
+    if path.join("boot.config").is_file() {
         return true;
     }
-    if path.to_string_lossy().ends_with("_Data") && path.is_dir() {
-        return true;
-    }
-    if path.to_string_lossy().to_lowercase().contains("locallow") && path.is_dir() {
-        return true;
-    }
-    false
+    path.to_string_lossy().ends_with("_Data") && path.is_dir()
 }
 
 pub fn backup_unity_config(config_dir: &Path) -> Result<String, String> {

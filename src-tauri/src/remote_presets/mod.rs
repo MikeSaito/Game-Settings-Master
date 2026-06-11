@@ -3,16 +3,31 @@ mod manifest;
 mod sync;
 
 pub use config::{cache_root, effective_base_url, load_config, set_base_url, PresetServerConfig};
-pub use manifest::{PackPolicy, ResolvedPack};
+pub use manifest::{PackApply, PackPolicy, PackPresetEntry, ResolvedPack};
+
+#[cfg(test)]
+pub use manifest::{PackManifest, PackMatch, ReShadeIniPresetEntry};
 pub use sync::{load_cached_catalog, load_cached_pack, sync_now, sync_pack_by_id, SyncReport};
 
 use crate::models::{PresetDefinition, PresetInfo};
-use manifest::PackApply;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
 static LAST_SYNC_ATTEMPT: Mutex<Option<Instant>> = Mutex::new(None);
 const SYNC_COOLDOWN: Duration = Duration::from_secs(60);
+
+struct ResolvedPacksCache {
+    catalog_version: String,
+    packs: Vec<ResolvedPack>,
+}
+
+static RESOLVED_PACKS_CACHE: Mutex<Option<ResolvedPacksCache>> = Mutex::new(None);
+
+pub fn invalidate_resolved_packs_cache() {
+    if let Ok(mut guard) = RESOLVED_PACKS_CACHE.lock() {
+        *guard = None;
+    }
+}
 
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct RemotePresetStatus {
@@ -99,8 +114,32 @@ pub fn ensure_synced() {
 fn all_resolved_packs() -> Vec<ResolvedPack> {
     let catalog = match load_cached_catalog() {
         Some(c) => c,
-        None => return Vec::new(),
+        None => {
+            invalidate_resolved_packs_cache();
+            return Vec::new();
+        }
     };
+
+    if let Ok(mut guard) = RESOLVED_PACKS_CACHE.lock() {
+        if let Some(cached) = guard.as_ref() {
+            if cached.catalog_version == catalog.version {
+                return cached.packs.clone();
+            }
+        }
+
+        let packs: Vec<ResolvedPack> = catalog
+            .packs
+            .iter()
+            .filter_map(|p| {
+                load_cached_pack(&p.id).map(|(manifest, root)| ResolvedPack { manifest, root })
+            })
+            .collect();
+        *guard = Some(ResolvedPacksCache {
+            catalog_version: catalog.version.clone(),
+            packs: packs.clone(),
+        });
+        return packs;
+    }
 
     catalog
         .packs
@@ -108,6 +147,13 @@ fn all_resolved_packs() -> Vec<ResolvedPack> {
         .filter_map(|p| {
             load_cached_pack(&p.id).map(|(manifest, root)| ResolvedPack { manifest, root })
         })
+        .collect()
+}
+
+fn reshade_ini_packs() -> Vec<ResolvedPack> {
+    all_resolved_packs()
+        .into_iter()
+        .filter(|pack| matches!(pack.manifest.apply, PackApply::ReShadeIni { .. }))
         .collect()
 }
 
@@ -191,6 +237,15 @@ pub fn find_unity_pack_cached() -> Option<ResolvedPack> {
         .find(|pack| matches!(pack.manifest.apply, PackApply::Unity { .. }))
 }
 
+pub fn find_reshade_ini_pack_cached(
+    game_id: Option<&str>,
+    engine_family: Option<&str>,
+) -> Option<ResolvedPack> {
+    reshade_ini_packs()
+        .into_iter()
+        .find(|pack| pack.matches(game_id, engine_family, None))
+}
+
 pub fn find_catalog_packs() -> Vec<ResolvedPack> {
     find_packs(|pack| matches!(pack.manifest.apply, PackApply::Catalog { .. }))
 }
@@ -212,7 +267,7 @@ pub fn forza_pack_ready(game_id: Option<&str>) -> bool {
 }
 
 pub fn sync_forza_pack_if_needed(force: bool) -> Result<(), String> {
-    if forza_presets_from_cache(None).is_some_and(|p| !p.is_empty()) {
+    if forza_pack_ready(None) {
         return Ok(());
     }
     if effective_base_url().is_none() {
@@ -277,6 +332,50 @@ mod tests {
             &generic,
             Some("steam-1962700"),
             Some("ue5"),
+            None
+        ));
+    }
+
+    #[test]
+    fn sn2_reshade_pack_does_not_match_unrelated_ue5() {
+        let rules = PackMatch {
+            steam_app_ids: vec!["1962700".into()],
+            game_ids: vec!["steam-1962700".into()],
+            engine_families: vec!["ue5".into()],
+            overlay_ids: vec![],
+        };
+        assert!(!pack_matches(
+            &rules,
+            Some("steam-2483190"),
+            Some("ue5"),
+            None
+        ));
+    }
+
+    #[test]
+    fn sn2_reshade_pack_matches_epic_game_id() {
+        let rules = PackMatch {
+            steam_app_ids: vec!["1962700".into()],
+            game_ids: vec!["steam-1962700".into()],
+            engine_families: vec!["ue5".into()],
+            overlay_ids: vec![],
+        };
+        assert!(pack_matches(
+            &rules,
+            Some("epic-Subnautica2"),
+            Some("ue5"),
+            None
+        ));
+        assert!(!pack_matches(
+            &rules,
+            Some("epic-Subnautica2"),
+            None,
+            None
+        ));
+        assert!(!pack_matches(
+            &rules,
+            Some("steam-1962700"),
+            Some("ue4"),
             None
         ));
     }

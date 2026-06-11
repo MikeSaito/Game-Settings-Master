@@ -21,6 +21,7 @@ export function useAppUpdater() {
   const [update, setUpdate] = useState<Update | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<UpdateProgress | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const runCheck = useCallback(async () => {
     if (isDev) {
@@ -84,12 +85,23 @@ export function useAppUpdater() {
     }
   }, [update]);
 
+  const retry = useCallback(async () => {
+    setRetryCount((prev) => prev + 1);
+    await runCheck();
+  }, [runCheck]);
+
+  const continueWithoutUpdate = useCallback(() => {
+    setStatus("ready");
+  }, []);
+
   return {
     status,
     update,
     error,
     progress,
-    retry: runCheck,
+    retry,
+    canBypassOnError: status === "error" && retryCount > 0,
+    continueWithoutUpdate,
     installUpdate,
   };
 }

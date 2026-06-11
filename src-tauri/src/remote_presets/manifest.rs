@@ -1,6 +1,42 @@
 use crate::models::{PresetDefinition, PresetInfo};
 use serde::Deserialize;
-use std::path::PathBuf;
+use serde::de::Error as _;
+use std::path::{Path, PathBuf};
+
+fn resolve_pack_relative_file(
+    pack_root: &Path,
+    root_segment: &str,
+    rel: &str,
+) -> Result<PathBuf, String> {
+    if !crate::fs_util::is_safe_manifest_relative_path(root_segment) {
+        return Err(format!("Недопустимый путь в manifest: {root_segment}"));
+    }
+    if !crate::fs_util::is_safe_manifest_relative_path(rel) {
+        return Err(format!("Недопустимый путь в manifest: {rel}"));
+    }
+    let path = pack_root.join(root_segment).join(rel);
+    if !crate::fs_util::path_within_root(pack_root, &path) {
+        return Err(format!("Путь вне пака: {rel}"));
+    }
+    if !path.is_file() {
+        return Err(format!("Файл не найден: {rel}"));
+    }
+    Ok(path)
+}
+
+fn resolve_pack_file_under_root(pack_root: &Path, rel: &str) -> Result<PathBuf, String> {
+    if !crate::fs_util::is_safe_manifest_relative_path(rel) {
+        return Err(format!("Недопустимый путь в manifest: {rel}"));
+    }
+    let path = pack_root.join(rel);
+    if !crate::fs_util::path_within_root(pack_root, &path) {
+        return Err(format!("Путь вне пака: {rel}"));
+    }
+    if !path.is_file() {
+        return Err(format!("Файл не найден: {rel}"));
+    }
+    Ok(path)
+}
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Deserialize)]
@@ -72,6 +108,8 @@ pub enum PackApply {
     },
     #[serde(rename = "catalog")]
     Catalog { catalog_root: String },
+    #[serde(rename = "reshade_ini")]
+    ReShadeIni { presets_root: String },
 }
 
 fn default_engines_root() -> String {
@@ -105,10 +143,21 @@ pub struct JsonPresetEntry {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct ReShadeIniPresetEntry {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: String,
+    #[serde(alias = "ini")]
+    pub ini_file: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum PackPresetEntry {
     Forza(ForzaPresetEntry),
     Json(JsonPresetEntry),
+    ReShade(ReShadeIniPresetEntry),
 }
 
 #[allow(dead_code)]
@@ -145,6 +194,11 @@ impl PackManifest {
                     name: p.name.clone(),
                     description: p.description.clone(),
                 },
+                PackPresetEntry::ReShade(p) => PresetInfo {
+                    id: p.id.clone(),
+                    name: p.name.clone(),
+                    description: p.description.clone(),
+                },
             })
             .collect()
     }
@@ -176,6 +230,12 @@ impl<'de> Deserialize<'de> for PackManifest {
             policy: Option<PackPolicy>,
         }
         let raw = Raw::deserialize(deserializer)?;
+        if !crate::fs_util::is_safe_pack_id(&raw.pack_id) {
+            return Err(D::Error::custom(format!(
+                "Недопустимый pack_id: {}",
+                raw.pack_id
+            )));
+        }
         Ok(PackManifest {
             schema_version: raw.schema_version,
             pack_id: raw.pack_id,
@@ -219,12 +279,11 @@ impl ResolvedPack {
         else {
             return None;
         };
-        let path = self.root.join(parameter_catalog);
-        if path.is_file() {
-            Some(path)
-        } else {
-            None
-        }
+        let path = match resolve_pack_file_under_root(&self.root, parameter_catalog) {
+            Ok(p) => p,
+            Err(_) => return None,
+        };
+        Some(path)
     }
 
     pub fn forza_pack_has_profiles(&self) -> bool {
@@ -244,7 +303,17 @@ impl ResolvedPack {
         let PackApply::Forza { media_dir, .. } = &self.manifest.apply else {
             return None;
         };
-        Some(profile_dir.join(media_dir))
+        if !crate::fs_util::is_safe_manifest_relative_path(media_dir) {
+            return None;
+        }
+        if !crate::fs_util::path_within_root(&self.root, profile_dir) {
+            return None;
+        }
+        let media = profile_dir.join(media_dir);
+        if !crate::fs_util::path_within_root(&self.root, &media) {
+            return None;
+        }
+        Some(media)
     }
 
     pub fn forza_user_config_patch_file(&self) -> Option<&str> {
@@ -271,8 +340,21 @@ impl ResolvedPack {
             _ => None,
         })?;
 
+        if !crate::fs_util::is_safe_manifest_relative_path(&entry)
+            || !crate::fs_util::is_safe_manifest_relative_path(presets_root)
+            || !crate::fs_util::is_safe_manifest_relative_path(user_config_patch)
+        {
+            return None;
+        }
         let dir = self.root.join(presets_root).join(&entry);
-        if dir.join(user_config_patch).is_file() {
+        if !crate::fs_util::path_within_root(&self.root, &dir) {
+            return None;
+        }
+        let patch_path = dir.join(user_config_patch);
+        if !crate::fs_util::path_within_root(&self.root, &patch_path) {
+            return None;
+        }
+        if patch_path.is_file() {
             Some(dir)
         } else {
             None
@@ -300,6 +382,11 @@ impl ResolvedPack {
         preset_id: &str,
         ue4: bool,
     ) -> Option<Result<PresetDefinition, String>> {
+        if !crate::fs_util::is_safe_pack_id(preset_id) {
+            return Some(Err(format!(
+                "Недопустимый идентификатор пресета: {preset_id}"
+            )));
+        }
         let PackApply::UeJson { presets_root, .. } = &self.manifest.apply else {
             return None;
         };
@@ -318,21 +405,28 @@ impl ResolvedPack {
                     Some(format!("{preset_id}.json"))
                 }
             })?;
-        let path = self.root.join(presets_root).join(&rel);
-        if !path.is_file() {
-            let fallback = self
-                .root
-                .join(presets_root)
-                .join(format!("{preset_id}.json"));
-            if fallback.is_file() {
-                return Some(load_preset_json(&fallback));
+        let path = match resolve_pack_relative_file(&self.root, presets_root, &rel) {
+            Ok(p) => p,
+            Err(e) => {
+                let fallback_rel = format!("{preset_id}.json");
+                if !crate::fs_util::is_safe_manifest_relative_path(&fallback_rel) {
+                    return Some(Err(e));
+                }
+                match resolve_pack_relative_file(&self.root, presets_root, &fallback_rel) {
+                    Ok(p) => p,
+                    Err(_) => return Some(Err(format!("Remote UE preset '{preset_id}' не найден"))),
+                }
             }
-            return Some(Err(format!("Remote UE preset '{preset_id}' не найден")));
-        }
+        };
         Some(load_preset_json(&path))
     }
 
     pub fn load_unity_preset_json(&self, preset_id: &str) -> Option<Result<String, String>> {
+        if !crate::fs_util::is_safe_pack_id(preset_id) {
+            return Some(Err(format!(
+                "Недопустимый идентификатор пресета: {preset_id}"
+            )));
+        }
         let PackApply::Unity { presets_root } = &self.manifest.apply else {
             return None;
         };
@@ -345,10 +439,12 @@ impl ResolvedPack {
                 _ => None,
             })
             .unwrap_or_else(|| format!("{preset_id}.json"));
-        let path = self.root.join(presets_root).join(&rel);
         Some(
-            std::fs::read_to_string(&path)
-                .map_err(|e| format!("Remote Unity preset '{preset_id}' не найден: {e}")),
+            resolve_pack_relative_file(&self.root, presets_root, &rel)
+                .and_then(|path| {
+                    std::fs::read_to_string(&path)
+                        .map_err(|e| format!("Remote Unity preset '{preset_id}' не найден: {e}"))
+                }),
         )
     }
 
@@ -365,10 +461,14 @@ impl ResolvedPack {
             PackApply::UeJson { engines_root, .. } => engines_root.clone(),
             _ => return None,
         };
-        let path = self.root.join(engines_root).join(format!("{name}.ini"));
-        if !path.is_file() {
-            return Some(Err(format!("Remote engine ini '{name}' не найден")));
+        if !crate::fs_util::is_safe_manifest_relative_path(name) {
+            return Some(Err(format!("Недопустимое имя engine ini: {name}")));
         }
+        let rel = format!("{name}.ini");
+        let path = match resolve_pack_relative_file(&self.root, &engines_root, &rel) {
+            Ok(p) => p,
+            Err(e) => return Some(Err(e)),
+        };
         Some(
             crate::ini::read_ini_file(&path)
                 .map(|ini| crate::ini::parser::ini_to_data(&ini))
@@ -380,8 +480,11 @@ impl ResolvedPack {
         let PackApply::Catalog { catalog_root } = &self.manifest.apply else {
             return None;
         };
+        if !crate::fs_util::is_safe_manifest_relative_path(catalog_root) {
+            return Some(Vec::new());
+        }
         let dir = self.root.join(catalog_root);
-        if !dir.is_dir() {
+        if !crate::fs_util::path_within_root(&self.root, &dir) || !dir.is_dir() {
             return Some(Vec::new());
         }
         let mut files = Vec::new();
@@ -397,6 +500,25 @@ impl ResolvedPack {
         Some(files)
     }
 
+    pub fn load_reshade_ini_path(&self, preset_id: &str) -> Option<PathBuf> {
+        let PackApply::ReShadeIni { presets_root } = &self.manifest.apply else {
+            return None;
+        };
+        let rel = self.manifest.presets.iter().find_map(|p| match p {
+            PackPresetEntry::ReShade(r) if r.id == preset_id => Some(r.ini_file.clone()),
+            _ => None,
+        })?;
+        crate::fs_util::resolve_pack_file_within_root(&self.root, presets_root, &rel)
+    }
+
+    pub fn load_reshade_ini_preset(&self, preset_id: &str) -> Option<Result<String, String>> {
+        let path = self.load_reshade_ini_path(preset_id)?;
+        Some(
+            std::fs::read_to_string(&path)
+                .map_err(|e| format!("Remote ReShade preset '{preset_id}' не найден: {e}")),
+        )
+    }
+
     pub fn load_ue_overlay(&self) -> Option<Result<PresetDefinition, String>> {
         let PackApply::UeOverlay {
             overlay_id: _,
@@ -406,10 +528,12 @@ impl ResolvedPack {
             return None;
         };
 
-        let path = self.root.join(overlay_file);
         Some(
-            std::fs::read_to_string(&path)
-                .map_err(|e| format!("Remote overlay не найден: {e}"))
+            resolve_pack_file_under_root(&self.root, overlay_file)
+                .and_then(|path| {
+                    std::fs::read_to_string(&path)
+                        .map_err(|e| format!("Remote overlay не найден: {e}"))
+                })
                 .and_then(|content| {
                     serde_json::from_str(&content)
                         .map_err(|e| format!("Некорректный remote overlay: {e}"))
@@ -424,6 +548,23 @@ pub fn pack_matches(
     engine_family: Option<&str>,
     overlay_id: Option<&str>,
 ) -> bool {
+    let has_game_identity_rules = !rules.game_ids.is_empty() || !rules.steam_app_ids.is_empty();
+
+    if let Some(gid) = game_id {
+        if has_game_identity_rules {
+            if !matches_game_identity(rules, gid) {
+                return false;
+            }
+            if !rules.engine_families.is_empty() {
+                match engine_family {
+                    Some(family) if rules.engine_families.iter().any(|f| f == family) => {}
+                    _ => return false,
+                }
+            }
+            return true;
+        }
+    }
+
     let mut any_rule = false;
     let mut matched = false;
 
@@ -439,7 +580,8 @@ pub fn pack_matches(
     if !rules.game_ids.is_empty() {
         any_rule = true;
         if let Some(gid) = game_id {
-            if rules.game_ids.iter().any(|id| id == gid) {
+            let aliases = pack_match_game_id_aliases(gid);
+            if rules.game_ids.iter().any(|id| aliases.iter().any(|a| a == id)) {
                 matched = true;
             }
         }
@@ -447,9 +589,12 @@ pub fn pack_matches(
 
     if !rules.steam_app_ids.is_empty() {
         any_rule = true;
-        if let Some(app_id) = game_id.and_then(extract_steam_app_id) {
-            if rules.steam_app_ids.iter().any(|id| id == app_id) {
-                matched = true;
+        if let Some(gid) = game_id {
+            for app_id in pack_match_steam_app_ids(gid) {
+                if rules.steam_app_ids.iter().any(|id| id == &app_id) {
+                    matched = true;
+                    break;
+                }
             }
         }
     }
@@ -461,9 +606,57 @@ pub fn pack_matches(
                 matched = true;
             }
         }
+        if let Some(gid) = game_id {
+            if let Some(oid) = crate::discovery::overlay_preset_for_game(gid) {
+                if rules.overlay_ids.iter().any(|id| id == &oid) {
+                    matched = true;
+                }
+            }
+        }
     }
 
     any_rule && matched
+}
+
+fn matches_game_identity(rules: &PackMatch, game_id: &str) -> bool {
+    if !rules.game_ids.is_empty() {
+        let aliases = pack_match_game_id_aliases(game_id);
+        if rules.game_ids.iter().any(|id| aliases.iter().any(|a| a == id)) {
+            return true;
+        }
+    }
+    if !rules.steam_app_ids.is_empty() {
+        for app_id in pack_match_steam_app_ids(game_id) {
+            if rules.steam_app_ids.iter().any(|id| id == &app_id) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn pack_match_game_id_aliases(game_id: &str) -> Vec<String> {
+    let mut out = vec![game_id.to_string()];
+    if let Some(app_id) = crate::discovery::known_app_id_for_game(game_id) {
+        let steam = format!("steam-{app_id}");
+        if !out.iter().any(|id| id == &steam) {
+            out.push(steam);
+        }
+    }
+    out
+}
+
+fn pack_match_steam_app_ids(game_id: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    if let Some(app_id) = extract_steam_app_id(game_id) {
+        out.push(app_id.to_string());
+    }
+    if let Some(app_id) = crate::discovery::known_app_id_for_game(game_id) {
+        if !out.iter().any(|id| id == &app_id) {
+            out.push(app_id);
+        }
+    }
+    out
 }
 
 pub fn extract_steam_app_id(game_id: &str) -> Option<&str> {
@@ -474,4 +667,140 @@ fn load_preset_json(path: &std::path::Path) -> Result<PresetDefinition, String> 
     let content = std::fs::read_to_string(path)
         .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))?;
     serde_json::from_str(&content).map_err(|e| format!("Некорректный JSON пресета: {e}"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn deserializes_reshade_ini_pack() {
+        let raw = r#"{
+            "schema_version": 1,
+            "pack_id": "subnautica2-reshade",
+            "match": { "game_ids": ["steam-1962700"] },
+            "apply": { "kind": "reshade_ini", "presets_root": "presets" },
+            "presets": [{
+                "id": "sn2-underwater-clarity",
+                "name": "Underwater Clarity",
+                "description": "test",
+                "ini_file": "sn2-underwater-clarity.ini"
+            }]
+        }"#;
+        let manifest: PackManifest = serde_json::from_str(raw).unwrap();
+        assert!(matches!(manifest.apply, PackApply::ReShadeIni { .. }));
+        assert_eq!(manifest.presets.len(), 1);
+        match &manifest.presets[0] {
+            PackPresetEntry::ReShade(p) => {
+                assert_eq!(p.id, "sn2-underwater-clarity");
+                assert_eq!(p.ini_file, "sn2-underwater-clarity.ini");
+            }
+            other => panic!("expected ReShade preset entry, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn load_reshade_ini_preset_reads_file() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let presets = dir.path().join("presets");
+        std::fs::create_dir_all(&presets).unwrap();
+        std::fs::write(presets.join("test.ini"), "Techniques=Clarity\n").unwrap();
+
+        let manifest: PackManifest = serde_json::from_str(
+            r#"{
+                "schema_version": 1,
+                "pack_id": "test-reshade",
+                "match": { "game_ids": ["steam-1"] },
+                "apply": { "kind": "reshade_ini", "presets_root": "presets" },
+                "presets": [{
+                    "id": "test",
+                    "name": "Test",
+                    "ini_file": "test.ini"
+                }]
+            }"#,
+        )
+        .unwrap();
+
+        let pack = ResolvedPack {
+            manifest,
+            root: dir.path().to_path_buf(),
+        };
+        let content = pack.load_reshade_ini_preset("test").unwrap().unwrap();
+        assert!(content.contains("Techniques=Clarity"));
+    }
+
+    #[test]
+    fn load_reshade_ini_path_rejects_traversal() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let presets = dir.path().join("presets");
+        std::fs::create_dir_all(&presets).unwrap();
+        std::fs::write(presets.join("safe.ini"), "Techniques=\n").unwrap();
+
+        let pack = ResolvedPack {
+            manifest: PackManifest {
+                schema_version: 1,
+                pack_id: "evil".to_string(),
+                title: None,
+                revision: None,
+                updated_at: None,
+                match_rules: PackMatch {
+                    steam_app_ids: vec![],
+                    game_ids: vec!["steam-1".into()],
+                    engine_families: vec![],
+                    overlay_ids: vec![],
+                },
+                apply: PackApply::ReShadeIni {
+                    presets_root: "presets".to_string(),
+                },
+                bundle: None,
+                presets: vec![PackPresetEntry::ReShade(ReShadeIniPresetEntry {
+                    id: "evil".to_string(),
+                    name: "Evil".to_string(),
+                    description: String::new(),
+                    ini_file: "..\\..\\Windows\\win.ini".to_string(),
+                })],
+                policy: None,
+            },
+            root: dir.path().to_path_buf(),
+        };
+
+        assert!(pack.load_reshade_ini_path("evil").is_none());
+    }
+
+    #[test]
+    fn manifest_rejects_unsafe_pack_id() {
+        let raw = r#"{
+            "schema_version": 1,
+            "pack_id": "../evil",
+            "match": { "game_ids": ["steam-1"] },
+            "apply": { "kind": "unity", "presets_root": "presets" },
+            "presets": []
+        }"#;
+        let err = serde_json::from_str::<PackManifest>(raw).unwrap_err().to_string();
+        assert!(err.contains("Недопустимый pack_id"));
+    }
+
+    #[test]
+    fn load_unity_preset_rejects_unsafe_id() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let manifest: PackManifest = serde_json::from_str(
+            r#"{
+                "schema_version": 1,
+                "pack_id": "unity-pack",
+                "match": { "game_ids": ["steam-1"] },
+                "apply": { "kind": "unity", "presets_root": "presets" },
+                "presets": []
+            }"#,
+        )
+        .unwrap();
+        let pack = ResolvedPack {
+            manifest,
+            root: dir.path().to_path_buf(),
+        };
+        let err = pack
+            .load_unity_preset_json("../evil")
+            .expect("unity kind")
+            .unwrap_err();
+        assert!(err.contains("Недопустимый идентификатор пресета"));
+    }
 }

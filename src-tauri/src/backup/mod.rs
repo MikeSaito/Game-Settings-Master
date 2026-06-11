@@ -1,4 +1,4 @@
-use crate::fs_util::{read_file_bytes, write_file_bytes};
+use crate::fs_util::{is_allowed_restore_filename, is_safe_backup_id, path_within_root, read_file_bytes, write_file_bytes};
 use chrono::Local;
 use std::collections::hash_map::DefaultHasher;
 use std::fs;
@@ -6,17 +6,23 @@ use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 
 const BACKUP_DIR_LEGACY: &str = ".uesm-backups";
-const INI_FILES: [&str; 5] = [
+const INI_FILES: [&str; 6] = [
     "GameUserSettings.ini",
     "Engine.ini",
     "Game.ini",
     "Scalability.ini",
     "Input.ini",
+    "DeviceProfiles.ini",
 ];
 
 /// Override-файлы пресетов; при сбросе удаляются, GameUserSettings.ini остаётся.
-pub const OVERRIDE_INI_FILES: [&str; 4] =
-    ["Engine.ini", "Game.ini", "Scalability.ini", "Input.ini"];
+pub const OVERRIDE_INI_FILES: [&str; 5] = [
+    "Engine.ini",
+    "Game.ini",
+    "Scalability.ini",
+    "Input.ini",
+    "DeviceProfiles.ini",
+];
 
 pub fn backup_store_dir(config_dir: &Path) -> PathBuf {
     let canonical = config_dir
@@ -38,12 +44,20 @@ fn legacy_backup_root(config_dir: &Path) -> PathBuf {
     config_dir.join(BACKUP_DIR_LEGACY)
 }
 
-pub fn backup_forza_config_dir(config_dir: &Path) -> Result<String, String> {
+pub fn backup_forza_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<String, String> {
     let backup_root = backup_store_dir(config_dir);
     fs::create_dir_all(&backup_root)
         .map_err(|e| format!("Не удалось создать каталог backup: {e}"))?;
 
-    let backup_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    let backup_id = match backup_id {
+        Some(id) => {
+            if !is_safe_backup_id(id) {
+                return Err(format!("Недопустимый идентификатор backup: {id}"));
+            }
+            id.to_string()
+        }
+        None => Local::now().format("%Y%m%d_%H%M%S").to_string(),
+    };
     let backup_path = backup_root.join(&backup_id);
     fs::create_dir_all(&backup_path).map_err(|e| format!("Не удалось создать backup: {e}"))?;
 
@@ -58,15 +72,23 @@ pub fn backup_forza_config_dir(config_dir: &Path) -> Result<String, String> {
     Ok(backup_id)
 }
 
-pub fn backup_config_dir(config_dir: &Path) -> Result<String, String> {
+pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<String, String> {
     if crate::forza::is_forza_config_dir(config_dir) {
-        return backup_forza_config_dir(config_dir);
+        return backup_forza_config_dir(config_dir, backup_id);
     }
     let backup_root = backup_store_dir(config_dir);
     fs::create_dir_all(&backup_root)
         .map_err(|e| format!("Не удалось создать каталог backup: {e}"))?;
 
-    let backup_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    let backup_id = match backup_id {
+        Some(id) => {
+            if !is_safe_backup_id(id) {
+                return Err(format!("Недопустимый идентификатор backup: {id}"));
+            }
+            id.to_string()
+        }
+        None => Local::now().format("%Y%m%d_%H%M%S").to_string(),
+    };
     let backup_path = backup_root.join(&backup_id);
     fs::create_dir_all(&backup_path).map_err(|e| format!("Не удалось создать backup: {e}"))?;
 
@@ -112,6 +134,9 @@ fn list_backups_in(backup_root: &Path) -> Result<Vec<(String, String, Vec<String
             continue;
         }
         let id = entry.file_name().to_string_lossy().to_string();
+        if !is_safe_backup_id(&id) {
+            continue;
+        }
         let mut files = Vec::new();
         for file in fs::read_dir(entry.path()).map_err(|e| e.to_string())? {
             let file = file.map_err(|e| e.to_string())?;
@@ -127,22 +152,43 @@ fn list_backups_in(backup_root: &Path) -> Result<Vec<(String, String, Vec<String
 }
 
 fn resolve_backup_path(config_dir: &Path, backup_id: &str) -> Result<PathBuf, String> {
-    let primary = backup_store_dir(config_dir).join(backup_id);
+    if !is_safe_backup_id(backup_id) {
+        return Err(format!("Недопустимый идентификатор backup: {backup_id}"));
+    }
+
+    let store = backup_store_dir(config_dir);
+    let primary = store.join(backup_id);
     if primary.exists() {
+        if !path_within_root(&store, &primary) {
+            return Err(format!("Недопустимый путь backup: {backup_id}"));
+        }
         return Ok(primary);
     }
 
-    let legacy = legacy_backup_root(config_dir).join(backup_id);
+    let legacy_root = legacy_backup_root(config_dir);
+    let legacy = legacy_root.join(backup_id);
     if legacy.exists() {
+        if !path_within_root(&legacy_root, &legacy) {
+            return Err(format!("Недопустимый путь backup: {backup_id}"));
+        }
         return Ok(legacy);
     }
 
     Err(format!("Backup '{backup_id}' не найден"))
 }
 
+pub fn backup_path_for(config_dir: &Path, backup_id: &str) -> Result<PathBuf, String> {
+    resolve_backup_path(config_dir, backup_id)
+}
+
 /// Удаляет override ini, оставляя только GameUserSettings.ini (настройки из меню игры).
 pub fn reset_config_to_user_settings(config_dir: &Path) -> Result<(String, Vec<String>), String> {
-    let backup_id = backup_config_dir(config_dir)?;
+    let backup_id = backup_config_dir(config_dir, None)?;
+    let deleted = reset_config_overrides(config_dir)?;
+    Ok((backup_id, deleted))
+}
+
+fn reset_config_overrides(config_dir: &Path) -> Result<Vec<String>, String> {
     let mut deleted = Vec::new();
 
     for file in OVERRIDE_INI_FILES {
@@ -155,7 +201,63 @@ pub fn reset_config_to_user_settings(config_dir: &Path) -> Result<(String, Vec<S
         deleted.push(file.to_string());
     }
 
-    Ok((backup_id, deleted))
+    Ok(deleted)
+}
+
+pub fn reset_config_all_targets(
+    primary_config_dir: &Path,
+    hints: &crate::ini::platform::PlatformHints,
+) -> Result<(String, Vec<String>), String> {
+    let path = crate::ini::platform::reconcile_config_dir(primary_config_dir, hints);
+    let targets = crate::ini::platform::apply_target_dirs(&path, hints);
+    let shared_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    for target in &targets {
+        backup_config_dir(target, Some(&shared_id))?;
+    }
+
+    let mut all_deleted = Vec::new();
+    for (i, target) in targets.iter().enumerate() {
+        match reset_config_overrides(target) {
+            Ok(mut deleted) => all_deleted.append(&mut deleted),
+            Err(e) => {
+                let mut rollback_errors = Vec::new();
+                for t in targets.iter().take(i + 1) {
+                    if let Err(rb) = rollback_apply_snapshot(t, &shared_id) {
+                        rollback_errors.push(rb);
+                    }
+                }
+                if rollback_errors.is_empty() {
+                    return Err(e);
+                }
+                return Err(format!("{e} (откат: {})", rollback_errors.join("; ")));
+            }
+        }
+    }
+    all_deleted.sort();
+    all_deleted.dedup();
+    Ok((shared_id, all_deleted))
+}
+
+/// Откат apply: удаляет override-ini, созданные apply, затем восстанавливает snapshot.
+pub fn rollback_apply_snapshot(config_dir: &Path, backup_id: &str) -> Result<Vec<String>, String> {
+    let backup_path = resolve_backup_path(config_dir, backup_id)?;
+    let mut backed_files = std::collections::HashSet::new();
+    for entry in fs::read_dir(&backup_path).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+        if entry.file_type().map_err(|e| e.to_string())?.is_file() {
+            backed_files.insert(entry.file_name().to_string_lossy().to_string());
+        }
+    }
+    for file in OVERRIDE_INI_FILES {
+        let path = config_dir.join(file);
+        if path.exists() && !backed_files.contains(file) {
+            crate::fs_util::clear_readonly(&path);
+            if let Err(e) = fs::remove_file(&path) {
+                return Err(format!("Не удалось удалить {file} при откате: {e}"));
+            }
+        }
+    }
+    restore_backup(config_dir, backup_id)
 }
 
 pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>, String> {
@@ -166,6 +268,9 @@ pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>,
         let entry = entry.map_err(|e| e.to_string())?;
         if entry.file_type().map_err(|e| e.to_string())?.is_file() {
             let name = entry.file_name().to_string_lossy().to_string();
+            if !is_allowed_restore_filename(&name) {
+                return Err(format!("Недопустимый файл в backup: {name}"));
+            }
             let dst = config_dir.join(&name);
             let bytes = read_file_bytes(&entry.path())
                 .map_err(|e| format!("Не удалось прочитать backup {name}: {e}"))?;
@@ -178,9 +283,88 @@ pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>,
     Ok(restored)
 }
 
+pub fn restore_backup_all_targets(
+    primary_config_dir: &Path,
+    backup_id: &str,
+    hints: &crate::ini::platform::PlatformHints,
+) -> Result<Vec<String>, String> {
+    let path = crate::ini::platform::reconcile_config_dir(primary_config_dir, hints);
+    let targets = crate::ini::platform::apply_target_dirs(&path, hints);
+
+    let mut pre_snapshots: Vec<(PathBuf, String)> = Vec::new();
+    for target in &targets {
+        let snap = backup_config_dir(target, None)?;
+        pre_snapshots.push((target.clone(), snap));
+    }
+
+    let mut all_restored = Vec::new();
+    for (i, target) in targets.iter().enumerate() {
+        match restore_backup(target, backup_id) {
+            Ok(mut restored) => all_restored.append(&mut restored),
+            Err(e) => {
+                let mut rollback_errors = Vec::new();
+                for (t, snap) in pre_snapshots.iter().take(i + 1) {
+                    if let Err(rb) = rollback_apply_snapshot(t, snap) {
+                        rollback_errors.push(rb);
+                    }
+                }
+                if rollback_errors.is_empty() {
+                    return Err(e);
+                }
+                return Err(format!("{e} (откат: {})", rollback_errors.join("; ")));
+            }
+        }
+    }
+    all_restored.sort();
+    all_restored.dedup();
+    Ok(all_restored)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn restore_rejects_unsafe_backup_id() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let config = tmp.path();
+        fs::write(config.join("GameUserSettings.ini"), b"[Settings]\n").unwrap();
+        let err = restore_backup(config, "../evil").unwrap_err();
+        assert!(err.contains("Недопустимый"));
+    }
+
+    #[test]
+    fn restore_unity_boot_config() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let config = tmp.path();
+        fs::write(config.join("boot.config"), b"gfx-enable-gfx-jobs=1\n").unwrap();
+
+        let backup_id = crate::unity::backup_unity_config(config).expect("backup");
+        fs::write(config.join("boot.config"), b"changed\n").unwrap();
+
+        let restored = restore_backup(config, &backup_id).expect("restore");
+        assert!(restored.contains(&"boot.config".to_string()));
+        assert_eq!(
+            fs::read_to_string(config.join("boot.config")).unwrap(),
+            "gfx-enable-gfx-jobs=1\n"
+        );
+    }
+
+    #[test]
+    fn restore_rejects_unsafe_filename_in_backup() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let config = tmp.path();
+        let store = backup_store_dir(config);
+        fs::create_dir_all(&store).unwrap();
+        let backup_id = "20250611_120000";
+        let backup_path = store.join(backup_id);
+        fs::create_dir_all(&backup_path).unwrap();
+        fs::write(backup_path.join("GameUserSettings.ini"), b"[Settings]\n").unwrap();
+        fs::write(backup_path.join("evil.ini"), b"bad\n").unwrap();
+
+        let err = restore_backup(config, backup_id).unwrap_err();
+        assert!(err.contains("Недопустимый"));
+    }
 
     #[test]
     fn backup_store_dir_is_stable() {

@@ -14,6 +14,13 @@ use std::path::{Path, PathBuf};
 
 const PRESET_IDS: &[&str] = &["ultra-low", "low", "medium", "high", "epic", "ultra-high"];
 const ENGINE_INI: &str = "Engine.ini";
+
+fn validate_preset_id(id: &str) -> Result<(), String> {
+    if !crate::fs_util::is_safe_pack_id(id) {
+        return Err(format!("Недопустимый идентификатор пресета: {id}"));
+    }
+    Ok(())
+}
 /// Снимаются при apply Epic без Engine.ini в пресете — иначе CVars от boost/performance остаются активными.
 const MENU_OVERRIDE_CONFIG_FILES: &[&str] = &["Engine.ini", "Scalability.ini", "DeviceProfiles.ini"];
 
@@ -50,6 +57,7 @@ fn engine_preset_name(preset_id: &str) -> Option<&'static str> {
 }
 
 fn embedded_author_tier_path(game_id: Option<&str>, id: &str) -> Option<PathBuf> {
+    validate_preset_id(id).ok()?;
     if game_id == Some("steam-1962700") {
         let path = presets_dir()
             .join("games")
@@ -84,14 +92,15 @@ pub fn resolve_engine_family(
     UeEngineFamily::Unknown
 }
 
-fn preset_path(id: &str, engine_family: UeEngineFamily) -> PathBuf {
+fn preset_path(id: &str, engine_family: UeEngineFamily) -> Result<PathBuf, String> {
+    validate_preset_id(id)?;
     if engine_family == UeEngineFamily::Ue4 {
         let ue4_path = presets_dir().join("ue4").join(format!("{id}.json"));
         if ue4_path.exists() {
-            return ue4_path;
+            return Ok(ue4_path);
         }
     }
-    presets_dir().join(format!("{id}.json"))
+    Ok(presets_dir().join(format!("{id}.json")))
 }
 
 pub fn list_presets(
@@ -135,6 +144,7 @@ pub fn load_preset_for_family(
     engine_family: UeEngineFamily,
     game_id: Option<&str>,
 ) -> Result<PresetDefinition, String> {
+    validate_preset_id(id)?;
     let family_str = if engine_family == UeEngineFamily::Ue4 {
         Some("ue4")
     } else if engine_family == UeEngineFamily::Ue5 {
@@ -180,12 +190,13 @@ pub fn load_preset_for_family(
         }
     }
 
-    let path = preset_path(id, engine_family);
+    let path = preset_path(id, engine_family)?;
     let content = fs::read_to_string(&path).map_err(|e| format!("Пресет '{id}' не найден: {e}"))?;
     serde_json::from_str(&content).map_err(|e| format!("Некорректный пресет '{id}': {e}"))
 }
 
 pub fn load_game_overlay(overlay_id: &str) -> Result<PresetDefinition, String> {
+    validate_preset_id(overlay_id)?;
     if let Some(result) = crate::remote_presets::load_ue_overlay(overlay_id) {
         return result;
     }
@@ -205,6 +216,7 @@ pub fn build_combined_preset(
     config_dir: Option<&Path>,
     engine_family: Option<&str>,
 ) -> Result<PresetDefinition, String> {
+    validate_preset_id(base_id)?;
     if engine_family == Some("unity") {
         let unity_preset = crate::unity::build_unity_combined_preset(base_id)?;
         return Ok(crate::unity::presets::unity_preset_as_definition(
@@ -421,6 +433,11 @@ pub fn apply_changes_to_dir(
     let encoding_hint = config_dir.join("GameUserSettings.ini");
 
     for file_name in touched {
+        if !crate::fs_util::is_allowed_config_ini_filename(&file_name) {
+            return Err(format!(
+                "Недопустимое имя конфигурационного файла: {file_name}"
+            ));
+        }
         let file_path = config_dir.join(&file_name);
         let treat_engine_as_new = preset_id.is_some_and(replaces_engine_ini)
             && file_name == ENGINE_INI
@@ -498,9 +515,13 @@ fn compute_removal_diff(
 ) -> Vec<ConfigDiffEntry> {
     let mut diff = Vec::new();
     for (section, keys) in removals {
+        let before_section = crate::ini::parser::find_section_key(before, section)
+            .and_then(|key| before.get(key));
+        let after_section = crate::ini::parser::find_section_key(after, section)
+            .and_then(|key| after.get(key));
         for key in keys {
-            let old_value = before.get(section).and_then(|s| s.get(key)).cloned();
-            let still_present = after.get(section).and_then(|s| s.get(key)).is_some();
+            let old_value = before_section.and_then(|s| s.get(key)).cloned();
+            let still_present = after_section.and_then(|s| s.get(key)).is_some();
             if old_value.is_some() && !still_present {
                 diff.push(ConfigDiffEntry {
                     file: file_name.to_string(),
@@ -575,18 +596,62 @@ pub fn apply_preset_to_targets(
     preset: &PresetDefinition,
     width: u32,
     height: u32,
+    pre_backup_id: Option<&str>,
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
     let targets = apply_target_dirs(config_dir, hints);
+
+    let pre_snapshots: Vec<(PathBuf, String)> = if let Some(backup_id) = pre_backup_id {
+        targets
+            .iter()
+            .map(|target| (target.clone(), backup_id.to_string()))
+            .collect()
+    } else {
+        let mut snapshots = Vec::new();
+        for target in &targets {
+            let snap = crate::backup::backup_config_dir(target, None)?;
+            snapshots.push((target.clone(), snap));
+        }
+        snapshots
+    };
+
     let mut all_changed = Vec::new();
     let mut all_diff = Vec::new();
-    for target in targets {
-        let (changed, diff) = apply_preset_to_dir(&target, preset, width, height)?;
-        all_changed.extend(changed);
-        all_diff.extend(diff);
+    for (i, target) in targets.iter().enumerate() {
+        match apply_preset_to_dir(target, preset, width, height) {
+            Ok((changed, diff)) => {
+                all_changed.extend(changed);
+                all_diff.extend(diff);
+            }
+            Err(e) => {
+                let rollback_err = rollback_apply_targets(&pre_snapshots, i + 1);
+                return Err(append_rollback_error(e, rollback_err));
+            }
+        }
     }
     all_changed.sort();
     all_changed.dedup();
     Ok((all_changed, all_diff))
+}
+
+fn rollback_apply_targets(snapshots: &[(PathBuf, String)], count: usize) -> Option<String> {
+    let mut errors = Vec::new();
+    for (t, snap) in snapshots.iter().take(count) {
+        if let Err(err) = crate::backup::rollback_apply_snapshot(t, snap) {
+            errors.push(err);
+        }
+    }
+    if errors.is_empty() {
+        None
+    } else {
+        Some(errors.join("; "))
+    }
+}
+
+fn append_rollback_error(apply_err: String, rollback_err: Option<String>) -> String {
+    match rollback_err {
+        Some(rb) => format!("{apply_err} (откат: {rb})"),
+        None => apply_err,
+    }
 }
 
 pub fn apply_custom_to_targets(
@@ -595,14 +660,37 @@ pub fn apply_custom_to_targets(
     changes: &crate::models::CustomChanges,
     width: u32,
     height: u32,
+    pre_backup_id: Option<&str>,
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
     let targets = apply_target_dirs(config_dir, hints);
+
+    let pre_snapshots: Vec<(PathBuf, String)> = if let Some(backup_id) = pre_backup_id {
+        targets
+            .iter()
+            .map(|target| (target.clone(), backup_id.to_string()))
+            .collect()
+    } else {
+        let mut snapshots = Vec::new();
+        for target in &targets {
+            let snap = crate::backup::backup_config_dir(target, None)?;
+            snapshots.push((target.clone(), snap));
+        }
+        snapshots
+    };
+
     let mut all_changed = Vec::new();
     let mut all_diff = Vec::new();
-    for target in targets {
-        let (changed, diff) = apply_custom_to_dir(&target, changes, width, height)?;
-        all_changed.extend(changed);
-        all_diff.extend(diff);
+    for (i, target) in targets.iter().enumerate() {
+        match apply_custom_to_dir(target, changes, width, height) {
+            Ok((changed, diff)) => {
+                all_changed.extend(changed);
+                all_diff.extend(diff);
+            }
+            Err(e) => {
+                let rollback_err = rollback_apply_targets(&pre_snapshots, i + 1);
+                return Err(append_rollback_error(e, rollback_err));
+            }
+        }
     }
     all_changed.sort();
     all_changed.dedup();
@@ -654,9 +742,14 @@ fn compute_diff(
 ) -> Vec<ConfigDiffEntry> {
     let mut diff = Vec::new();
     for (section, entries) in updates {
+        let before_section = crate::ini::parser::find_section_key(before, section)
+            .and_then(|key| before.get(key));
         for (key, new_value) in entries {
-            let old_value = before.get(section).and_then(|s| s.get(key)).cloned();
-            if old_value.as_deref() != Some(new_value.as_str()) {
+            let old_value = before_section.and_then(|s| s.get(key)).cloned();
+            let unchanged = old_value
+                .as_deref()
+                .is_some_and(|old| crate::ini::parser::ini_values_equal(old, new_value));
+            if !unchanged {
                 diff.push(ConfigDiffEntry {
                     file: file_name.to_string(),
                     section: section.clone(),
@@ -936,6 +1029,29 @@ mod tests {
     }
 
     #[test]
+    fn sn2_preview_clears_after_author_apply_with_mixed_section_case() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=0\r\n\r\n[/Script/subnautica2.sn2settingslocal]\r\nGammaValue=1.0\r\nResolutionScaleFixed=0.5\r\n",
+        )
+        .unwrap();
+
+        let preset =
+            build_combined_preset("high", Some("steam-1962700"), None, Some(dir.path()), Some("ue5"))
+                .unwrap();
+        let before = preview_preset(dir.path(), &preset, 1920, 1080).unwrap();
+        assert!(!before.is_empty(), "initial preview should list changes");
+
+        apply_preset_to_dir(dir.path(), &preset, 1920, 1080).unwrap();
+        let after = preview_preset(dir.path(), &preset, 1920, 1080).unwrap();
+        assert!(
+            after.is_empty(),
+            "preview must be empty after apply, got: {after:?}"
+        );
+    }
+
+    #[test]
     fn subnautica2_low_preset_uses_author_pack() {
         let preset = build_combined_preset("low", Some("steam-1962700"), None, None, None).unwrap();
         let gus = preset.files.get("GameUserSettings.ini").expect("gus");
@@ -1105,5 +1221,22 @@ mod tests {
 
         let engine = fs::read_to_string(dir.path().join("Engine.ini")).unwrap();
         assert!(engine.contains("r.ViewDistanceScale=0.8"), "got: {engine}");
+    }
+
+    #[test]
+    fn validate_preset_id_rejects_traversal() {
+        let err = load_preset_for_family("../evil", UeEngineFamily::Ue5, None).unwrap_err();
+        assert!(err.contains("Недопустимый"));
+    }
+
+    #[test]
+    fn apply_changes_rejects_traversal_filename() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(dir.path().join("GameUserSettings.ini"), "[Settings]\n").unwrap();
+        let mut files = HashMap::new();
+        files.insert("../evil.ini".to_string(), HashMap::new());
+        let err = apply_changes_to_dir(dir.path(), &files, &HashMap::new(), 1920, 1080, None)
+            .unwrap_err();
+        assert!(err.contains("Недопустимое имя"));
     }
 }

@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { open } from "@tauri-apps/plugin-dialog";
+import { openPathDialog } from "../lib/tauriDialog";
 import {
   FolderOpen,
   FolderSearch,
   Gamepad2,
   ImagePlus,
+  Palette,
   Plus,
   RefreshCw,
   Search,
@@ -25,8 +26,11 @@ import {
 import {
   AUTHOR_CURATED_SECTION_TITLE,
   isAuthorCuratedGame,
+  supportsIniPresets,
+  supportsReShade,
 } from "../lib/gameEngine";
 import type { GameProfile } from "../lib/types";
+import { formatInvokeError } from "../lib/errors";
 import { Alert } from "../components/ui/Alert";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -39,6 +43,7 @@ interface Props {
   selectedGame: GameProfile | null;
   onSelectGame: (game: GameProfile) => void;
   onGameUpdated?: (game: GameProfile) => void;
+  onGameRemoved?: (id: string) => void;
 }
 
 const sourceLabels: Record<string, string> = {
@@ -47,9 +52,10 @@ const sourceLabels: Record<string, string> = {
   manual: "Вручную",
 };
 
-export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props) {
+export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameRemoved }: Props) {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
+  const [libraryError, setLibraryError] = useState<string>();
   const queriesEnabled = useBackgroundSafeEnabled();
 
   const { data: games = [], isLoading, isFetching, refetch } = useQuery({
@@ -95,16 +101,16 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
 
   const addManual = useMutation({
     mutationFn: async () => {
-      const selected = await open({
+      const path = await openPathDialog({
         directory: true,
         multiple: false,
         title: "Выберите папку установки игры",
       });
-      if (!selected) return null;
-      const path = typeof selected === "string" ? selected : selected;
+      if (!path) return null;
       const name = query.trim() || path.split(/[/\\]/).pop() || "Custom Game";
       return addManualGame(name, path);
     },
+    onMutate: () => setLibraryError(undefined),
     onSuccess: (profile) => {
       if (profile) {
         queryClient.invalidateQueries({ queryKey: ["games"] });
@@ -112,36 +118,43 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
         setQuery("");
       }
     },
+    onError: (err) => setLibraryError(formatInvokeError(err)),
   });
 
   const pickConfigDir = useMutation({
     mutationFn: async (gameId: string) => {
-      const selected = await open({
+      const path = await openPathDialog({
         directory: true,
         multiple: false,
         title: "Выберите папку Saved/Config/Windows",
       });
-      if (!selected) return null;
-      const path = typeof selected === "string" ? selected : selected;
+      if (!path) return null;
       return setGameConfigDir(gameId, path);
     },
-    onSuccess: (profile) => {
-      if (profile) {
+    onMutate: () => setLibraryError(undefined),
+    onSuccess: (profile, gameId) => {
+      if (profile && profile.id === gameId) {
         queryClient.invalidateQueries({ queryKey: ["games"] });
         onSelectGame(profile);
         onGameUpdated?.(profile);
       }
     },
+    onError: (err) => setLibraryError(formatInvokeError(err)),
   });
 
   const removeGame = useMutation({
     mutationFn: (id: string) => removeGameProfile(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["games"] }),
+    onMutate: () => setLibraryError(undefined),
+    onSuccess: (_data, id) => {
+      queryClient.invalidateQueries({ queryKey: ["games"] });
+      onGameRemoved?.(id);
+    },
+    onError: (err) => setLibraryError(formatInvokeError(err)),
   });
 
   const importCover = useMutation({
     mutationFn: async (gameId: string) => {
-      const selected = await open({
+      const path = await openPathDialog({
         multiple: false,
         title: "Выберите обложку игры",
         filters: [
@@ -151,24 +164,29 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
           },
         ],
       });
-      if (!selected) return null;
-      const path = typeof selected === "string" ? selected : selected;
+      if (!path) return null;
       return importGameCover(gameId, path);
     },
-    onSuccess: (profile) => {
-      if (profile) {
+    onMutate: () => setLibraryError(undefined),
+    onSuccess: (profile, gameId) => {
+      if (profile && profile.id === gameId) {
         queryClient.invalidateQueries({ queryKey: ["games"] });
         onGameUpdated?.(profile);
       }
     },
+    onError: (err) => setLibraryError(formatInvokeError(err)),
   });
 
   const removeCover = useMutation({
     mutationFn: (gameId: string) => removeGameCover(gameId),
-    onSuccess: (profile) => {
-      queryClient.invalidateQueries({ queryKey: ["games"] });
-      onGameUpdated?.(profile);
+    onMutate: () => setLibraryError(undefined),
+    onSuccess: (profile, gameId) => {
+      if (profile.id === gameId) {
+        queryClient.invalidateQueries({ queryKey: ["games"] });
+        onGameUpdated?.(profile);
+      }
     },
+    onError: (err) => setLibraryError(formatInvokeError(err)),
   });
 
   const renderGameCard = (game: GameProfile) => {
@@ -234,7 +252,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
         </button>
 
         <div className="flex flex-wrap gap-2 border-t border-[var(--color-border)] px-4 py-3">
-          {game.config_dir ? (
+          {supportsIniPresets(game) ? (
             <Button
               variant="ghost"
               className="!px-2 !py-1.5 text-xs text-accent"
@@ -243,7 +261,17 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
             >
               Выбрать
             </Button>
-          ) : (
+          ) : supportsReShade(game) ? (
+            <Button
+              variant="ghost"
+              className="!px-2 !py-1.5 text-xs text-accent"
+              icon={<Palette size={14} />}
+              onClick={() => onSelectGame(game)}
+            >
+              ReShade
+            </Button>
+          ) : null}
+          {!game.config_dir && (
             <Button
               variant="secondary"
               className="!px-3 !py-1.5 text-xs"
@@ -291,6 +319,11 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
 
   return (
     <div className="space-y-6">
+      {libraryError && (
+        <Alert tone="error" title="Ошибка">
+          {libraryError}
+        </Alert>
+      )}
       <PageHeader
         title="Библиотека игр"
         subtitle="Steam · Epic · LocalAppData · ручное добавление"
@@ -440,7 +473,8 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated }: Props
                   Другие игры
                 </h2>
                 <p className="mt-1 text-sm text-muted">
-                  Движок не определён — мастер настроек пока не поддерживает эти игры.
+                  Движок не определён — авто-пресеты ini недоступны. ReShade и запуск из GSM —
+                  доступны.
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

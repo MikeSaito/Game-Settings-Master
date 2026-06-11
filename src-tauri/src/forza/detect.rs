@@ -19,6 +19,25 @@ pub fn is_forza_install(install_dir: &Path) -> bool {
         })
 }
 
+pub fn validate_forza_install_dir(install_dir: &Path) -> Result<PathBuf, String> {
+    if !install_dir.exists() {
+        return Err(format!(
+            "Папка установки Forza не существует: {}",
+            install_dir.display()
+        ));
+    }
+    let canonical = install_dir
+        .canonicalize()
+        .map_err(|e| format!("Некорректный путь установки Forza: {e}"))?;
+    if !is_forza_install(&canonical) {
+        return Err(format!(
+            "Папка не содержит Forza Horizon 6: {}",
+            canonical.display()
+        ));
+    }
+    Ok(canonical)
+}
+
 pub fn resolve_forza_config_dir(app_id: Option<&str>) -> Option<PathBuf> {
     if let Some(id) = app_id {
         if let Some(path) = known_forza_config_dir(id) {

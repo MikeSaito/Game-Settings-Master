@@ -1,11 +1,6 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Save, Search, SlidersHorizontal, Trash2, Zap } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BackupBanner } from "../components/BackupBanner";
 import { ParameterCard } from "../components/ParameterCard";
 import { Alert } from "../components/ui/Alert";
@@ -19,6 +14,7 @@ import { SectionHeader } from "../components/ui/SectionHeader";
 import { useWorkspacePreset } from "../context/GameWorkspaceContext";
 import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
+import { useRunningExeName } from "../hooks/useRunningExeName";
 import {
   applyCustom,
   getGameOverrides,
@@ -128,13 +124,17 @@ export function AdvancedEditor({ game }: Props) {
   const configDir = game?.config_dir ?? "";
   const isUnity = game?.is_unity || game?.engine_family === "unity";
   const isForza = game?.engine_family === "forza";
-  const gameRunning = useGameRunning(game?.exe_name);
+  const runningExeName = useRunningExeName(game);
+  const gameRunning = useGameRunning(runningExeName);
   const queriesEnabled = useBackgroundSafeEnabled(!!configDir && !!game?.id);
   const overridesEnabled = useBackgroundSafeEnabled(!!game?.id);
   const gpuEnabled = useBackgroundSafeEnabled();
 
   useWorkspacePreset("Ручной", "selected", !!configDir);
   const [params, setParams] = useState<GameParameter[]>([]);
+  const paramsDirtyRef = useRef(false);
+  const activeGameIdRef = useRef(game?.id);
+  activeGameIdRef.current = game?.id;
   const [overrideName, setOverrideName] = useState("Мой пресет");
   const [message, setMessage] = useState<string>();
   const [applyError, setApplyError] = useState<string>();
@@ -143,6 +143,12 @@ export function AdvancedEditor({ game }: Props) {
   );
   const [search, setSearch] = useState("");
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setMessage(undefined);
+    setApplyError(undefined);
+    paramsDirtyRef.current = false;
+  }, [game?.id]);
 
   const { data: parameters = [], isLoading, isFetching } = useQuery({
     queryKey: ["parameters", configDir, game?.id, game?.engine_family],
@@ -156,14 +162,15 @@ export function AdvancedEditor({ game }: Props) {
     enabled: queriesEnabled,
     staleTime: 5 * 60_000,
     refetchOnMount: false,
-    placeholderData: keepPreviousData,
+    placeholderData: (previousData, previousQuery) =>
+      previousQuery?.queryKey?.[2] === game?.id ? previousData : undefined,
   });
 
   const parametersLoading = (isLoading || isFetching) && parameters.length === 0;
 
   const { data: limits } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir],
-    queryFn: () => getScalabilityLimits(configDir, game!.install_dir),
+    queryFn: () => getScalabilityLimits(configDir, game!.install_dir, game!.id),
     enabled: queriesEnabled && !!game,
   });
 
@@ -186,6 +193,7 @@ export function AdvancedEditor({ game }: Props) {
   );
 
   useEffect(() => {
+    if (paramsDirtyRef.current) return;
     setParams(parameters);
     setEngineEnabled(initialEngineEnabledKeys(parameters));
     if (isForza) {
@@ -260,6 +268,7 @@ export function AdvancedEditor({ game }: Props) {
   const gpuHint = gpu ? gpuFilterHint(gpu) : null;
 
   const updateParam = (key: string, section: string, file: string, value: string) => {
+    paramsDirtyRef.current = true;
     setParams((prev) =>
       applyParamDependencies(
         prev,
@@ -270,6 +279,7 @@ export function AdvancedEditor({ game }: Props) {
   };
 
   const toggleEngineParam = (p: GameParameter, enabled: boolean) => {
+    paramsDirtyRef.current = true;
     const id = engineParamId(p);
     setEngineEnabled((prev) => {
       const next = new Set(prev);
@@ -310,7 +320,8 @@ export function AdvancedEditor({ game }: Props) {
     buildCustomChanges(params, parameters, gpu, engineEnabled, editableCategories);
 
   const applyCustomMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
+      const snapshot = { gameId: game!.id, configDir };
       const { files, removals } = buildChanges();
       if (
         Object.keys(files).length === 0 &&
@@ -322,50 +333,86 @@ export function AdvancedEditor({ game }: Props) {
             : "Нет изменений — включите параметры Engine.ini или измените значения.",
         );
       }
-      return applyCustom(configDir, files, game?.exe_name ?? undefined, removals);
+      const result = await applyCustom(
+        snapshot.configDir,
+        files,
+        runningExeName ?? undefined,
+        removals,
+        snapshot.gameId,
+        game?.engine_family,
+      );
+      return { result, snapshot };
     },
     onMutate: () => setApplyError(undefined),
-    onSuccess: (result) => {
+    onSuccess: ({ result, snapshot }) => {
+      if (activeGameIdRef.current !== snapshot.gameId) return;
+      paramsDirtyRef.current = false;
       setMessage(
         `Применено ${result.diff.length} правок · backup ${result.backup_id}. Перезапустите игру.`,
       );
-      queryClient.invalidateQueries({ queryKey: ["backups", configDir] });
-      queryClient.invalidateQueries({ queryKey: ["parameters", configDir] });
+      queryClient.invalidateQueries({
+        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["game-config"] });
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
 
   const saveOverrideMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
+      const snapshot = { gameId: game!.id, name: overrideName };
       const { files, removals } = buildChanges();
-      return saveGameOverride({
-        game_id: game!.id,
-        name: overrideName,
+      await saveGameOverride({
+        game_id: snapshot.gameId,
+        name: snapshot.name,
         files,
         removals,
       });
+      return snapshot;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["overrides", game?.id] });
-      setMessage(`Пресет «${overrideName}» сохранён.`);
+    onSuccess: (snapshot) => {
+      if (activeGameIdRef.current !== snapshot.gameId) return;
+      queryClient.invalidateQueries({ queryKey: ["overrides", snapshot.gameId] });
+      setMessage(`Пресет «${snapshot.name}» сохранён.`);
     },
+    onError: (err) => setApplyError(formatInvokeError(err)),
   });
 
   const applyOverrideMutation = useMutation({
-    mutationFn: (override: (typeof overrides)[0]) =>
-      applyGameOverride(configDir, override, game?.exe_name ?? undefined),
-    onSuccess: (result) => {
-      setMessage(`Пресет применён · backup ${result.backup_id}.`);
-      queryClient.invalidateQueries({ queryKey: ["backups", configDir] });
-      queryClient.invalidateQueries({ queryKey: ["parameters", configDir] });
+    mutationFn: async (override: (typeof overrides)[0]) => {
+      const snapshot = { gameId: game!.id, configDir };
+      const result = await applyGameOverride(
+        snapshot.configDir,
+        override,
+        runningExeName ?? undefined,
+      );
+      return { result, snapshot };
     },
+    onSuccess: ({ result, snapshot }) => {
+      if (activeGameIdRef.current !== snapshot.gameId) return;
+      setMessage(`Пресет применён · backup ${result.backup_id}.`);
+      queryClient.invalidateQueries({
+        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["game-config"] });
+    },
+    onError: (err) => setApplyError(formatInvokeError(err)),
   });
 
   const deleteOverrideMutation = useMutation({
     mutationFn: ({ gameId, name }: { gameId: string; name: string }) =>
       deleteGameOverride(gameId, name),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["overrides", game?.id] }),
+    onSuccess: (_result, variables) => {
+      if (activeGameIdRef.current !== variables.gameId) return;
+      queryClient.invalidateQueries({ queryKey: ["overrides", variables.gameId] });
+    },
+    onError: (err) => setApplyError(formatInvokeError(err)),
   });
 
   if (!game) {
@@ -412,7 +459,7 @@ export function AdvancedEditor({ game }: Props) {
         </Alert>
       )}
 
-      <GameRunningAlert exeName={game?.exe_name} gameName={game?.name} />
+      <GameRunningAlert exeName={runningExeName} gameName={game?.name} />
 
       {message && <BackupBanner message={message} />}
       {applyError && (

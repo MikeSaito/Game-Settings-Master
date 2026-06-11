@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import {
   getGameConfig,
   getGameParameters,
+  getReShadeWorkspace,
   listBackups,
   listPresets,
 } from "./api";
@@ -16,11 +17,11 @@ export function prefetchGameWorkspace(
   const { config_dir: configDir, engine_family: engineFamily, id, install_dir: installDir } =
     game;
 
-  if (!configDir && tab !== "wizard") return;
+  if (!configDir && tab !== "wizard" && tab !== "reshade") return;
 
   switch (tab) {
     case "wizard":
-      if (engineFamily) {
+      if (engineFamily && engineFamily !== "unknown") {
         void queryClient.prefetchQuery({
           queryKey: ["presets", engineFamily, id],
           queryFn: () => listPresets(engineFamily, id),
@@ -47,10 +48,17 @@ export function prefetchGameWorkspace(
     case "backups":
       if (configDir) {
         void queryClient.prefetchQuery({
-          queryKey: ["backups", configDir],
-          queryFn: () => listBackups(configDir),
+          queryKey: ["backups", configDir, id],
+          queryFn: () => listBackups(configDir, id),
         });
       }
+      break;
+    case "reshade":
+      void queryClient.prefetchQuery({
+        queryKey: ["reshade-workspace", id],
+        queryFn: () => getReShadeWorkspace(game),
+        staleTime: 10_000,
+      });
       break;
     default:
       break;

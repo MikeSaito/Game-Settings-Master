@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
+import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { getPresetServerStatus } from "../lib/api";
 
-/** Статус пресет-сервера — один раз при старте, без фонового опроса. */
+/** Статус пресет-сервера — опрос при фокусе окна для актуального catalog_version. */
 export function usePresetServerStatus() {
+  const focused = useAppWindowFocused();
   return useQuery({
     queryKey: ["preset-server-status"],
     queryFn: getPresetServerStatus,
-    staleTime: Infinity,
+    staleTime: 30_000,
     refetchOnWindowFocus: false,
-    refetchInterval: false,
+    refetchInterval: focused ? 60_000 : false,
   });
 }

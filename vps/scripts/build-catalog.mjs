@@ -187,6 +187,44 @@ async function buildUnityTiersPack() {
   });
 }
 
+const SN2_RESHADE_PRESETS = [
+  {
+    id: "sn2-underwater-clarity",
+    name: "Underwater Clarity",
+    description: "Чёткость под водой для Subnautica 2.",
+    ini_file: "sn2-underwater-clarity.ini",
+  },
+];
+
+async function buildSubnautica2ReShadePack() {
+  return buildPack({
+    packId: "subnautica2-reshade",
+    stagingFn: async (staging) => {
+      await fs.cp(
+        path.join(SOURCE, "subnautica2-reshade", "presets"),
+        path.join(staging, "presets"),
+        { recursive: true },
+      );
+      await fs.copyFile(
+        path.join(SOURCE, "subnautica2-reshade", "presets", "sn2-underwater-clarity.ini"),
+        path.join(staging, "manifest-presets", "sn2-underwater-clarity.ini"),
+      ).catch(() => {});
+    },
+    manifest: {
+      schema_version: 1,
+      pack_id: "subnautica2-reshade",
+      title: "Subnautica 2 — ReShade presets",
+      match: {
+        steam_app_ids: ["1962700"],
+        game_ids: ["steam-1962700"],
+        engine_families: ["ue5"],
+      },
+      apply: { kind: "reshade_ini", presets_root: "presets" },
+      presets: SN2_RESHADE_PRESETS,
+    },
+  });
+}
+
 async function buildUeCatalogPack() {
   return buildPack({
     packId: "ue-catalog",
@@ -209,6 +247,7 @@ async function main() {
   packs.push(await buildForzaPack());
   packs.push(await buildSubnauticaTiersPack());
   packs.push(await buildSubnauticaOverlayPack());
+  packs.push(await buildSubnautica2ReShadePack());
   packs.push(await buildUeTiersPack());
   packs.push(await buildUnityTiersPack());
   packs.push(await buildUeCatalogPack());

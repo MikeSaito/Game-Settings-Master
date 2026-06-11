@@ -4,6 +4,7 @@ import illGpu from "../svg/ill-gpu.svg?raw";
 import illEditor from "../svg/ill-editor.svg?raw";
 import illBackup from "../svg/ill-backup.svg?raw";
 import illCloud from "../svg/ill-cloud.svg?raw";
+import illReshade from "../svg/ill-reshade.svg?raw";
 import type { LocaleStrings } from "./types";
 
 export const en: LocaleStrings = {
@@ -13,9 +14,9 @@ export const en: LocaleStrings = {
   meta: {
     title: "Game Settings Master — graphics presets for games",
     description:
-      "Presets, manual editor and cloud sync for Unreal Engine, Unity and author-curated game breakdowns.",
+      "Presets, manual editor, ReShade and cloud sync for Unreal Engine, Unity and author-curated game breakdowns.",
     keywords:
-      "game settings, graphics presets, Unreal Engine, Unity, DLSS, FSR, config editor",
+      "game settings, graphics presets, Unreal Engine, Unity, DLSS, FSR, ReShade, config editor",
     ogLocale: "en_US",
   },
   nav: {
@@ -30,7 +31,7 @@ export const en: LocaleStrings = {
     subtitle:
       "Graphics master for Unreal Engine, Unity and author-curated breakdowns — without digging through configs manually.",
   },
-  engineTags: ["UE 4", "UE 5", "Unity", "Author-curated"],
+  engineTags: ["UE 4", "UE 5", "Unity", "ReShade", "Author-curated"],
   features: [
     {
       id: "library",
@@ -76,6 +77,13 @@ export const en: LocaleStrings = {
       text: "Content syncs from the server without an app release. Offline — built-in cache fallback.",
       illustration: illCloud,
       reverse: true,
+    },
+    {
+      id: "reshade",
+      step: "07",
+      title: "ReShade",
+      text: "Install post-processing into the game folder: Performance, Clarity and Cinematic presets, plus author ini packs for specific games. Launch with or without ReShade — proxies are removed automatically when off.",
+      illustration: illReshade,
     },
   ],
   download: {

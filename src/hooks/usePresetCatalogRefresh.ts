@@ -10,12 +10,20 @@ export function usePresetCatalogRefresh() {
   const focused = useAppWindowFocused();
   const { data: status } = usePresetServerStatus();
 
+  const lastSyncAt = useRef<string | null>(null);
+
   useEffect(() => {
     if (!focused) return;
     const version = status?.catalog_version ?? null;
-    if (!version || version === lastVersion.current) return;
-    lastVersion.current = version;
+    const syncAt = status?.last_sync_at ?? null;
+    const versionChanged =
+      version != null && version.length > 0 && version !== lastVersion.current;
+    const syncChanged =
+      syncAt != null && syncAt.length > 0 && syncAt !== lastSyncAt.current;
+    if (!versionChanged && !syncChanged) return;
+    if (version) lastVersion.current = version;
+    if (syncAt) lastSyncAt.current = syncAt;
     void queryClient.invalidateQueries({ queryKey: ["presets"] });
     void queryClient.invalidateQueries({ queryKey: ["parameters"] });
-  }, [focused, status?.catalog_version, queryClient]);
+  }, [focused, status?.catalog_version, status?.last_sync_at, queryClient]);
 }

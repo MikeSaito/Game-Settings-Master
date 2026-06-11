@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Ensure 7-Zip (ReShade Setup extraction)
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "C:\Program Files\7-Zip\7z.exe")) {
+            choco install 7zip -y --no-progress
+          }
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Bundle ReShade (shaders + addon DLL)
+        shell: pwsh
+        run: npm run reshade:setup
+
+      - name: Verify ReShade bundle
+        shell: pwsh
+        run: npm run reshade:verify
+
+      - name: Rust tests
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Rust release compile check
+        working-directory: src-tauri
+        run: cargo build --release
+
+      - name: Frontend build
+        run: npm run build
+
+      - name: Landing build
+        run: npm ci --prefix landing && npm run build --prefix landing

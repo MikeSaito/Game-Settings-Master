@@ -1,9 +1,4 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   History,
@@ -11,7 +6,7 @@ import {
   ShieldCheck,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert } from "../components/ui/Alert";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -19,7 +14,9 @@ import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
 import { SectionHeader } from "../components/ui/SectionHeader";
+import { formatInvokeError } from "../lib/errors";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
+import { useRunningExeName } from "../hooks/useRunningExeName";
 import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import { listBackups, resetConfigToUser, restoreBackup } from "../lib/api";
 import type { BackupInfo, GameProfile } from "../lib/types";
@@ -43,15 +40,27 @@ export function Backups({ game }: Props) {
   const [resetConfirm, setResetConfirm] = useState(false);
   const [restoringId, setRestoringId] = useState<string>();
 
+  useEffect(() => {
+    setSuccessMessage(undefined);
+    setRestoreError(undefined);
+    setResetError(undefined);
+    setResetConfirm(false);
+    setRestoringId(undefined);
+  }, [game?.id]);
+
   const configDir = game?.config_dir ?? "";
-  const gameRunning = useGameRunning(game?.exe_name);
+  const activeGameIdRef = useRef(game?.id);
+  activeGameIdRef.current = game?.id;
+  const runningExeName = useRunningExeName(game);
+  const gameRunning = useGameRunning(runningExeName);
   const backupsEnabled = useBackgroundSafeEnabled(!!configDir);
 
   const { data: backups = [], isLoading, isFetching, refetch } = useQuery({
-    queryKey: ["backups", configDir],
-    queryFn: () => listBackups(configDir),
+    queryKey: ["backups", configDir, game?.id],
+    queryFn: () => listBackups(configDir, game?.id),
     enabled: backupsEnabled,
-    placeholderData: keepPreviousData,
+    placeholderData: (previousData, previousQuery) =>
+      previousQuery?.queryKey?.[2] === game?.id ? previousData : undefined,
   });
 
   const backupsLoading = (isLoading || isFetching) && backups.length === 0;
@@ -59,32 +68,59 @@ export function Backups({ game }: Props) {
   const restore = useMutation({
     mutationFn: (backupId: string) => {
       setRestoringId(backupId);
-      return restoreBackup(configDir, backupId, game?.exe_name ?? undefined);
+      const snapshot = {
+        gameId: activeGameIdRef.current,
+        configDir,
+      };
+      return restoreBackup(
+        configDir,
+        backupId,
+        runningExeName ?? undefined,
+        game?.id,
+        game?.engine_family,
+        game?.install_dir,
+      ).then((files) => ({ files, backupId, snapshot }));
     },
     onMutate: () => {
       setRestoreError(undefined);
       setSuccessMessage(undefined);
     },
-    onSuccess: (files, backupId) => {
+    onSuccess: ({ files, backupId, snapshot }) => {
+      const gameId = activeGameIdRef.current;
+      if (!gameId || gameId !== snapshot.gameId || configDir !== snapshot.configDir) return;
       setSuccessMessage(
         `Восстановлен backup ${formatBackupDate(backupId)}: ${files.join(", ")}. Перезапустите игру.`,
       );
+      queryClient.invalidateQueries({ queryKey: ["backups", configDir, gameId] });
       queryClient.invalidateQueries({ queryKey: ["preview", configDir] });
-      queryClient.invalidateQueries({ queryKey: ["parameters", configDir] });
+      queryClient.invalidateQueries({ queryKey: ["parameters", configDir, gameId] });
       queryClient.invalidateQueries({ queryKey: ["game-config"] });
     },
-    onError: (err) => setRestoreError(String(err)),
+    onError: (err) => setRestoreError(formatInvokeError(err)),
     onSettled: () => setRestoringId(undefined),
   });
 
   const reset = useMutation({
-    mutationFn: () => resetConfigToUser(configDir, game?.exe_name ?? undefined),
+    mutationFn: () => {
+      const snapshot = {
+        gameId: activeGameIdRef.current,
+        configDir,
+      };
+      return resetConfigToUser(
+        configDir,
+        runningExeName ?? undefined,
+        game?.id,
+        game?.engine_family,
+      ).then((result) => ({ result, snapshot }));
+    },
     onMutate: () => {
       setResetError(undefined);
       setSuccessMessage(undefined);
       setResetConfirm(false);
     },
-    onSuccess: (result) => {
+    onSuccess: ({ result, snapshot }) => {
+      const gameId = activeGameIdRef.current;
+      if (!gameId || gameId !== snapshot.gameId || configDir !== snapshot.configDir) return;
       if (result.deleted_files.length === 0) {
         setSuccessMessage(
           "Override-файлы уже отсутствуют — остался только GameUserSettings.ini. Backup создан на всякий случай.",
@@ -94,12 +130,12 @@ export function Backups({ game }: Props) {
           `Сброс выполнен: удалены ${result.deleted_files.join(", ")}. GameUserSettings.ini сохранён. Backup ${result.backup_id}. Перезапустите игру.`,
         );
       }
-      queryClient.invalidateQueries({ queryKey: ["backups", configDir] });
+      queryClient.invalidateQueries({ queryKey: ["backups", configDir, gameId] });
       queryClient.invalidateQueries({ queryKey: ["preview", configDir] });
-      queryClient.invalidateQueries({ queryKey: ["parameters", configDir] });
+      queryClient.invalidateQueries({ queryKey: ["parameters", configDir, gameId] });
       queryClient.invalidateQueries({ queryKey: ["game-config"] });
     },
-    onError: (err) => setResetError(String(err)),
+    onError: (err) => setResetError(formatInvokeError(err)),
   });
 
   if (!game) {
@@ -132,7 +168,7 @@ export function Backups({ game }: Props) {
         `.uesm-backups` рядом с конфигами.
       </Alert>
 
-      <GameRunningAlert exeName={game.exe_name} gameName={game.name} />
+      <GameRunningAlert exeName={runningExeName} gameName={game.name} />
 
       {restoreError && (
         <Alert tone="error" title="Ошибка восстановления">
@@ -243,7 +279,7 @@ function BackupRow({
   onRestore: () => void;
 }) {
   return (
-    <Card key={backup.id} padding="sm" className="!p-0">
+    <Card padding="sm" className="!p-0">
       <div className="flex items-center justify-between gap-4 px-4 py-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">

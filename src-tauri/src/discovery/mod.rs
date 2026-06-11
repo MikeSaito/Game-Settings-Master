@@ -1,6 +1,6 @@
 mod config_index;
 mod epic;
-mod known_games;
+pub mod known_games;
 mod steam;
 mod ue_detect;
 mod ue_version;
@@ -19,10 +19,11 @@ pub use config_index::{
 };
 pub use epic::scan_epic_games;
 pub use known_games::{
-    known_config_dir, load_known_games, overlay_preset_for_game, platform_hints_for_game,
+    known_app_id_for_game, known_config_dir, load_known_games, overlay_preset_for_game,
+    platform_hints_for_game,
 };
 pub use steam::scan_steam_games;
-pub use ue_detect::{detect_unreal_engine, is_non_game_install, UeDetectResult};
+pub use ue_detect::{detect_unreal_engine, find_executables, is_non_game_install, UeDetectResult};
 pub use ue_version::{detect_engine_version, enrich_engine_version, UeEngineFamily};
 pub use unity_detect::{detect_unity_engine, find_unity_data_dir, UnityDetectResult};
 
@@ -159,12 +160,16 @@ pub(crate) fn dedupe_paths(paths: Vec<PathBuf>) -> Vec<PathBuf> {
 }
 
 pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GameProfile, String> {
+    let display_name = name.trim();
+    if display_name.is_empty() || display_name.len() > 120 {
+        return Err("Недопустимое имя игры (1–120 символов)".to_string());
+    }
     let path = std::path::PathBuf::from(install_dir);
     if !path.exists() {
         return Err("Указанная папка не существует".to_string());
     }
 
-    if is_non_game_install(&path, name, None) {
+    if is_non_game_install(&path, display_name, None) {
         return Err(
             "Это установка Unreal Engine или инструмент Epic, а не игра. Укажите папку с игрой."
                 .to_string(),
@@ -187,15 +192,15 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
     let config_dir = if is_forza {
         crate::forza::resolve_forza_config_dir(None)
     } else if is_unity {
-        crate::unity::resolve_unity_config_dir(&path, None, Some(name), None)
+        crate::unity::resolve_unity_config_dir(&path, None, Some(display_name), None)
     } else {
-        resolve_config_dir(&path, None, Some(name), None)
+        resolve_config_dir(&path, None, Some(display_name), None)
     }
     .map(|p| p.to_string_lossy().to_string());
 
     Ok(GameProfile {
         id: format!("manual-{}", Uuid::new_v4()),
-        name: name.to_string(),
+        name: display_name.to_string(),
         source: "manual".to_string(),
         install_dir: install_dir.to_string(),
         config_dir,
@@ -221,12 +226,17 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
 
 pub fn enrich_engine_flags(profile: &mut GameProfile) {
     let install = std::path::PathBuf::from(&profile.install_dir);
-    let app_id = profile
-        .id
-        .strip_prefix("steam-")
-        .or_else(|| profile.id.strip_prefix("epic-"));
+    let resolved_app_id = crate::discovery::known_app_id_for_game(&profile.id)
+        .or_else(|| {
+            profile
+                .id
+                .strip_prefix("steam-")
+                .or_else(|| profile.id.strip_prefix("epic-"))
+                .map(str::to_string)
+        });
     let known = load_known_games();
-    let known_forza = app_id
+    let known_forza = resolved_app_id
+        .as_ref()
         .and_then(|id| known.get(id))
         .and_then(|e| e.engine_family.as_deref())
         == Some("forza");
@@ -242,7 +252,7 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
         return;
     }
 
-    if let Some(app_id) = app_id {
+    if let Some(app_id) = resolved_app_id.as_deref() {
         if crate::discovery::known_games::is_author_curated_app(app_id) {
             profile.is_author_curated = true;
         }
@@ -280,27 +290,31 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
 
 pub fn enrich_config_dir(profile: &mut GameProfile) {
     let install = std::path::PathBuf::from(&profile.install_dir);
-    let app_id = profile
-        .id
-        .strip_prefix("steam-")
-        .or_else(|| profile.id.strip_prefix("epic-"));
+    let resolved_app_id = crate::discovery::known_app_id_for_game(&profile.id)
+        .or_else(|| {
+            profile
+                .id
+                .strip_prefix("steam-")
+                .or_else(|| profile.id.strip_prefix("epic-"))
+                .map(str::to_string)
+        });
 
     if profile.config_dir.is_none() {
         profile.config_dir = if profile.engine_family == "forza" {
-            crate::forza::resolve_forza_config_dir(app_id)
+            crate::forza::resolve_forza_config_dir(resolved_app_id.as_deref())
         } else if profile.is_unity {
             crate::unity::resolve_unity_config_dir(
                 &install,
                 profile.exe_name.as_deref(),
                 Some(&profile.name),
-                app_id,
+                resolved_app_id.as_deref(),
             )
         } else {
             resolve_config_dir(
                 &install,
                 profile.exe_name.as_deref(),
                 Some(&profile.name),
-                app_id,
+                resolved_app_id.as_deref(),
             )
         }
         .map(|p| p.to_string_lossy().to_string());
@@ -352,6 +366,11 @@ mod tests {
             engine_family: "unknown".to_string(),
             engine_version: None,
         }
+    }
+
+    #[test]
+    fn manual_profile_rejects_empty_name() {
+        assert!(profile_from_manual_path("   ", r"C:\Games\Any").is_err());
     }
 
     #[test]

@@ -7,6 +7,8 @@ use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 const HTTP_TIMEOUT_SECS: u64 = 15;
+const MAX_DOWNLOAD_BYTES: usize = 50 * 1024 * 1024;
+const MAX_EXTRACT_BYTES: usize = 200 * 1024 * 1024;
 
 #[derive(serde::Serialize)]
 pub struct SyncReport {
@@ -29,6 +31,7 @@ pub fn sync_now(force: bool) -> Result<SyncReport, String> {
 
     let base_url =
         super::config::effective_base_url().ok_or("URL сервера пресетов не задан".to_string())?;
+    super::config::validate_preset_server_url(&base_url)?;
 
     let catalog_url = join_url(&base_url, "catalog.json");
     let catalog_raw = fetch_text(&catalog_url)?;
@@ -44,11 +47,13 @@ pub fn sync_now(force: bool) -> Result<SyncReport, String> {
 
     let root = cache_root()?;
     fs::create_dir_all(&root).map_err(|e| format!("Не удалось создать кэш: {e}"))?;
-    fs::write(root.join("catalog.json"), &catalog_raw)
-        .map_err(|e| format!("Не удалось сохранить catalog.json: {e}"))?;
 
     let mut packs_synced = 0usize;
-    let active_ids: Vec<&str> = catalog.packs.iter().map(|p| p.id.as_str()).collect();
+    let active_ids: Vec<&str> = catalog
+        .packs
+        .iter()
+        .filter_map(|p| crate::fs_util::is_safe_pack_id(&p.id).then_some(p.id.as_str()))
+        .collect();
     for pack_ref in &catalog.packs {
         if sync_pack(
             &base_url,
@@ -59,6 +64,7 @@ pub fn sync_now(force: bool) -> Result<SyncReport, String> {
             packs_synced += 1;
         }
     }
+    write_catalog_atomic(&root, &catalog_raw)?;
     prune_orphan_packs(&active_ids)?;
 
     let mut cfg = load_config()?;
@@ -67,6 +73,7 @@ pub fn sync_now(force: bool) -> Result<SyncReport, String> {
     cfg.last_sync_error = None;
     cfg.catalog_version = Some(catalog.version.clone());
     save_config(&cfg)?;
+    super::invalidate_resolved_packs_cache();
 
     Ok(SyncReport {
         ok: true,
@@ -82,10 +89,13 @@ fn sync_pack(
     manifest_url: &str,
     force: bool,
 ) -> Result<bool, String> {
+    if !crate::fs_util::is_safe_pack_id(pack_id) {
+        return Err(format!("Недопустимый идентификатор пака: {pack_id}"));
+    }
     let pack_cache = cache_root()?.join("packs").join(pack_id);
     let manifest_path = pack_cache.join("manifest.json");
 
-    let manifest_full_url = resolve_url(base_url, manifest_url);
+    let manifest_full_url = resolve_url(base_url, manifest_url)?;
     let manifest_raw = fetch_text(&manifest_full_url)?;
     let manifest: PackManifest = serde_json::from_str(&manifest_raw)
         .map_err(|e| format!("Некорректный manifest пака '{pack_id}': {e}"))?;
@@ -106,7 +116,7 @@ fn sync_pack(
         .rsplit_once('/')
         .map(|(base, _)| base)
         .unwrap_or(base_url);
-    let bundle_url = resolve_url(manifest_base, &bundle.file);
+    let bundle_url = resolve_url(manifest_base, &bundle.file)?;
 
     let stamp_path = pack_cache.join(".bundle.sha256");
     let expected_sha = bundle.sha256.as_deref();
@@ -117,11 +127,16 @@ fn sync_pack(
         || expected_sha.is_some_and(|sha| sha != cached_sha.trim());
 
     fs::create_dir_all(&pack_cache).map_err(|e| format!("Не удалось создать кэш пака: {e}"))?;
-    fs::write(&manifest_path, &manifest_raw)
-        .map_err(|e| format!("Не удалось сохранить manifest: {e}"))?;
 
     if needs_download {
         let zip_bytes = fetch_bytes(&bundle_url)?;
+        if expected_sha.is_none() && std::env::var("GSM_ALLOW_UNVERIFIED_PACKS").ok().as_deref() != Some("1")
+        {
+            return Err(format!(
+                "Пак '{pack_id}' не содержит bundle.sha256 — отклонён. \
+                 Задайте GSM_ALLOW_UNVERIFIED_PACKS=1 только для dev."
+            ));
+        }
         if let Some(expected) = expected_sha {
             let actual = hex_sha256(&zip_bytes);
             if actual != expected {
@@ -132,15 +147,24 @@ fn sync_pack(
         }
 
         let zip_path = pack_cache.join("pack.zip");
-        fs::write(&zip_path, &zip_bytes)
-            .map_err(|e| format!("Не удалось сохранить pack.zip: {e}"))?;
+        let zip_tmp = pack_cache.join("pack.zip.tmp");
+        crate::fs_util::write_file_bytes_opts(&zip_tmp, &zip_bytes, true)
+            .map_err(|e| format!("Не удалось сохранить pack.zip.tmp: {e}"))?;
+        if zip_path.exists() {
+            fs::remove_file(&zip_path)
+                .map_err(|e| format!("Не удалось удалить старый pack.zip: {e}"))?;
+        }
+        fs::rename(&zip_tmp, &zip_path)
+            .map_err(|e| format!("Не удалось активировать pack.zip: {e}"))?;
 
         let extract_dir = pack_cache.join("extracted");
-        if extract_dir.exists() {
-            fs::remove_dir_all(&extract_dir)
-                .map_err(|e| format!("Не удалось очистить extracted: {e}"))?;
+        let extract_new = pack_cache.join("extracted.new");
+        if extract_new.exists() {
+            fs::remove_dir_all(&extract_new)
+                .map_err(|e| format!("Не удалось очистить extracted.new: {e}"))?;
         }
-        extract_zip(&zip_path, &extract_dir)?;
+        extract_zip(&zip_path, &extract_new)?;
+        replace_extracted_dir(&extract_dir, &extract_new)?;
 
         if let Some(expected) = expected_sha {
             fs::write(&stamp_path, expected)
@@ -148,17 +172,25 @@ fn sync_pack(
         }
     }
 
+    crate::fs_util::write_file_bytes_opts(&manifest_path, manifest_raw.as_bytes(), true)
+        .map_err(|e| format!("Не удалось сохранить manifest: {e}"))?;
+    super::invalidate_resolved_packs_cache();
+
     Ok(needs_download)
 }
 
 /// Скачать один пак по id (без полного sync_now по всему каталогу).
 pub fn sync_pack_by_id(pack_id: &str, force: bool) -> Result<bool, String> {
+    if !crate::fs_util::is_safe_pack_id(pack_id) {
+        return Err(format!("Недопустимый идентификатор пака: {pack_id}"));
+    }
     if !force && crate::process_util::is_app_background() {
         return Ok(false);
     }
 
     let base_url =
         super::config::effective_base_url().ok_or("URL сервера пресетов не задан".to_string())?;
+    super::config::validate_preset_server_url(&base_url)?;
 
     let catalog = match load_cached_catalog() {
         Some(c) => c,
@@ -184,10 +216,19 @@ fn extract_zip(zip_path: &Path, dest: &Path) -> Result<(), String> {
     let mut archive =
         zip::ZipArchive::new(file).map_err(|e| format!("Некорректный pack.zip: {e}"))?;
 
+    let mut extracted_bytes = 0usize;
     for i in 0..archive.len() {
         let mut entry = archive
             .by_index(i)
             .map_err(|e| format!("Ошибка чтения zip entry: {e}"))?;
+        let entry_size = entry.size() as usize;
+        extracted_bytes = extracted_bytes.saturating_add(entry_size);
+        if extracted_bytes > MAX_EXTRACT_BYTES {
+            return Err(format!(
+                "Распаковка пака превышает лимит {} MB",
+                MAX_EXTRACT_BYTES / (1024 * 1024)
+            ));
+        }
         let out_path = dest.join(
             entry
                 .enclosed_name()
@@ -209,12 +250,46 @@ fn extract_zip(zip_path: &Path, dest: &Path) -> Result<(), String> {
     Ok(())
 }
 
+fn write_catalog_atomic(root: &Path, content: &str) -> Result<(), String> {
+    let path = root.join("catalog.json");
+    crate::fs_util::write_file_bytes_opts(&path, content.as_bytes(), true)
+}
+
+fn replace_extracted_dir(extract_dir: &Path, extract_new: &Path) -> Result<(), String> {
+    let extract_old = extract_dir.with_extension("old");
+    if extract_old.exists() {
+        fs::remove_dir_all(&extract_old)
+            .map_err(|e| format!("Не удалось очистить extracted.old: {e}"))?;
+    }
+
+    if extract_dir.exists() {
+        fs::rename(extract_dir, &extract_old)
+            .map_err(|e| format!("Не удалось переименовать extracted в extracted.old: {e}"))?;
+    }
+    match fs::rename(extract_new, extract_dir) {
+        Ok(_) => {
+            if extract_old.exists() {
+                let _ = fs::remove_dir_all(&extract_old);
+            }
+            Ok(())
+        }
+        Err(e) => {
+            if extract_old.exists() {
+                let _ = fs::rename(&extract_old, extract_dir);
+            }
+            Err(format!("Не удалось активировать extracted.new: {e}"))
+        }
+    }
+}
+
 fn fetch_text(url: &str) -> Result<String, String> {
     let bytes = fetch_bytes(url)?;
     String::from_utf8(bytes).map_err(|e| format!("Ответ не UTF-8: {e}"))
 }
 
 fn fetch_bytes(url: &str) -> Result<Vec<u8>, String> {
+    validate_fetch_url(url)?;
+
     let agent = ureq::AgentBuilder::new()
         .timeout_read(Duration::from_secs(HTTP_TIMEOUT_SECS))
         .timeout_connect(Duration::from_secs(HTTP_TIMEOUT_SECS))
@@ -227,10 +302,26 @@ fn fetch_bytes(url: &str) -> Result<Vec<u8>, String> {
 
     let mut reader = response.into_reader();
     let mut buf = Vec::new();
-    reader
-        .read_to_end(&mut buf)
-        .map_err(|e| format!("Чтение ответа {url}: {e}"))?;
+    let mut chunk = [0u8; 8192];
+    loop {
+        let n = reader
+            .read(&mut chunk)
+            .map_err(|e| format!("Чтение ответа {url}: {e}"))?;
+        if n == 0 {
+            break;
+        }
+        if buf.len() + n > MAX_DOWNLOAD_BYTES {
+            return Err(format!(
+                "Ответ слишком большой (>{MAX_DOWNLOAD_BYTES} bytes): {url}"
+            ));
+        }
+        buf.extend_from_slice(&chunk[..n]);
+    }
     Ok(buf)
+}
+
+pub(crate) fn validate_fetch_url(url: &str) -> Result<(), String> {
+    super::config::validate_preset_server_url(url)
 }
 
 fn hex_sha256(data: &[u8]) -> String {
@@ -245,11 +336,14 @@ fn join_url(base: &str, path: &str) -> String {
     format!("{base}/{path}")
 }
 
-fn resolve_url(base: &str, relative: &str) -> String {
+fn resolve_url(base: &str, relative: &str) -> Result<String, String> {
     if relative.starts_with("http://") || relative.starts_with("https://") {
-        return relative.to_string();
+        return Err("Абсолютные URL в manifest не поддерживаются".to_string());
     }
-    join_url(base, relative)
+    if !crate::fs_util::is_safe_manifest_relative_path(relative) {
+        return Err(format!("Недопустимый путь в manifest URL: {relative}"));
+    }
+    Ok(join_url(base, relative))
 }
 
 pub fn load_cached_catalog() -> Option<PresetCatalog> {
@@ -259,6 +353,9 @@ pub fn load_cached_catalog() -> Option<PresetCatalog> {
 }
 
 pub fn load_cached_pack(pack_id: &str) -> Option<(PackManifest, PathBuf)> {
+    if !crate::fs_util::is_safe_pack_id(pack_id) {
+        return None;
+    }
     let pack_dir = cache_root().ok()?.join("packs").join(pack_id);
     let manifest_path = pack_dir.join("manifest.json");
     let raw = fs::read_to_string(manifest_path).ok()?;
@@ -271,6 +368,11 @@ pub fn load_cached_pack(pack_id: &str) -> Option<(PackManifest, PathBuf)> {
 }
 
 fn prune_orphan_packs(active_ids: &[&str]) -> Result<(), String> {
+    let safe_active: std::collections::HashSet<&str> = active_ids
+        .iter()
+        .copied()
+        .filter(|id| crate::fs_util::is_safe_pack_id(id))
+        .collect();
     let packs_dir = cache_root()?.join("packs");
     if !packs_dir.is_dir() {
         return Ok(());
@@ -283,7 +385,7 @@ fn prune_orphan_packs(active_ids: &[&str]) -> Result<(), String> {
             continue;
         }
         let name = entry.file_name().to_string_lossy().to_string();
-        if active_ids.iter().any(|id| *id == name) {
+        if safe_active.contains(name.as_str()) {
             continue;
         }
         fs::remove_dir_all(entry.path())
@@ -303,6 +405,11 @@ pub fn mark_sync_error(err: &str) -> Result<PresetServerConfig, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn resolve_url_rejects_absolute() {
+        assert!(resolve_url("https://example.com", "https://evil.com/x").is_err());
+    }
 
     #[test]
     fn join_url_works() {
