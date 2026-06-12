@@ -1,6 +1,6 @@
 # Game Settings Master
 
-[Русский](README.md) · [English](README.en.md)
+[Русский](README.md) · [English](README.en.md) · [Support development](https://dalink.to/mike_saito)
 
 **Game settings in focus**
 
