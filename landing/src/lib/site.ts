@@ -11,10 +11,17 @@ export const githubRepo =
 export const githubUrl = `https://github.com/${githubRepo}`;
 
 /** Прямая ссылка на установщик в GitHub Releases (latest). */
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.3.1";
+const DEFAULT_APP_VERSION = "0.3.1";
+
+function resolveAppVersion(): string {
+  const raw = import.meta.env.VITE_APP_VERSION?.trim();
+  return raw || DEFAULT_APP_VERSION;
+}
+
+export const APP_VERSION = resolveAppVersion();
 
 export const downloadUrl =
-  import.meta.env.VITE_DOWNLOAD_URL ??
+  import.meta.env.VITE_DOWNLOAD_URL?.trim() ||
   `https://github.com/${githubRepo}/releases/latest/download/Game-Settings-Master_${APP_VERSION}_x64-setup.exe`;
 
 export const donateUrl = "https://dalink.to/mike_saito";
