@@ -1,6 +1,7 @@
 import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { UpdateGate } from "./components/UpdateGate";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AppShell } from "./components/layout/AppShell";
 import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
 import { usePresetCatalogRefresh } from "./hooks/usePresetCatalogRefresh";
@@ -106,26 +107,28 @@ function AppContent() {
 
   return (
     <AppShell tab={tab} onTabChange={setTab} selectedGame={selectedGame}>
-      {tab === "library" && (
-        <GameLibrary
-          selectedGame={selectedGame}
-          onSelectGame={handleSelectGame}
-          onGameUpdated={handleGameUpdated}
-          onGameRemoved={handleGameRemoved}
-        />
-      )}
-      {selectedGame && tab === "wizard" && (
-        <SettingsWizard game={selectedGame} />
-      )}
-      {selectedGame && tab === "advanced" && (
-        <AdvancedEditor game={selectedGame} />
-      )}
-      {selectedGame && tab === "backups" && (
-        <Backups game={selectedGame} />
-      )}
-      {selectedGame && tab === "reshade" && (
-        <ReShade game={selectedGame} />
-      )}
+      <ErrorBoundary resetKey={`${tab}:${selectedGame?.id ?? ""}`}>
+        {tab === "library" && (
+          <GameLibrary
+            selectedGame={selectedGame}
+            onSelectGame={handleSelectGame}
+            onGameUpdated={handleGameUpdated}
+            onGameRemoved={handleGameRemoved}
+          />
+        )}
+        {selectedGame && tab === "wizard" && (
+          <SettingsWizard game={selectedGame} />
+        )}
+        {selectedGame && tab === "advanced" && (
+          <AdvancedEditor game={selectedGame} />
+        )}
+        {selectedGame && tab === "backups" && (
+          <Backups game={selectedGame} />
+        )}
+        {selectedGame && tab === "reshade" && (
+          <ReShade game={selectedGame} />
+        )}
+      </ErrorBoundary>
     </AppShell>
   );
 }

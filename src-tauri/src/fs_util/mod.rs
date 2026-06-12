@@ -267,11 +267,16 @@ pub fn format_io_error(action: &str, path: &Path, err: std::io::Error) -> String
 fn io_error_hint(err: &std::io::Error) -> String {
     match err.raw_os_error() {
         Some(5) => {
-            ". Закройте игру полностью — ini-файлы (особенно Engine.ini) часто блокируются процессом. \
-             Если игра закрыта: снимите «Только чтение» с файла или запустите приложение от администратора."
+            ". Доступ запрещён. Полностью закройте игру и лаунчер (Steam/Epic), отключите \
+             игровые оверлеи (Steam/Discord/NVIDIA) и проверьте антивирус. Если игра в защищённой \
+             папке (Program Files) — запустите приложение от имени администратора. \
+             Также снимите атрибут «Только чтение» с файла."
                 .to_string()
         }
-        Some(32) => ". Файл занят другим процессом — закройте игру и повторите.".to_string(),
+        Some(32) => {
+            ". Файл занят другим процессом — закройте игру, лаунчер и оверлеи, затем повторите."
+                .to_string()
+        }
         _ => String::new(),
     }
 }
@@ -426,12 +431,13 @@ fn process_snapshot_contains(filter: &str) -> bool {
 
 #[cfg(windows)]
 fn terminate_process_pid(pid: u32) -> Result<(), u32> {
-    use windows_sys::Win32::Foundation::{CloseHandle, GetLastError, INVALID_HANDLE_VALUE};
+    use windows_sys::Win32::Foundation::{CloseHandle, GetLastError};
     use windows_sys::Win32::System::Threading::{OpenProcess, TerminateProcess, PROCESS_TERMINATE};
 
     unsafe {
+        // OpenProcess возвращает NULL при ошибке (не INVALID_HANDLE_VALUE).
         let handle = OpenProcess(PROCESS_TERMINATE, 0, pid);
-        if handle == INVALID_HANDLE_VALUE {
+        if handle.is_null() {
             return Err(GetLastError());
         }
         let ok = TerminateProcess(handle, 1);

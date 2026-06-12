@@ -12,20 +12,12 @@ import { PageHeader } from "../components/ui/PageHeader";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
-import {
-  applyPreset,
-  getDesktopResolution,
-  getGpuInfo,
-  getScalabilityLimits,
-  listPresets,
-  previewPreset,
-} from "../lib/api";
+import { applyPreset, listPresets, previewPreset } from "../lib/api";
 import { useWorkspacePreset } from "../context/GameWorkspaceContext";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
 import { useRunningExeName } from "../hooks/useRunningExeName";
 import { usePresetSyncBanner } from "../hooks/usePresetSyncBanner";
 import { formatInvokeError } from "../lib/errors";
-import { gpuFilterHint } from "../lib/gpuCompat";
 import { formatPresetLabel, saveLastPreset } from "../lib/lastPreset";
 import type { GameProfile } from "../lib/types";
 
@@ -64,9 +56,6 @@ export function SettingsWizard({ game }: Props) {
   const configDir = game?.config_dir ?? "";
   const engineFamily = game?.engine_family;
   const presetsEnabled = !!engineFamily && engineFamily !== "unknown";
-  const limitsEnabled = useBackgroundSafeEnabled(!!configDir && !!game);
-  const gpuEnabled = useBackgroundSafeEnabled();
-  const desktopEnabled = useBackgroundSafeEnabled(engineFamily !== "unity");
 
   const {
     data: presets = [],
@@ -109,27 +98,6 @@ export function SettingsWizard({ game }: Props) {
     refetchOnMount: false,
   });
 
-  const { data: limits } = useQuery({
-    queryKey: ["limits", configDir, game?.install_dir],
-    queryFn: () => getScalabilityLimits(configDir, game!.install_dir, game!.id),
-    enabled: limitsEnabled,
-  });
-
-  const { data: gpu } = useQuery({
-    queryKey: ["gpu"],
-    queryFn: getGpuInfo,
-    enabled: gpuEnabled,
-    staleTime: 300_000,
-  });
-
-  const { data: desktopRes } = useQuery({
-    queryKey: ["desktop-resolution"],
-    queryFn: getDesktopResolution,
-    staleTime: 300_000,
-    enabled: desktopEnabled,
-  });
-
-  const gpuHint = gpu ? gpuFilterHint(gpu) : null;
   const runningExeName = useRunningExeName(game);
   const gameRunning = useGameRunning(runningExeName);
 
@@ -218,7 +186,7 @@ export function SettingsWizard({ game }: Props) {
       <EmptyState
         icon={Sparkles}
         title="Выберите игру"
-        description="Откройте библиотеку и выберите UE-игру с найденным config — затем вернитесь в мастер пресетов."
+        description="Авторские пресеты доступны только для игр, разобранных автором (например Forza). Выберите такую игру в библиотеке."
       />
     );
   }
@@ -245,32 +213,13 @@ export function SettingsWizard({ game }: Props) {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Авто пресеты"
+        title="Авторские пресеты"
         meta={
           <>
+            <Badge tone="accent">От автора</Badge>
             {engineFamily === "forza" && (
-              <Badge tone="accent">Forza Horizon 6</Badge>
+              <Badge tone="default">Forza Horizon 6</Badge>
             )}
-            {engineFamily === "unity" && (
-              <Badge tone="accent">Unity</Badge>
-            )}
-            {engineFamily === "ue4" && (
-              <Badge tone="accent">Unreal Engine 4</Badge>
-            )}
-            {engineFamily === "ue5" && (
-              <Badge tone="accent">Unreal Engine 5</Badge>
-            )}
-            {engineFamily !== "unity" && engineFamily !== "forza" && limits ? (
-              <Badge tone="info">
-                sg.* max {limits.global_max}
-                {limits.global_max > 4 && " (custom)"}
-              </Badge>
-            ) : null}
-            {engineFamily !== "unity" && engineFamily !== "forza" && desktopRes ? (
-              <Badge tone="default">
-                Экран {desktopRes.width}×{desktopRes.height}
-              </Badge>
-            ) : null}
           </>
         }
       />
@@ -285,19 +234,6 @@ export function SettingsWizard({ game }: Props) {
         <Alert tone="info" title="Пресеты от автора приложения">
           Профили из мода FH6 Graphics Presets: UserConfigSelections + media-override.
           Разрешение, HDR и громкость не перезаписываются.
-        </Alert>
-      )}
-
-      {engineFamily === "unity" && (
-        <Alert tone="info" title="Unity">
-          Пресеты изменяют boot.config (gfx jobs, threading, HDR). Для записи в папку установки
-          может потребоваться запуск от администратора.
-        </Alert>
-      )}
-
-      {gpuHint && engineFamily !== "unity" && (
-        <Alert tone="info" title="Видеокарта">
-          {gpuHint}
         </Alert>
       )}
 

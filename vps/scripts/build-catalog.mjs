@@ -10,7 +10,7 @@ const VPS_ROOT = path.join(__dirname, "..");
 const PUBLIC = path.join(VPS_ROOT, "public");
 const SOURCE = path.join(VPS_ROOT, "source");
 
-const UE_PRESET_IDS = [
+const UNITY_PRESET_IDS = [
   { id: "ultra-low", name: "Ultra Low", file: "ultra-low.json" },
   { id: "low", name: "Low", file: "low.json" },
   { id: "medium", name: "Medium", file: "medium.json" },
@@ -28,7 +28,7 @@ const FORZA_PRESETS = [
   { id: "ultramax", name: "Ultra Max", description: "RT отражения + RTGI. Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.", profile_folder: "05_UltraMax" },
 ];
 
-const CATALOG_VERSION = "1.4.0";
+const CATALOG_VERSION = "1.5.0";
 
 async function sha256File(filePath) {
   const data = await fs.readFile(filePath);
@@ -114,24 +114,6 @@ async function buildSubnauticaOverlayPack() {
   });
 }
 
-async function buildUeTiersPack() {
-  return buildPack({
-    packId: "ue-tiers",
-    stagingFn: async (staging) => {
-      await fs.cp(path.join(SOURCE, "ue-tiers", "presets"), path.join(staging, "presets"), { recursive: true });
-      await fs.cp(path.join(SOURCE, "ue-tiers", "engines"), path.join(staging, "engines"), { recursive: true });
-    },
-    manifest: {
-      schema_version: 1,
-      pack_id: "ue-tiers",
-      title: "UE tier presets",
-      match: { engine_families: ["ue4", "ue5"] },
-      apply: { kind: "ue_json", presets_root: "presets", engines_root: "engines" },
-      presets: UE_PRESET_IDS.map((p) => ({ id: p.id, name: p.name, description: "", definition_file: p.file })),
-    },
-  });
-}
-
 async function buildUnityTiersPack() {
   return buildPack({
     packId: "unity-tiers",
@@ -144,7 +126,7 @@ async function buildUnityTiersPack() {
       title: "Unity tier presets",
       match: { engine_families: ["unity"] },
       apply: { kind: "unity", presets_root: "presets" },
-      presets: UE_PRESET_IDS.map((p) => ({ id: p.id, name: p.name, description: "", definition_file: p.file })),
+      presets: UNITY_PRESET_IDS.map((p) => ({ id: p.id, name: p.name, description: "", definition_file: p.file })),
     },
   });
 }
@@ -209,7 +191,6 @@ async function main() {
   packs.push(await buildForzaPack());
   packs.push(await buildSubnauticaOverlayPack());
   packs.push(await buildSubnautica2ReShadePack());
-  packs.push(await buildUeTiersPack());
   packs.push(await buildUnityTiersPack());
   packs.push(await buildUeCatalogPack());
 

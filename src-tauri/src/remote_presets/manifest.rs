@@ -1,4 +1,4 @@
-use crate::models::{PresetDefinition, PresetInfo};
+use crate::models::PresetInfo;
 use serde::Deserialize;
 use serde::de::Error as _;
 use std::path::{Path, PathBuf};
@@ -377,50 +377,6 @@ impl ResolvedPack {
         serde_json::from_str(&raw).ok()
     }
 
-    pub fn load_ue_json_preset(
-        &self,
-        preset_id: &str,
-        ue4: bool,
-    ) -> Option<Result<PresetDefinition, String>> {
-        if !crate::fs_util::is_safe_pack_id(preset_id) {
-            return Some(Err(format!(
-                "Недопустимый идентификатор пресета: {preset_id}"
-            )));
-        }
-        let PackApply::UeJson { presets_root, .. } = &self.manifest.apply else {
-            return None;
-        };
-        let rel = self
-            .manifest
-            .presets
-            .iter()
-            .find_map(|p| match p {
-                PackPresetEntry::Json(j) if j.id == preset_id => Some(j.definition_file.clone()),
-                _ => None,
-            })
-            .or_else(|| {
-                if ue4 {
-                    Some(format!("ue4/{preset_id}.json"))
-                } else {
-                    Some(format!("{preset_id}.json"))
-                }
-            })?;
-        let path = match resolve_pack_relative_file(&self.root, presets_root, &rel) {
-            Ok(p) => p,
-            Err(e) => {
-                let fallback_rel = format!("{preset_id}.json");
-                if !crate::fs_util::is_safe_manifest_relative_path(&fallback_rel) {
-                    return Some(Err(e));
-                }
-                match resolve_pack_relative_file(&self.root, presets_root, &fallback_rel) {
-                    Ok(p) => p,
-                    Err(_) => return Some(Err(format!("Remote UE preset '{preset_id}' не найден"))),
-                }
-            }
-        };
-        Some(load_preset_json(&path))
-    }
-
     pub fn load_unity_preset_json(&self, preset_id: &str) -> Option<Result<String, String>> {
         if !crate::fs_util::is_safe_pack_id(preset_id) {
             return Some(Err(format!(
@@ -445,34 +401,6 @@ impl ResolvedPack {
                     std::fs::read_to_string(&path)
                         .map_err(|e| format!("Remote Unity preset '{preset_id}' не найден: {e}"))
                 }),
-        )
-    }
-
-    pub fn load_engine_ini_sections(
-        &self,
-        name: &str,
-    ) -> Option<
-        Result<
-            std::collections::HashMap<String, std::collections::HashMap<String, String>>,
-            String,
-        >,
-    > {
-        let engines_root = match &self.manifest.apply {
-            PackApply::UeJson { engines_root, .. } => engines_root.clone(),
-            _ => return None,
-        };
-        if !crate::fs_util::is_safe_manifest_relative_path(name) {
-            return Some(Err(format!("Недопустимое имя engine ini: {name}")));
-        }
-        let rel = format!("{name}.ini");
-        let path = match resolve_pack_relative_file(&self.root, &engines_root, &rel) {
-            Ok(p) => p,
-            Err(e) => return Some(Err(e)),
-        };
-        Some(
-            crate::ini::read_ini_file(&path)
-                .map(|ini| crate::ini::parser::ini_to_data(&ini))
-                .map_err(|e| format!("Не удалось прочитать engine ini: {e}")),
         )
     }
 
@@ -519,27 +447,6 @@ impl ResolvedPack {
         )
     }
 
-    pub fn load_ue_overlay(&self) -> Option<Result<PresetDefinition, String>> {
-        let PackApply::UeOverlay {
-            overlay_id: _,
-            overlay_file,
-        } = &self.manifest.apply
-        else {
-            return None;
-        };
-
-        Some(
-            resolve_pack_file_under_root(&self.root, overlay_file)
-                .and_then(|path| {
-                    std::fs::read_to_string(&path)
-                        .map_err(|e| format!("Remote overlay не найден: {e}"))
-                })
-                .and_then(|content| {
-                    serde_json::from_str(&content)
-                        .map_err(|e| format!("Некорректный remote overlay: {e}"))
-                }),
-        )
-    }
 }
 
 pub fn pack_matches(
@@ -661,12 +568,6 @@ fn pack_match_steam_app_ids(game_id: &str) -> Vec<String> {
 
 pub fn extract_steam_app_id(game_id: &str) -> Option<&str> {
     game_id.strip_prefix("steam-")
-}
-
-fn load_preset_json(path: &std::path::Path) -> Result<PresetDefinition, String> {
-    let content = std::fs::read_to_string(path)
-        .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))?;
-    serde_json::from_str(&content).map_err(|e| format!("Некорректный JSON пресета: {e}"))
 }
 
 #[cfg(test)]

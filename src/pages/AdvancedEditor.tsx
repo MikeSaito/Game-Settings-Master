@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Save, Search, SlidersHorizontal, Trash2, Zap } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { BackupBanner } from "../components/BackupBanner";
 import { ParameterCard } from "../components/ParameterCard";
 import { Alert } from "../components/ui/Alert";
@@ -169,7 +170,7 @@ export function AdvancedEditor({ game }: Props) {
   const parametersLoading = (isLoading || isFetching) && parameters.length === 0;
 
   const { data: limits } = useQuery({
-    queryKey: ["limits", configDir, game?.install_dir],
+    queryKey: ["limits", configDir, game?.install_dir, game?.id],
     queryFn: () => getScalabilityLimits(configDir, game!.install_dir, game!.id),
     enabled: queriesEnabled && !!game,
   });
@@ -186,6 +187,38 @@ export function AdvancedEditor({ game }: Props) {
     enabled: gpuEnabled,
     staleTime: 300_000,
   });
+
+  // Перечитываем значения с диска, когда есть шанс, что игра их изменила:
+  // при закрытии игры и при возврате фокуса в окно приложения.
+  const windowFocused = useAppWindowFocused();
+  const refreshFromDisk = useCallback(() => {
+    if (!game?.id || !configDir) return;
+    // Не затираем несохранённые правки пользователя.
+    if (paramsDirtyRef.current) return;
+    void queryClient.invalidateQueries({
+      queryKey: ["parameters", configDir, game.id],
+    });
+    void queryClient.invalidateQueries({
+      queryKey: ["limits", configDir, game.install_dir, game.id],
+    });
+    void queryClient.invalidateQueries({ queryKey: ["game-config"] });
+  }, [queryClient, configDir, game?.id, game?.install_dir]);
+
+  const prevRunningRef = useRef(gameRunning);
+  useEffect(() => {
+    if (prevRunningRef.current && !gameRunning) {
+      refreshFromDisk();
+    }
+    prevRunningRef.current = gameRunning;
+  }, [gameRunning, refreshFromDisk]);
+
+  const prevFocusedRef = useRef(windowFocused);
+  useEffect(() => {
+    if (!prevFocusedRef.current && windowFocused) {
+      refreshFromDisk();
+    }
+    prevFocusedRef.current = windowFocused;
+  }, [windowFocused, refreshFromDisk]);
 
   const visibleParams = useMemo(
     () => params.filter((p) => isParamVisible(p, gpu)),
@@ -534,7 +567,7 @@ export function AdvancedEditor({ game }: Props) {
           className="py-12"
         />
       ) : (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="flex flex-col gap-3">
           {filteredParams.map((param) => {
             const toggleable = isEngineToggleable(param);
             const enabled = isEngineEnabled(param, engineEnabled);

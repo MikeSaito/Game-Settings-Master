@@ -30,6 +30,16 @@ pub struct ParameterCatalogEntry {
     pub value_type: String,
     #[serde(default = "default_editable")]
     pub editable: bool,
+    #[serde(default)]
+    pub ui_control: Option<String>,
+    #[serde(default)]
+    pub step: Option<String>,
+    #[serde(default)]
+    pub options: Option<Vec<crate::models::ParameterOption>>,
+    #[serde(default)]
+    pub default: Option<String>,
+    #[serde(default)]
+    pub recommended: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -471,11 +481,13 @@ fn entry_to_parameter(
     known: bool,
     present_in_ini: bool,
 ) -> GameParameter {
-    let default_value = if !present_in_ini && (file == "Engine.ini" || file == "boot.config") {
-        Some(catalog_default_value(entry))
-    } else {
-        None
-    };
+    let default_value = entry.default.clone().or_else(|| {
+        if !present_in_ini && (file == "Engine.ini" || file == "boot.config") {
+            Some(catalog_default_value(entry))
+        } else {
+            None
+        }
+    });
     GameParameter {
         key: key.to_string(),
         section: section.to_string(),
@@ -494,6 +506,10 @@ fn entry_to_parameter(
         known,
         present_in_ini,
         default_value,
+        ui_control: entry.ui_control.clone(),
+        step: entry.step.clone(),
+        options: entry.options.clone(),
+        recommended: entry.recommended.clone(),
     }
 }
 
@@ -559,6 +575,10 @@ fn hint_to_parameter(
         known: true,
         present_in_ini: true,
         default_value: None,
+        ui_control: None,
+        step: None,
+        options: None,
+        recommended: None,
     }
 }
 
@@ -614,6 +634,10 @@ fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameP
             known: false,
             present_in_ini: true,
             default_value: None,
+            ui_control: None,
+            step: None,
+            options: None,
+            recommended: None,
         };
     }
 
@@ -643,6 +667,10 @@ fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameP
         known: false,
         present_in_ini: true,
         default_value: None,
+        ui_control: None,
+        step: None,
+        options: None,
+        recommended: None,
     };
     apply_known_range_patterns(&mut param);
     if param.min.is_none() && param.max.is_none() {
@@ -1212,6 +1240,28 @@ mod tests {
             "r.ViewDistanceScale",
         );
         assert!(matched.is_some());
+    }
+
+    #[test]
+    fn curated_scalability_entries_have_ui_controls() {
+        // Каталог берётся из bundled scalability.json (by_full_id — bundled выигрывает),
+        // поэтому курированные поля доходят до GameParameter независимо от удалённого кэша.
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=2\r\n",
+        )
+        .unwrap();
+        let params = get_game_parameters(dir.path(), None, None, Some("ue5")).unwrap();
+        let shadow_param = params
+            .iter()
+            .find(|p| p.key == "sg.ShadowQuality")
+            .expect("sg.ShadowQuality parameter");
+        assert_eq!(shadow_param.ui_control.as_deref(), Some("slider"));
+        assert!(
+            shadow_param.recommended.is_some(),
+            "curated scalability key must carry a recommended value"
+        );
     }
 
     #[test]

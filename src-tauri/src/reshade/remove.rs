@@ -6,7 +6,7 @@ use super::detect::{
 use super::vulkan_layer::unregister_vulkan_layer;
 use super::resolve::resolve_install_target;
 use super::guard::ensure_game_not_running;
-use crate::fs_util::clear_readonly;
+use crate::fs_util::{clear_readonly, format_io_error};
 use crate::models::GameProfile;
 use std::fs;
 use std::path::Path;
@@ -16,19 +16,49 @@ pub struct RemoveResult {
     pub target_dir: String,
     pub restored_files: Vec<String>,
     pub removed_files: Vec<String>,
+    #[serde(default)]
+    pub warnings: Vec<String>,
 }
 
-pub(crate) fn remove_installed_proxy(path: &Path, file: &str) -> Result<(), String> {
+pub(crate) fn remove_installed_proxy(path: &Path, _file: &str) -> Result<(), String> {
     if path.is_file() {
         clear_readonly(path);
-        fs::remove_file(path).map_err(|e| format!("Не удалось удалить {file}: {e}"))?;
-        return Ok(());
+        match fs::remove_file(path) {
+            Ok(()) => return Ok(()),
+            Err(e) => {
+                // Прямое удаление запрещено (os error 5/32) — например, proxy DLL держит
+                // оверлей/антивирус, либо загрузчик открыл его без share-delete. Пробуем
+                // отодвинуть файл переименованием: при следующем запуске игра не подхватит
+                // ReShade, даже если удалить «на месте» нельзя. Часто проходит там, где delete нет.
+                if rename_aside(path).is_ok() {
+                    return Ok(());
+                }
+                return Err(format_io_error("удалить", path, e));
+            }
+        }
     }
     if path.is_dir() {
-        fs::remove_dir_all(path)
-            .map_err(|e| format!("Не удалось удалить {file}: {e}"))?;
+        fs::remove_dir_all(path).map_err(|e| format_io_error("удалить", path, e))?;
         return Ok(());
     }
+    Ok(())
+}
+
+/// Отодвигает заблокированный файл в сторону (`<name>.gsm-removed-<ts>`), чтобы он
+/// перестал быть активным proxy. Затем best-effort пытается удалить переименованный файл.
+fn rename_aside(path: &Path) -> std::io::Result<()> {
+    let ts = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or(0);
+    let mut name = path
+        .file_name()
+        .map(|n| n.to_os_string())
+        .unwrap_or_default();
+    name.push(format!(".gsm-removed-{ts}"));
+    let dest = path.with_file_name(name);
+    fs::rename(path, &dest)?;
+    let _ = fs::remove_file(&dest);
     Ok(())
 }
 
@@ -47,20 +77,44 @@ fn remove_reshade_inner(profile: &GameProfile, require_not_running: bool) -> Res
     }
     let target_dir = resolve_install_target(profile)?;
     let marker = read_marker(&target_dir);
-    let fallback_proxy_files = known_proxy_files_present(&target_dir);
+    let has_backup = backup_dir(&target_dir).is_dir();
+    let gsm_managed = marker.is_some() || has_backup;
+    let mut warnings = Vec::new();
+
+    // Какие proxy-файлы снимаем.
+    let proxy_files: Vec<String> = if let Some(m) = marker.as_ref() {
+        m.files()
+    } else {
+        let present = known_proxy_files_present(&target_dir);
+        if gsm_managed {
+            present
+        } else {
+            // Нет следов GSM (ни маркера, ни бэкапа) — не удаляем собственные proxy игры
+            // (например, её родной dxgi.dll), снимаем только валидные DLL ReShade.
+            present
+                .into_iter()
+                .filter(|f| super::bundle::is_installed_proxy_valid(&target_dir.join(f)))
+                .collect()
+        }
+    };
+
+    // Vulkan-слой снимаем best-effort: без прав на реестр удаление файлов не должно падать.
     let vulkan_json = target_dir.join("ReShade64.json");
-    if marker
+    let touches_vulkan = marker
         .as_ref()
         .is_some_and(|m| m.graphics_api == GraphicsApi::Vulkan.as_str())
         || vulkan_json.is_file()
-        || fallback_proxy_files.iter().any(|f| f == "ReShade64.json")
-    {
-        unregister_vulkan_layer(&vulkan_json)?;
+        || proxy_files.iter().any(|f| f == "ReShade64.json");
+    if touches_vulkan {
+        if let Err(e) = unregister_vulkan_layer(&vulkan_json) {
+            warnings.push(format!(
+                "Не удалось снять регистрацию Vulkan-слоя ReShade в реестре: {e}. \
+                 Файлы proxy всё равно удалены. Если игра на Vulkan не запускается — \
+                 запустите GSM от администратора и нажмите «Удалить» ещё раз."
+            ));
+        }
     }
-    let proxy_files = marker
-        .as_ref()
-        .map(|m| m.files())
-        .unwrap_or(fallback_proxy_files);
+
     let mut removed = Vec::new();
     let mut restored = Vec::new();
 
@@ -115,11 +169,32 @@ fn remove_reshade_inner(profile: &GameProfile, require_not_running: bool) -> Res
         let _ = fs::remove_dir_all(backup_root);
     }
 
+    sweep_renamed_aside(&target_dir);
+
     Ok(RemoveResult {
         target_dir: target_dir.to_string_lossy().to_string(),
         restored_files: restored,
         removed_files: removed,
+        warnings,
     })
+}
+
+/// Best-effort удаление ранее отодвинутых proxy-файлов (`*.gsm-removed-*`),
+/// которые не удалось снести «на месте» из-за блокировки. После снятия блокировки
+/// (закрытия игры/оверлея) они удаляются при следующей операции.
+fn sweep_renamed_aside(dir: &Path) {
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        if entry
+            .file_name()
+            .to_string_lossy()
+            .contains(".gsm-removed-")
+        {
+            let _ = fs::remove_file(entry.path());
+        }
+    }
 }
 
 pub(crate) fn known_proxy_files_present(target_dir: &Path) -> Vec<String> {
@@ -279,13 +354,33 @@ mod tests {
     }
 
     #[test]
-    fn remove_orphan_proxy_without_marker() {
+    fn remove_preserves_foreign_proxy_without_gsm_footprint() {
+        // Нет маркера и бэкапа GSM: чужой dxgi.dll (например, родной proxy игры)
+        // не должен удаляться по кнопке «Удалить».
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("Game.exe"), b"").unwrap();
-        fs::write(dir.path().join("dxgi.dll"), b"orphan").unwrap();
+        fs::write(dir.path().join("dxgi.dll"), b"foreign proxy").unwrap();
+
+        let result = remove_reshade(&profile(dir.path())).unwrap();
+        assert!(result.removed_files.is_empty());
+        assert!(dir.path().join("dxgi.dll").exists());
+    }
+
+    #[test]
+    fn remove_gsm_managed_orphan_proxy_with_backup() {
+        // Есть бэкап GSM, но маркер потерян: считаем proxy управляемым GSM и удаляем,
+        // восстанавливая оригинал из бэкапа.
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("Game.exe"), b"").unwrap();
+        fs::write(dir.path().join("dxgi.dll"), b"gsm orphan").unwrap();
+        fs::create_dir_all(dir.path().join(BACKUP_DIR)).unwrap();
+        fs::write(dir.path().join(BACKUP_DIR).join("dxgi.dll"), b"original").unwrap();
 
         let result = remove_reshade(&profile(dir.path())).unwrap();
         assert!(result.removed_files.iter().any(|f| f == "dxgi.dll"));
-        assert!(!dir.path().join("dxgi.dll").exists());
+        assert_eq!(
+            fs::read_to_string(dir.path().join("dxgi.dll")).unwrap(),
+            "original"
+        );
     }
 }

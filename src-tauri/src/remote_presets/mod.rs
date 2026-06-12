@@ -9,7 +9,7 @@ pub use manifest::{PackApply, PackPolicy, PackPresetEntry, ResolvedPack};
 pub use manifest::{PackManifest, PackMatch, ReShadeIniPresetEntry};
 pub use sync::{load_cached_catalog, load_cached_pack, sync_now, sync_pack_by_id, SyncReport};
 
-use crate::models::{PresetDefinition, PresetInfo};
+use crate::models::PresetInfo;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
@@ -185,47 +185,6 @@ where
     all_resolved_packs().into_iter().filter(predicate).collect()
 }
 
-/// Исключённые UE JSON packs — не подменяют общий ue-tiers (авторские SN2 tier отключены).
-pub fn is_skipped_ue_json_pack(pack_id: &str) -> bool {
-    pack_id == "subnautica2-tiers"
-}
-
-fn ue_json_packs() -> Vec<ResolvedPack> {
-    all_resolved_packs()
-        .into_iter()
-        .filter(|pack| matches!(pack.manifest.apply, PackApply::UeJson { .. }))
-        .collect()
-}
-
-pub fn find_ue_json_pack(
-    game_id: Option<&str>,
-    engine_family: Option<&str>,
-) -> Option<ResolvedPack> {
-    ensure_synced();
-    find_ue_json_pack_cached(game_id, engine_family)
-}
-
-pub fn find_ue_json_pack_cached(
-    game_id: Option<&str>,
-    engine_family: Option<&str>,
-) -> Option<ResolvedPack> {
-    let packs = ue_json_packs();
-
-    if let Some(gid) = game_id {
-        if let Some(pack) = packs.iter().find(|pack| {
-            pack.manifest.pack_id != "ue-tiers"
-                && !is_skipped_ue_json_pack(&pack.manifest.pack_id)
-                && pack.matches(Some(gid), engine_family, None)
-        }) {
-            return Some(pack.clone());
-        }
-    }
-
-    packs
-        .into_iter()
-        .find(|pack| pack.manifest.pack_id == "ue-tiers" && pack.matches(None, engine_family, None))
-}
-
 pub fn find_unity_pack() -> Option<ResolvedPack> {
     find_packs(|pack| matches!(pack.manifest.apply, PackApply::Unity { .. }))
         .into_iter()
@@ -280,11 +239,6 @@ pub fn sync_forza_pack_if_needed(force: bool) -> Result<(), String> {
 
 pub fn find_forza_pack(game_id: Option<&str>) -> Option<ResolvedPack> {
     find_pack(game_id, Some("forza"), None)
-}
-
-pub fn load_ue_overlay(overlay_id: &str) -> Option<Result<PresetDefinition, String>> {
-    let pack = find_pack(None, None, Some(overlay_id))?;
-    pack.load_ue_overlay()
 }
 
 #[cfg(test)]
@@ -379,12 +333,6 @@ mod tests {
             Some("ue4"),
             None
         ));
-    }
-
-    #[test]
-    fn skipped_sn2_author_pack_not_selected_for_game() {
-        assert!(super::is_skipped_ue_json_pack("subnautica2-tiers"));
-        assert!(!super::is_skipped_ue_json_pack("ue-tiers"));
     }
 
     #[test]

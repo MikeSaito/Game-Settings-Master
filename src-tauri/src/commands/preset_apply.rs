@@ -1,10 +1,7 @@
 use crate::backup::backup_config_dir;
 use chrono::Local;
-use crate::discovery::platform_hints_for_game;
 use crate::fs_util::ensure_config_writable;
-use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
-use crate::models::{ApplyResult, GameProfile, PresetDefinition};
-use crate::presets::{apply_preset_to_targets, build_combined_preset, resolve_apply_resolution};
+use crate::models::{ApplyResult, GameProfile};
 use crate::profiles::resolve_trusted_profile;
 use crate::unity::{apply_unity_preset, backup_unity_config, build_unity_combined_preset};
 use std::path::{Path, PathBuf};
@@ -17,36 +14,6 @@ pub(crate) fn backup_all_targets(targets: &[PathBuf]) -> Result<String, String> 
         backup_config_dir(target, Some(&shared_id))?;
     }
     Ok(shared_id)
-}
-
-fn apply_ue_with_strategy(
-    path: &Path,
-    preset: &PresetDefinition,
-    exe_name: Option<&str>,
-    game_id: Option<&str>,
-    engine_family: Option<&str>,
-) -> Result<ApplyResult, String> {
-    let hints = platform_hints_for_game(game_id, engine_family);
-    let path = reconcile_config_dir(path, &hints);
-    let targets = apply_target_dirs(&path, &hints);
-
-    for target in &targets {
-        ensure_config_writable(target, exe_name)?;
-    }
-    let backup_id = backup_all_targets(&targets)?;
-    for target in &targets {
-        ensure_config_writable(target, exe_name)?;
-    }
-
-    let (width, height) = resolve_apply_resolution(&path);
-    let (changed_files, diff) =
-        apply_preset_to_targets(&path, &hints, preset, width, height, Some(&backup_id))?;
-    Ok(ApplyResult {
-        backup_id,
-        changed_files,
-        diff,
-        effective_config_dir: Some(path.to_string_lossy().to_string()),
-    })
 }
 
 fn apply_forza_with_strategy(
@@ -156,20 +123,10 @@ pub fn apply_game_preset(
         );
     }
 
-    let hints = platform_hints_for_game(game_id.as_deref(), effective_engine.as_deref());
-    let resolved_path = reconcile_config_dir(&path, &hints);
-    let preset = build_combined_preset(
-        &preset_id,
-        game_id.as_deref(),
-        install.as_deref(),
-        Some(resolved_path.as_path()),
-        effective_engine.as_deref(),
-    )?;
-    apply_ue_with_strategy(
-        &resolved_path,
-        &preset,
-        exe_name.as_deref(),
-        game_id.as_deref(),
-        effective_engine.as_deref(),
+    // Авто-пресеты для UE удалены как нерабочая функция — UE-игры настраиваются
+    // через ручной редактор. Применять «пресет» для UE больше нечего.
+    Err(
+        "Авто-пресеты для UE удалены. Настройте игру через ручной редактор."
+            .to_string(),
     )
 }

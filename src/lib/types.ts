@@ -61,6 +61,15 @@ export interface GameParameter {
   editable: boolean;
   present_in_ini: boolean;
   default_value: string | null;
+  ui_control: string | null;
+  step: string | null;
+  options: ParameterOption[] | null;
+  recommended: string | null;
+}
+
+export interface ParameterOption {
+  value: string;
+  label: string;
 }
 
 export interface PresetInfo {
@@ -218,6 +227,7 @@ export interface ReShadeRemoveResult {
   target_dir: string;
   restored_files: string[];
   removed_files: string[];
+  warnings?: string[];
 }
 
 export interface PresetDefinition {

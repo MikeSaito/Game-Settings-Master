@@ -155,32 +155,6 @@ fn line_key(line: &str) -> Option<&str> {
     Some(key)
 }
 
-/// Автопресет: оставляет только ключи, которые уже есть где-либо в ini пользователя.
-pub fn filter_updates_to_existing_keys(
-    existing: &crate::models::IniFile,
-    updates: &IndexMap<String, IndexMap<String, String>>,
-) -> IndexMap<String, IndexMap<String, String>> {
-    let data = crate::ini::parser::ini_to_data(existing);
-    let existing_keys: std::collections::HashSet<String> = data
-        .values()
-        .flat_map(|entries| entries.keys().cloned())
-        .collect();
-
-    let mut filtered = IndexMap::new();
-    for (section, entries) in updates {
-        let mut section_filtered = IndexMap::new();
-        for (key, value) in entries {
-            if existing_keys.contains(key) {
-                section_filtered.insert(key.clone(), value.clone());
-            }
-        }
-        if !section_filtered.is_empty() {
-            filtered.insert(section.clone(), section_filtered);
-        }
-    }
-    filtered
-}
-
 /// Дублирует обновления во все секции файла, где ключ уже есть (SN2: UpscalingFrameGeneration и т.д.).
 pub fn expand_mirror_key_updates(
     existing: &crate::models::IniFile,
@@ -226,21 +200,6 @@ mod tests {
     use std::path::Path;
 
     const SN2_GUS_SAMPLE: &str = "[ScalabilityGroups]\r\n\r\n\r\n\r\nsg.ShadowQuality=3\r\n\r\n[/Script/subnautica2.s2gameusersettings]\r\n;METADATA=(Diff=true)\r\n\r\n\r\n\r\nDLSSMode=Off\r\nUpscalingFrameGeneration=0\r\n\r\n[/Script/Subnautica2.SN2SettingsLocal]\r\n\r\n\r\nGammaValue=2.2\r\nUpscalingFrameGeneration=0\r\nUpscalingMethod=U_TSR\r\n";
-
-    #[test]
-    fn filter_skips_keys_missing_from_user_ini() {
-        let ini = parse_ini("[ScalabilityGroups]\r\nsg.ShadowQuality=4\r\n");
-        let mut updates = IndexMap::new();
-        let mut sg = IndexMap::new();
-        sg.insert("sg.ShadowQuality".to_string(), "1".to_string());
-        sg.insert("sg.ResolutionQuality".to_string(), "68".to_string());
-        updates.insert("ScalabilityGroups".to_string(), sg);
-
-        let filtered = filter_updates_to_existing_keys(&ini, &updates);
-        let section = filtered.get("ScalabilityGroups").expect("section");
-        assert_eq!(section.get("sg.ShadowQuality").map(String::as_str), Some("1"));
-        assert!(!section.contains_key("sg.ResolutionQuality"));
-    }
 
     #[test]
     fn patch_preserves_preamble_blank_lines() {

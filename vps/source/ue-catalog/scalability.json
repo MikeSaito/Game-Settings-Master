@@ -11,7 +11,10 @@
     "in_game_label": "Resolution Scale / 3D Resolution",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "float"
+    "value_type": "float",
+    "ui_control": "slider",
+    "step": "5",
+    "recommended": "100"
   },
   {
     "key": "sg.ViewDistanceQuality",
@@ -25,7 +28,10 @@
     "in_game_label": "View Distance",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "3"
   },
   {
     "key": "sg.AntiAliasingQuality",
@@ -39,7 +45,10 @@
     "in_game_label": "Anti-Aliasing",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "3"
   },
   {
     "key": "sg.ShadowQuality",
@@ -53,7 +62,10 @@
     "in_game_label": "Shadows",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "2"
   },
   {
     "key": "sg.GlobalIlluminationQuality",
@@ -67,7 +79,10 @@
     "in_game_label": "Global Illumination",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "2"
   },
   {
     "key": "sg.ReflectionQuality",
@@ -81,7 +96,10 @@
     "in_game_label": "Reflections",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "2"
   },
   {
     "key": "sg.PostProcessQuality",
@@ -95,7 +113,10 @@
     "in_game_label": "Post Processing",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "3"
   },
   {
     "key": "sg.TextureQuality",
@@ -109,7 +130,10 @@
     "in_game_label": "Textures",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "3"
   },
   {
     "key": "sg.EffectsQuality",
@@ -123,7 +147,10 @@
     "in_game_label": "Effects",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "3"
   },
   {
     "key": "sg.FoliageQuality",
@@ -137,7 +164,10 @@
     "in_game_label": "Foliage",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "2"
   },
   {
     "key": "sg.ShadingQuality",
@@ -151,7 +181,10 @@
     "in_game_label": "Shading",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "3"
   },
   {
     "key": "sg.LandscapeQuality",
@@ -165,7 +198,10 @@
     "in_game_label": "Landscape",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "2"
   },
   {
     "key": "sg.CloudsQuality",
@@ -179,6 +215,9 @@
     "in_game_label": "Clouds",
     "file": "GameUserSettings.ini",
     "section": "ScalabilityGroups",
-    "value_type": "int"
+    "value_type": "int",
+    "ui_control": "slider",
+    "step": "1",
+    "recommended": "2"
   }
 ]

@@ -19,10 +19,7 @@ use crate::models::{
     ApplyResult, BackupInfo, ConfigDiffEntry, ConfigResetResult, CustomChanges, GameConfig,
     GameOverride, GameParameter, GameProfile, IniFileData, PresetInfo,
 };
-use crate::presets::{
-    apply_custom_to_targets, build_combined_preset, list_presets, preview_preset,
-    resolve_apply_resolution,
-};
+use crate::presets::{apply_custom_to_targets, list_presets, resolve_apply_resolution};
 use crate::profiles::{
     delete_override, get_overrides_for_game, load_saved_profiles, remove_profile,
     resolve_trusted_profile, save_override, save_profile,
@@ -525,16 +522,9 @@ pub fn preview_preset_cmd(
         );
     }
 
-    let path = resolve_ue_config_path(path, game_id.as_deref(), effective_engine_family.as_deref());
-    let preset = build_combined_preset(
-        &preset_id,
-        game_id.as_deref(),
-        install.as_deref(),
-        Some(path.as_path()),
-        effective_engine_family.as_deref(),
-    )?;
-    let (width, height) = resolve_apply_resolution(&path);
-    preview_preset(&path, &preset, width, height)
+    // Авто-пресеты для UE удалены как нерабочая функция — предпросмотр пресетов
+    // для UE больше не поддерживается. UE-игры настраиваются через ручной редактор.
+    Err("Авто-пресеты для UE удалены. Используйте ручной редактор.".to_string())
 }
 
 #[tauri::command]

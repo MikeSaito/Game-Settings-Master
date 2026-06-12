@@ -16,6 +16,7 @@ use super::presets::{
 };
 use super::resolve::resolve_install_target;
 use super::guard::ensure_game_not_running;
+use crate::app_error::is_running_game_error;
 use crate::fs_util::{clear_readonly, write_file_bytes};
 use crate::models::GameProfile;
 use chrono::Utc;
@@ -263,13 +264,15 @@ pub fn prepare_launch_without_reshade(profile: &GameProfile) -> Result<Option<St
     }
 
     if let Err(e) = remove_reshade_for_launch(profile) {
-        let warning = best_effort_cleanup_while_running(profile, &e);
+        if is_running_game_error(&e) {
+            return Ok(Some(best_effort_cleanup_while_running(profile, &e)));
+        }
         if let Ok(dir) = resolve_install_target(profile) {
             if super::detect::read_marker(&dir).is_some() {
                 return Ok(Some(format!("{PROXY_CLEANUP_FAILED_MSG} ({e})")));
             }
         }
-        return Ok(Some(warning));
+        return Ok(Some(format!("{PROXY_CLEANUP_FAILED_MSG} ({e})")));
     }
 
     // remove_reshade already verifies GSM proxy removal before restore; restored originals are OK.
@@ -895,15 +898,16 @@ mod tests {
     }
 
     #[test]
-    fn prepare_launch_without_reshade_clears_stub_proxy_without_marker() {
+    fn prepare_launch_without_reshade_preserves_foreign_proxy_without_footprint() {
+        // Без следов GSM (ни маркера, ни бэкапа) чужой/неизвестный dxgi.dll не трогаем:
+        // он может быть родным proxy игры. Запуск не блокируется.
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("Game.exe"), b"").unwrap();
-        fs::write(dir.path().join("dxgi.dll"), b"original").unwrap();
-        fs::write(dir.path().join("dxgi.dll"), b"stub").unwrap();
+        fs::write(dir.path().join("dxgi.dll"), b"foreign proxy").unwrap();
 
         let warning = prepare_launch_without_reshade(&profile(dir.path())).unwrap();
         assert!(warning.is_none());
-        assert!(!dir.path().join("dxgi.dll").exists());
+        assert!(dir.path().join("dxgi.dll").exists());
     }
 
     #[test]

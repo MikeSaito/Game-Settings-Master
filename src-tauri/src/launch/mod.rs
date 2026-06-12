@@ -12,7 +12,13 @@ pub struct LaunchResult {
 }
 
 pub fn launch_game(profile: &GameProfile, skip_reshade: bool) -> Result<LaunchResult, String> {
-    let warning = crate::reshade::apply_launch_reshade_policy(profile, skip_reshade)?;
+    // Подготовка ReShade НЕ должна блокировать запуск игры. Если установить/удалить proxy
+    // не удалось (файл занят, нет прав, битый proxy) — запускаем игру и показываем
+    // предупреждение, вместо того чтобы вовсе отменить запуск.
+    let warning = match crate::reshade::apply_launch_reshade_policy(profile, skip_reshade) {
+        Ok(w) => w,
+        Err(e) => Some(format!("ReShade не подготовлен: {e}")),
+    };
     let mut result = match profile.source.as_str() {
         "steam" => launch_steam_profile(profile),
         "epic" => launch_epic_profile(profile),
@@ -21,7 +27,11 @@ pub fn launch_game(profile: &GameProfile, skip_reshade: bool) -> Result<LaunchRe
             "Запуск через магазин не поддерживается для источника «{other}»"
         )),
     }?;
-    result.warning = warning;
+    result.warning = match (result.warning.take(), warning) {
+        (Some(a), Some(b)) => Some(format!("{a} {b}")),
+        (Some(a), None) => Some(a),
+        (None, b) => b,
+    };
     Ok(result)
 }
 
@@ -67,11 +77,13 @@ pub fn launch_steam_app_id(app_id: &str) -> Result<LaunchResult, String> {
     if app_id.is_empty() || !app_id.chars().all(|c| c.is_ascii_digit()) {
         return Err("Некорректный AppID Steam".to_string());
     }
-    let url = format!("steam://run/{app_id}");
+    // `steam://rungameid/<appid>` — канонический URI запуска (его использует сам Steam
+    // для ярлыков). Старый `steam://run/<appid>` нередко зависает на «Подготовка к запуску».
+    let url = format!("steam://rungameid/{app_id}");
     open_launch_url(&url)?;
     Ok(LaunchResult {
         launcher: "Steam".to_string(),
-        detail: format!("steam://run/{app_id}"),
+        detail: url,
         warning: None,
     })
 }

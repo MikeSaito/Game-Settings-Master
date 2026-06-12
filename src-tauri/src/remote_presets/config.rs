@@ -137,31 +137,105 @@ pub fn set_base_url(url: Option<String>) -> Result<PresetServerConfig, String> {
     Ok(cfg)
 }
 
+/// Возвращает host (без userinfo и порта) из http(s)-URL. None — если схема не та.
+fn parse_http_host(url: &str) -> Option<(bool, String)> {
+    let (is_https, rest) = if let Some(r) = url.strip_prefix("https://") {
+        (true, r)
+    } else if let Some(r) = url.strip_prefix("http://") {
+        (false, r)
+    } else {
+        return None;
+    };
+
+    // authority = всё до первого '/', '?' или '#'
+    let authority = rest
+        .split(['/', '?', '#'])
+        .next()
+        .unwrap_or("");
+    // отбрасываем userinfo (user:pass@) — берём часть после последнего '@'
+    let host_port = authority.rsplit('@').next().unwrap_or(authority);
+    // host без порта; поддержка IPv6 [::1]:port
+    let host = if let Some(after_bracket) = host_port.strip_prefix('[') {
+        after_bracket.split(']').next().unwrap_or("")
+    } else {
+        host_port.split(':').next().unwrap_or(host_port)
+    };
+    Some((is_https, host.to_string()))
+}
+
+fn is_loopback_host(host: &str) -> bool {
+    host.eq_ignore_ascii_case("localhost") || host == "127.0.0.1" || host == "::1"
+}
+
 /// HTTPS in production; http only for localhost dev servers.
 pub fn validate_preset_server_url(url: &str) -> Result<(), String> {
     let trimmed = url.trim();
     if trimmed.is_empty() {
         return Ok(());
     }
-    if trimmed.starts_with("https://") {
+    let err = || {
+        "URL сервера пресетов должен быть https:// (http:// только для localhost)".to_string()
+    };
+    let (is_https, host) = parse_http_host(trimmed).ok_or_else(err)?;
+    if host.is_empty() {
+        return Err(err());
+    }
+    if is_https {
         return Ok(());
     }
-    if trimmed.starts_with("http://") {
-        let rest = trimmed.strip_prefix("http://").unwrap_or("");
-        let host = rest.split('/').next().unwrap_or("");
-        let host = host.split(':').next().unwrap_or(host);
-        if host.eq_ignore_ascii_case("localhost") || host.starts_with("127.0.0.1") {
-            return Ok(());
-        }
+    // http разрешён только для loopback (точное совпадение host).
+    if is_loopback_host(&host) {
+        return Ok(());
     }
-    Err(
-        "URL сервера пресетов должен быть https:// (http:// только для localhost)".to_string(),
-    )
+    Err(err())
 }
 
 #[allow(dead_code)]
 pub fn invalidate_cache() {
     if let Ok(mut guard) = CONFIG.lock() {
         *guard = None;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn https_any_host_ok() {
+        assert!(validate_preset_server_url("https://github.com/x").is_ok());
+        assert!(validate_preset_server_url("https://example.com:8443").is_ok());
+    }
+
+    #[test]
+    fn empty_is_ok() {
+        assert!(validate_preset_server_url("").is_ok());
+        assert!(validate_preset_server_url("   ").is_ok());
+    }
+
+    #[test]
+    fn http_localhost_ok() {
+        assert!(validate_preset_server_url("http://localhost:8787").is_ok());
+        assert!(validate_preset_server_url("http://127.0.0.1:8080/catalog.json").is_ok());
+        assert!(validate_preset_server_url("http://[::1]:8080").is_ok());
+    }
+
+    #[test]
+    fn http_non_local_rejected() {
+        assert!(validate_preset_server_url("http://evil.com").is_err());
+    }
+
+    #[test]
+    fn http_localhost_lookalike_rejected() {
+        // Раньше проходило из-за starts_with("127.0.0.1").
+        assert!(validate_preset_server_url("http://127.0.0.1.evil.com/p").is_err());
+        assert!(validate_preset_server_url("http://127.0.0.1@evil.com/p").is_err());
+        assert!(validate_preset_server_url("http://localhost.evil.com").is_err());
+    }
+
+    #[test]
+    fn non_http_scheme_rejected() {
+        assert!(validate_preset_server_url("ftp://localhost").is_err());
+        assert!(validate_preset_server_url("file:///etc/passwd").is_err());
     }
 }

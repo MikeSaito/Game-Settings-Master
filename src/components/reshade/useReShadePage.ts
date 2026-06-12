@@ -38,13 +38,24 @@ import type {
   ReShadeSettings,
 } from "../../lib/types";
 
+interface PendingOverrideFlush {
+  game: GameProfile;
+  gameId: string;
+  session: number;
+  overrides: ReShadePresetOverrides;
+  api: string;
+  presetId: string;
+  statusInstalled: boolean;
+  settings: ReShadeSettings;
+}
+
 export function useReShadePage(game: GameProfile) {
   const queryClient = useQueryClient();
   const [disclaimer, setDisclaimer] = useState<ReShadeDisclaimerKind | null>(null);
   const [message, setMessage] = useState<string>();
   const [error, setError] = useState<string>();
   const [pendingOverrides, setPendingOverrides] = useState<ReShadePresetOverrides | null>(null);
-  const overridesToFlushRef = useRef<ReShadePresetOverrides | null>(null);
+  const overridesToFlushRef = useRef<PendingOverrideFlush | null>(null);
   const overridesGameIdRef = useRef(game.id);
   const activeGameIdRef = useRef(game.id);
   const mutationSessionRef = useRef(0);
@@ -177,13 +188,13 @@ export function useReShadePage(game: GameProfile) {
 
   const removeMutation = useMutation({
     mutationFn: (_vars: { gameId: string; session: number }) => removeReShade(game),
-    onSuccess: (_result, variables) => {
+    onSuccess: (result, variables) => {
       if (!isActiveMutationSession(variables.session, variables.gameId)) return;
-      setMessage(
-        status?.broken_install
-          ? "Повреждённая установка очищена — можно запускать игру."
-          : "ReShade удалён из папки игры.",
-      );
+      const base = status?.broken_install
+        ? "Повреждённая установка очищена — можно запускать игру."
+        : "ReShade удалён из папки игры.";
+      const warn = result.warnings?.length ? ` ${result.warnings.join(" ")}` : "";
+      setMessage(`${base}${warn}`);
       setError(undefined);
       invalidateForGame(variables.gameId);
     },
@@ -229,13 +240,14 @@ export function useReShadePage(game: GameProfile) {
 
   const updateOverridesMutation = useMutation({
     mutationFn: (vars: {
+      game: GameProfile;
       overrides: ReShadePresetOverrides;
       api: string;
       gameId: string;
       session: number;
       presetId: string;
     }) =>
-      updateReShadePresetParameters(game, vars.api, vars.presetId, vars.overrides),
+      updateReShadePresetParameters(vars.game, vars.api, vars.presetId, vars.overrides),
     onSuccess: (_result, variables) => {
       if (!isActiveMutationSession(variables.session, variables.gameId)) return;
       setPendingOverrides(null);
@@ -250,27 +262,30 @@ export function useReShadePage(game: GameProfile) {
   });
 
   const [patchOverridesDebounced, flushOverridesNow] = useDebouncedCallback(() => {
-    if (overridesGameIdRef.current !== activeGameIdRef.current) return;
-    const next = overridesToFlushRef.current;
-    if (!next || !settings) return;
+    // Снимок контекста (game/api/preset/settings/session) делается в момент правки —
+    // поэтому отложенная запись всегда уходит в нужную игру, даже если пользователь
+    // успел переключиться до срабатывания debounce.
+    const snap = overridesToFlushRef.current;
+    if (!snap) return;
+    overridesToFlushRef.current = null;
 
-    const api = effectiveApiRef.current;
-    if (statusInstalledRef.current && api) {
+    if (snap.statusInstalled && snap.api) {
       updateOverridesMutation.mutate({
-        overrides: next,
-        api,
-        gameId: overridesGameIdRef.current,
-        session: mutationSessionRef.current,
-        presetId: presetForEditingRef.current,
+        game: snap.game,
+        overrides: snap.overrides,
+        api: snap.api,
+        gameId: snap.gameId,
+        session: snap.session,
+        presetId: snap.presetId,
       });
       return;
     }
 
     saveSettingsMutation.mutate({
-      gameId: overridesGameIdRef.current,
-      session: mutationSessionRef.current,
-      settings: buildPerGamePatch(settings, overridesGameIdRef.current, {
-        preset_overrides: next,
+      gameId: snap.gameId,
+      session: snap.session,
+      settings: buildPerGamePatch(snap.settings, snap.gameId, {
+        preset_overrides: snap.overrides,
       }),
     });
   }, 400);
@@ -447,7 +462,16 @@ export function useReShadePage(game: GameProfile) {
     setPendingOverrides((prev) => {
       const base = prev ?? settings.per_game[game.id]?.preset_overrides ?? {};
       const next = mergeOverridePatch(base, patch);
-      overridesToFlushRef.current = next;
+      overridesToFlushRef.current = {
+        game,
+        gameId: game.id,
+        session: mutationSessionRef.current,
+        overrides: next,
+        api: effectiveApi,
+        presetId: presetForEditing,
+        statusInstalled: Boolean(status?.installed && effectiveApi),
+        settings,
+      };
       return next;
     });
     patchOverridesDebounced();

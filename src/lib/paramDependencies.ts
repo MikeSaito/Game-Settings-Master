@@ -182,9 +182,6 @@ function syncFromDlssMode(
   if (dlssIsOff(mode)) {
     next = setInFile(next, GUS, "UpscalingMethod", "U_None");
     next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
-    if (findInFile(next, GUS, "TSRQualityMode") && findInFile(next, GUS, "TSRQualityMode")!.value === "0") {
-      // оставить TSR как есть, если пользователь выбрал TSR отдельно
-    }
   } else {
     if (gpu?.supports_dlss !== false) {
       next = setInFile(next, GUS, "UpscalingMethod", "U_DLSS");
@@ -221,11 +218,15 @@ function syncFromUpscalingMethod(
 
   if (m === "U_DLSS" || m.includes("DLSS")) {
     const mode = findInFile(next, GUS, "DLSSMode");
-    if (!mode || dlssIsOff(mode.value)) {
+    next = setInFile(next, GUS, "TSRQualityMode", "0");
+    // Игра без отдельного DLSSMode — синхронизировать каскадом нечего.
+    if (!mode) {
+      return next;
+    }
+    if (dlssIsOff(mode.value)) {
       next = setInFile(next, GUS, "DLSSMode", "Quality");
     }
-    next = setInFile(next, GUS, "TSRQualityMode", "0");
-    const current = findInFile(next, GUS, "DLSSMode")!.value;
+    const current = findInFile(next, GUS, "DLSSMode")?.value ?? "Quality";
     next = syncFromDlssMode(next, normalizeDlssMode(current), gpu);
     return next;
   }
@@ -238,11 +239,13 @@ function syncFromUpscalingMethod(
     if (tsr && (tsr.value === "0" || tsr.value === "-1")) {
       next = setInFile(next, GUS, "TSRQualityMode", "2");
     }
-    if (findInFile(next, GUS, "AntiAliasingType")?.value === "AAM_DLAA") {
-      next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
-    } else if (findInFile(next, GUS, "AntiAliasingType")) {
-      const aa = findInFile(next, GUS, "AntiAliasingType")!.value;
-      if (aa === "AAM_None" || aa === "AAM_FXAA") {
+    const aaParam = findInFile(next, GUS, "AntiAliasingType");
+    if (aaParam) {
+      if (
+        aaParam.value === "AAM_DLAA" ||
+        aaParam.value === "AAM_None" ||
+        aaParam.value === "AAM_FXAA"
+      ) {
         next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
       }
     }
@@ -280,11 +283,9 @@ function syncFromTsrQuality(
   next = setInFile(next, GUS, "DLSSMode", "Off");
   next = setInFile(next, GUS, "DLSSQualityMode", "0");
   next = setInFile(next, GUS, "UpscalingFrameGeneration", "0");
-  if (findInFile(next, GUS, "AntiAliasingType")) {
-    const aa = findInFile(next, GUS, "AntiAliasingType")!.value;
-    if (aa !== "AAM_TSR" && aa !== "AAM_TemporalAA") {
-      next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
-    }
+  const aaParam = findInFile(next, GUS, "AntiAliasingType");
+  if (aaParam && aaParam.value !== "AAM_TSR" && aaParam.value !== "AAM_TemporalAA") {
+    next = setInFile(next, GUS, "AntiAliasingType", "AAM_TSR");
   }
   return syncFromUpscalingMethod(next, "U_TSR", gpu);
 }

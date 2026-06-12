@@ -122,6 +122,15 @@ fn sync_pack(
     let expected_sha = bundle.sha256.as_deref();
     let cached_sha = fs::read_to_string(&stamp_path).unwrap_or_default();
 
+    // Пак без bundle.sha256 отклоняем независимо от кэша: иначе единожды скачанный
+    // (с GSM_ALLOW_UNVERIFIED_PACKS=1) неподписанный пак оставался бы активным навсегда.
+    if expected_sha.is_none() && !unverified_packs_allowed() {
+        return Err(format!(
+            "Пак '{pack_id}' не содержит bundle.sha256 — отклонён. \
+             Задайте GSM_ALLOW_UNVERIFIED_PACKS=1 только для dev."
+        ));
+    }
+
     let needs_download = force
         || !pack_cache.join("extracted").is_dir()
         || expected_sha.is_some_and(|sha| sha != cached_sha.trim());
@@ -130,13 +139,6 @@ fn sync_pack(
 
     if needs_download {
         let zip_bytes = fetch_bytes(&bundle_url)?;
-        if expected_sha.is_none() && std::env::var("GSM_ALLOW_UNVERIFIED_PACKS").ok().as_deref() != Some("1")
-        {
-            return Err(format!(
-                "Пак '{pack_id}' не содержит bundle.sha256 — отклонён. \
-                 Задайте GSM_ALLOW_UNVERIFIED_PACKS=1 только для dev."
-            ));
-        }
         if let Some(expected) = expected_sha {
             let actual = hex_sha256(&zip_bytes);
             if actual != expected {
@@ -300,6 +302,16 @@ fn fetch_bytes(url: &str) -> Result<Vec<u8>, String> {
         .call()
         .map_err(|e| format!("HTTP GET {url}: {e}"))?;
 
+    // Защита от redirect-атак: финальный URL после возможных редиректов обязан снова
+    // пройти валидацию (https, либо http только для localhost). Иначе разрешённый
+    // https-URL мог бы редиректнуть на http:// (downgrade) или на LAN/localhost (SSRF).
+    let final_url = response.get_url().to_string();
+    if final_url != url {
+        validate_fetch_url(&final_url).map_err(|e| {
+            format!("Небезопасный редирект {url} → {final_url}: {e}")
+        })?;
+    }
+
     let mut reader = response.into_reader();
     let mut buf = Vec::new();
     let mut chunk = [0u8; 8192];
@@ -360,11 +372,25 @@ pub fn load_cached_pack(pack_id: &str) -> Option<(PackManifest, PathBuf)> {
     let manifest_path = pack_dir.join("manifest.json");
     let raw = fs::read_to_string(manifest_path).ok()?;
     let manifest: PackManifest = serde_json::from_str(&raw).ok()?;
+    // Не отдаём неподписанный (без bundle.sha256) пак из кэша без явного dev-флага,
+    // даже если он был распакован ранее.
+    let signed = manifest
+        .bundle
+        .as_ref()
+        .and_then(|b| b.sha256.as_ref())
+        .is_some();
+    if !signed && !unverified_packs_allowed() {
+        return None;
+    }
     let root = pack_dir.join("extracted");
     if !root.is_dir() {
         return None;
     }
     Some((manifest, root))
+}
+
+fn unverified_packs_allowed() -> bool {
+    std::env::var("GSM_ALLOW_UNVERIFIED_PACKS").ok().as_deref() == Some("1")
 }
 
 fn prune_orphan_packs(active_ids: &[&str]) -> Result<(), String> {

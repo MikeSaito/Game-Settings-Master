@@ -1,4 +1,4 @@
-use crate::models::{ConfigDiffEntry, PresetDefinition, PresetInfo};
+use crate::models::{ConfigDiffEntry, PresetInfo};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -77,19 +77,4 @@ pub fn apply_unity_preset(
     preset: &UnityPresetDefinition,
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
     apply_boot_config(config_dir, &preset.boot_config)
-}
-
-pub fn unity_preset_as_definition(preset: &UnityPresetDefinition) -> PresetDefinition {
-    let boot_section = preset.boot_config.clone();
-    let mut files = HashMap::new();
-    files.insert(
-        "boot.config".to_string(),
-        HashMap::from([(String::new(), boot_section)]),
-    );
-    PresetDefinition {
-        id: preset.id.clone(),
-        name: preset.name.clone(),
-        description: preset.description.clone(),
-        files,
-    }
 }

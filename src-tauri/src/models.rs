@@ -55,14 +55,6 @@ pub struct PresetInfo {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PresetDefinition {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    pub files: HashMap<String, HashMap<String, HashMap<String, String>>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConfigDiffEntry {
     pub file: String,
     pub section: String,
@@ -116,6 +108,25 @@ pub struct GameParameter {
     pub present_in_ini: bool,
     #[serde(default)]
     pub default_value: Option<String>,
+    /// Тип интерактивного контрола в ручном редакторе: "slider" | "toggle" | "select" | "stepper" | "text".
+    /// None — фронтенд сам подбирает по value_type/min/max.
+    #[serde(default)]
+    pub ui_control: Option<String>,
+    /// Шаг для slider/stepper.
+    #[serde(default)]
+    pub step: Option<String>,
+    /// Варианты для select.
+    #[serde(default)]
+    pub options: Option<Vec<ParameterOption>>,
+    /// Рекомендованное автором значение (показывается как подсказка/кнопка).
+    #[serde(default)]
+    pub recommended: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParameterOption {
+    pub value: String,
+    pub label: String,
 }
 
 fn default_editable() -> bool {

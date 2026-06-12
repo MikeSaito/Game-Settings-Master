@@ -131,8 +131,16 @@ fn enumerate_gpu_from_registry() -> Option<Vec<String>> {
 
     let mut names = Vec::new();
     for i in 0..32 {
-        let sub = class_key.open_subkey(format!("{i:04}")).ok()?;
-        let desc = sub.get_value::<String, _>("DriverDesc").ok()?;
+        // Подключи нумеруются 0000, 0001, … но могут быть пропуски и записи без DriverDesc
+        // (фильтр-драйверы, software-устройства). Раньше здесь стоял `.ok()?`, который при
+        // первом же отсутствующем подключе делал ранний return None и выбрасывал уже найденную
+        // видеокарту → detect_gpu всегда отдавал «Unknown GPU», и адаптация под GPU не работала.
+        let Ok(sub) = class_key.open_subkey(format!("{i:04}")) else {
+            continue;
+        };
+        let Ok(desc) = sub.get_value::<String, _>("DriverDesc") else {
+            continue;
+        };
         let lower = desc.to_lowercase();
         if SKIP.iter().any(|needle| lower.contains(needle)) {
             continue;
@@ -143,85 +151,56 @@ fn enumerate_gpu_from_registry() -> Option<Vec<String>> {
     Some(names)
 }
 
+/// Выбираем дискретную игровую карту, а НЕ первую попавшуюся. На ноутбуках и
+/// APU AMD/Intel в реестре встройка (`AMD Radeon(TM) Graphics`, `Intel UHD`) часто
+/// идёт раньше дискретной NVIDIA/Radeon. Прежняя версия брала первую запись с
+/// `amd`/`radeon`/`nvidia` → выбирала встройку → vendor=Amd, DLSS/NGX выключались,
+/// а игрок на самом деле играет на дискретной NVIDIA.
 fn pick_primary_gpu(names: &[String]) -> String {
-    for name in names {
-        let lower = name.to_lowercase();
-        if lower.contains("nvidia")
-            || lower.contains("geforce")
-            || lower.contains("radeon")
-            || lower.contains("amd")
-        {
-            return name.clone();
-        }
-    }
     names
-        .first()
+        .iter()
+        .max_by_key(|name| gpu_priority(name))
         .cloned()
         .unwrap_or_else(|| "Unknown GPU".to_string())
 }
 
-pub fn adapt_preset_for_gpu(
-    files: &mut std::collections::HashMap<
-        String,
-        std::collections::HashMap<String, std::collections::HashMap<String, String>>,
-    >,
-    gpu: &GpuCapabilities,
-) {
-    let gus = match files.get_mut("GameUserSettings.ini") {
-        Some(f) => f,
-        None => return,
-    };
+/// Чем выше — тем приоритетнее как «основная игровая» карта.
+/// Дискретные карты любого вендора всегда выигрывают у встроек.
+fn gpu_priority(name: &str) -> i32 {
+    let lower = name.to_lowercase();
+    let is_nvidia =
+        lower.contains("nvidia") || lower.contains("geforce") || lower.contains("quadro");
+    let is_amd = lower.contains("amd") || lower.contains("radeon");
+    let is_intel = lower.contains("intel");
 
-    for (_section, keys) in gus.iter_mut() {
-        if !gpu.supports_dlss {
-            if keys.contains_key("DLSSMode") {
-                keys.insert("DLSSMode".to_string(), "Off".to_string());
-            }
-            if keys.contains_key("DLSSQualityMode") {
-                keys.insert("DLSSQualityMode".to_string(), "0".to_string());
-            }
-            keys.remove("ResolutionScaleDLSS");
-            if keys
-                .get("AntiAliasingType")
-                .map(|s| s.contains("DLAA"))
-                .unwrap_or(false)
-            {
-                keys.insert("AntiAliasingType".to_string(), "AAM_TSR".to_string());
-            }
-            if keys
-                .get("UpscalingMethod")
-                .map(|s| s.contains("DLSS"))
-                .unwrap_or(false)
-            {
-                keys.insert(
-                    "UpscalingMethod".to_string(),
-                    if gpu.vendor == GpuVendor::Amd {
-                        "U_FSR".to_string()
-                    } else {
-                        "U_TSR".to_string()
-                    },
-                );
-            }
-        }
-
-        if !gpu.supports_dlss_fg {
-            if keys.contains_key("UpscalingFrameGeneration") {
-                keys.insert("UpscalingFrameGeneration".to_string(), "0".to_string());
-            }
-        }
+    if is_nvidia {
+        // NVIDIA в десктопах/ноутах — всегда дискретная. RTX приоритетнее (DLSS/RT).
+        return if nvidia_rtx_series(&lower).is_some() {
+            100
+        } else {
+            95
+        };
     }
-
-    if !gpu.supports_ray_tracing {
-        if let Some(engine) = files.get_mut("Engine.ini") {
-            for (_section, keys) in engine.iter_mut() {
-                for key in ["r.RayTracing", "r.RayTracing.Shadows"] {
-                    if keys.contains_key(key) {
-                        keys.insert(key.to_string(), "0".to_string());
-                    }
-                }
-            }
-        }
+    if is_amd {
+        // Встройка AMD APU: "Radeon(TM) Graphics", "Vega ... Graphics", "780M Graphics" —
+        // без "RX"/"Pro". Дискретные RX/Pro/Frontier приоритетнее встройки.
+        let discrete = lower.contains("rx ")
+            || lower.contains("rx")
+                && lower
+                    .split("rx")
+                    .nth(1)
+                    .map(|rest| rest.trim_start().starts_with(|c: char| c.is_ascii_digit()))
+                    .unwrap_or(false)
+            || lower.contains(" pro ")
+            || lower.contains("frontier")
+            || lower.contains("instinct");
+        return if discrete { 90 } else { 40 };
     }
+    if is_intel {
+        // Intel Arc — дискретная; UHD/Iris/HD Graphics — встройка.
+        return if lower.contains("arc") { 85 } else { 30 };
+    }
+    0
 }
 
 #[cfg(test)]
@@ -273,25 +252,53 @@ mod tests {
     }
 
     #[test]
-    fn adapt_preset_swaps_dlss_for_amd() {
-        let mut files = std::collections::HashMap::from([(
-            "GameUserSettings.ini".to_string(),
-            std::collections::HashMap::from([(
-                "[/Script/subnautica2.s2gameusersettings]".to_string(),
-                std::collections::HashMap::from([
-                    ("DLSSMode".to_string(), "Quality".to_string()),
-                    ("AntiAliasingType".to_string(), "AAM_DLAA".to_string()),
-                    ("UpscalingMethod".to_string(), "U_DLSS".to_string()),
-                    ("UpscalingFrameGeneration".to_string(), "1".to_string()),
-                ]),
-            )]),
-        )]);
-        let gpu = GpuCapabilities::from_gpu_name("AMD Radeon RX 7800 XT");
-        adapt_preset_for_gpu(&mut files, &gpu);
-        let keys = &files["GameUserSettings.ini"]["[/Script/subnautica2.s2gameusersettings]"];
-        assert_eq!(keys["DLSSMode"], "Off");
-        assert_eq!(keys["AntiAliasingType"], "AAM_TSR");
-        assert_eq!(keys["UpscalingMethod"], "U_FSR");
-        assert_eq!(keys["UpscalingFrameGeneration"], "0");
+    fn prefers_discrete_nvidia_over_amd_igpu() {
+        // Встройка AMD APU идёт первой в реестре, дискретная NVIDIA — второй.
+        let names = vec![
+            "AMD Radeon(TM) Graphics".to_string(),
+            "NVIDIA GeForce RTX 4070".to_string(),
+        ];
+        assert_eq!(pick_primary_gpu(&names), "NVIDIA GeForce RTX 4070");
+        // Обратный порядок — результат тот же.
+        let names_rev = vec![
+            "NVIDIA GeForce RTX 4070".to_string(),
+            "AMD Radeon(TM) Graphics".to_string(),
+        ];
+        assert_eq!(pick_primary_gpu(&names_rev), "NVIDIA GeForce RTX 4070");
+    }
+
+    #[test]
+    fn picked_nvidia_enables_dlss_with_amd_igpu_present() {
+        let names = vec![
+            "AMD Radeon(TM) Graphics".to_string(),
+            "NVIDIA GeForce RTX 3060".to_string(),
+        ];
+        let gpu = GpuCapabilities::from_gpu_name(&pick_primary_gpu(&names));
+        assert_eq!(gpu.vendor, GpuVendor::Nvidia);
+        assert!(gpu.supports_dlss, "RTX должна включать DLSS, а не встройка AMD");
+    }
+
+    #[test]
+    fn prefers_discrete_amd_over_amd_igpu() {
+        let names = vec![
+            "AMD Radeon(TM) Graphics".to_string(),
+            "AMD Radeon RX 7800 XT".to_string(),
+        ];
+        assert_eq!(pick_primary_gpu(&names), "AMD Radeon RX 7800 XT");
+    }
+
+    #[test]
+    fn prefers_discrete_over_intel_igpu() {
+        let names = vec![
+            "Intel(R) UHD Graphics 770".to_string(),
+            "NVIDIA GeForce RTX 4090".to_string(),
+        ];
+        assert_eq!(pick_primary_gpu(&names), "NVIDIA GeForce RTX 4090");
+    }
+
+    #[test]
+    fn single_igpu_is_still_picked() {
+        let names = vec!["AMD Radeon(TM) Graphics".to_string()];
+        assert_eq!(pick_primary_gpu(&names), "AMD Radeon(TM) Graphics");
     }
 }

@@ -30,7 +30,13 @@ import {
   gameCoverFallbackLetter,
   resolveGameHeroCoverCandidates,
 } from "../../lib/gameCover";
-import { isAuthorCuratedGame, resolveGameTab, supportsIniPresets, supportsReShade } from "../../lib/gameEngine";
+import {
+  isAuthorCuratedGame,
+  resolveGameTab,
+  supportsAuthorPresets,
+  supportsIniPresets,
+  supportsReShade,
+} from "../../lib/gameEngine";
 import { gpuSummaryLabel } from "../../lib/gpuCompat";
 import {
   blocksReShadeLaunch,
@@ -58,7 +64,7 @@ const tabs: {
   label: string;
   icon: typeof Sparkles | typeof History | typeof SlidersHorizontal;
 }[] = [
-  { id: "wizard", label: "Авто пресеты", icon: Sparkles },
+  { id: "wizard", label: "Авторские", icon: Sparkles },
   { id: "advanced", label: "Ручной", icon: SlidersHorizontal },
   { id: "backups", label: "Бекапы", icon: History },
   { id: "reshade", label: "ReShade", icon: Palette },
@@ -208,14 +214,23 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
 
   const isStaleLaunchSession = (session: number) => session !== launchSessionRef.current;
 
-  const runLaunch = async () => {
+  const runLaunch = async (skipReShade = false) => {
     const session = launchSessionRef.current;
     try {
-      await launchMutation.mutateAsync({ skipReShade: false, session });
+      await launchMutation.mutateAsync({ skipReShade, session });
       if (isStaleLaunchSession(session)) return;
     } catch {
       // ошибка показана в launchMutation.onError
     }
+  };
+
+  // Запуск без эффектов: ReShade временно снимается на бэкенде, preflight/выбор API не нужен.
+  const handlePlayWithoutReShade = () => {
+    if (launchBusy) return;
+    setLaunchError(undefined);
+    setLaunchMessage(undefined);
+    setLaunchWarning(undefined);
+    void runLaunch(true);
   };
 
   const continueLaunchWithApi = async (api: string, remember: boolean) => {
@@ -402,9 +417,11 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
   }, [game.id]);
 
   const iniPresets = supportsIniPresets(game);
+  const authorPresets = supportsAuthorPresets(game);
 
   const visibleTabs = tabs.filter(({ id }) => {
     if (id === "reshade") return reshadeOk;
+    if (id === "wizard") return authorPresets;
     return iniPresets;
   });
 
@@ -412,13 +429,15 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
     const tabAllowed =
       activeTab === "reshade"
         ? reshadeOk
-        : activeTab === "wizard" || activeTab === "advanced" || activeTab === "backups"
-          ? iniPresets
-          : true;
+        : activeTab === "wizard"
+          ? authorPresets
+          : activeTab === "advanced" || activeTab === "backups"
+            ? iniPresets
+            : true;
     if (!tabAllowed) {
       onTabChange(resolveGameTab(game));
     }
-  }, [game, activeTab, iniPresets, reshadeOk, onTabChange]);
+  }, [game, activeTab, iniPresets, authorPresets, reshadeOk, onTabChange]);
 
   const showCover = !!coverSrc;
   const configDir = game.config_dir;
@@ -465,7 +484,18 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               Закрыть
             </Button>
           ) : (
-            <>
+            <div className="flex items-center gap-2">
+              {reshadeOk && reshadeActiveForPrefetch && (
+                <Button
+                  variant="secondary"
+                  onClick={handlePlayWithoutReShade}
+                  disabled={launchBusy}
+                  className="shadow-lg"
+                  title="Запустить игру один раз без эффектов ReShade"
+                >
+                  Без ReShade
+                </Button>
+              )}
               <Button
                 variant="primary"
                 icon={<Play size={16} fill="currentColor" />}
@@ -475,7 +505,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               >
                 Играть
               </Button>
-            </>
+            </div>
           )}
         </div>
 

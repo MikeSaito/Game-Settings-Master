@@ -24,7 +24,7 @@ pub use known_games::{
 };
 pub use steam::scan_steam_games;
 pub use ue_detect::{detect_unreal_engine, find_executables, is_non_game_install, UeDetectResult};
-pub use ue_version::{detect_engine_version, enrich_engine_version, UeEngineFamily};
+pub use ue_version::enrich_engine_version;
 pub use unity_detect::{detect_unity_engine, find_unity_data_dir, UnityDetectResult};
 
 fn source_priority(source: &str) -> u8 {

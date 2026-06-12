@@ -19,11 +19,17 @@ export function supportsReShade(game: GameProfile): boolean {
   return !!game.install_dir?.trim();
 }
 
+/** Вкладка авторских пресетов есть только у игр, разобранных автором (Forza и т.п.). */
+export function supportsAuthorPresets(game: GameProfile): boolean {
+  return !!(game.config_dir && isAuthorCuratedGame(game));
+}
+
 export function isGameTabAvailable(game: GameProfile, tab: AppTab): boolean {
   switch (tab) {
     case "library":
       return true;
     case "wizard":
+      return supportsAuthorPresets(game);
     case "advanced":
     case "backups":
       return supportsIniPresets(game);
@@ -35,7 +41,8 @@ export function isGameTabAvailable(game: GameProfile, tab: AppTab): boolean {
 }
 
 export function resolveGameTab(game: GameProfile): AppTab {
-  if (supportsIniPresets(game)) return "wizard";
+  if (supportsAuthorPresets(game)) return "wizard";
+  if (supportsIniPresets(game)) return "advanced";
   if (supportsReShade(game)) return "reshade";
   return "library";
 }
