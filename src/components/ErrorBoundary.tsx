@@ -1,8 +1,9 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import i18n from "../i18n";
 
 interface Props {
   children: ReactNode;
-  /** При смене resetKey граница сбрасывается (например, при выборе другой игры/вкладки). */
+  /** Reset boundary when resetKey changes (e.g. different game/tab). */
   resetKey?: string;
 }
 
@@ -10,7 +11,7 @@ interface State {
   error: Error | null;
 }
 
-/** Ловит ошибки рендера страницы, чтобы один сбой не «забеливал» всё приложение. */
+/** Catches page render errors so one failure does not white-screen the whole app. */
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { error: null };
 
@@ -33,11 +34,10 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
           <div className="text-lg font-semibold text-[var(--color-text)]">
-            Что-то пошло не так на этом экране
+            {i18n.t("common:errorBoundaryTitle")}
           </div>
           <p className="max-w-md text-sm text-muted">
-            Произошла ошибка интерфейса. Остальная часть приложения продолжает
-            работать — вернитесь в библиотеку или попробуйте снова.
+            {i18n.t("common:errorBoundaryBody")}
           </p>
           <pre className="max-w-lg overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-hover)] p-3 text-left font-mono text-xs text-muted">
             {this.state.error.message}
@@ -47,7 +47,7 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={() => this.setState({ error: null })}
             className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
           >
-            Попробовать снова
+            {i18n.t("common:errorBoundaryRetry")}
           </button>
         </div>
       );

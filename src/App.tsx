@@ -5,7 +5,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AppShell } from "./components/layout/AppShell";
 import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
 import { usePresetCatalogRefresh } from "./hooks/usePresetCatalogRefresh";
-import { scanGames } from "./lib/api";
+import { scanGames, setBackendLanguage } from "./lib/api";
+import { currentLanguage } from "./i18n";
 import { prefetchGameWorkspace } from "./lib/prefetchGameWorkspace";
 import { isGameTabAvailable, resolveGameTab } from "./lib/gameEngine";
 import { queryClient } from "./lib/queryClient";
@@ -19,6 +20,12 @@ import type { AppTab, GameProfile } from "./lib/types";
 function AppContent() {
   usePresetCatalogRefresh();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // Sync the persisted UI language to the backend so its messages match.
+    void setBackendLanguage(currentLanguage()).catch(() => {});
+  }, []);
+
   const [tab, setTab] = useState<AppTab>("library");
   const [selectedGame, setSelectedGame] = useState<GameProfile | null>(null);
   const previousGameIdRef = useRef<string | null>(null);

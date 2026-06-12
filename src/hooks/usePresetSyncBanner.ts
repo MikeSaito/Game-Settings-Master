@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { formatInvokeError } from "../lib/errors";
 import { usePresetServerStatus } from "./usePresetServerStatus";
 
@@ -7,23 +8,24 @@ export interface SyncBanner {
   message: string;
 }
 
-/** Пользовательский статус синхронизации пресетов (без URL и техдеталей). */
+/** User-facing preset sync status (no URLs or technical details). */
 export function usePresetSyncBanner(): SyncBanner | null {
+  const { t } = useTranslation("common");
   const { data: status, isLoading, error } = usePresetServerStatus();
 
   if (isLoading && !status) {
     return {
       tone: "info",
-      title: "Загрузка пресетов",
-      message: "Синхронизация каталога с сервером…",
+      title: t("presetSyncLoadingTitle"),
+      message: t("presetSyncLoadingMessage"),
     };
   }
 
   if (error) {
     return {
       tone: "warning",
-      title: "Пресеты",
-      message: "Не удалось проверить статус синхронизации. Используется локальный кэш, если он есть.",
+      title: t("presetSyncErrorTitle"),
+      message: t("presetSyncErrorMessage"),
     };
   }
 
@@ -38,13 +40,13 @@ export function usePresetSyncBanner(): SyncBanner | null {
     if (hasCache) {
       return {
         tone: "warning",
-        title: "Офлайн",
-        message: `Не удалось обновить пресеты. Используется кэш v${status.catalog_version}.`,
+        title: t("presetSyncOfflineTitle"),
+        message: t("presetSyncOfflineMessage", { version: status.catalog_version }),
       };
     }
     return {
       tone: "error",
-      title: "Пресеты не загружены",
+      title: t("presetSyncNotLoadedTitle"),
       message: formatInvokeError(status.last_sync_error),
     };
   }

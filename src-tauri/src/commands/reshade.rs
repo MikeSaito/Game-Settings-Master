@@ -4,7 +4,10 @@ use crate::profiles::{ensure_known_game_id, ensure_trusted_ipc_profile};
 
 fn validate_reshade_preset_id(preset_id: &str) -> Result<(), String> {
     if !crate::fs_util::is_safe_pack_id(preset_id) {
-        return Err(format!("Недопустимый preset_id: {preset_id}"));
+        return Err(crate::i18n::t(
+            &format!("Недопустимый preset_id: {preset_id}"),
+            &format!("Invalid preset_id: {preset_id}"),
+        ));
     }
     Ok(())
 }
@@ -203,7 +206,12 @@ pub fn update_reshade_preset_parameters_cmd(
 pub fn open_game_folder_cmd(profile: GameProfile) -> Result<(), String> {
     let profile = ensure_trusted_ipc_profile(&profile)?;
     let path = resolve_install_target(&profile)?;
-    open::that(&path).map_err(|e| format!("Не удалось открыть папку игры: {e}"))
+    open::that(&path).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось открыть папку игры: {e}"),
+            &format!("Failed to open game folder: {e}"),
+        )
+    })
 }
 
 #[tauri::command]

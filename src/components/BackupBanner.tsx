@@ -1,4 +1,5 @@
 import { ShieldCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "./ui/Alert";
 
 interface Props {
@@ -7,12 +8,12 @@ interface Props {
 }
 
 export function BackupBanner({ backupId, message }: Props) {
+  const { t } = useTranslation("backups");
   if (!backupId && !message) return null;
 
   return (
-    <Alert tone="success" icon={ShieldCheck} title="Резервная копия создана">
-      {message ??
-        `Backup ${backupId}. Откат — во вкладке «Бекапы».`}
+    <Alert tone="success" icon={ShieldCheck} title={t("banner.title")}>
+      {message ?? t("banner.fallback", { backupId })}
     </Alert>
   );
 }

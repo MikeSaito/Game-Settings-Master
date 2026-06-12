@@ -1,4 +1,4 @@
-/** Сравнение значений ini: точное, регистр или эквивалентные float (как на backend). */
+/** Ini value comparison: exact, case, or equivalent floats (same as backend). */
 export function paramValuesEqual(a: string, b: string): boolean {
   const ta = a.trim();
   const tb = b.trim();

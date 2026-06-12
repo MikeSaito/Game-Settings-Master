@@ -21,10 +21,10 @@ pub fn read_file_bytes(path: &Path) -> Result<Vec<u8>, String> {
         return Ok(bytes);
     }
 
-    fs::read(path).map_err(|e| format_io_error("прочитать", path, e))
+    fs::read(path).map_err(|e| format_io_error("прочитать", "read", path, e))
 }
 
-/// Убирает UTF-8 BOM (часто появляется после PowerShell `Set-Content -Encoding UTF8`).
+/// Strips UTF-8 BOM (often added by PowerShell `Set-Content -Encoding UTF8`).
 pub fn strip_utf8_bom(bytes: &[u8]) -> &[u8] {
     if bytes.starts_with(&[0xEF, 0xBB, 0xBF]) {
         &bytes[3..]
@@ -33,12 +33,17 @@ pub fn strip_utf8_bom(bytes: &[u8]) -> &[u8] {
     }
 }
 
-/// Читает текстовый файл в UTF-8; второй элемент — был ли BOM (для авто-исправления).
+/// Reads a text file as UTF-8; second element is whether a BOM was present (for auto-fix).
 pub fn read_utf8_text_file(path: &Path) -> Result<(String, bool), String> {
     let bytes = read_file_bytes(path)?;
     let had_bom = bytes.starts_with(&[0xEF, 0xBB, 0xBF]);
     let text = std::str::from_utf8(strip_utf8_bom(&bytes))
-        .map_err(|e| format!("Файл не в UTF-8 ({}): {e}", path.display()))?
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Файл не в UTF-8 ({}): {e}", path.display()),
+                &format!("File is not UTF-8 ({}): {e}", path.display()),
+            )
+        })?
         .to_string();
     Ok((text, had_bom))
 }
@@ -50,7 +55,12 @@ pub fn write_file_bytes(path: &Path, bytes: &[u8]) -> Result<(), String> {
 pub fn write_file_bytes_opts(path: &Path, bytes: &[u8], atomic: bool) -> Result<(), String> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
-            .map_err(|e| format!("Не удалось создать каталог {}: {e}", parent.display()))?;
+            .map_err(|e| {
+                crate::i18n::t(
+                    &format!("Не удалось создать каталог {}: {e}", parent.display()),
+                    &format!("Failed to create directory {}: {e}", parent.display()),
+                )
+            })?;
     }
 
     if atomic {
@@ -64,17 +74,27 @@ pub fn write_file_bytes_opts(path: &Path, bytes: &[u8], atomic: bool) -> Result<
         return Ok(());
     }
 
-    fs::write(path, bytes).map_err(|e| format_io_error("записать", path, e))
+    fs::write(path, bytes).map_err(|e| format_io_error("записать", "write", path, e))
 }
 
 fn write_file_bytes_atomic(path: &Path, bytes: &[u8]) -> Result<(), String> {
     let parent = path
         .parent()
-        .ok_or_else(|| format!("Не удалось определить каталог для {}", path.display()))?;
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Не удалось определить каталог для {}", path.display()),
+                &format!("Failed to determine directory for {}", path.display()),
+            )
+        })?;
     let file_name = path
         .file_name()
         .and_then(|s| s.to_str())
-        .ok_or_else(|| format!("Некорректное имя файла: {}", path.display()))?;
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Некорректное имя файла: {}", path.display()),
+                &format!("Invalid file name: {}", path.display()),
+            )
+        })?;
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_nanos())
@@ -87,19 +107,19 @@ fn write_file_bytes_atomic(path: &Path, bytes: &[u8]) -> Result<(), String> {
     #[cfg(windows)]
     {
         if write_file_shared(&tmp, bytes).is_err() {
-            fs::write(&tmp, bytes).map_err(|e| format_io_error("записать", &tmp, e))?;
+            fs::write(&tmp, bytes).map_err(|e| format_io_error("записать", "write", &tmp, e))?;
         }
     }
     #[cfg(not(windows))]
     {
-        fs::write(&tmp, bytes).map_err(|e| format_io_error("записать", &tmp, e))?;
+        fs::write(&tmp, bytes).map_err(|e| format_io_error("записать", "write", &tmp, e))?;
     }
 
     if path.exists() {
         clear_readonly(path);
-        fs::remove_file(path).map_err(|e| format_io_error("заменить", path, e))?;
+        fs::remove_file(path).map_err(|e| format_io_error("заменить", "replace", path, e))?;
     }
-    fs::rename(&tmp, path).map_err(|e| format_io_error("заменить", path, e))?;
+    fs::rename(&tmp, path).map_err(|e| format_io_error("заменить", "replace", path, e))?;
     Ok(())
 }
 
@@ -223,20 +243,32 @@ pub fn ensure_path_within_root(root: &Path, path: &Path) -> Result<(), String> {
         if path_within_root(root, path) {
             return Ok(());
         }
-        return Err(format!("Недопустимый путь: {}", path.display()));
+        return Err(crate::i18n::t(
+            &format!("Недопустимый путь: {}", path.display()),
+            &format!("Invalid path: {}", path.display()),
+        ));
     }
-    let rel = path
-        .strip_prefix(root)
-        .map_err(|_| format!("Недопустимый путь: {}", path.display()))?;
+    let rel = path.strip_prefix(root).map_err(|_| {
+        crate::i18n::t(
+            &format!("Недопустимый путь: {}", path.display()),
+            &format!("Invalid path: {}", path.display()),
+        )
+    })?;
     if rel
         .components()
         .any(|c| !matches!(c, Component::Normal(_)))
     {
-        return Err(format!("Недопустимый путь: {}", path.display()));
+        return Err(crate::i18n::t(
+            &format!("Недопустимый путь: {}", path.display()),
+            &format!("Invalid path: {}", path.display()),
+        ));
     }
     if let Some(parent) = path.parent() {
         if parent.exists() && !path_within_root(root, parent) {
-            return Err(format!("Недопустимый путь: {}", path.display()));
+            return Err(crate::i18n::t(
+                &format!("Недопустимый путь: {}", path.display()),
+                &format!("Invalid path: {}", path.display()),
+            ));
         }
     }
     Ok(())
@@ -256,28 +288,41 @@ pub fn clear_readonly(path: &Path) {
     }
 }
 
-pub fn format_io_error(action: &str, path: &Path, err: std::io::Error) -> String {
+pub fn format_io_error(
+    action_ru: &str,
+    action_en: &str,
+    path: &Path,
+    err: std::io::Error,
+) -> String {
+    let action = crate::i18n::t(action_ru, action_en);
     let name = path
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
         .unwrap_or_else(|| path.display().to_string());
-    format!("Не удалось {action} {name}: {err}{}", io_error_hint(&err))
+    let (hint_ru, hint_en) = io_error_hint(&err);
+    crate::i18n::t(
+        &format!("Не удалось {action} {name}: {err}{hint_ru}"),
+        &format!("Failed to {action} {name}: {err}{hint_en}"),
+    )
 }
 
-fn io_error_hint(err: &std::io::Error) -> String {
+fn io_error_hint(err: &std::io::Error) -> (&'static str, &'static str) {
     match err.raw_os_error() {
-        Some(5) => {
+        Some(5) => (
             ". Доступ запрещён. Полностью закройте игру и лаунчер (Steam/Epic), отключите \
              игровые оверлеи (Steam/Discord/NVIDIA) и проверьте антивирус. Если игра в защищённой \
              папке (Program Files) — запустите приложение от имени администратора. \
-             Также снимите атрибут «Только чтение» с файла."
-                .to_string()
-        }
-        Some(32) => {
-            ". Файл занят другим процессом — закройте игру, лаунчер и оверлеи, затем повторите."
-                .to_string()
-        }
-        _ => String::new(),
+             Также снимите атрибут «Только чтение» с файла.",
+            ". Access denied. Fully close the game and launcher (Steam/Epic), disable \
+             game overlays (Steam/Discord/NVIDIA), and check your antivirus. If the game is in a \
+             protected folder (Program Files), run the app as administrator. \
+             Also remove the Read-only attribute from the file.",
+        ),
+        Some(32) => (
+            ". Файл занят другим процессом — закройте игру, лаунчер и оверлеи, затем повторите.",
+            ". The file is in use by another process — close the game, launcher, and overlays, then try again.",
+        ),
+        _ => ("", ""),
     }
 }
 
@@ -435,7 +480,7 @@ fn terminate_process_pid(pid: u32) -> Result<(), u32> {
     use windows_sys::Win32::System::Threading::{OpenProcess, TerminateProcess, PROCESS_TERMINATE};
 
     unsafe {
-        // OpenProcess возвращает NULL при ошибке (не INVALID_HANDLE_VALUE).
+        // OpenProcess returns NULL on failure (not INVALID_HANDLE_VALUE).
         let handle = OpenProcess(PROCESS_TERMINATE, 0, pid);
         if handle.is_null() {
             return Err(GetLastError());
@@ -458,7 +503,10 @@ pub fn is_exe_running(_exe_name: &str) -> bool {
 #[cfg(windows)]
 pub fn kill_exe(exe_name: &str) -> Result<(), String> {
     if !is_safe_exe_basename(exe_name) {
-        return Err(format!("Недопустимое имя процесса: {exe_name}"));
+        return Err(crate::i18n::t(
+            &format!("Недопустимое имя процесса: {exe_name}"),
+            &format!("Invalid process name: {exe_name}"),
+        ));
     }
     let filter = normalize_exe_filter(exe_name);
     invalidate_running_cache(&filter);
@@ -486,16 +534,27 @@ pub fn kill_exe(exe_name: &str) -> Result<(), String> {
         return Ok(());
     }
     if access_denied {
-        return Err(format!(
-            "Нет прав для завершения «{filter}». Закройте игру вручную или запустите приложение от имени администратора."
+        return Err(crate::i18n::t(
+            &format!(
+                "Нет прав для завершения «{filter}». Закройте игру вручную или запустите приложение от имени администратора."
+            ),
+            &format!(
+                "Insufficient permissions to terminate «{filter}». Close the game manually or run the app as administrator."
+            ),
         ));
     }
-    Err(format!("Не удалось завершить «{filter}»."))
+    Err(crate::i18n::t(
+        &format!("Не удалось завершить «{filter}»."),
+        &format!("Failed to terminate «{filter}»."),
+    ))
 }
 
 #[cfg(not(windows))]
 pub fn kill_exe(_exe_name: &str) -> Result<(), String> {
-    Err("Завершение процесса поддерживается только в Windows.".to_string())
+    Err(crate::i18n::t(
+        "Завершение процесса поддерживается только в Windows.",
+        "Process termination is only supported on Windows.",
+    ))
 }
 
 const CONFIG_INI_FILES: [&str; 6] = [
@@ -550,9 +609,15 @@ pub fn ensure_config_writable(config_dir: &Path, exe_name: Option<&str>) -> Resu
 fn probe_config_dir_writable(config_dir: &Path) -> Result<(), String> {
     let probe = config_dir.join(".uesm-write-test");
     write_file_bytes(&probe, b"ok").map_err(|e| {
-        format!(
-            "Папка config недоступна для записи ({}): {e}. Закройте игру или запустите приложение от администратора.",
-            config_dir.display()
+        crate::i18n::t(
+            &format!(
+                "Папка config недоступна для записи ({}): {e}. Закройте игру или запустите приложение от администратора.",
+                config_dir.display()
+            ),
+            &format!(
+                "Config folder is not writable ({}): {e}. Close the game or run the app as administrator.",
+                config_dir.display()
+            ),
         )
     })?;
     let _ = fs::remove_file(&probe);

@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { GameCover } from "../components/GameCover";
 import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import {
@@ -24,7 +25,7 @@ import {
   setGameConfigDir,
 } from "../lib/api";
 import {
-  AUTHOR_CURATED_SECTION_TITLE,
+  authorCuratedSectionTitle,
   isAuthorCuratedGame,
   supportsIniPresets,
   supportsReShade,
@@ -49,10 +50,10 @@ interface Props {
 const sourceLabels: Record<string, string> = {
   steam: "Steam",
   epic: "Epic",
-  manual: "Вручную",
 };
 
 export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameRemoved }: Props) {
+  const { t } = useTranslation("library");
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
   const [libraryError, setLibraryError] = useState<string>();
@@ -104,7 +105,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
       const path = await openPathDialog({
         directory: true,
         multiple: false,
-        title: "Выберите папку установки игры",
+        title: t("dialogs.installFolder"),
       });
       if (!path) return null;
       const name = query.trim() || path.split(/[/\\]/).pop() || "Custom Game";
@@ -126,7 +127,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
       const path = await openPathDialog({
         directory: true,
         multiple: false,
-        title: "Выберите папку Saved/Config/Windows",
+        title: t("dialogs.configFolder"),
       });
       if (!path) return null;
       return setGameConfigDir(gameId, path);
@@ -156,10 +157,10 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
     mutationFn: async (gameId: string) => {
       const path = await openPathDialog({
         multiple: false,
-        title: "Выберите обложку игры",
+        title: t("dialogs.coverFile"),
         filters: [
           {
-            name: "Изображение",
+            name: t("dialogs.imageFilter"),
             extensions: ["png", "jpg", "jpeg", "webp", "gif"],
           },
         ],
@@ -215,10 +216,12 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             </div>
             <div className="mt-2 flex flex-wrap gap-1.5">
               <Badge tone="default">
-                {sourceLabels[game.source] ?? game.source}
+                {game.source === "manual"
+                  ? t("source.manual")
+                  : sourceLabels[game.source] ?? game.source}
               </Badge>
               {isAuthorCuratedGame(game) && (
-                <Badge tone="accent">От автора</Badge>
+                <Badge tone="accent">{t("card.fromAuthor")}</Badge>
               )}
               {game.is_unity && (
                 <Badge tone="accent">Unity</Badge>
@@ -233,13 +236,13 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
                 </Badge>
               )}
               {!game.is_ue && !game.is_unity && !isAuthorCuratedGame(game) && (
-                <Badge tone="warning">Движок не определён</Badge>
+                <Badge tone="warning">{t("card.engineUnknown")}</Badge>
               )}
               {game.is_ue && game.possible_ue && (
-                <Badge tone="default">Вероятно UE</Badge>
+                <Badge tone="default">{t("card.probablyUe")}</Badge>
               )}
               {game.is_unity && game.possible_unity && (
-                <Badge tone="default">Вероятно Unity</Badge>
+                <Badge tone="default">{t("card.probablyUnity")}</Badge>
               )}
               <Badge tone={game.config_dir ? "success" : "warning"}>
                 {game.config_dir ? "Config OK" : "Config ?"}
@@ -259,7 +262,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
               icon={<FolderOpen size={14} />}
               onClick={() => onSelectGame(game)}
             >
-              Выбрать
+              {t("card.select")}
             </Button>
           ) : supportsReShade(game) ? (
             <Button
@@ -289,7 +292,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             onClick={() => importCover.mutate(game.id)}
             loading={importCover.isPending}
           >
-            Обложка
+            {t("card.cover")}
           </Button>
           {game.custom_cover && (
             <Button
@@ -299,7 +302,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
               onClick={() => removeCover.mutate(game.id)}
               loading={removeCover.isPending}
             >
-              Сброс
+              {t("card.resetCover")}
             </Button>
           )}
           {game.source === "manual" && (
@@ -307,7 +310,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
               type="button"
               onClick={() => removeGame.mutate(game.id)}
               className="ml-auto rounded-lg p-2 text-muted transition hover:bg-[#2e1a1a] hover:text-[#f08080]"
-              title="Удалить профиль"
+              title={t("card.removeProfile")}
             >
               <Trash2 size={16} />
             </button>
@@ -320,30 +323,30 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
   return (
     <div className="space-y-6">
       {libraryError && (
-        <Alert tone="error" title="Ошибка">
+        <Alert tone="error" title={t("alerts.errorTitle")}>
           {libraryError}
         </Alert>
       )}
       <PageHeader
-        title="Библиотека игр"
-        subtitle="Steam · Epic · LocalAppData · ручное добавление"
+        title={t("header.title")}
+        subtitle={t("header.subtitle")}
         meta={
           <>
-            <Badge tone="success">{scanSummary.withConfig} с config</Badge>
+            <Badge tone="success">{t("badges.withConfig", { count: scanSummary.withConfig })}</Badge>
             {scanSummary.withoutConfig > 0 && (
-              <Badge tone="warning">{scanSummary.withoutConfig} без config</Badge>
+              <Badge tone="warning">{t("badges.withoutConfig", { count: scanSummary.withoutConfig })}</Badge>
             )}
-            <Badge tone="default">{scanSummary.ue} UE</Badge>
+            <Badge tone="default">{t("badges.ue", { count: scanSummary.ue })}</Badge>
             {scanSummary.unity > 0 && (
-              <Badge tone="default">{scanSummary.unity} Unity</Badge>
+              <Badge tone="default">{t("badges.unity", { count: scanSummary.unity })}</Badge>
             )}
             {scanSummary.author > 0 && (
-              <Badge tone="accent">{scanSummary.author} от автора</Badge>
+              <Badge tone="accent">{t("badges.author", { count: scanSummary.author })}</Badge>
             )}
             {scanSummary.other > 0 && (
-              <Badge tone="warning">{scanSummary.other} прочие</Badge>
+              <Badge tone="warning">{t("badges.other", { count: scanSummary.other })}</Badge>
             )}
-            <Badge tone="info">{scanSummary.withCover} с обложкой</Badge>
+            <Badge tone="info">{t("badges.withCover", { count: scanSummary.withCover })}</Badge>
           </>
         }
         actions={
@@ -353,21 +356,20 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             onClick={() => refetch()}
             loading={isFetching}
           >
-            Сканировать
+            {t("actions.scan")}
           </Button>
         }
       />
 
-      <Alert tone="info" title="Обложки">
-        Steam-игры подтягивают картинку автоматически. Для Epic и ручных профилей нажмите
-        «Обложка» на карточке игры.
+      <Alert tone="info" title={t("alerts.coversTitle")}>
+        {t("alerts.coversBody")}
       </Alert>
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-[260px] flex-1">
           <Input
             icon={<Search size={16} />}
-            placeholder="Поиск или название для ручного добавления…"
+            placeholder={t("search.placeholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -378,14 +380,14 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
           onClick={() => addManual.mutate()}
           loading={addManual.isPending}
         >
-          Добавить
+          {t("actions.add")}
         </Button>
       </div>
 
       {libraryLoading ? (
         <div className="flex flex-col items-center gap-4 py-20">
           <span className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-          <p className="text-sm text-body">Сканирование Steam, Epic, LocalAppData…</p>
+          <p className="text-sm text-body">{t("loading")}</p>
         </div>
       ) : ueGames.length === 0 &&
         unityGames.length === 0 &&
@@ -393,14 +395,13 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
         otherGames.length === 0 ? (
         <EmptyState
           icon={Gamepad2}
-          title={query ? "Ничего не найдено" : "Игры не найдены"}
+          title={query ? t("empty.nothingFound") : t("empty.noGames")}
           description={
             query ? (
-              <>Попробуйте другое название или добавьте игру вручную.</>
+              <>{t("empty.tryAnother")}</>
             ) : (
               <>
-                Нажмите «Сканировать» или «Добавить», чтобы указать папку установки.
-                Для Subnautica 2 config:{" "}
+                {t("empty.scanOrAddPrefix")}
                 <code className="text-code">
                   %LOCALAPPDATA%\Subnautica2\Saved\Config\Windows
                 </code>
@@ -414,7 +415,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
               onClick={() => addManual.mutate()}
               loading={addManual.isPending}
             >
-              Добавить вручную
+              {t("actions.addManual")}
             </Button>
           }
         />
@@ -440,7 +441,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
                   Unity
                 </h2>
                 <p className="mt-1 text-sm text-muted">
-                  Пресеты меняют boot.config в папке *_Data.
+                  {t("sections.unityHint")}
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -453,11 +454,10 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             <section className="space-y-4 border-t border-[var(--color-border)] pt-8">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--color-text)]">
-                  {AUTHOR_CURATED_SECTION_TITLE}
+                  {authorCuratedSectionTitle()}
                 </h2>
                 <p className="mt-1 text-sm text-muted">
-                  Пресеты разобраны автором приложения — отдельный формат конфига
-                  (Forza: UserConfigSelections + media).
+                  {t("sections.authorHint")}
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -470,11 +470,10 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             <section className="space-y-4 border-t border-[var(--color-border)] pt-8">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--color-text)]">
-                  Другие игры
+                  {t("sections.otherTitle")}
                 </h2>
                 <p className="mt-1 text-sm text-muted">
-                  Движок не определён — авто-пресеты ini недоступны. ReShade и запуск из GSM —
-                  доступны.
+                  {t("sections.otherHint")}
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

@@ -157,7 +157,7 @@ fn reshade_ini_packs() -> Vec<ResolvedPack> {
         .collect()
 }
 
-/// Только локальный кэш — без сетевой синхронизации (для списка пресетов в UI).
+/// Local cache only — no network sync (for preset list in UI).
 pub fn find_pack_cached(
     game_id: Option<&str>,
     engine_family: Option<&str>,
@@ -231,7 +231,7 @@ pub fn sync_forza_pack_if_needed(force: bool) -> Result<(), String> {
         return Ok(());
     }
     if effective_base_url().is_none() {
-        return Err("Не удалось загрузить пресеты Forza.".into());
+        return Err(crate::i18n::t("Не удалось загрузить пресеты Forza.", "Failed to load Forza presets."));
     }
     sync_pack_by_id("forza-fh6", force)?;
     Ok(())

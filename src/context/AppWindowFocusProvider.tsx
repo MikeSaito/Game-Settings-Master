@@ -19,7 +19,7 @@ export function useAppWindowFocused(): boolean {
   return useContext(AppWindowFocusContext);
 }
 
-/** Фокус ОС + скрытие окна в фоне (WebView2 не конкурирует с fullscreen-игрой). */
+/** OS focus + background window hiding (WebView2 does not compete with fullscreen game). */
 export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   const inTauri = isTauriRuntime();
   const [tauriFocused, setTauriFocused] = useState(true);

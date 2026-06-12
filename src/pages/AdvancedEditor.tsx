@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Save, Search, SlidersHorizontal, Trash2, Zap } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { currentLanguage } from "../i18n";
 import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { BackupBanner } from "../components/BackupBanner";
 import { ParameterCard } from "../components/ParameterCard";
@@ -76,29 +78,6 @@ const CATEGORY_ORDER = [
   "Other",
 ] as const;
 
-const CATEGORY_LABELS: Record<string, string> = {
-  Scalability: "Масштаб",
-  Graphics: "Графика",
-  Display: "Экран",
-  API: "API / DXGI",
-  Jobs: "Потоки и GC",
-  Rendering: "Рендер",
-  Shadows: "Тени",
-  Textures: "Текстуры",
-  PostProcess: "Пост",
-  Mirrors: "Зеркала",
-  LOD: "LOD",
-  World: "Мир",
-  Media: "Media-override",
-  Startup: "Запуск",
-  AuthorCurated: "От автора",
-  GameSpecific: "Игра",
-  Audio: "Аудио",
-  System: "Система",
-  Debug: "Отладка",
-  Other: "Прочее",
-};
-
 const UNITY_EDITABLE = new Set([
   "Graphics",
   "Display",
@@ -121,6 +100,7 @@ const EDITABLE_FOR_APPLY = new Set([
 ]);
 
 export function AdvancedEditor({ game }: Props) {
+  const { t } = useTranslation("advanced");
   const queryClient = useQueryClient();
   const configDir = game?.config_dir ?? "";
   const isUnity = game?.is_unity || game?.engine_family === "unity";
@@ -131,12 +111,12 @@ export function AdvancedEditor({ game }: Props) {
   const overridesEnabled = useBackgroundSafeEnabled(!!game?.id);
   const gpuEnabled = useBackgroundSafeEnabled();
 
-  useWorkspacePreset("Ручной", "selected", !!configDir);
+  useWorkspacePreset(t("title"), "selected", !!configDir);
   const [params, setParams] = useState<GameParameter[]>([]);
   const paramsDirtyRef = useRef(false);
   const activeGameIdRef = useRef(game?.id);
   activeGameIdRef.current = game?.id;
-  const [overrideName, setOverrideName] = useState("Мой пресет");
+  const [overrideName, setOverrideName] = useState(t("defaultPresetName"));
   const [message, setMessage] = useState<string>();
   const [applyError, setApplyError] = useState<string>();
   const [activeCategory, setActiveCategory] = useState<string>(
@@ -152,7 +132,7 @@ export function AdvancedEditor({ game }: Props) {
   }, [game?.id]);
 
   const { data: parameters = [], isLoading, isFetching } = useQuery({
-    queryKey: ["parameters", configDir, game?.id, game?.engine_family],
+    queryKey: ["parameters", configDir, game?.id, game?.engine_family, currentLanguage()],
     queryFn: () =>
       getGameParameters(
         configDir,
@@ -188,12 +168,12 @@ export function AdvancedEditor({ game }: Props) {
     staleTime: 300_000,
   });
 
-  // Перечитываем значения с диска, когда есть шанс, что игра их изменила:
-  // при закрытии игры и при возврате фокуса в окно приложения.
+  // Re-read values from disk when the game may have changed them:
+  // on game exit and when the app window regains focus.
   const windowFocused = useAppWindowFocused();
   const refreshFromDisk = useCallback(() => {
     if (!game?.id || !configDir) return;
-    // Не затираем несохранённые правки пользователя.
+    // Do not overwrite unsaved user edits.
     if (paramsDirtyRef.current) return;
     void queryClient.invalidateQueries({
       queryKey: ["parameters", configDir, game.id],
@@ -361,9 +341,7 @@ export function AdvancedEditor({ game }: Props) {
         Object.keys(removals).length === 0
       ) {
         throw new Error(
-          isUnity
-            ? "Нет изменений — измените значения boot.config."
-            : "Нет изменений — включите параметры Engine.ini или измените значения.",
+          isUnity ? t("errors.noChangesUnity") : t("errors.noChanges"),
         );
       }
       const result = await applyCustom(
@@ -381,7 +359,10 @@ export function AdvancedEditor({ game }: Props) {
       if (activeGameIdRef.current !== snapshot.gameId) return;
       paramsDirtyRef.current = false;
       setMessage(
-        `Применено ${result.diff.length} правок · backup ${result.backup_id}. Перезапустите игру.`,
+        t("applied", {
+          count: result.diff.length,
+          backupId: result.backup_id,
+        }),
       );
       queryClient.invalidateQueries({
         queryKey: ["backups", snapshot.configDir, snapshot.gameId],
@@ -409,7 +390,7 @@ export function AdvancedEditor({ game }: Props) {
     onSuccess: (snapshot) => {
       if (activeGameIdRef.current !== snapshot.gameId) return;
       queryClient.invalidateQueries({ queryKey: ["overrides", snapshot.gameId] });
-      setMessage(`Пресет «${snapshot.name}» сохранён.`);
+      setMessage(t("presetSaved", { name: snapshot.name }));
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
@@ -426,7 +407,7 @@ export function AdvancedEditor({ game }: Props) {
     },
     onSuccess: ({ result, snapshot }) => {
       if (activeGameIdRef.current !== snapshot.gameId) return;
-      setMessage(`Пресет применён · backup ${result.backup_id}.`);
+      setMessage(t("presetApplied", { backupId: result.backup_id }));
       queryClient.invalidateQueries({
         queryKey: ["backups", snapshot.configDir, snapshot.gameId],
       });
@@ -452,18 +433,16 @@ export function AdvancedEditor({ game }: Props) {
     return (
       <EmptyState
         icon={SlidersHorizontal}
-        title="Ручной — выберите игру"
-        description="Откройте библиотеку и выберите игру с config для просмотра и редактирования параметров."
+        title={t("noGame.title")}
+        description={t("noGame.desc")}
       />
     );
   }
 
   if (!configDir) {
     return (
-      <Alert tone="warning" title="Config не найден">
-        {isUnity
-          ? "Укажите папку *_Data с boot.config на вкладке «Библиотека»."
-          : "Укажите путь к Saved/Config/Windows на вкладке «Библиотека»."}
+      <Alert tone="warning" title={t("noConfig.title")}>
+        {isUnity ? t("noConfig.unity") : t("noConfig.default")}
       </Alert>
     );
   }
@@ -471,13 +450,19 @@ export function AdvancedEditor({ game }: Props) {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Ручной"
+        title={t("title")}
         meta={
           <>
-            <Badge tone="default">{catalogStats.total} параметров</Badge>
-            <Badge tone="success">{catalogStats.known} в справочнике</Badge>
+            <Badge tone="default">
+              {t("paramsCount", { count: catalogStats.total })}
+            </Badge>
+            <Badge tone="success">
+              {t("knownCount", { count: catalogStats.known })}
+            </Badge>
             {catalogStats.unknown > 0 && (
-              <Badge tone="warning">{catalogStats.unknown} без описания</Badge>
+              <Badge tone="warning">
+                {t("unknownCount", { count: catalogStats.unknown })}
+              </Badge>
             )}
             {limits && (
               <Badge tone="info">sg max {limits.global_max} · scale 25–200%</Badge>
@@ -487,7 +472,7 @@ export function AdvancedEditor({ game }: Props) {
       />
 
       {gpuHint && (
-        <Alert tone="info" title="Видеокарта">
+        <Alert tone="info" title={t("gpuHintTitle")}>
           {gpuHint}
         </Alert>
       )}
@@ -496,14 +481,14 @@ export function AdvancedEditor({ game }: Props) {
 
       {message && <BackupBanner message={message} />}
       {applyError && (
-        <Alert tone="error" title="Ошибка">
+        <Alert tone="error" title={t("errorTitle")}>
           {applyError}
         </Alert>
       )}
 
       <Input
         icon={<Search size={16} />}
-        placeholder="Поиск по ключу, названию, описанию…"
+        placeholder={t("searchPlaceholder")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -521,48 +506,48 @@ export function AdvancedEditor({ game }: Props) {
                 : "text-muted hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]",
             )}
           >
-            {CATEGORY_LABELS[cat] ?? cat}
+            {t(`category.${cat}`, { defaultValue: cat })}
             <span className="ml-1.5 text-xs opacity-60">{count}</span>
           </button>
         ))}
       </div>
 
       {activeCategory === "AuthorCurated" && (
-        <Alert tone="info" title="Разобрано автором приложения">
-          Параметры из кастомных секций игры с подробными описаниями. DLSS, TSR и FSR
-          синхронизируются автоматически при применении пресетов.
+        <Alert tone="info" title={t("authorCurated.title")}>
+          {t("authorCurated.body")}
         </Alert>
       )}
 
       {isForza && (
         <Alert tone="info" title="Forza Horizon 6 — UserConfigSelections">
-          Параметры из AppData XML (как в вашем моде). Пресеты также копируют{" "}
-          <code className="text-xs">media/</code> в папку игры — DefaultTrackSettings,
-          routebudget, деревья и др. Engine.ini здесь нет.
+          {t("forza.before")}
+          <code className="text-xs">media/</code>
+          {t("forza.after")}
         </Alert>
       )}
 
       {!isForza && ENGINE_CATEGORIES.has(activeCategory) && (
-        <Alert tone="info" title="Параметры Engine.ini">
-          Тоггл <strong>Вкл/Выкл</strong> — это наличие строки в файле: включено — ключ
-          будет записан после «Применить»; выключено — строка удалится. Сейчас в
-          Engine.ini: {engineStats.on} из {engineStats.total}.
+        <Alert tone="info" title={t("engineIni.title")}>
+          {t("engineIni.before")}
+          <strong>{t("engineIni.onOff")}</strong>
+          {t("engineIni.after", {
+            on: engineStats.on,
+            total: engineStats.total,
+          })}
         </Alert>
       )}
 
       {parametersLoading ? (
         <div className="flex flex-col items-center gap-3 py-16">
           <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-          <p className="text-sm text-body">Загрузка параметров…</p>
+          <p className="text-sm text-body">{t("loadingParams")}</p>
         </div>
       ) : filteredParams.length === 0 ? (
         <EmptyState
           icon={Search}
-          title={search ? "Ничего не найдено" : "Пустая категория"}
+          title={search ? t("emptyFiltered.titleSearch") : t("emptyFiltered.titleEmpty")}
           description={
-            search
-              ? "Попробуйте другой запрос или смените категорию."
-              : "В этой категории нет параметров для выбранной игры."
+            search ? t("emptyFiltered.descSearch") : t("emptyFiltered.descEmpty")
           }
           className="py-12"
         />
@@ -594,11 +579,11 @@ export function AdvancedEditor({ game }: Props) {
       )}
 
       <Card padding="md">
-        <SectionHeader title="Применить и сохранить" />
+        <SectionHeader title={t("applyAndSave")} />
         <div className="flex flex-wrap items-end gap-3">
           <div className="min-w-[200px] flex-1">
             <Input
-              label="Имя пресета"
+              label={t("presetNameLabel")}
               value={overrideName}
               onChange={(e) => setOverrideName(e.target.value)}
             />
@@ -610,7 +595,7 @@ export function AdvancedEditor({ game }: Props) {
             loading={applyCustomMutation.isPending}
             disabled={gameRunning}
           >
-            Применить
+            {t("apply")}
           </Button>
           <Button
             variant="secondary"
@@ -618,14 +603,14 @@ export function AdvancedEditor({ game }: Props) {
             onClick={() => saveOverrideMutation.mutate()}
             loading={saveOverrideMutation.isPending}
           >
-            Сохранить пресет
+            {t("savePreset")}
           </Button>
         </div>
       </Card>
 
       {overrides.length > 0 && (
         <section>
-          <SectionHeader title="Сохранённые пресеты" />
+          <SectionHeader title={t("savedPresets")} />
           <div className="space-y-2">
             {overrides.map((override) => (
               <Card key={`${override.game_id}-${override.name}`} padding="sm" className="!p-0">
@@ -638,7 +623,7 @@ export function AdvancedEditor({ game }: Props) {
                       onClick={() => applyOverrideMutation.mutate(override)}
                       disabled={gameRunning}
                     >
-                      Применить
+                      {t("apply")}
                     </Button>
                     <button
                       type="button"

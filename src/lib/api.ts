@@ -39,6 +39,10 @@ export function isGameRunning(exeName: string): Promise<boolean> {
   return invoke("is_game_running_cmd", { exeName });
 }
 
+export function setBackendLanguage(lang: string): Promise<void> {
+  return invoke("set_language_cmd", { lang });
+}
+
 export function setAppBackgroundMode(background: boolean): Promise<void> {
   return invoke("set_app_background_mode_cmd", { background });
 }

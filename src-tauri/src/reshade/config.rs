@@ -98,19 +98,42 @@ pub fn load_settings() -> Result<ReShadeSettings, String> {
 
 fn read_settings_file(path: &PathBuf) -> Result<ReShadeSettings, String> {
     let meta = fs::metadata(path)
-        .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось прочитать {}: {e}", path.display()),
+                &format!("Failed to read {}: {e}", path.display()),
+            )
+        })?;
     if meta.len() as usize > MAX_SETTINGS_JSON_BYTES {
-        return Err(format!(
-            "Файл {} слишком большой ({} KB, лимит {} KB)",
-            path.display(),
-            meta.len() / 1024,
-            MAX_SETTINGS_JSON_BYTES / 1024
+        return Err(crate::i18n::t(
+            &format!(
+                "Файл {} слишком большой ({} KB, лимит {} KB)",
+                path.display(),
+                meta.len() / 1024,
+                MAX_SETTINGS_JSON_BYTES / 1024
+            ),
+            &format!(
+                "File {} is too large ({} KB, limit {} KB)",
+                path.display(),
+                meta.len() / 1024,
+                MAX_SETTINGS_JSON_BYTES / 1024
+            ),
         ));
     }
     let raw = fs::read_to_string(path)
-        .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось прочитать {}: {e}", path.display()),
+                &format!("Failed to read {}: {e}", path.display()),
+            )
+        })?;
     let cfg: ReShadeSettings = serde_json::from_str(&raw)
-        .map_err(|e| format!("Некорректный {}: {e}", path.display()))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Некорректный {}: {e}", path.display()),
+                &format!("Invalid {}: {e}", path.display()),
+            )
+        })?;
     validate_settings(&cfg)?;
     Ok(cfg)
 }
@@ -121,32 +144,51 @@ const MAX_GAME_ID_LEN: usize = 128;
 
 fn validate_settings(cfg: &ReShadeSettings) -> Result<(), String> {
     if cfg.per_game.len() > MAX_PER_GAME_ENTRIES {
-        return Err(format!(
-            "Слишком много записей per_game ({} > {MAX_PER_GAME_ENTRIES})",
-            cfg.per_game.len()
+        return Err(crate::i18n::t(
+            &format!(
+                "Слишком много записей per_game ({} > {MAX_PER_GAME_ENTRIES})",
+                cfg.per_game.len()
+            ),
+            &format!(
+                "Too many per_game entries ({} > {MAX_PER_GAME_ENTRIES})",
+                cfg.per_game.len()
+            ),
         ));
     }
     if !super::presets::preset_exists(&cfg.default_preset) {
-        return Err(format!(
-            "Недопустимый default_preset: {}",
-            cfg.default_preset
+        return Err(crate::i18n::t(
+            &format!("Недопустимый default_preset: {}", cfg.default_preset),
+            &format!("Invalid default_preset: {}", cfg.default_preset),
         ));
     }
     for (game_id, per_game) in &cfg.per_game {
         if game_id.len() > MAX_GAME_ID_LEN {
-            return Err(format!(
-                "Слишком длинный game_id в настройках ReShade: {} символов",
-                game_id.len()
+            return Err(crate::i18n::t(
+                &format!(
+                    "Слишком длинный game_id в настройках ReShade: {} символов",
+                    game_id.len()
+                ),
+                &format!(
+                    "game_id too long in ReShade settings: {} characters",
+                    game_id.len()
+                ),
             ));
         }
         if let Some(ref preset) = per_game.preset {
             if !crate::fs_util::is_safe_pack_id(preset) {
-                return Err(format!("Недопустимый preset для {game_id}: {preset}"));
+                return Err(crate::i18n::t(
+                    &format!("Недопустимый preset для {game_id}: {preset}"),
+                    &format!("Invalid preset for {game_id}: {preset}"),
+                ));
             }
         }
         if let Some(ref api) = per_game.api {
-            super::api::GraphicsApi::from_str_id(api)
-                .map_err(|_| format!("Недопустимый api для {game_id}: {api}"))?;
+            super::api::GraphicsApi::from_str_id(api).map_err(|_| {
+                crate::i18n::t(
+                    &format!("Недопустимый api для {game_id}: {api}"),
+                    &format!("Invalid api for {game_id}: {api}"),
+                )
+            })?;
         }
     }
     Ok(())
@@ -157,19 +199,41 @@ pub fn save_settings(cfg: &ReShadeSettings) -> Result<(), String> {
     let path = config_path()?;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
-            .map_err(|e| format!("Не удалось создать каталог настроек: {e}"))?;
+            .map_err(|e| {
+                crate::i18n::t(
+                    &format!("Не удалось создать каталог настроек: {e}"),
+                    &format!("Failed to create settings directory: {e}"),
+                )
+            })?;
     }
     let raw = serde_json::to_string_pretty(cfg)
-        .map_err(|e| format!("Не удалось сериализовать настройки ReShade: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось сериализовать настройки ReShade: {e}"),
+                &format!("Failed to serialize ReShade settings: {e}"),
+            )
+        })?;
     if raw.len() > MAX_SETTINGS_JSON_BYTES {
-        return Err(format!(
-            "Настройки ReShade слишком большие ({} KB, лимит {} KB)",
-            raw.len() / 1024,
-            MAX_SETTINGS_JSON_BYTES / 1024
+        return Err(crate::i18n::t(
+            &format!(
+                "Настройки ReShade слишком большие ({} KB, лимит {} KB)",
+                raw.len() / 1024,
+                MAX_SETTINGS_JSON_BYTES / 1024
+            ),
+            &format!(
+                "ReShade settings too large ({} KB, limit {} KB)",
+                raw.len() / 1024,
+                MAX_SETTINGS_JSON_BYTES / 1024
+            ),
         ));
     }
     crate::fs_util::write_file_bytes_opts(&path, raw.as_bytes(), true)
-        .map_err(|e| format!("Не удалось сохранить reshade_settings.json: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось сохранить reshade_settings.json: {e}"),
+                &format!("Failed to save reshade_settings.json: {e}"),
+            )
+        })?;
 
     if let Ok(mut guard) = CONFIG.lock() {
         *guard = Some(cfg.clone());
@@ -229,7 +293,7 @@ pub fn is_reshade_active_for_game(game_id: &str) -> Result<bool, String> {
         .unwrap_or(true))
 }
 
-/// API для ensure/launch — любой сохранённый выбор (remember влияет только на повторный prompt в UI).
+/// API for ensure/launch — any saved choice (remember affects only repeat prompts in UI).
 pub fn effective_api_for_game(game_id: &str) -> Result<Option<GraphicsApi>, String> {
     saved_api_for_game(game_id)
 }

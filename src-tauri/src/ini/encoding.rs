@@ -40,7 +40,10 @@ fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
             .collect();
         Ok((String::from_utf16_lossy(&units), IniEncoding::Utf16Le))
     } else if bytes.starts_with(&[0xFE, 0xFF]) {
-        return Err("UTF-16 BE ini пока не поддерживается".to_string());
+        return Err(crate::i18n::t(
+            "UTF-16 BE ini пока не поддерживается",
+            "UTF-16 BE ini is not supported yet",
+        ));
     } else {
         let bytes = if bytes.starts_with(&[0xEF, 0xBB, 0xBF]) {
             &bytes[3..]
@@ -49,7 +52,12 @@ fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
         };
         Ok((
             String::from_utf8(bytes.to_vec())
-                .map_err(|e| format!("Файл не в UTF-8/UTF-16: {e}"))?,
+                .map_err(|e| {
+                    crate::i18n::t(
+                        &format!("Файл не в UTF-8/UTF-16: {e}"),
+                        &format!("File is not UTF-8/UTF-16: {e}"),
+                    )
+                })?,
             IniEncoding::Utf8,
         ))
     }

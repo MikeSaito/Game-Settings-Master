@@ -20,39 +20,69 @@ const MAX_OVERRIDE_VALUE_LEN: usize = 256;
 pub fn validate_preset_overrides(overrides: &PresetOverrides) -> Result<(), String> {
     if let Some(ref techniques) = overrides.techniques {
         if techniques.len() > MAX_TECHNIQUES {
-            return Err(format!(
-                "Слишком много techniques в override ({} > {MAX_TECHNIQUES})",
-                techniques.len()
+            return Err(crate::i18n::t(
+                &format!(
+                    "Слишком много techniques в override ({} > {MAX_TECHNIQUES})",
+                    techniques.len()
+                ),
+                &format!(
+                    "Too many techniques in override ({} > {MAX_TECHNIQUES})",
+                    techniques.len()
+                ),
             ));
         }
         for technique in techniques {
             if technique.is_empty() || technique.len() > MAX_OVERRIDE_KEY_LEN {
-                return Err("Недопустимое имя technique в override".to_string());
+                return Err(crate::i18n::t(
+                    "Недопустимое имя technique в override",
+                    "Invalid technique name in override",
+                ));
             }
         }
     }
     if overrides.parameters.len() > MAX_OVERRIDE_EFFECTS {
-        return Err(format!(
-            "Слишком много эффектов в override ({} > {MAX_OVERRIDE_EFFECTS})",
-            overrides.parameters.len()
+        return Err(crate::i18n::t(
+            &format!(
+                "Слишком много эффектов в override ({} > {MAX_OVERRIDE_EFFECTS})",
+                overrides.parameters.len()
+            ),
+            &format!(
+                "Too many effects in override ({} > {MAX_OVERRIDE_EFFECTS})",
+                overrides.parameters.len()
+            ),
         ));
     }
     for (effect, keys) in &overrides.parameters {
         if effect.is_empty() || effect.len() > MAX_OVERRIDE_KEY_LEN {
-            return Err("Недопустимое имя эффекта в override".to_string());
+            return Err(crate::i18n::t(
+                "Недопустимое имя эффекта в override",
+                "Invalid effect name in override",
+            ));
         }
         if keys.len() > MAX_KEYS_PER_EFFECT {
-            return Err(format!(
-                "Слишком много параметров для {effect} ({} > {MAX_KEYS_PER_EFFECT})",
-                keys.len()
+            return Err(crate::i18n::t(
+                &format!(
+                    "Слишком много параметров для {effect} ({} > {MAX_KEYS_PER_EFFECT})",
+                    keys.len()
+                ),
+                &format!(
+                    "Too many parameters for {effect} ({} > {MAX_KEYS_PER_EFFECT})",
+                    keys.len()
+                ),
             ));
         }
         for (key, value) in keys {
             if key.is_empty() || key.len() > MAX_OVERRIDE_KEY_LEN {
-                return Err(format!("Недопустимый ключ параметра в {effect}"));
+                return Err(crate::i18n::t(
+                    &format!("Недопустимый ключ параметра в {effect}"),
+                    &format!("Invalid parameter key in {effect}"),
+                ));
             }
             if value.len() > MAX_OVERRIDE_VALUE_LEN {
-                return Err(format!("Слишком длинное значение для {effect}.{key}"));
+                return Err(crate::i18n::t(
+                    &format!("Слишком длинное значение для {effect}.{key}"),
+                    &format!("Value too long for {effect}.{key}"),
+                ));
             }
         }
     }

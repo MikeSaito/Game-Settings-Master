@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { usePresetServerStatus } from "./usePresetServerStatus";
 
-/** Инвалидирует пресеты/параметры только при смене версии каталога и фокусе окна. */
+/** Invalidates presets/parameters only on catalog version change and window focus. */
 export function usePresetCatalogRefresh() {
   const queryClient = useQueryClient();
   const lastVersion = useRef<string | null>(null);

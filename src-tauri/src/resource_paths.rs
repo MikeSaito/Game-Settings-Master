@@ -3,7 +3,7 @@ use std::sync::OnceLock;
 
 static RESOURCE_ROOT: OnceLock<PathBuf> = OnceLock::new();
 
-/// Вызывается из Tauri setup с `app.path().resource_dir()`.
+/// Called from Tauri setup with `app.path().resource_dir()`.
 pub fn init_resource_root(root: PathBuf) {
     let _ = RESOURCE_ROOT.set(root);
 }
@@ -15,7 +15,7 @@ fn compile_time_src_root() -> PathBuf {
 fn exe_resources_root() -> Option<PathBuf> {
     let exe = std::env::current_exe().ok()?;
     let dir = exe.parent()?;
-    // Tauri on Windows кладёт resources рядом с exe (не в подпапку resources/).
+    // On Windows Tauri places resources next to the exe (not in a resources/ subfolder).
     #[cfg(windows)]
     if dir.join("presets").is_dir() {
         return Some(dir.to_path_buf());
@@ -32,7 +32,7 @@ fn exe_resources_root() -> Option<PathBuf> {
     None
 }
 
-/// Корень бандла Tauri (`resources/` рядом с exe в релизе).
+/// Tauri bundle root (`resources/` next to the exe in release builds).
 pub fn resource_root() -> PathBuf {
     if let Some(root) = RESOURCE_ROOT.get() {
         return root.clone();

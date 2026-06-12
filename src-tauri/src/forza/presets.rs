@@ -14,17 +14,17 @@ pub fn ensure_forza_profiles_synced(game_id: Option<&str>) -> Result<(), String>
         return Ok(());
     }
     if crate::remote_presets::effective_base_url().is_none() {
-        return Err("Не удалось загрузить пресеты Forza.".into());
+        return Err(crate::i18n::t("Не удалось загрузить пресеты Forza.", "Failed to load Forza presets."));
     }
     crate::remote_presets::sync_forza_pack_if_needed(false)?;
     if !crate::remote_presets::forza_pack_ready(game_id) {
         crate::remote_presets::sync_forza_pack_if_needed(true)?;
     }
     if !crate::remote_presets::forza_pack_ready(game_id) {
-        return Err(
-            "Пресеты Forza недоступны. Проверьте подключение к интернету и попробуйте позже."
-                .into(),
-        );
+        return Err(crate::i18n::t(
+            "Пресеты Forza недоступны. Проверьте подключение к интернету и попробуйте позже.",
+            "Forza presets unavailable. Check your internet connection and try again later.",
+        ));
     }
     Ok(())
 }
@@ -32,7 +32,7 @@ pub fn ensure_forza_profiles_synced(game_id: Option<&str>) -> Result<(), String>
 fn resolve_forza_pack(game_id: Option<&str>) -> Result<ResolvedPack, String> {
     ensure_forza_profiles_synced(game_id)?;
     crate::remote_presets::find_forza_pack(game_id)
-        .ok_or_else(|| "Пак forza-fh6 не найден в кэше.".to_string())
+        .ok_or_else(|| crate::i18n::t("Пак forza-fh6 не найден в кэше.", "Pack forza-fh6 not found in cache."))
 }
 
 pub fn list_forza_presets(game_id: Option<&str>) -> Result<Vec<PresetInfo>, String> {
@@ -55,15 +55,23 @@ pub fn list_forza_presets(game_id: Option<&str>) -> Result<Vec<PresetInfo>, Stri
 
     ensure_forza_profiles_synced(game_id)?;
     crate::remote_presets::forza_presets_from_cache(game_id)
-        .ok_or_else(|| "На сервере нет списка пресетов Forza (pack forza-fh6).".to_string())
+        .ok_or_else(|| crate::i18n::t("На сервере нет списка пресетов Forza (pack forza-fh6).", "Server has no Forza preset list (pack forza-fh6)."))
 }
 
 fn preset_profile_dir(pack: &ResolvedPack, preset_id: &str) -> Result<PathBuf, String> {
     if !crate::fs_util::is_safe_pack_id(preset_id) {
-        return Err(format!("Недопустимый идентификатор пресета: {preset_id}"));
+        return Err(crate::i18n::t(
+            &format!("Недопустимый идентификатор пресета: {preset_id}"),
+            &format!("Invalid preset identifier: {preset_id}"),
+        ));
     }
     pack.forza_profile_dir(preset_id)
-        .ok_or_else(|| format!("Профиль пресета '{preset_id}' не найден в кэше сервера"))
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Профиль пресета '{preset_id}' не найден в кэше сервера"),
+                &format!("Preset profile '{preset_id}' not found in server cache"),
+            )
+        })
 }
 
 fn load_profile_user_config_patch(pack: &ResolvedPack, preset_id: &str) -> Result<String, String> {
@@ -71,7 +79,12 @@ fn load_profile_user_config_patch(pack: &ResolvedPack, preset_id: &str) -> Resul
     let patch_name = pack.forza_user_config_patch_file().unwrap_or("Preset.xml");
     let path = profile_dir.join(patch_name);
     fs::read_to_string(&path)
-        .map_err(|e| format!("Не удалось прочитать снимок UserConfig ({patch_name}): {e}"))
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось прочитать снимок UserConfig ({patch_name}): {e}"),
+                &format!("Failed to read UserConfig snapshot ({patch_name}): {e}"),
+            )
+        })
 }
 
 pub fn preview_forza_preset(
@@ -87,13 +100,13 @@ pub fn preview_forza_preset(
     tune_forza_selections(&mut patch_selections, &gpu);
     let mut diff = preview_forza_diff(config_dir, &patch_settings, &patch_selections)?;
     let install_raw = install_dir.ok_or_else(|| {
-        "Укажите папку установки Forza — без неё предпросмотр media-файлов неполный.".to_string()
+        crate::i18n::t("Укажите папку установки Forza — без неё предпросмотр media-файлов неполный.", "Specify Forza install folder — media file preview is incomplete without it.")
     })?;
     let install = crate::forza::validate_forza_install_dir(install_raw)?;
     let profile_dir = preset_profile_dir(&pack, preset_id)?;
     let media_src = pack
         .forza_media_src(&profile_dir)
-        .ok_or_else(|| "В manifest пака не задан media_dir.".to_string())?;
+        .ok_or_else(|| crate::i18n::t("В manifest пака не задан media_dir.", "Pack manifest has no media_dir."))?;
     diff.extend(preview_media_diff(&install, &media_src)?);
     Ok(diff)
 }
@@ -114,7 +127,12 @@ pub fn apply_forza_preset(
     let diff = preview_forza_diff(config_dir, &patch_settings, &patch_selections)?;
     let user_config_path = crate::forza::detect::user_config_file(config_dir);
     let original_user_config = crate::fs_util::read_file_bytes(&user_config_path)
-        .map_err(|e| format!("Не удалось прочитать исходный UserConfigSelections: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось прочитать исходный UserConfigSelections: {e}"),
+                &format!("Failed to read original UserConfigSelections: {e}"),
+            )
+        })?;
 
     let policy = pack.load_policy();
     let (mut settings, mut selections) = read_user_config(config_dir)?;
@@ -129,7 +147,7 @@ pub fn apply_forza_preset(
     let profile_dir = preset_profile_dir(&pack, preset_id)?;
     let media_src = pack
         .forza_media_src(&profile_dir)
-        .ok_or_else(|| "В manifest пака не задан media_dir.".to_string())?;
+        .ok_or_else(|| crate::i18n::t("В manifest пака не задан media_dir.", "Pack manifest has no media_dir."))?;
     let media_snapshot = snapshot_media_for_rollback(install_dir, &media_src)?;
 
     if let Some(backup) = backup_path {
@@ -139,7 +157,10 @@ pub fn apply_forza_preset(
         Ok(changed) => changed,
         Err(e) => {
             if let Err(rb) = rollback_media_from_snapshot(&media_snapshot) {
-                return Err(format!("{e} (откат media: {rb})"));
+                return Err(crate::i18n::t(
+                    &format!("{e} (откат media: {rb})"),
+                    &format!("{e} (media rollback: {rb})"),
+                ));
             }
             return Err(e);
         }
@@ -156,7 +177,7 @@ pub fn apply_forza_preset(
         if rollback_errors.is_empty() {
             return Err(e);
         }
-        return Err(format!("{e} (откат: {})", rollback_errors.join("; ")));
+        return Err(crate::i18n::t(&format!("{e} (откат: {})", rollback_errors.join("; ")), &format!("{e} (rollback: {})", rollback_errors.join("; "))));
     }
 
     let mut changed = vec![user_config_path

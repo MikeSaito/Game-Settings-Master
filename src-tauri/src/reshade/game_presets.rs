@@ -114,7 +114,10 @@ fn scan_ini_presets(dir: &Path) -> Vec<ReShadePresetInfo> {
         out.push(ReShadePresetInfo {
             id: id.clone(),
             name: id.replace('-', " "),
-            description: "Авторский пресет для игры.".to_string(),
+            description: crate::i18n::t(
+                "Авторский пресет для игры.",
+                "Author preset for the game.",
+            ),
             author: true,
         });
     }
@@ -185,16 +188,27 @@ fn resolve_pack_ini(pack_dir: &Path, preset_id: &str) -> Option<PathBuf> {
 
 pub fn read_preset_ini_for(preset_id: &str, game_id: Option<&str>) -> Result<String, String> {
     if !crate::fs_util::is_safe_pack_id(preset_id) {
-        return Err(format!("Недопустимый идентификатор пресета: {preset_id}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Недопустимый идентификатор пресета: {preset_id}"), &format!("Invalid preset identifier: {preset_id}")),
+            &format!("Invalid preset identifier: {preset_id}"),
+        ));
     }
     if !preset_exists_for(preset_id, game_id) {
-        return Err(format!("Неизвестный пресет ReShade: {preset_id}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Неизвестный пресет ReShade: {preset_id}"), &format!("Unknown ReShade preset: {preset_id}")),
+            &format!("Unknown ReShade preset: {preset_id}"),
+        ));
     }
     if let Some(gid) = game_id {
         if let Some(dir) = game_pack_dir(gid) {
             if let Some(path) = resolve_pack_ini(&dir, preset_id) {
                 return fs::read_to_string(&path)
-                    .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()));
+                    .map_err(|e| {
+                        crate::i18n::t(
+                            &crate::i18n::t(&format!("Не удалось прочитать {}: {e}", path.display()), &format!("Failed to read {}: {e}", path.display())),
+                            &format!("Failed to read {}: {e}", path.display()),
+                        )
+                    });
             }
         }
         if let Some(pack) = find_reshade_ini_pack_cached(
@@ -207,7 +221,12 @@ pub fn read_preset_ini_for(preset_id: &str, game_id: Option<&str>) -> Result<Str
         }
     }
     let path = preset_ini_path_for(preset_id, game_id)?;
-    fs::read_to_string(&path).map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))
+    fs::read_to_string(&path).map_err(|e| {
+        crate::i18n::t(
+            &crate::i18n::t(&format!("Не удалось прочитать {}: {e}", path.display()), &format!("Failed to read {}: {e}", path.display())),
+            &format!("Failed to read {}: {e}", path.display()),
+        )
+    })
 }
 
 pub fn suggested_reshade_api_for_game(game_id: &str, engine_family: Option<&str>) -> Option<String> {

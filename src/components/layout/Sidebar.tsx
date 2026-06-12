@@ -1,9 +1,11 @@
 import { Monitor } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supportsIniPresets, supportsReShade } from "../../lib/gameEngine";
 import type { AppTab, GameProfile } from "../../lib/types";
 import { cn } from "../../lib/cn";
 import { GameCover } from "../GameCover";
 import { Badge } from "../ui/Badge";
+import { LanguageToggle } from "./LanguageToggle";
 
 interface Props {
   active: AppTab;
@@ -12,11 +14,12 @@ interface Props {
   onGoLibrary: () => void;
 }
 
-const tabs: { id: AppTab; label: string; desc: string; icon: typeof Monitor }[] = [
-  { id: "library", label: "Библиотека", desc: "Игры и config", icon: Monitor },
+const tabs: { id: AppTab; icon: typeof Monitor }[] = [
+  { id: "library", icon: Monitor },
 ];
 
 export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) {
+  const { t } = useTranslation("sidebar");
   return (
     <aside className="surface-panel flex w-[252px] shrink-0 flex-col border-r">
       <div className="border-b border-[var(--color-border)] px-4 pb-4 pt-2">
@@ -38,8 +41,10 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
       </div>
 
       <nav className="flex-1 space-y-0.5 p-3">
-        {tabs.map(({ id, label, desc, icon: Icon }) => {
+        {tabs.map(({ id, icon: Icon }) => {
           const isActive = active === id;
+          const label = t(`tabs.${id}.label`);
+          const desc = t(`tabs.${id}.desc`);
           return (
             <button
               key={id}
@@ -71,7 +76,8 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
         })}
       </nav>
 
-      <div className="border-t border-[var(--color-border)] p-3">
+      <div className="space-y-3 border-t border-[var(--color-border)] p-3">
+        <LanguageToggle />
         {selectedGame ? (
           <button
             type="button"
@@ -81,25 +87,25 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
             <GameCover game={selectedGame} aspect="sidebar" className="rounded-none rounded-t-lg" />
             <div className="p-3">
               <div className="text-xs font-medium uppercase tracking-wide text-muted">
-                Активная игра
+                {t("activeGame")}
               </div>
               <div className="mt-1 truncate text-sm font-semibold text-[var(--color-text)]">
                 {selectedGame.name}
               </div>
               <div className="mt-2">
                 {supportsIniPresets(selectedGame) ? (
-                  <Badge tone="success">Config OK</Badge>
+                  <Badge tone="success">{t("badge.configOk")}</Badge>
                 ) : supportsReShade(selectedGame) ? (
                   <Badge tone="accent">ReShade</Badge>
                 ) : (
-                  <Badge tone="warning">Нужен install_dir</Badge>
+                  <Badge tone="warning">{t("badge.needInstallDir")}</Badge>
                 )}
               </div>
             </div>
           </button>
         ) : (
           <div className="rounded-lg border border-dashed border-[var(--color-border)] p-3 text-center text-sm text-muted">
-            Выберите игру в библиотеке
+            {t("pickGame")}
           </div>
         )}
       </div>

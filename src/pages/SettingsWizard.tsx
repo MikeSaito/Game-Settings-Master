@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Check, Sparkles, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { BackupBanner } from "../components/BackupBanner";
 import { IniDiffView } from "../components/IniDiffView";
 import { PresetCard } from "../components/PresetCard";
@@ -27,9 +29,10 @@ interface Props {
 
 function presetStepHint(
   presets: { id: string; name: string; description: string }[],
+  t: TFunction<"wizard">,
 ): string {
   if (presets.length === 0) {
-    return "Пресеты появятся после синхронизации с сервером.";
+    return t("stepHint.noServerSync");
   }
   const described = presets.filter((p) => p.description.trim());
   if (described.length >= 2) {
@@ -44,6 +47,7 @@ function presetStepHint(
 }
 
 export function SettingsWizard({ game }: Props) {
+  const { t } = useTranslation("wizard");
   const queryClient = useQueryClient();
   const activeGameIdRef = useRef(game?.id);
   activeGameIdRef.current = game?.id;
@@ -143,16 +147,16 @@ export function SettingsWizard({ game }: Props) {
       const engineInPreview = diff.some((d) => d.file === "Engine.ini");
       const engineWritten = result.changed_files.includes("Engine.ini");
       const engineNote =
-        engineInPreview && !engineWritten
-          ? " Внимание: Engine.ini в предпросмотре был, но файл не записан — закройте игру и повторите."
-          : "";
+        engineInPreview && !engineWritten ? t("apply.engineNote") : "";
       if (result.diff.length === 0) {
-        setSuccessMessage(
-          "Запись выполнена, но изменений не обнаружено — значения уже совпадают с пресетом.",
-        );
+        setSuccessMessage(t("apply.noChanges"));
       } else {
         setSuccessMessage(
-          `Пресет применён: ${filesLabel} (${result.diff.length} изменений). Перезапустите игру.${engineNote}`,
+          t("apply.success", {
+            files: filesLabel,
+            count: result.diff.length,
+            engineNote,
+          }),
         );
       }
       queryClient.invalidateQueries({ queryKey: ["games"] });
@@ -185,18 +189,18 @@ export function SettingsWizard({ game }: Props) {
     return (
       <EmptyState
         icon={Sparkles}
-        title="Выберите игру"
-        description="Авторские пресеты доступны только для игр, разобранных автором (например Forza). Выберите такую игру в библиотеке."
+        title={t("empty.selectGame")}
+        description={t("empty.selectGameDesc")}
       />
     );
   }
 
   if (!game.config_dir) {
     return (
-      <Alert tone="warning" icon={AlertTriangle} title={`Config не найден — ${game.name}`}>
+      <Alert tone="warning" icon={AlertTriangle} title={t("configMissing.title", { name: game.name })}>
         {engineFamily === "forza"
-          ? "Запустите Forza Horizon 6 один раз — нужен UserConfigSelections в AppData. Затем укажите папку ForzaUserConfigSelections в библиотеке."
-          : "Укажите папку Saved/Config/Windows в библиотеке или запустите игру один раз для генерации ini."}
+          ? t("configMissing.forza")
+          : t("configMissing.default")}
       </Alert>
     );
   }
@@ -213,10 +217,10 @@ export function SettingsWizard({ game }: Props) {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Авторские пресеты"
+        title={t("header.title")}
         meta={
           <>
-            <Badge tone="accent">От автора</Badge>
+            <Badge tone="accent">{t("header.fromAuthor")}</Badge>
             {engineFamily === "forza" && (
               <Badge tone="default">Forza Horizon 6</Badge>
             )}
@@ -231,16 +235,15 @@ export function SettingsWizard({ game }: Props) {
       )}
 
       {engineFamily === "forza" && (
-        <Alert tone="info" title="Пресеты от автора приложения">
-          Профили из мода FH6 Graphics Presets: UserConfigSelections + media-override.
-          Разрешение, HDR и громкость не перезаписываются.
+        <Alert tone="info" title={t("forzaInfo.title")}>
+          {t("forzaInfo.body")}
         </Alert>
       )}
 
       <GameRunningAlert exeName={runningExeName} gameName={game?.name} />
 
       {applyError && (
-        <Alert tone="error" title="Ошибка применения">
+        <Alert tone="error" title={t("apply.errorTitle")}>
           {applyError}
         </Alert>
       )}
@@ -248,28 +251,28 @@ export function SettingsWizard({ game }: Props) {
       {successMessage && <BackupBanner backupId={lastBackupId} message={successMessage} />}
 
       {presetsError && (
-        <Alert tone="error" title="Пресеты недоступны">
+        <Alert tone="error" title={t("presetsUnavailable")}>
           {formatInvokeError(presetsError)}
         </Alert>
       )}
 
       {!presetsLoading && presets.length === 0 && !presetsError && (
-        <Alert tone="warning" title="Нет пресетов">
-          Пресеты не загружены. Проверьте интернет и перезапустите приложение.
+        <Alert tone="warning" title={t("noPresets.title")}>
+          {t("noPresets.body")}
         </Alert>
       )}
 
       <section>
         <SectionHeader
           step={1}
-          title="Выберите пресет"
-          hint={presetStepHint(presets)}
+          title={t("step1.title")}
+          hint={presetStepHint(presets, t)}
         />
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {presetsLoading || (presetsFetching && presets.length === 0) ? (
             <div className="col-span-full flex flex-col items-center gap-3 py-12">
               <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-              <p className="text-sm text-muted">Загрузка пресетов…</p>
+              <p className="text-sm text-muted">{t("step1.loading")}</p>
             </div>
           ) : (
             presets.map((preset) => (
@@ -287,24 +290,23 @@ export function SettingsWizard({ game }: Props) {
       <section>
         <SectionHeader
           step={2}
-          title="Предпросмотр изменений"
+          title={t("step2.title")}
           hint={
             activePresetId ? (
-              <>{diff.length} правок</>
+              <>{t("preview.changesCount", { count: diff.length })}</>
             ) : (
-              "Выберите пресет"
+              t("step2.selectPreset")
             )
           }
         />
         {previewError && (
-          <Alert tone="error" className="mb-4" title="Ошибка предпросмотра">
+          <Alert tone="error" className="mb-4" title={t("step2.previewError")}>
             {formatInvokeError(previewError)}
           </Alert>
         )}
         {engineFamily === "forza" && diff.some((d) => d.file.startsWith("media/")) && (
-          <Alert tone="info" className="mb-4" title="Media-override">
-            Пресет также перезапишет файлы в папке игры media/ — DefaultTrackSettings,
-            routebudget, деревья вдали и GlobalCarAttributes.
+          <Alert tone="info" className="mb-4" title={t("step2.mediaOverrideTitle")}>
+            {t("step2.mediaOverrideBody")}
           </Alert>
         )}
         <IniDiffView diff={diff} loading={diffLoading} />
@@ -319,11 +321,11 @@ export function SettingsWizard({ game }: Props) {
           disabled={!canApply || apply.isPending}
           className="!px-6 !py-3 text-base"
         >
-          {apply.isPending ? "Применение…" : "Применить пресет"}
+          {apply.isPending ? t("apply.applying") : t("apply.apply")}
         </Button>
         {apply.isSuccess && (
           <span className="flex items-center gap-2 text-sm text-emerald-400">
-            <Check size={18} /> Готово — перезапустите игру
+            <Check size={18} /> {t("apply.done")}
           </span>
         )}
       </section>

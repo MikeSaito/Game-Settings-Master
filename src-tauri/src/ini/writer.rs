@@ -4,8 +4,8 @@ use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::Path;
 
-/// При создании нового ini в папке конфига наследует UTF-8/UTF-16 от `encoding_hint`
-/// (обычно GameUserSettings.ini), чтобы игра не игнорировала Engine.ini.
+/// When creating a new ini in the config folder, inherits UTF-8/UTF-16 from `encoding_hint`
+/// (usually GameUserSettings.ini) so the game does not ignore Engine.ini.
 pub fn write_ini_file_with_encoding_hint(
     path: &Path,
     ini: &IniFile,

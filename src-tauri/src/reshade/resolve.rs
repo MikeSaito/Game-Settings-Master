@@ -2,13 +2,13 @@ use crate::discovery::find_executables;
 use crate::models::GameProfile;
 use std::path::{Path, PathBuf};
 
-/// Каталог, куда ставится ReShade (рядом с exe игры).
+/// Directory where ReShade is installed (next to the game exe).
 pub fn resolve_install_target(profile: &GameProfile) -> Result<PathBuf, String> {
     let install = PathBuf::from(profile.install_dir.trim());
     if !install.exists() {
-        return Err(format!(
-            "Папка установки не найдена: {}",
-            install.display()
+        return Err(crate::i18n::t(
+            &format!("Папка установки не найдена: {}", install.display()),
+            &format!("Install directory not found: {}", install.display()),
         ));
     }
 
@@ -23,7 +23,12 @@ pub fn resolve_install_target(profile: &GameProfile) -> Result<PathBuf, String> 
         return first
             .parent()
             .map(Path::to_path_buf)
-            .ok_or_else(|| "Не удалось определить каталог exe".to_string());
+            .ok_or_else(|| {
+                crate::i18n::t(
+                    "Не удалось определить каталог exe",
+                    "Failed to determine exe directory",
+                )
+            });
     }
 
     Ok(install)
@@ -54,7 +59,12 @@ pub fn resolve_game_exe_path(profile: &GameProfile) -> Result<PathBuf, String> {
     find_executables(&target)
         .into_iter()
         .next()
-        .ok_or_else(|| "Не удалось найти exe игры".to_string())
+        .ok_or_else(|| {
+            crate::i18n::t(
+                "Не удалось найти exe игры",
+                "Failed to find game exe",
+            )
+        })
 }
 
 fn find_exe_parent(install: &Path, exe_name: &str) -> Option<PathBuf> {

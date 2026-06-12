@@ -35,7 +35,7 @@ pub fn preview_boot_config_diff(
     let old_map = if boot_path.exists() {
         let bytes = crate::fs_util::read_file_bytes(&boot_path)?;
         let content = String::from_utf8(bytes)
-            .map_err(|e| format!("Некорректный boot.config (не UTF-8): {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Некорректный boot.config (не UTF-8): {e}"), &format!("Invalid boot.config (not UTF-8): {e}")))?;
         parse_boot_config(&content)
     } else {
         HashMap::new()
@@ -66,12 +66,12 @@ pub fn apply_boot_config(
     let mut map = if boot_path.exists() {
         let bytes = crate::fs_util::read_file_bytes(&boot_path)?;
         let content = String::from_utf8(bytes)
-            .map_err(|e| format!("Некорректный boot.config (не UTF-8): {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Некорректный boot.config (не UTF-8): {e}"), &format!("Invalid boot.config (not UTF-8): {e}")))?;
         parse_boot_config(&content)
     } else {
         if let Some(parent) = boot_path.parent() {
             std::fs::create_dir_all(parent)
-                .map_err(|e| format!("Не удалось создать каталог: {e}"))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог: {e}"), &format!("Failed to create directory: {e}")))?;
         }
         HashMap::new()
     };

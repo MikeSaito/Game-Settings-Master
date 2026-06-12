@@ -28,12 +28,12 @@ fn default_true() -> bool {
 }
 
 fn config_path() -> Result<PathBuf, String> {
-    let base = dirs::data_local_dir().ok_or("Не удалось определить LOCALAPPDATA")?;
+    let base = dirs::data_local_dir().ok_or_else(|| crate::i18n::t("Не удалось определить LOCALAPPDATA", "Failed to determine LOCALAPPDATA"))?;
     Ok(base.join(APP_DIR).join(CONFIG_FILE))
 }
 
 pub fn cache_root() -> Result<PathBuf, String> {
-    let base = dirs::data_local_dir().ok_or("Не удалось определить LOCALAPPDATA")?;
+    let base = dirs::data_local_dir().ok_or_else(|| crate::i18n::t("Не удалось определить LOCALAPPDATA", "Failed to determine LOCALAPPDATA"))?;
     Ok(base.join(APP_DIR).join("remote-presets"))
 }
 
@@ -49,17 +49,24 @@ pub fn load_config() -> Result<PresetServerConfig, String> {
     let path = config_path()?;
     let cfg = if path.is_file() {
         let meta = fs::metadata(&path)
-            .map_err(|e| format!("Не удалось прочитать preset-server.json: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать preset-server.json: {e}"), &format!("Failed to read preset-server.json: {e}")))?;
         if meta.len() as usize > MAX_CONFIG_JSON_BYTES {
-            return Err(format!(
-                "preset-server.json слишком большой ({} KB, лимит {} KB)",
-                meta.len() / 1024,
-                MAX_CONFIG_JSON_BYTES / 1024
+            return Err(crate::i18n::t(
+                &format!(
+                    "preset-server.json слишком большой ({} KB, лимит {} KB)",
+                    meta.len() / 1024,
+                    MAX_CONFIG_JSON_BYTES / 1024
+                ),
+                &format!(
+                    "preset-server.json too large ({} KB, limit {} KB)",
+                    meta.len() / 1024,
+                    MAX_CONFIG_JSON_BYTES / 1024
+                ),
             ));
         }
         let raw = fs::read_to_string(&path)
-            .map_err(|e| format!("Не удалось прочитать preset-server.json: {e}"))?;
-        serde_json::from_str(&raw).map_err(|e| format!("Некорректный preset-server.json: {e}"))?
+            .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать preset-server.json: {e}"), &format!("Failed to read preset-server.json: {e}")))?;
+        serde_json::from_str(&raw).map_err(|e| crate::i18n::t(&format!("Некорректный preset-server.json: {e}"), &format!("Invalid preset-server.json: {e}")))?
     } else {
         PresetServerConfig::default()
     };
@@ -74,12 +81,12 @@ pub fn save_config(cfg: &PresetServerConfig) -> Result<(), String> {
     let path = config_path()?;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
-            .map_err(|e| format!("Не удалось создать каталог настроек: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог настроек: {e}"), &format!("Failed to create settings directory: {e}")))?;
     }
     let raw = serde_json::to_string_pretty(cfg)
-        .map_err(|e| format!("Не удалось сериализовать настройки: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось сериализовать настройки: {e}"), &format!("Failed to serialize settings: {e}")))?;
     crate::fs_util::write_file_bytes_opts(&path, raw.as_bytes(), true)
-        .map_err(|e| format!("Не удалось сохранить настройки: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить настройки: {e}"), &format!("Failed to save settings: {e}")))?;
 
     if let Ok(mut guard) = CONFIG.lock() {
         *guard = Some(cfg.clone());
@@ -137,7 +144,7 @@ pub fn set_base_url(url: Option<String>) -> Result<PresetServerConfig, String> {
     Ok(cfg)
 }
 
-/// Возвращает host (без userinfo и порта) из http(s)-URL. None — если схема не та.
+/// Returns host (without userinfo and port) from an http(s) URL. None if the scheme is wrong.
 fn parse_http_host(url: &str) -> Option<(bool, String)> {
     let (is_https, rest) = if let Some(r) = url.strip_prefix("https://") {
         (true, r)
@@ -147,14 +154,14 @@ fn parse_http_host(url: &str) -> Option<(bool, String)> {
         return None;
     };
 
-    // authority = всё до первого '/', '?' или '#'
+    // authority = everything up to the first '/', '?' or '#'
     let authority = rest
         .split(['/', '?', '#'])
         .next()
         .unwrap_or("");
-    // отбрасываем userinfo (user:pass@) — берём часть после последнего '@'
+    // strip userinfo (user:pass@) — take the part after the last '@'
     let host_port = authority.rsplit('@').next().unwrap_or(authority);
-    // host без порта; поддержка IPv6 [::1]:port
+    // host without port; IPv6 [::1]:port supported
     let host = if let Some(after_bracket) = host_port.strip_prefix('[') {
         after_bracket.split(']').next().unwrap_or("")
     } else {
@@ -174,7 +181,10 @@ pub fn validate_preset_server_url(url: &str) -> Result<(), String> {
         return Ok(());
     }
     let err = || {
-        "URL сервера пресетов должен быть https:// (http:// только для localhost)".to_string()
+        crate::i18n::t(
+            "URL сервера пресетов должен быть https:// (http:// только для localhost)",
+            "Preset server URL must be https:// (http:// only for localhost)",
+        )
     };
     let (is_https, host) = parse_http_host(trimmed).ok_or_else(err)?;
     if host.is_empty() {
@@ -183,7 +193,7 @@ pub fn validate_preset_server_url(url: &str) -> Result<(), String> {
     if is_https {
         return Ok(());
     }
-    // http разрешён только для loopback (точное совпадение host).
+    // http allowed only for loopback (exact host match).
     if is_loopback_host(&host) {
         return Ok(());
     }
@@ -227,7 +237,7 @@ mod tests {
 
     #[test]
     fn http_localhost_lookalike_rejected() {
-        // Раньше проходило из-за starts_with("127.0.0.1").
+        // Previously passed due to starts_with("127.0.0.1").
         assert!(validate_preset_server_url("http://127.0.0.1.evil.com/p").is_err());
         assert!(validate_preset_server_url("http://127.0.0.1@evil.com/p").is_err());
         assert!(validate_preset_server_url("http://localhost.evil.com").is_err());

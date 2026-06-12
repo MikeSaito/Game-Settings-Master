@@ -9,31 +9,52 @@ fn resolve_pack_relative_file(
     rel: &str,
 ) -> Result<PathBuf, String> {
     if !crate::fs_util::is_safe_manifest_relative_path(root_segment) {
-        return Err(format!("Недопустимый путь в manifest: {root_segment}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Недопустимый путь в manifest: {root_segment}"), &format!("Invalid path in manifest: {root_segment}")),
+            &format!("Invalid path in manifest: {root_segment}"),
+        ));
     }
     if !crate::fs_util::is_safe_manifest_relative_path(rel) {
-        return Err(format!("Недопустимый путь в manifest: {rel}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Недопустимый путь в manifest: {rel}"), &format!("Invalid path in manifest: {rel}")),
+            &format!("Invalid path in manifest: {rel}"),
+        ));
     }
     let path = pack_root.join(root_segment).join(rel);
     if !crate::fs_util::path_within_root(pack_root, &path) {
-        return Err(format!("Путь вне пака: {rel}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Путь вне пака: {rel}"), &format!("Path outside pack: {rel}")),
+            &format!("Path outside pack: {rel}"),
+        ));
     }
     if !path.is_file() {
-        return Err(format!("Файл не найден: {rel}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Файл не найден: {rel}"), &format!("File not found: {rel}")),
+            &format!("File not found: {rel}"),
+        ));
     }
     Ok(path)
 }
 
 fn resolve_pack_file_under_root(pack_root: &Path, rel: &str) -> Result<PathBuf, String> {
     if !crate::fs_util::is_safe_manifest_relative_path(rel) {
-        return Err(format!("Недопустимый путь в manifest: {rel}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Недопустимый путь в manifest: {rel}"), &format!("Invalid path in manifest: {rel}")),
+            &format!("Invalid path in manifest: {rel}"),
+        ));
     }
     let path = pack_root.join(rel);
     if !crate::fs_util::path_within_root(pack_root, &path) {
-        return Err(format!("Путь вне пака: {rel}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Путь вне пака: {rel}"), &format!("Path outside pack: {rel}")),
+            &format!("Path outside pack: {rel}"),
+        ));
     }
     if !path.is_file() {
-        return Err(format!("Файл не найден: {rel}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Файл не найден: {rel}"), &format!("File not found: {rel}")),
+            &format!("File not found: {rel}"),
+        ));
     }
     Ok(path)
 }
@@ -231,9 +252,9 @@ impl<'de> Deserialize<'de> for PackManifest {
         }
         let raw = Raw::deserialize(deserializer)?;
         if !crate::fs_util::is_safe_pack_id(&raw.pack_id) {
-            return Err(D::Error::custom(format!(
-                "Недопустимый pack_id: {}",
-                raw.pack_id
+            return Err(D::Error::custom(crate::i18n::t(
+                &format!("Недопустимый pack_id: {}", raw.pack_id),
+                &format!("Invalid pack_id: {}", raw.pack_id),
             )));
         }
         Ok(PackManifest {
@@ -379,8 +400,9 @@ impl ResolvedPack {
 
     pub fn load_unity_preset_json(&self, preset_id: &str) -> Option<Result<String, String>> {
         if !crate::fs_util::is_safe_pack_id(preset_id) {
-            return Some(Err(format!(
-                "Недопустимый идентификатор пресета: {preset_id}"
+            return Some(Err(crate::i18n::t(
+                &format!("Недопустимый идентификатор пресета: {preset_id}"),
+                &format!("Invalid preset identifier: {preset_id}"),
             )));
         }
         let PackApply::Unity { presets_root } = &self.manifest.apply else {
@@ -399,7 +421,12 @@ impl ResolvedPack {
             resolve_pack_relative_file(&self.root, presets_root, &rel)
                 .and_then(|path| {
                     std::fs::read_to_string(&path)
-                        .map_err(|e| format!("Remote Unity preset '{preset_id}' не найден: {e}"))
+                        .map_err(|e| {
+                            crate::i18n::t(
+                                &crate::i18n::t(&format!("Remote Unity preset '{preset_id}' не найден: {e}"), &format!("Remote Unity preset '{preset_id}' not found: {e}")),
+                                &format!("Remote Unity preset '{preset_id}' not found: {e}"),
+                            )
+                        })
                 }),
         )
     }
@@ -443,7 +470,12 @@ impl ResolvedPack {
         let path = self.load_reshade_ini_path(preset_id)?;
         Some(
             std::fs::read_to_string(&path)
-                .map_err(|e| format!("Remote ReShade preset '{preset_id}' не найден: {e}")),
+                .map_err(|e| {
+                    crate::i18n::t(
+                        &crate::i18n::t(&format!("Remote ReShade preset '{preset_id}' не найден: {e}"), &format!("Remote ReShade preset '{preset_id}' not found: {e}")),
+                        &format!("Remote ReShade preset '{preset_id}' not found: {e}"),
+                    )
+                }),
         )
     }
 

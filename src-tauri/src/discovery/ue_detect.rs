@@ -10,7 +10,7 @@ pub enum UeDetectResult {
 
 const UE_PAK_EXTENSIONS: &[&str] = &["pak", "ucas", "utoc"];
 
-/// Установка движка UE, Fab Plugin и прочие инструменты — не игры для библиотеки.
+/// UE engine install, Fab Plugin, and other tools — not library games.
 pub fn is_non_game_install(install_dir: &Path, display_name: &str, app_name: Option<&str>) -> bool {
     if is_tool_by_display_name(display_name) {
         return true;

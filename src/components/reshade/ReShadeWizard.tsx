@@ -1,5 +1,6 @@
 import { AlertTriangle, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ReShadeDisclaimerModal } from "../ReShadeDisclaimerModal";
 import { ReShadePresetCard } from "./ReShadePresetCard";
 import { ReShadeSlider } from "./ReShadeSlider";
@@ -23,6 +24,7 @@ import {
   ReShadeSliderParams,
   reshadeEffectHint,
   reshadeEffectLabel,
+  reshadeSliderLabel,
 } from "../../lib/reshade";
 import { cn } from "../../lib/cn";
 import type { GameProfile } from "../../lib/types";
@@ -37,6 +39,7 @@ function engineBadge(family: string | undefined) {
 }
 
 export function ReShadeWizard({ game }: { game: GameProfile }) {
+  const { t } = useTranslation("reshade");
   const p = useReShadePage(game);
   const effectiveApi = p.effectiveApi;
   const [fineTuneOpen, setFineTuneOpen] = useState(false);
@@ -102,14 +105,14 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
       {p.message && <ReShadeSuccessBar message={p.message} />}
 
       <section>
-        <SectionHeader step={1} title="Включение" hint={engineApiHint(game)} />
+        <SectionHeader step={1} title={t("section.enable.title")} hint={engineApiHint(game)} />
         <Card className={cn(p.gameBlockDisabled && "opacity-50")}>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <p className="text-sm font-medium text-[var(--color-text)]">
-                ReShade для {game.name}
+                {t("enable.forGame", { name: game.name })}
               </p>
-              <p className="text-xs text-muted">Постобработка перед запуском из GSM</p>
+              <p className="text-xs text-muted">{t("enable.postProcess")}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <label className="flex items-center gap-2 text-sm text-muted">
@@ -124,13 +127,13 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
                 >
                   {p.apis.length === 0 && effectiveApi ? (
                     <option value={effectiveApi} disabled>
-                      Загрузка…
+                      {t("enable.loadingOption")}
                     </option>
                   ) : null}
                   {p.apis.map((api) => (
                     <option key={api.id} value={api.id}>
                       {api.name}
-                      {p.apiHint === api.id ? " · рекомендуем" : ""}
+                      {p.apiHint === api.id ? t("enable.recommendedSuffix") : ""}
                     </option>
                   ))}
                 </select>
@@ -147,22 +150,19 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
           </p>
           {p.gpuAdaptReason && p.gpuName && (
             <p className="mt-1 text-xs text-muted">
-              Подстроено под {p.gpuName}: {p.gpuAdaptReason}
+              {t("enable.gpuAdapted", { gpu: p.gpuName, reason: p.gpuAdaptReason })}
             </p>
           )}
           {(!p.globallyOn || !p.activeForGame) && (
-            <p className="mt-2 text-xs text-muted">
-              При запуске из GSM proxy ReShade удаляется из папки игры, чтобы игра стартовала без
-              эффектов.
-            </p>
+            <p className="mt-2 text-xs text-muted">{t("enable.proxyRemovedNote")}</p>
           )}
           <details className="mt-4 text-sm">
             <summary className="cursor-pointer text-muted hover:text-[var(--color-text)]">
-              Настройки для всех игр ▾
+              {t("enable.globalSettingsSummary")}
             </summary>
             <div className="mt-3 space-y-3 border-t border-[var(--color-border)] pt-3">
               <div className="flex items-center justify-between gap-4">
-                <span className="text-sm">ReShade включён глобально</span>
+                <span className="text-sm">{t("enable.globalToggleLabel")}</span>
                 <Toggle
                   checked={p.globallyOn}
                   onChange={p.handleGlobalToggle}
@@ -170,7 +170,9 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
                 />
               </div>
               <p className="text-xs text-muted">
-                Пресет по умолчанию: {p.settings?.default_preset ?? "clarity"}
+                {t("enable.defaultPreset", {
+                  preset: p.settings?.default_preset ?? "clarity",
+                })}
               </p>
             </div>
           </details>
@@ -180,8 +182,8 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
       <section className={cn(p.gameBlockDisabled && "opacity-50 pointer-events-none")}>
         <SectionHeader
           step={2}
-          title="Пресет постобработки"
-          hint="Performance — FPS · Clarity — баланс · Cinematic — мягче"
+          title={t("section.preset.title")}
+          hint={t("section.preset.hint")}
         />
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {p.presets.map((preset) => (
@@ -206,8 +208,8 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
         <section>
           <SectionHeader
             step={3}
-            title="Тонкая настройка"
-            hint="Необязательно — в игре полное меню по Home"
+            title={t("section.fineTune.title")}
+            hint={t("section.fineTune.hint")}
           />
           <Card padding="sm" className="overflow-hidden !p-0">
             <button
@@ -217,9 +219,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
               onClick={() => setFineTuneOpen((open) => !open)}
             >
               <span className="text-sm text-[var(--color-text)]">
-                {fineTuneOpen
-                  ? "Скрыть эффекты и параметры"
-                  : "Настроить эффекты и параметры"}
+                {fineTuneOpen ? t("fineTune.hide") : t("fineTune.show")}
               </span>
               <ChevronDown
                 size={18}
@@ -234,7 +234,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
               <div className="space-y-5 border-t border-[var(--color-border)] px-4 py-4">
                 <div>
                   <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
-                    Эффекты
+                    {t("fineTune.effects")}
                   </p>
                   {p.presetDetails ? (
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -289,7 +289,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
                             {hint ? (
                               <span className="mt-0.5 block text-xs text-muted">
                                 {hint}
-                                {!inPreset && !on ? " · не в пресете" : ""}
+                                {!inPreset && !on ? t("fineTune.notInPresetSuffix") : ""}
                               </span>
                             ) : null}
                           </button>
@@ -297,7 +297,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
                       })}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted">Загрузка эффектов…</p>
+                    <p className="text-sm text-muted">{t("fineTune.loadingEffects")}</p>
                   )}
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -310,7 +310,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
                     return (
                       <ReShadeSlider
                         key={`${spec.effect}-${spec.key}`}
-                        label={spec.label}
+                        label={reshadeSliderLabel(spec.effect, spec.key)}
                         value={num}
                         min={spec.min}
                         max={spec.max}
@@ -336,8 +336,8 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-sm font-medium">Экономия GPU</p>
-                    <p className="text-xs text-muted">Меньше нагрузки на видеокарту</p>
+                    <p className="text-sm font-medium">{t("fineTune.gpuSaving.title")}</p>
+                    <p className="text-xs text-muted">{t("fineTune.gpuSaving.desc")}</p>
                   </div>
                   <Toggle
                     checked={p.effectiveOverrides.behavior?.performance_mode ?? false}
@@ -366,7 +366,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
 
       <details className="text-sm">
         <summary className="cursor-pointer text-muted hover:text-[var(--color-text)]">
-          Лицензии ReShade и авторы
+          {t("licenses.summary")}
         </summary>
         <div className="mt-3 space-y-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 text-sm text-body">
           <p>
@@ -379,19 +379,17 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
             >
               reshade.me
             </a>
-            . Лицензия BSD 3-Clause. Game Settings Master не связан с ReShade и не
-            одобрен его авторами.
+            {t("licenses.addonSuffix")}
           </p>
           <p className="text-xs text-muted">
-            Полный текст лицензии в каталоге приложения:{" "}
+            {t("licenses.fullTextPath")}{" "}
             <span className="font-mono">presets/reshade/LICENSE-ReShade.txt</span>
-            . Шейдеры:{" "}
+            {t("licenses.shadersLabel")}{" "}
             <span className="font-mono">presets/reshade/shaders/THIRD-PARTY-NOTICES.txt</span>
             .
           </p>
           <p className="text-xs text-muted">
-            Эффекты пресетов GSM: Clarity (Ioxa), Vignette (CeeJay.dk), AdaptiveSharpen
-            (bacondither) — см. заголовки в{" "}
+            {t("licenses.presetEffects")}{" "}
             <span className="font-mono">presets/reshade/shaders/Shaders/*.fx</span>.
           </p>
         </div>
@@ -399,7 +397,7 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
 
       <details className="text-sm">
         <summary className="cursor-pointer text-muted hover:text-[var(--color-text)]">
-          Технические детали
+          {t("tech.summary")}
         </summary>
         <div className="mt-3 space-y-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 font-mono text-xs text-body">
           <p>target_dir: {p.status?.target_dir ?? game.install_dir}</p>
@@ -407,13 +405,19 @@ export function ReShadeWizard({ game }: { game: GameProfile }) {
           {p.status?.installed_files?.length ? (
             <p>files: {p.status.installed_files.join(", ")}</p>
           ) : null}
-          <p>dll в приложении: {p.bundleBinValid ? "да" : "нет"}</p>
-          <p>шейдеры в приложении: {p.status?.shaders_in_bundle ? "да" : "нет"}</p>
-          <p>шейдеры в игре: {p.status?.shaders_present ? "да" : "нет"}</p>
+          <p>
+            {t("tech.dllInApp")} {p.bundleBinValid ? t("tech.yes") : t("tech.no")}
+          </p>
+          <p>
+            {t("tech.shadersInApp")}{" "}
+            {p.status?.shaders_in_bundle ? t("tech.yes") : t("tech.no")}
+          </p>
+          <p>
+            {t("tech.shadersInGame")}{" "}
+            {p.status?.shaders_present ? t("tech.yes") : t("tech.no")}
+          </p>
           {!p.bundleBinValid && (
-            <p className="font-sans text-muted">
-              Dev: addon DLL в src-tauri/presets/reshade/bin/, шейдеры — npm run reshade:setup
-            </p>
+            <p className="font-sans text-muted">{t("tech.devHint")}</p>
           )}
         </div>
       </details>

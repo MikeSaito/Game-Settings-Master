@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import type { GameParameter, GpuCapabilities } from "./types";
 
 export type ParamPatch = Pick<GameParameter, "key" | "section" | "file" | "value">;
@@ -66,25 +67,14 @@ function dlssIsOff(mode: string): boolean {
   return m === "Off" || m === "0";
 }
 
-/** Подпись для UI: параметр подстраивается под другой. */
+/** UI hint: parameter is synced from another. */
 export function getDependencyLabel(key: string): string | null {
-  const labels: Record<string, string> = {
-    DLSSQualityMode: "Связан с DLSSMode",
-    ResolutionScaleDLSS: "Связан с режимом DLSS",
-    UpscalingMethod: "Связан с DLSS / TSR / FSR",
-    TSRQualityMode: "Связан с методом upscaling",
-    AntiAliasingType: "Связан с DLSS / TSR",
-    UpscalingFrameGeneration: "Только при включённом DLSS (RTX 40+)",
-    ResolutionScaleMin: "Не больше ResolutionScaleMax",
-    ResolutionScaleMax: "Не меньше ResolutionScaleMin",
-    "r.SSR.Quality": "Работает при включённых отражениях на воде/полу",
-    "r.MotionBlurQuality": "Работает при включённом motion blur",
-  };
-  return labels[key] ?? null;
+  const translated = i18n.t(`errors:paramSync.${key}`, { defaultValue: "" });
+  return translated || null;
 }
 
 /**
- * Применяет каскад зависимостей после изменения одного параметра.
+ * Applies dependency cascade after a single parameter change.
  */
 export function applyParamDependencies(
   params: GameParameter[],
@@ -125,7 +115,7 @@ export function applyParamDependencies(
   return reconcileAllParams(next, gpu);
 }
 
-/** Полная согласованность перед записью в ini. */
+/** Full consistency pass before writing to ini. */
 export function reconcileAllParams(
   params: GameParameter[],
   gpu?: GpuCapabilities,
@@ -219,7 +209,7 @@ function syncFromUpscalingMethod(
   if (m === "U_DLSS" || m.includes("DLSS")) {
     const mode = findInFile(next, GUS, "DLSSMode");
     next = setInFile(next, GUS, "TSRQualityMode", "0");
-    // Игра без отдельного DLSSMode — синхронизировать каскадом нечего.
+    // Game has no separate DLSSMode — nothing to sync via cascade.
     if (!mode) {
       return next;
     }

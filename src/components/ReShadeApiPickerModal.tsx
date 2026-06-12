@@ -1,5 +1,6 @@
 import { Monitor } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { GraphicsApiInfo } from "../lib/types";
 import { Button } from "./ui/Button";
 
@@ -20,10 +21,11 @@ export function ReShadeApiPickerModal({
   initialApi,
   rememberDefault = true,
   loading,
-  title = "Какой графический API использует игра?",
+  title,
   onConfirm,
   onCancel,
 }: Props) {
+  const { t } = useTranslation("reshade");
   const [selected, setSelected] = useState(initialApi ?? apis[0]?.id ?? "dx12");
   const [remember, setRemember] = useState(rememberDefault);
 
@@ -35,6 +37,8 @@ export function ReShadeApiPickerModal({
   }, [open, initialApi, apis, rememberDefault]);
 
   if (!open) return null;
+
+  const dialogTitle = title ?? t("apiPicker.title");
 
   return (
     <div
@@ -55,11 +59,10 @@ export function ReShadeApiPickerModal({
               id="reshade-api-title"
               className="text-lg font-semibold text-[var(--color-text)]"
             >
-              {title}
+              {dialogTitle}
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-secondary)]">
-              GSM не определяет API автоматически — выберите вручную, как в установщике ReShade.
-              Не знаете? Посмотрите настройки графики игры: обычно UE5 = DX12, старые UE4 = DX11.
+              {t("apiPicker.description")}
             </p>
           </div>
         </div>
@@ -95,12 +98,12 @@ export function ReShadeApiPickerModal({
             onChange={(e) => setRemember(e.target.checked)}
             className="rounded border-[var(--color-border)]"
           />
-          Запомнить для этой игры
+          {t("apiPicker.remember")}
         </label>
 
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="ghost" onClick={onCancel} disabled={loading}>
-            Отмена
+            {t("apiPicker.cancel")}
           </Button>
           <Button
             variant="primary"
@@ -108,7 +111,7 @@ export function ReShadeApiPickerModal({
             loading={loading}
             disabled={!selected}
           >
-            Продолжить
+            {t("apiPicker.confirm")}
           </Button>
         </div>
       </div>

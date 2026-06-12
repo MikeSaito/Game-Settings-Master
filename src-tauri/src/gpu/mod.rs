@@ -16,11 +16,11 @@ pub enum GpuVendor {
 pub struct GpuCapabilities {
     pub name: String,
     pub vendor: GpuVendor,
-    /// DLSS / DLAA — GeForce RTX 20-й серии и новее (Tensor Cores).
+    /// DLSS / DLAA — GeForce RTX 20 series and newer (Tensor Cores).
     pub supports_dlss: bool,
-    /// DLSS Frame Generation — RTX 40-й серии и новее.
+    /// DLSS Frame Generation — RTX 40 series and newer.
     pub supports_dlss_fg: bool,
-    /// Аппаратная трассировка лучей в UE — GeForce RTX 20+.
+    /// Hardware ray tracing in UE — GeForce RTX 20+.
     pub supports_ray_tracing: bool,
 }
 
@@ -56,7 +56,7 @@ fn detect_vendor(lower: &str) -> GpuVendor {
     }
 }
 
-/// RTX 2060 → 20, RTX 4090 → 40, RTX 5090 → 50. GTX и старые Quadro без RTX → None.
+/// RTX 2060 → 20, RTX 4090 → 40, RTX 5090 → 50. GTX and older Quadro without RTX → None.
 fn nvidia_rtx_series(lower: &str) -> Option<u8> {
     if lower.contains("gtx") || lower.contains("gt ") || lower.contains("mx ") {
         return None;
@@ -131,10 +131,10 @@ fn enumerate_gpu_from_registry() -> Option<Vec<String>> {
 
     let mut names = Vec::new();
     for i in 0..32 {
-        // Подключи нумеруются 0000, 0001, … но могут быть пропуски и записи без DriverDesc
-        // (фильтр-драйверы, software-устройства). Раньше здесь стоял `.ok()?`, который при
-        // первом же отсутствующем подключе делал ранний return None и выбрасывал уже найденную
-        // видеокарту → detect_gpu всегда отдавал «Unknown GPU», и адаптация под GPU не работала.
+        // Adapters are numbered 0000, 0001, … but there may be gaps and entries without DriverDesc
+        // (filter drivers, software devices). Previously `.ok()?` here caused an early return None
+        // on the first missing adapter, discarding an already-found GPU → detect_gpu always
+        // returned "Unknown GPU" and GPU adaptation did not work.
         let Ok(sub) = class_key.open_subkey(format!("{i:04}")) else {
             continue;
         };
@@ -151,11 +151,11 @@ fn enumerate_gpu_from_registry() -> Option<Vec<String>> {
     Some(names)
 }
 
-/// Выбираем дискретную игровую карту, а НЕ первую попавшуюся. На ноутбуках и
-/// APU AMD/Intel в реестре встройка (`AMD Radeon(TM) Graphics`, `Intel UHD`) часто
-/// идёт раньше дискретной NVIDIA/Radeon. Прежняя версия брала первую запись с
-/// `amd`/`radeon`/`nvidia` → выбирала встройку → vendor=Amd, DLSS/NGX выключались,
-/// а игрок на самом деле играет на дискретной NVIDIA.
+/// Pick the discrete gaming GPU, NOT the first match. On laptops and AMD/Intel APUs the
+/// integrated GPU (`AMD Radeon(TM) Graphics`, `Intel UHD`) often appears before the
+/// discrete NVIDIA/Radeon in the registry. The old version took the first entry with
+/// `amd`/`radeon`/`nvidia` → picked integrated → vendor=Amd, DLSS/NGX disabled,
+/// while the player actually games on discrete NVIDIA.
 fn pick_primary_gpu(names: &[String]) -> String {
     names
         .iter()
@@ -164,8 +164,8 @@ fn pick_primary_gpu(names: &[String]) -> String {
         .unwrap_or_else(|| "Unknown GPU".to_string())
 }
 
-/// Чем выше — тем приоритетнее как «основная игровая» карта.
-/// Дискретные карты любого вендора всегда выигрывают у встроек.
+/// Higher score = higher priority as the "primary gaming" GPU.
+/// Discrete GPUs of any vendor always beat integrated ones.
 fn gpu_priority(name: &str) -> i32 {
     let lower = name.to_lowercase();
     let is_nvidia =
@@ -174,7 +174,7 @@ fn gpu_priority(name: &str) -> i32 {
     let is_intel = lower.contains("intel");
 
     if is_nvidia {
-        // NVIDIA в десктопах/ноутах — всегда дискретная. RTX приоритетнее (DLSS/RT).
+        // NVIDIA on desktops/laptops is always discrete. RTX ranks higher (DLSS/RT).
         return if nvidia_rtx_series(&lower).is_some() {
             100
         } else {
@@ -182,8 +182,8 @@ fn gpu_priority(name: &str) -> i32 {
         };
     }
     if is_amd {
-        // Встройка AMD APU: "Radeon(TM) Graphics", "Vega ... Graphics", "780M Graphics" —
-        // без "RX"/"Pro". Дискретные RX/Pro/Frontier приоритетнее встройки.
+        // AMD APU integrated: "Radeon(TM) Graphics", "Vega ... Graphics", "780M Graphics" —
+        // without "RX"/"Pro". Discrete RX/Pro/Frontier outrank integrated.
         let discrete = lower.contains("rx ")
             || lower.contains("rx")
                 && lower
@@ -197,7 +197,7 @@ fn gpu_priority(name: &str) -> i32 {
         return if discrete { 90 } else { 40 };
     }
     if is_intel {
-        // Intel Arc — дискретная; UHD/Iris/HD Graphics — встройка.
+        // Intel Arc is discrete; UHD/Iris/HD Graphics is integrated.
         return if lower.contains("arc") { 85 } else { 30 };
     }
     0
@@ -253,13 +253,13 @@ mod tests {
 
     #[test]
     fn prefers_discrete_nvidia_over_amd_igpu() {
-        // Встройка AMD APU идёт первой в реестре, дискретная NVIDIA — второй.
+        // AMD APU integrated appears first in the registry, discrete NVIDIA second.
         let names = vec![
             "AMD Radeon(TM) Graphics".to_string(),
             "NVIDIA GeForce RTX 4070".to_string(),
         ];
         assert_eq!(pick_primary_gpu(&names), "NVIDIA GeForce RTX 4070");
-        // Обратный порядок — результат тот же.
+        // Reverse order — same result.
         let names_rev = vec![
             "NVIDIA GeForce RTX 4070".to_string(),
             "AMD Radeon(TM) Graphics".to_string(),

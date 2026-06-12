@@ -5,9 +5,9 @@ use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-/// Авто-пресеты UE удалены как нерабочая функция. Остаются только авторские паки
-/// (Forza и подобные) и Unity. Для UE возвращаем пустой список — пользователь
-/// настраивает игру через ручной редактор.
+/// UE auto-presets were removed as a non-working feature. Only author packs remain
+/// (Forza and similar) and Unity. For UE we return an empty list — the user
+/// configures the game via the manual editor.
 pub fn list_presets(
     engine_family: Option<&str>,
     game_id: Option<&str>,
@@ -40,8 +40,9 @@ pub fn apply_changes_to_dir(
 
     for file_name in touched {
         if !crate::fs_util::is_allowed_config_ini_filename(&file_name) {
-            return Err(format!(
-                "Недопустимое имя конфигурационного файла: {file_name}"
+            return Err(crate::i18n::t(
+                &format!("Недопустимое имя конфигурационного файла: {file_name}"),
+                &format!("Invalid configuration file name: {file_name}"),
             ));
         }
         let file_path = config_dir.join(&file_name);
@@ -170,7 +171,10 @@ fn rollback_apply_targets(snapshots: &[(PathBuf, String)], count: usize) -> Opti
 
 fn append_rollback_error(apply_err: String, rollback_err: Option<String>) -> String {
     match rollback_err {
-        Some(rb) => format!("{apply_err} (откат: {rb})"),
+        Some(rb) => crate::i18n::t(
+            &format!("{apply_err} (откат: {rb})"),
+            &format!("{apply_err} (rollback: {rb})"),
+        ),
         None => apply_err,
     }
 }
@@ -305,7 +309,7 @@ fn compute_diff(
     diff
 }
 
-/// Разрешение для применения: сначала монитор, затем ini, затем 1920×1080.
+/// Resolution for apply: monitor first, then ini, then 1920×1080.
 pub fn resolve_apply_resolution(config_dir: &Path) -> (u32, u32) {
     if let Some(screen) = crate::display::primary_resolution() {
         return (screen.width, screen.height);

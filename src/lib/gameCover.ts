@@ -15,7 +15,7 @@ export function steamLibraryHeroUrl(appId: string): string {
   return `${STEAM_CDN}/${appId}/library_hero.jpg`;
 }
 
-/** Кандидаты для карточек: small header → large hero. */
+/** Cover candidates for cards: small header → large hero. */
 export function resolveGameCoverCandidates(game: GameProfile): string[] {
   if (game.custom_cover) {
     return [safeConvertFileSrc(game.custom_cover)];
@@ -40,7 +40,7 @@ export function resolveGameCoverSrc(game: GameProfile): string | null {
   return candidates[0] ?? null;
 }
 
-/** Кандидаты для широкой шапки: сначала HQ hero, затем обычная обложка. */
+/** Cover candidates for wide header: HQ hero first, then standard cover. */
 export function resolveGameHeroCoverCandidates(game: GameProfile): string[] {
   if (game.custom_cover) {
     return [safeConvertFileSrc(game.custom_cover)];

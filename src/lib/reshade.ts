@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import type {
   GameProfile,
   LaunchResult,
@@ -13,7 +14,7 @@ export function isValidReShadeApi(api: string): boolean {
 }
 
 export function formatLaunchSuccess(result: LaunchResult): string {
-  const base = `Запуск через ${result.launcher}…`;
+  const base = i18n.t("reshade:lib.launchVia", { launcher: result.launcher });
   return result.warning ? `${base} ${result.warning}` : base;
 }
 
@@ -29,7 +30,7 @@ export function effectivePreset(settings: ReShadeSettings, gameId: string): stri
   return settings.per_game[gameId]?.preset ?? settings.default_preset;
 }
 
-/** Пресет после GPU-адаптации (что реально ставится в игру). */
+/** Preset after GPU adaptation (what is actually installed in the game). */
 export function adaptedPresetId(
   settings: ReShadeSettings | undefined,
   gameId: string,
@@ -42,7 +43,7 @@ export function adaptedPresetId(
   return effectivePreset(settings, gameId);
 }
 
-/** Пресет для UI слайдеров: установленный в игре или адаптированный к установке. */
+/** Preset for UI sliders: installed in the game or adapted for install. */
 export function presetIdForEditing(
   settings: ReShadeSettings | undefined,
   gameId: string,
@@ -109,14 +110,14 @@ export function mergeOverridePatch(
   return next;
 }
 
-export const BLOCKED_BROKEN_RESHADE_LAUNCH_MSG =
-  "Повреждённая установка ReShade и в приложении нет рабочих DLL. " +
-  "Откройте вкладку ReShade → «Удалить» или нажмите «Без ReShade».";
+export function blockedBrokenReShadeLaunchMsg(): string {
+  return i18n.t("reshade:lib.blockedBrokenLaunch");
+}
 
-/** Блокирует запуск с ReShade (не «Без ReShade»), если proxy сломан и нет DLL в бандле. */
+/** Blocks launch with ReShade when proxy is broken and no DLL in bundle. */
 export function blocksReShadeLaunch(status: ReShadeGameStatus | undefined): string | null {
   if (status?.broken_install && !status.bundled_binaries_valid) {
-    return BLOCKED_BROKEN_RESHADE_LAUNCH_MSG;
+    return blockedBrokenReShadeLaunchMsg();
   }
   return null;
 }
@@ -134,7 +135,7 @@ export function suggestApiForGame(
 
 export const ReShadeFineTuneEffects = ["Clarity", "Vignette", "AdaptiveSharpen"] as const;
 
-/** Значения по умолчанию при включении эффекта, которого нет в базовом пресете. */
+/** Default values when enabling an effect not in the base preset. */
 export const ReShadeEffectDefaultParams: Record<string, Record<string, string>> = {
   Vignette: {
     Amount: "-0.350000",
@@ -145,45 +146,27 @@ export const ReShadeEffectDefaultParams: Record<string, Record<string, string>> 
 };
 
 export const ReShadeSliderParams = [
-  { effect: "AdaptiveSharpen", key: "sharp_strength", label: "Резкость", min: 0, max: 2, step: 0.05 },
-  { effect: "Clarity", key: "ClarityRadius", label: "Радиус чёткости", min: 0, max: 10, step: 0.25 },
-  { effect: "Clarity", key: "ClarityOffset", label: "Смещение чёткости", min: 0, max: 5, step: 0.1 },
-  { effect: "Clarity", key: "ClarityMaskIntensity", label: "Маска чёткости", min: 0, max: 1, step: 0.05 },
-  { effect: "Vignette", key: "Amount", label: "Сила виньетки", min: -1, max: 0, step: 0.05 },
-  { effect: "Vignette", key: "Radius", label: "Радиус виньетки", min: 0, max: 2, step: 0.05 },
-  { effect: "Vibrance", key: "Vibrance", label: "Насыщенность", min: -1, max: 1, step: 0.05 },
-  { effect: "LiftGammaGain", key: "RGB_Gain", label: "Яркость (gain)", min: 0.5, max: 1.5, step: 0.02 },
+  { effect: "AdaptiveSharpen", key: "sharp_strength", min: 0, max: 2, step: 0.05 },
+  { effect: "Clarity", key: "ClarityRadius", min: 0, max: 10, step: 0.25 },
+  { effect: "Clarity", key: "ClarityOffset", min: 0, max: 5, step: 0.1 },
+  { effect: "Clarity", key: "ClarityMaskIntensity", min: 0, max: 1, step: 0.05 },
+  { effect: "Vignette", key: "Amount", min: -1, max: 0, step: 0.05 },
+  { effect: "Vignette", key: "Radius", min: 0, max: 2, step: 0.05 },
+  { effect: "Vibrance", key: "Vibrance", min: -1, max: 1, step: 0.05 },
+  { effect: "LiftGammaGain", key: "RGB_Gain", min: 0.5, max: 1.5, step: 0.02 },
 ] as const;
 
-export const ReShadeEffectLabels: Record<string, { label: string; hint: string }> = {
-  Clarity: {
-    label: "Чёткость",
-    hint: "Локальный контраст — детали без общей резкости",
-  },
-  Vignette: {
-    label: "Виньетка",
-    hint: "Затемнение по краям кадра",
-  },
-  AdaptiveSharpen: {
-    label: "Адаптивная резкость",
-    hint: "Чёткие края без цветных ореолов",
-  },
-  Vibrance: {
-    label: "Насыщенность",
-    hint: "Мягко усиливает цвета",
-  },
-  LiftGammaGain: {
-    label: "Яркость и контраст",
-    hint: "Тени, средние тона и свет",
-  },
-};
+export function reshadeSliderLabel(effect: string, key: string): string {
+  return i18n.t(`reshade:lib.sliders.${effect}_${key}`, { defaultValue: key });
+}
 
 export function reshadeEffectLabel(effectId: string): string {
-  return ReShadeEffectLabels[effectId]?.label ?? effectId;
+  return i18n.t(`reshade:lib.effects.${effectId}.label`, { defaultValue: effectId });
 }
 
 export function reshadeEffectHint(effectId: string): string | undefined {
-  return ReShadeEffectLabels[effectId]?.hint;
+  const hint = i18n.t(`reshade:lib.effects.${effectId}.hint`, { defaultValue: "" });
+  return hint || undefined;
 }
 
 export function apiLabel(apiId: string | null | undefined): string {
@@ -199,16 +182,16 @@ export function apiLabel(apiId: string | null | undefined): string {
     case "vulkan":
       return "Vulkan";
     default:
-      return "Не выбран";
+      return i18n.t("reshade:lib.apiNotSelected");
   }
 }
 
 export function engineApiHint(game: GameProfile): string {
-  if (game.engine_family === "ue5") return "UE5 → обычно DirectX 12 (dxgi.dll)";
-  if (game.engine_family === "ue4") return "UE4 → обычно DirectX 11 (d3d11.dll)";
-  if (game.engine_family === "forza") return "Forza → обычно DirectX 12 (dxgi.dll)";
-  if (game.is_unity) return "Unity → обычно DirectX 11";
-  return "Выберите API, который использует игра";
+  if (game.engine_family === "ue5") return i18n.t("reshade:lib.engineApiUe5");
+  if (game.engine_family === "ue4") return i18n.t("reshade:lib.engineApiUe4");
+  if (game.engine_family === "forza") return i18n.t("reshade:lib.engineApiForza");
+  if (game.is_unity) return i18n.t("reshade:lib.engineApiUnity");
+  return i18n.t("reshade:lib.engineApiGeneric");
 }
 
 export type ReShadeHealthTone = "success" | "warning" | "danger" | "muted";
@@ -225,23 +208,22 @@ export function deriveHealthSummary(
   activeForGame: boolean,
 ): ReShadeHealthSummary {
   if (!globallyOn) {
-    return { tone: "muted", label: "ReShade выключен глобально" };
+    return { tone: "muted", label: i18n.t("reshade:lib.healthGlobalOff") };
   }
   if (!activeForGame) {
-    return { tone: "muted", label: "ReShade выключен для этой игры" };
+    return { tone: "muted", label: i18n.t("reshade:lib.healthGameOff") };
   }
   if (status?.broken_install) {
     return {
       tone: "danger",
-      label: "Повреждённая установка",
-      detail:
-        "Некорректный proxy в папке игры — «Удалить» на вкладке ReShade или «Играть» в шапке для авто-восстановления",
+      label: i18n.t("reshade:lib.healthBroken"),
+      detail: i18n.t("reshade:lib.healthBrokenDetail"),
     };
   }
   if (status?.installed) {
-    return { tone: "success", label: "Готов к запуску" };
+    return { tone: "success", label: i18n.t("reshade:lib.healthReady") };
   }
-  return { tone: "warning", label: "Не установлен" };
+  return { tone: "warning", label: i18n.t("reshade:lib.healthNotInstalled") };
 }
 
 export type ReShadeAlertKind = "error" | "broken" | "no_dll" | "disclaimer";
@@ -264,7 +246,7 @@ export function resolvePrimaryAlert(input: {
     return {
       kind: "error",
       tone: "error",
-      title: "Ошибка",
+      title: i18n.t("reshade:lib.alertError"),
       message: input.error,
     };
   }
@@ -272,29 +254,25 @@ export function resolvePrimaryAlert(input: {
     return {
       kind: "broken",
       tone: "error",
-      title: "Повреждённая установка",
-      message:
-        "В папке игры остался некорректный ReShade (битый proxy или неверный файл). " +
-        "Нажмите «Удалить» ниже или запустите игру кнопкой «Играть» в шапке — GSM попробует восстановить установку.",
-      actionLabel: "Удалить",
+      title: i18n.t("reshade:lib.alertBrokenTitle"),
+      message: i18n.t("reshade:lib.alertBrokenMessage"),
+      actionLabel: i18n.t("reshade:lib.alertRemove"),
     };
   }
   if (!input.bundleBinValid) {
     return {
       kind: "no_dll",
       tone: "warning",
-      title: "ReShade не готов к установке",
-      message:
-        "ReShade DLL не найдены в установке приложения. Переустановите Game Settings Master или нажмите «Без ReShade».",
+      title: i18n.t("reshade:lib.alertNoDllTitle"),
+      message: i18n.t("reshade:lib.alertNoDllMessage"),
     };
   }
   if (input.showDisclaimer) {
     return {
       kind: "disclaimer",
       tone: "warning",
-      title: "Внимание",
-      message:
-        "GSM не проверяет античит. ReShade может нарушать правила онлайн-игр. Используйте на свой риск.",
+      title: i18n.t("reshade:lib.alertDisclaimerTitle"),
+      message: i18n.t("reshade:lib.alertDisclaimerMessage"),
     };
   }
   return null;
@@ -334,24 +312,33 @@ export function formatReShadeStatusMeta(input: {
   gpuAdapted?: boolean;
 }): string {
   if (!input.globallyOn) {
-    return "● ReShade выключен глобально · proxy удаляется при запуске";
+    return i18n.t("reshade:lib.statusGlobalOff");
   }
   if (!input.activeForGame) {
-    return "● Выключен для этой игры · proxy удаляется при запуске";
+    return i18n.t("reshade:lib.statusGameOff");
   }
-  if (input.brokenInstall) return "● Ошибка в папке игры";
-  const api = input.selectedApi ? apiLabel(input.selectedApi) : "API не выбран";
+  if (input.brokenInstall) return i18n.t("reshade:lib.statusBroken");
+  const api = input.selectedApi ? apiLabel(input.selectedApi) : i18n.t("reshade:lib.statusApiNotSelected");
   if (input.installed) {
     const preset =
       input.installedPresetName && input.gpuAdapted
-        ? `${input.installedPresetName} (выбран ${input.requestedPresetName})`
+        ? i18n.t("reshade:lib.statusPresetAdapted", {
+            installed: input.installedPresetName,
+            requested: input.requestedPresetName,
+          })
         : (input.installedPresetName ?? input.requestedPresetName);
-    return `● Установлен · ${api} · ${preset}`;
+    return i18n.t("reshade:lib.statusInstalled", { api, preset });
   }
   if (input.gpuAdapted && input.installedPresetName) {
-    return `● Не установлен · ${api} · будет ${input.installedPresetName}`;
+    return i18n.t("reshade:lib.statusWillInstall", {
+      api,
+      preset: input.installedPresetName,
+    });
   }
-  return `● Не установлен · ${api} · ${input.requestedPresetName}`;
+  return i18n.t("reshade:lib.statusNotInstalled", {
+    api,
+    preset: input.requestedPresetName,
+  });
 }
 
 export function presetAccentForReShade(id: string): string {

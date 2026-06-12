@@ -46,24 +46,24 @@ pub fn read_user_config(
 ) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
     let path = user_config_file(config_dir);
     let raw = fs::read_to_string(&path)
-        .map_err(|e| format!("Не удалось прочитать {}: {e}", path.display()))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать {}: {e}", path.display()), &format!("Failed to read {}: {e}", path.display())))?;
     parse_user_config_xml(&raw)
 }
 
-/// Парсит снимок UserConfig из файла профиля (корень `<Preset>` или `<UserConfig>`).
+/// Parses a UserConfig snapshot from the profile file (root `<Preset>` or `<UserConfig>`).
 pub fn parse_user_config_patch(
     raw: &str,
 ) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
     let repaired = repair_user_config_raw(raw);
     let doc =
-        Document::parse(&repaired).map_err(|e| format!("Некорректный снимок UserConfig: {e}"))?;
+        Document::parse(&repaired).map_err(|e| crate::i18n::t(&format!("Некорректный снимок UserConfig: {e}"), &format!("Invalid UserConfig snapshot: {e}")))?;
     let root = doc.root_element();
     let patch_root = match root.tag_name().name() {
         "Preset" | "UserConfig" => root,
         _ => root
             .children()
             .find(|n| n.is_element() && matches!(n.tag_name().name(), "Preset" | "UserConfig"))
-            .ok_or_else(|| "В профиле нет корня <Preset> или <UserConfig>".to_string())?,
+            .ok_or_else(|| crate::i18n::t("В профиле нет корня <Preset> или <UserConfig>", "Profile has no <Preset> or <UserConfig> root"))?,
     };
     parse_settings_and_selections(patch_root)
 }
@@ -73,10 +73,10 @@ fn parse_user_config_xml(
 ) -> Result<(BTreeMap<String, XmlNode>, BTreeMap<String, String>), String> {
     let repaired = repair_user_config_raw(raw);
     let doc = Document::parse(&repaired)
-        .map_err(|e| format!("Некорректный UserConfigSelections: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Некорректный UserConfigSelections: {e}"), &format!("Invalid UserConfigSelections: {e}")))?;
     let root = doc.root_element();
     if root.tag_name().name() != "UserConfig" {
-        return Err("Ожидался корневой элемент UserConfig".to_string());
+        return Err(crate::i18n::t("Ожидался корневой элемент UserConfig", "Expected UserConfig root element"));
     }
     parse_settings_and_selections(root)
 }
@@ -90,7 +90,7 @@ fn parse_settings_and_selections(
     let settings_node = root
         .children()
         .find(|n| n.is_element() && n.tag_name().name() == "settings")
-        .ok_or_else(|| "Нет секции <settings>".to_string())?;
+        .ok_or_else(|| crate::i18n::t("Нет секции <settings>", "Missing <settings> section"))?;
     for child in settings_node.children().filter(|n| n.is_element()) {
         let tag = child.tag_name().name().to_string();
         let mut attrs = BTreeMap::new();
@@ -110,7 +110,7 @@ fn parse_settings_and_selections(
         {
             let id = child
                 .attribute("id")
-                .ok_or_else(|| "option без id".to_string())?
+                .ok_or_else(|| crate::i18n::t("option без id", "option without id"))?
                 .to_string();
             let value = child.attribute("value").unwrap_or("").to_string();
             selections.insert(id, value);
@@ -198,7 +198,7 @@ pub fn merge_preset_with_policy(
     }
 }
 
-/// Безопасный clamp по GPU: значения из VPS не переписываются, только отключается неподдерживаемое.
+/// Safe GPU clamp: VPS values are not overwritten, only unsupported options are disabled.
 pub fn tune_forza_selections(selections: &mut BTreeMap<String, String>, gpu: &GpuCapabilities) {
     if !gpu.supports_dlss {
         for key in [
@@ -247,9 +247,15 @@ pub fn write_user_config(
     crate::fs_util::write_file_bytes(path.as_path(), text.as_bytes())?;
     let read_back = crate::fs_util::read_file_bytes(&path)?;
     if read_back != text.as_bytes() {
-        return Err(format!(
-            "UserConfigSelections не сохранился ({}). Закройте игру и повторите.",
-            path.display()
+        return Err(crate::i18n::t(
+            &format!(
+                "UserConfigSelections не сохранился ({}). Закройте игру и повторите.",
+                path.display()
+            ),
+            &format!(
+                "UserConfigSelections was not saved ({}). Close the game and try again.",
+                path.display()
+            ),
         ));
     }
     Ok(())
@@ -353,9 +359,9 @@ fn media_file_differs(src: &Path, dest: &Path) -> Result<bool, String> {
         return Ok(true);
     }
     let src_bytes =
-        fs::read(src).map_err(|e| format!("Не удалось прочитать {}: {e}", src.display()))?;
+        fs::read(src).map_err(|e| crate::i18n::t(&format!("Не удалось прочитать {}: {e}", src.display()), &format!("Failed to read {}: {e}", src.display())))?;
     let dest_bytes =
-        fs::read(dest).map_err(|e| format!("Не удалось прочитать {}: {e}", dest.display()))?;
+        fs::read(dest).map_err(|e| crate::i18n::t(&format!("Не удалось прочитать {}: {e}", dest.display()), &format!("Failed to read {}: {e}", dest.display())))?;
     Ok(src_bytes != dest_bytes)
 }
 
@@ -375,7 +381,10 @@ fn iter_preset_media_files(media_src: &Path) -> Result<Vec<(std::path::PathBuf, 
             .map_err(|e| e.to_string())?;
         let rel_s = rel.to_string_lossy().replace('\\', "/");
         if !crate::fs_util::is_safe_manifest_relative_path(&rel_s) {
-            return Err(format!("Недопустимый путь media в preset: {rel_s}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимый путь media в preset: {rel_s}"),
+                &format!("Invalid media path in preset: {rel_s}"),
+            ));
         }
         files.push((rel.to_path_buf(), rel_s));
     }
@@ -394,7 +403,7 @@ pub fn preview_media_diff(
         let src = media_src.join(&rel);
         let dest = media_dest_root.join(&rel);
         crate::fs_util::ensure_path_within_root(&media_dest_root, &dest)
-            .map_err(|_| format!("Недопустимый путь media/{rel_s}"))?;
+            .map_err(|_| crate::i18n::t(&format!("Недопустимый путь media/{rel_s}"), &format!("Invalid media path {rel_s}")))?;
         if !media_file_differs(&src, &dest)? {
             continue;
         }
@@ -407,7 +416,7 @@ pub fn preview_media_diff(
         let new_value = if dest.is_file() {
             format!("{new_size} B")
         } else {
-            format!("{new_size} B (новый)")
+            crate::i18n::t(&format!("{new_size} B (новый)"), &format!("{new_size} B (new)"))
         };
         diff.push(crate::models::ConfigDiffEntry {
             file: format!("media/{rel_s}"),
@@ -439,10 +448,10 @@ pub fn backup_forza_media(
         let backup_file = backup_path.join("media").join(&rel);
         if let Some(parent) = backup_file.parent() {
             fs::create_dir_all(parent)
-                .map_err(|e| format!("Не удалось создать backup media: {e}"))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось создать backup media: {e}"), &format!("Failed to create media backup: {e}")))?;
         }
         fs::copy(&dest_file, &backup_file)
-            .map_err(|e| format!("Не удалось сохранить backup media: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить backup media: {e}"), &format!("Failed to save media backup: {e}")))?;
     }
     Ok(())
 }
@@ -455,18 +464,18 @@ pub fn copy_preset_media(install_dir: &Path, media_src: &Path) -> Result<Vec<Str
         let src = media_src.join(&rel);
         let dest = media_dest.join(&rel);
         crate::fs_util::ensure_path_within_root(&media_dest, &dest)
-            .map_err(|_| format!("Недопустимый путь media/{rel_s}"))?;
+            .map_err(|_| crate::i18n::t(&format!("Недопустимый путь media/{rel_s}"), &format!("Invalid media path {rel_s}")))?;
         if !media_file_differs(&src, &dest)? {
             continue;
         }
         if let Some(parent) = dest.parent() {
             fs::create_dir_all(parent)
-                .map_err(|e| format!("Не удалось создать {}: {e}", parent.display()))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось создать {}: {e}", parent.display()), &format!("Failed to create {}: {e}", parent.display())))?;
         }
         let bytes = crate::fs_util::read_file_bytes(&src)
-            .map_err(|e| format!("Не удалось прочитать media {}: {e}", rel.display()))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать media {}: {e}", rel.display()), &format!("Failed to read media {}: {e}", rel.display())))?;
         crate::fs_util::write_file_bytes(&dest, &bytes)
-            .map_err(|e| format!("Не удалось скопировать media {}: {e}", rel.display()))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось скопировать media {}: {e}", rel.display()), &format!("Failed to copy media {}: {e}", rel.display())))?;
         changed.push(format!("media/{rel_s}"));
     }
 
@@ -489,11 +498,11 @@ pub fn snapshot_media_for_rollback(
     for (rel, rel_s) in iter_preset_media_files(media_src)? {
         let dst = media_dest.join(&rel);
         crate::fs_util::ensure_path_within_root(&media_dest, &dst)
-            .map_err(|_| format!("Недопустимый путь media/{rel_s}"))?;
+            .map_err(|_| crate::i18n::t(&format!("Недопустимый путь media/{rel_s}"), &format!("Invalid media path {rel_s}")))?;
         let previous = if dst.is_file() {
             Some(
                 crate::fs_util::read_file_bytes(&dst)
-                    .map_err(|e| format!("Не удалось прочитать media/{rel_s}: {e}"))?,
+                    .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать media/{rel_s}: {e}"), &format!("Failed to read media/{rel_s}: {e}")))?,
             )
         } else {
             None
@@ -512,22 +521,34 @@ pub fn rollback_media_from_snapshot(snapshot: &[MediaRollbackEntry]) -> Result<(
         if let Some(bytes) = &entry.previous {
             if let Some(parent) = entry.dst.parent() {
                 fs::create_dir_all(parent).map_err(|e| {
-                    format!(
-                        "Не удалось создать каталог для rollback media/{}: {e}",
-                        entry.rel
+                    crate::i18n::t(
+                        &format!(
+                            "Не удалось создать каталог для rollback media/{}: {e}",
+                            entry.rel
+                        ),
+                        &format!(
+                            "Failed to create directory for rollback media/{}: {e}",
+                            entry.rel
+                        ),
                     )
                 })?;
             }
             crate::fs_util::write_file_bytes(&entry.dst, bytes).map_err(|e| {
-                format!(
-                    "Не удалось откатить media/{} к предыдущей версии: {e}",
-                    entry.rel
+                crate::i18n::t(
+                    &format!(
+                        "Не удалось откатить media/{} к предыдущей версии: {e}",
+                        entry.rel
+                    ),
+                    &format!(
+                        "Failed to roll back media/{} to previous version: {e}",
+                        entry.rel
+                    ),
                 )
             })?;
         } else if entry.dst.exists() {
             crate::fs_util::clear_readonly(&entry.dst);
             fs::remove_file(&entry.dst)
-                .map_err(|e| format!("Не удалось удалить media/{} при rollback: {e}", entry.rel))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось удалить media/{} при rollback: {e}", entry.rel), &format!("Failed to delete media/{} during rollback: {e}", entry.rel)))?;
         }
     }
     Ok(())
@@ -564,19 +585,22 @@ pub fn restore_forza_media(
             .map_err(|e| e.to_string())?;
         let rel_s = rel.to_string_lossy().replace('\\', "/");
         if !is_safe_manifest_relative_path(&rel_s) {
-            return Err(format!("Недопустимый путь media в backup: {rel_s}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимый путь media в backup: {rel_s}"),
+                &format!("Invalid media path in backup: {rel_s}"),
+            ));
         }
         let dst = install_media.join(rel);
         if let Some(parent) = dst.parent() {
             fs::create_dir_all(parent)
-                .map_err(|e| format!("Не удалось создать media/{rel_s}: {e}"))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось создать media/{rel_s}: {e}"), &format!("Failed to create media/{rel_s}: {e}")))?;
         }
         ensure_path_within_root(&install_media, &dst)
-            .map_err(|_| format!("Недопустимый путь восстановления media: {rel_s}"))?;
+            .map_err(|_| crate::i18n::t(&format!("Недопустимый путь восстановления media: {rel_s}"), &format!("Invalid media restore path: {rel_s}")))?;
         let bytes = read_file_bytes(entry.path())
-            .map_err(|e| format!("Не удалось прочитать backup media {rel_s}: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать backup media {rel_s}: {e}"), &format!("Failed to read backup media {rel_s}: {e}")))?;
         write_file_bytes(&dst, &bytes)
-            .map_err(|e| format!("Не удалось восстановить media {rel_s}: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось восстановить media {rel_s}: {e}"), &format!("Failed to restore media {rel_s}: {e}")))?;
         restored.push(format!("media/{rel_s}"));
     }
 

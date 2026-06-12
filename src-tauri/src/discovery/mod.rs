@@ -162,18 +162,24 @@ pub(crate) fn dedupe_paths(paths: Vec<PathBuf>) -> Vec<PathBuf> {
 pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GameProfile, String> {
     let display_name = name.trim();
     if display_name.is_empty() || display_name.len() > 120 {
-        return Err("Недопустимое имя игры (1–120 символов)".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимое имя игры (1–120 символов)",
+            "Invalid game name (1–120 characters)",
+        ));
     }
     let path = std::path::PathBuf::from(install_dir);
     if !path.exists() {
-        return Err("Указанная папка не существует".to_string());
+        return Err(crate::i18n::t(
+            "Указанная папка не существует",
+            "The specified folder does not exist",
+        ));
     }
 
     if is_non_game_install(&path, display_name, None) {
-        return Err(
-            "Это установка Unreal Engine или инструмент Epic, а не игра. Укажите папку с игрой."
-                .to_string(),
-        );
+        return Err(crate::i18n::t(
+            "Это установка Unreal Engine или инструмент Epic, а не игра. Укажите папку с игрой.",
+            "This is an Unreal Engine installation or Epic tool, not a game. Point to the game folder.",
+        ));
     }
 
     let is_forza = crate::forza::is_forza_install(&path);
@@ -183,10 +189,10 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
     let is_ue = !is_forza && !is_unity && ue != UeDetectResult::NotUe;
 
     if !is_forza && !is_unity && !is_ue {
-        return Err(
-            "Папка не похожа на Unreal Engine, Unity или Forza Horizon 6 (нет Shipping.exe, *_Data, forzahorizon6.exe и т.д.)"
-                .to_string(),
-        );
+        return Err(crate::i18n::t(
+            "Папка не похожа на Unreal Engine, Unity или Forza Horizon 6 (нет Shipping.exe, *_Data, forzahorizon6.exe и т.д.)",
+            "Folder does not look like Unreal Engine, Unity, or Forza Horizon 6 (no Shipping.exe, *_Data, forzahorizon6.exe, etc.)",
+        ));
     }
 
     let config_dir = if is_forza {

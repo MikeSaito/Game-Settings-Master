@@ -7,12 +7,15 @@ const MAX_FORZA_KEY_LEN: usize = 256;
 
 fn validate_forza_key(key: &str, kind: &str) -> Result<(), String> {
     if key.is_empty() {
-        return Err(format!("Пустой ключ Forza ({kind})"));
+        return Err(crate::i18n::t(
+            &format!("Пустой ключ Forza ({kind})"),
+            &format!("Empty Forza key ({kind})"),
+        ));
     }
     if key.len() > MAX_FORZA_KEY_LEN {
-        return Err(format!(
-            "Слишком длинный ключ Forza ({kind}): {} > {MAX_FORZA_KEY_LEN}",
-            key.len()
+        return Err(crate::i18n::t(
+            &format!("Слишком длинный ключ Forza ({kind}): {} > {MAX_FORZA_KEY_LEN}", key.len()),
+            &format!("Forza key too long ({kind}): {} > {MAX_FORZA_KEY_LEN}", key.len()),
         ));
     }
     Ok(())

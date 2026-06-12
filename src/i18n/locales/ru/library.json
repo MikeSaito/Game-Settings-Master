@@ -1,0 +1,60 @@
+{
+  "alerts": {
+    "errorTitle": "Ошибка",
+    "coversTitle": "Обложки",
+    "coversBody": "Steam-игры подтягивают картинку автоматически. Для Epic и ручных профилей нажмите «Обложка» на карточке игры."
+  },
+  "header": {
+    "title": "Библиотека игр",
+    "subtitle": "Steam · Epic · LocalAppData · ручное добавление"
+  },
+  "badges": {
+    "withConfig": "{{count}} с config",
+    "withoutConfig": "{{count}} без config",
+    "ue": "{{count}} UE",
+    "unity": "{{count}} Unity",
+    "author": "{{count}} от автора",
+    "other": "{{count}} прочие",
+    "withCover": "{{count}} с обложкой"
+  },
+  "source": {
+    "manual": "Вручную"
+  },
+  "dialogs": {
+    "installFolder": "Выберите папку установки игры",
+    "configFolder": "Выберите папку Saved/Config/Windows",
+    "coverFile": "Выберите обложку игры",
+    "imageFilter": "Изображение"
+  },
+  "card": {
+    "fromAuthor": "От автора",
+    "engineUnknown": "Движок не определён",
+    "probablyUe": "Вероятно UE",
+    "probablyUnity": "Вероятно Unity",
+    "select": "Выбрать",
+    "cover": "Обложка",
+    "resetCover": "Сброс",
+    "removeProfile": "Удалить профиль"
+  },
+  "actions": {
+    "scan": "Сканировать",
+    "add": "Добавить",
+    "addManual": "Добавить вручную"
+  },
+  "search": {
+    "placeholder": "Поиск или название для ручного добавления…"
+  },
+  "loading": "Сканирование Steam, Epic, LocalAppData…",
+  "empty": {
+    "nothingFound": "Ничего не найдено",
+    "noGames": "Игры не найдены",
+    "tryAnother": "Попробуйте другое название или добавьте игру вручную.",
+    "scanOrAddPrefix": "Нажмите «Сканировать» или «Добавить», чтобы указать папку установки. Для Subnautica 2 config: "
+  },
+  "sections": {
+    "unityHint": "Пресеты меняют boot.config в папке *_Data.",
+    "authorHint": "Пресеты разобраны автором приложения — отдельный формат конфига (Forza: UserConfigSelections + media).",
+    "otherTitle": "Другие игры",
+    "otherHint": "Движок не определён — авто-пресеты ini недоступны. ReShade и запуск из GSM — доступны."
+  }
+}

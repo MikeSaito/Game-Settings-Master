@@ -1,0 +1,122 @@
+{
+  "title": "Ручной",
+  "defaultPresetName": "Мой пресет",
+  "category": {
+    "Scalability": "Масштаб",
+    "Graphics": "Графика",
+    "Display": "Экран",
+    "API": "API / DXGI",
+    "Jobs": "Потоки и GC",
+    "Rendering": "Рендер",
+    "Shadows": "Тени",
+    "Textures": "Текстуры",
+    "PostProcess": "Пост",
+    "Mirrors": "Зеркала",
+    "LOD": "LOD",
+    "World": "Мир",
+    "Media": "Media-override",
+    "Startup": "Запуск",
+    "AuthorCurated": "От автора",
+    "GameSpecific": "Игра",
+    "Audio": "Аудио",
+    "System": "Система",
+    "Debug": "Отладка",
+    "Other": "Прочее"
+  },
+  "noGame": {
+    "title": "Ручной — выберите игру",
+    "desc": "Откройте библиотеку и выберите игру с config для просмотра и редактирования параметров."
+  },
+  "noConfig": {
+    "title": "Config не найден",
+    "unity": "Укажите папку *_Data с boot.config на вкладке «Библиотека».",
+    "default": "Укажите путь к Saved/Config/Windows на вкладке «Библиотека»."
+  },
+  "errorTitle": "Ошибка",
+  "gpuHintTitle": "Видеокарта",
+  "searchPlaceholder": "Поиск по ключу, названию, описанию…",
+  "paramsCount_one": "{{count}} параметр",
+  "paramsCount_few": "{{count}} параметра",
+  "paramsCount_many": "{{count}} параметров",
+  "paramsCount_other": "{{count}} параметра",
+  "knownCount_one": "{{count}} в справочнике",
+  "knownCount_few": "{{count}} в справочнике",
+  "knownCount_many": "{{count}} в справочнике",
+  "knownCount_other": "{{count}} в справочнике",
+  "unknownCount_one": "{{count}} без описания",
+  "unknownCount_few": "{{count}} без описания",
+  "unknownCount_many": "{{count}} без описания",
+  "unknownCount_other": "{{count}} без описания",
+  "authorCurated": {
+    "title": "Разобрано автором приложения",
+    "body": "Параметры из кастомных секций игры с подробными описаниями. DLSS, TSR и FSR синхронизируются автоматически при применении пресетов."
+  },
+  "forza": {
+    "before": "Параметры из AppData XML (как в вашем моде). Пресеты также копируют ",
+    "after": " в папку игры — DefaultTrackSettings, routebudget, деревья и др. Engine.ini здесь нет."
+  },
+  "engineIni": {
+    "title": "Параметры Engine.ini",
+    "before": "Тоггл ",
+    "onOff": "Вкл/Выкл",
+    "after": " — это наличие строки в файле: включено — ключ будет записан после «Применить»; выключено — строка удалится. Сейчас в Engine.ini: {{on}} из {{total}}."
+  },
+  "loadingParams": "Загрузка параметров…",
+  "emptyFiltered": {
+    "titleSearch": "Ничего не найдено",
+    "titleEmpty": "Пустая категория",
+    "descSearch": "Попробуйте другой запрос или смените категорию.",
+    "descEmpty": "В этой категории нет параметров для выбранной игры."
+  },
+  "applyAndSave": "Применить и сохранить",
+  "presetNameLabel": "Имя пресета",
+  "apply": "Применить",
+  "savePreset": "Сохранить пресет",
+  "savedPresets": "Сохранённые пресеты",
+  "errors": {
+    "noChanges": "Нет изменений — включите параметры Engine.ini или измените значения.",
+    "noChangesUnity": "Нет изменений — измените значения boot.config."
+  },
+  "applied": "Применено {{count}} правок · backup {{backupId}}. Перезапустите игру.",
+  "presetSaved": "Пресет «{{name}}» сохранён.",
+  "presetApplied": "Пресет применён · backup {{backupId}}.",
+  "qualityDefault": "По умолчанию",
+  "reset": {
+    "recommended": "рекоменд.",
+    "default": "по умолч."
+  },
+  "currentOption": "{{value}} (текущее)",
+  "inIni": "В ini",
+  "notInIni": "Нет в ini",
+  "undocumented": "Без описания",
+  "service": "Служебный",
+  "inPractice": "На практике: ",
+  "recommendedValues": "Рекомендуемые значения: ",
+  "inGameMenu": "В меню игры ищите: ",
+  "engineToggle": {
+    "off": "Выкл — строки нет в Engine.ini. Включите и нажмите «Применить», чтобы добавить.",
+    "on": "Вкл — строка есть в Engine.ini. Выключите, чтобы удалить при применении."
+  },
+  "sentinelHint": "В ini стоит −1: игра подставляет своё значение. Задайте 0–4 или другое число, чтобы зафиксировать вручную.",
+  "rangeHint": "Диапазон: {{range}} · примерный",
+  "newKey": "новый ключ",
+  "loadingPreview": "Загрузка предпросмотра изменений...",
+  "noDiff": {
+    "title": "Изменений нет",
+    "desc": "Текущие ini на диске совпадают с выбранным пресетом."
+  },
+  "table": {
+    "file": "Файл",
+    "param": "Параметр",
+    "was": "Было",
+    "willBe": "Станет"
+  },
+  "diffCount_one": "{{count}} изменение будет записано в ini",
+  "diffCount_few": "{{count}} изменения будут записаны в ini",
+  "diffCount_many": "{{count}} изменений будет записано в ini",
+  "diffCount_other": "{{count}} изменения будет записано в ini",
+  "preset": {
+    "maxQuality": "Максимальное качество",
+    "recommended": "Рекомендуемый"
+  }
+}

@@ -23,7 +23,7 @@ function normalizeSectionKey(section: string): string {
   return s.toLowerCase();
 }
 
-/** Схлопывает секции с разным регистром (типично SN2 GameUserSettings). */
+/** Collapses sections that differ only by case (typical SN2 GameUserSettings). */
 function setIniValue(
   files: Record<string, Record<string, Record<string, string>>>,
   file: string,

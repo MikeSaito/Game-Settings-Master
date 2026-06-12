@@ -1,36 +1,8 @@
 import { AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/Button";
 
 export type ReShadeDisclaimerKind = "enable" | "install" | "launch";
-
-const copy: Record<
-  ReShadeDisclaimerKind,
-  { title: string; body: string; confirm: string }
-> = {
-  enable: {
-    title: "Включить ReShade?",
-    body:
-      "ReShade — сторонний пост-обработчик (DLL-прокси в папке игры). " +
-      "В онлайн-играх с античитом это может привести к блокировке аккаунта. " +
-      "GSM не проверяет античит — вы принимаете риск самостоятельно.",
-    confirm: "Понимаю риски, включить",
-  },
-  install: {
-    title: "Установить ReShade в папку игры?",
-    body:
-      "GSM скопирует ReShade DLL, ReShade.ini и пресет в каталог exe. " +
-      "Существующий proxy-DLL (dxgi.dll / d3d11.dll) будет сохранён в бэкап. " +
-      "Закройте игру перед установкой.",
-    confirm: "Установить",
-  },
-  launch: {
-    title: "Запуск с ReShade",
-    body:
-      "Перед запуском GSM подготовит ReShade в папке игры. " +
-      "Напоминание: использование ReShade в мультиплеере — на ваш страх и риск.",
-    confirm: "Запустить",
-  },
-};
 
 interface Props {
   kind: ReShadeDisclaimerKind;
@@ -47,9 +19,13 @@ export function ReShadeDisclaimerModal({
   onConfirm,
   onCancel,
 }: Props) {
+  const { t } = useTranslation("reshade");
+
   if (!open) return null;
 
-  const { title, body, confirm } = copy[kind];
+  const title = t(`disclaimer.${kind}.title`);
+  const body = t(`disclaimer.${kind}.body`);
+  const confirm = t(`disclaimer.${kind}.confirm`);
 
   return (
     <div
@@ -75,7 +51,7 @@ export function ReShadeDisclaimerModal({
         </div>
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="ghost" onClick={onCancel} disabled={loading}>
-            Отмена
+            {t("disclaimer.cancel")}
           </Button>
           <Button variant="primary" onClick={onConfirm} loading={loading}>
             {confirm}

@@ -108,7 +108,7 @@ export interface GameOverride {
   game_id: string;
   name: string;
   files: Record<string, Record<string, Record<string, string>>>;
-  /** Ключи Engine.ini для удаления при применении пресета. */
+  /** Engine.ini keys to remove when applying a preset. */
   removals?: Record<string, Record<string, string[]>>;
 }
 

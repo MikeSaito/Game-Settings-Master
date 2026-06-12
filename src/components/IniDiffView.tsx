@@ -1,4 +1,5 @@
 import { ArrowRight, Equal, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ConfigDiffEntry } from "../lib/types";
 import { Card } from "./ui/Card";
 import { EmptyState } from "./ui/EmptyState";
@@ -9,12 +10,13 @@ interface Props {
 }
 
 export function IniDiffView({ diff, loading }: Props) {
+  const { t } = useTranslation("advanced");
   if (loading) {
     return (
       <Card padding="lg" hover={false}>
         <div className="flex items-center gap-3 text-body">
           <span className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-          Загрузка предпросмотра изменений...
+          {t("loadingPreview")}
         </div>
       </Card>
     );
@@ -24,8 +26,8 @@ export function IniDiffView({ diff, loading }: Props) {
     return (
       <EmptyState
         icon={Equal}
-        title="Изменений нет"
-        description="Текущие ini на диске совпадают с выбранным пресетом."
+        title={t("noDiff.title")}
+        description={t("noDiff.desc")}
         className="py-10"
       />
     );
@@ -37,11 +39,11 @@ export function IniDiffView({ diff, loading }: Props) {
         <table className="w-full text-sm">
           <thead className="sticky top-0 z-10 bg-[var(--color-bg-elevated)] text-left">
             <tr className="border-b border-[var(--color-border)] text-xs font-semibold uppercase tracking-wide text-muted">
-              <th className="px-4 py-3">Файл</th>
-              <th className="px-4 py-3">Параметр</th>
-              <th className="px-4 py-3">Было</th>
+              <th className="px-4 py-3">{t("table.file")}</th>
+              <th className="px-4 py-3">{t("table.param")}</th>
+              <th className="px-4 py-3">{t("table.was")}</th>
               <th className="w-8 px-2 py-3" />
-              <th className="px-4 py-3">Станет</th>
+              <th className="px-4 py-3">{t("table.willBe")}</th>
             </tr>
           </thead>
           <tbody>
@@ -71,7 +73,7 @@ export function IniDiffView({ diff, loading }: Props) {
       </div>
       <div className="flex items-center gap-2 border-t border-[var(--color-border)] px-4 py-2.5 text-sm text-muted">
         <Plus size={12} className="text-[#8fd9a8]" />
-        {diff.length} изменений будет записано в ini
+        {t("diffCount", { count: diff.length })}
       </div>
     </Card>
   );

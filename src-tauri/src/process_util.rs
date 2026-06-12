@@ -12,7 +12,7 @@ pub fn is_app_background() -> bool {
     APP_IN_BACKGROUND.load(Ordering::Relaxed)
 }
 
-/// Запуск внешней команды без всплывающего окна консоли (Windows).
+/// Runs an external command without a console popup (Windows).
 pub fn hidden_command(program: &str) -> std::process::Command {
     let mut cmd = std::process::Command::new(program);
     #[cfg(windows)]
@@ -20,7 +20,7 @@ pub fn hidden_command(program: &str) -> std::process::Command {
     cmd
 }
 
-/// IDLE + флаг фона — блокирует sync/scan IPC пока игра на переднем плане.
+/// IDLE + background flag — blocks sync/scan IPC while the game is in the foreground.
 pub fn set_process_background_mode(background: bool) {
     APP_IN_BACKGROUND.store(background, Ordering::Relaxed);
     #[cfg(windows)]

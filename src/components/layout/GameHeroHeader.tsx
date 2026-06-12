@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ReShadeApiPickerModal } from "../ReShadeApiPickerModal";
 import { ReShadeDisclaimerModal } from "../ReShadeDisclaimerModal";
 import {
@@ -61,22 +62,16 @@ interface Props {
 
 const tabs: {
   id: AppTab;
-  label: string;
   icon: typeof Sparkles | typeof History | typeof SlidersHorizontal;
 }[] = [
-  { id: "wizard", label: "Авторские", icon: Sparkles },
-  { id: "advanced", label: "Ручной", icon: SlidersHorizontal },
-  { id: "backups", label: "Бекапы", icon: History },
-  { id: "reshade", label: "ReShade", icon: Palette },
+  { id: "wizard", icon: Sparkles },
+  { id: "advanced", icon: SlidersHorizontal },
+  { id: "backups", icon: History },
+  { id: "reshade", icon: Palette },
 ];
 
-const sourceLabel: Record<string, string> = {
-  steam: "Steam",
-  epic: "Epic",
-  manual: "Вручную",
-};
-
 export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
+  const { t } = useTranslation("header");
   const queryClient = useQueryClient();
   const coverCandidates = resolveGameHeroCoverCandidates(game);
   const [coverIndex, setCoverIndex] = useState(0);
@@ -177,7 +172,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
     onSuccess: ({ result, session }) => {
       if (session !== launchSessionRef.current) return;
       setLaunchError(undefined);
-      setLaunchMessage(`Запуск через ${result.launcher}…`);
+      setLaunchMessage(t("launchVia", { launcher: result.launcher }));
       setLaunchWarning(result.warning);
       queryClient.invalidateQueries({ queryKey: ["game-running"] });
       queryClient.invalidateQueries({ queryKey: ["reshade-workspace", game.id] });
@@ -195,14 +190,14 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
   const closeMutation = useMutation({
     mutationFn: (session: number) => {
       if (!runningExeName) {
-        return Promise.reject(new Error("Имя процесса игры не определено"));
+        return Promise.reject(new Error(t("errors.noProcessName")));
       }
       return closeGame(runningExeName).then(() => session);
     },
     onSuccess: (session) => {
       if (session !== launchSessionRef.current) return;
       setLaunchError(undefined);
-      setLaunchMessage("Игра закрыта.");
+      setLaunchMessage(t("gameClosed"));
       queryClient.invalidateQueries({ queryKey: ["game-running"] });
     },
     onError: (err, session) => {
@@ -220,11 +215,11 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
       await launchMutation.mutateAsync({ skipReShade, session });
       if (isStaleLaunchSession(session)) return;
     } catch {
-      // ошибка показана в launchMutation.onError
+      // Error is shown in launchMutation.onError
     }
   };
 
-  // Запуск без эффектов: ReShade временно снимается на бэкенде, preflight/выбор API не нужен.
+  // Launch without effects: backend temporarily removes ReShade; no preflight/API picker needed.
   const handlePlayWithoutReShade = () => {
     if (launchBusy) return;
     setLaunchError(undefined);
@@ -245,7 +240,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
       } catch (err) {
         setLaunchError(
           formatInvokeError(
-            err instanceof Error ? err : new Error("Не удалось загрузить настройки ReShade"),
+            err instanceof Error ? err : new Error(t("errors.loadReShade")),
           ),
         );
         setApiPickerOpen(false);
@@ -302,7 +297,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         setLaunchMessage(undefined);
         setLaunchError(
           formatInvokeError(
-            err instanceof Error ? err : new Error("Не удалось загрузить настройки ReShade"),
+            err instanceof Error ? err : new Error(t("errors.loadReShade")),
           ),
         );
         return;
@@ -321,7 +316,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         setLaunchMessage(undefined);
         setLaunchError(
           formatInvokeError(
-            err instanceof Error ? err : new Error("Не удалось загрузить настройки ReShade"),
+            err instanceof Error ? err : new Error(t("errors.loadReShade")),
           ),
         );
         return;
@@ -370,7 +365,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         setLaunchDisclaimerOpen(false);
         setLaunchError(
           formatInvokeError(
-            err instanceof Error ? err : new Error("Не удалось загрузить настройки ReShade"),
+            err instanceof Error ? err : new Error(t("errors.loadReShade")),
           ),
         );
         return;
@@ -481,7 +476,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               loading={closeMutation.isPending}
               className="shadow-lg"
             >
-              Закрыть
+              {t("button.close")}
             </Button>
           ) : (
             <div className="flex items-center gap-2">
@@ -491,9 +486,9 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
                   onClick={handlePlayWithoutReShade}
                   disabled={launchBusy}
                   className="shadow-lg"
-                  title="Запустить игру один раз без эффектов ReShade"
+                  title={t("playWithoutReShadeTitle")}
                 >
-                  Без ReShade
+                  {t("button.withoutReShade")}
                 </Button>
               )}
               <Button
@@ -503,7 +498,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
                 loading={launchBusy}
                 className="shadow-lg"
               >
-                Играть
+                {t("button.play")}
               </Button>
             </div>
           )}
@@ -517,7 +512,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {isAuthorCuratedGame(game) ? (
-                <Badge tone="accent">От автора</Badge>
+                <Badge tone="accent">{t("badge.author")}</Badge>
               ) : game.is_unity ? (
                 <Badge tone="accent">Unity</Badge>
               ) : game.is_ue ? (
@@ -529,15 +524,17 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
                   <Badge tone="accent">Unreal Engine</Badge>
                 )
               ) : (
-                <Badge tone="warning">Движок ?</Badge>
+                <Badge tone="warning">{t("badge.engineUnknown")}</Badge>
               )}
               {game.engine_version && (
                 <Badge tone="default">{game.engine_version}</Badge>
               )}
               <Badge tone={configDir ? "success" : "warning"}>
-                {configDir ? "Config OK" : "Нужен config"}
+                {configDir ? t("badge.configOk") : t("badge.needConfig")}
               </Badge>
-              <Badge tone="default">{sourceLabel[game.source] ?? game.source}</Badge>
+              <Badge tone="default">
+                {t(`source.${game.source}`, { defaultValue: game.source })}
+              </Badge>
               {gpu && <Badge tone="default">{gpuSummaryLabel(gpu)}</Badge>}
             </div>
           </div>
@@ -570,7 +567,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         <div className="border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)]/80 px-8 py-2.5 backdrop-blur-sm">
           <div className="mx-auto flex max-w-6xl items-center gap-3">
             <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted">
-              Config
+              {t("configLabel")}
             </span>
             <p className="min-w-0 flex-1 truncate font-mono text-xs text-[var(--color-text-secondary)]">
               {configDir}
@@ -581,7 +578,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               onClick={() => openConfigFolder(configDir, game.id)}
               className="shrink-0 !px-2 !py-1.5 text-xs"
             >
-              Открыть
+              {t("button.open")}
             </Button>
           </div>
         </div>
@@ -591,9 +588,9 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         <div className="mx-auto max-w-6xl">
           <nav
             className="flex flex-wrap gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-1"
-            aria-label="Разделы игры"
+            aria-label={t("gameSections")}
           >
-            {visibleTabs.map(({ id, label, icon: Icon }) => {
+            {visibleTabs.map(({ id, icon: Icon }) => {
               const isActive = activeTab === id;
               return (
                 <button
@@ -608,7 +605,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
                   )}
                 >
                   <Icon size={16} className={isActive ? "text-accent" : undefined} />
-                  {label}
+                  {t(`tabs.${id}`)}
                 </button>
               );
             })}
@@ -635,7 +632,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         }
         rememberDefault
         loading={launchBusy}
-        title="Выберите API перед запуском"
+        title={t("selectApiTitle")}
         onConfirm={(api, remember) => void continueLaunchWithApi(api, remember)}
         onCancel={() => setApiPickerOpen(false)}
       />

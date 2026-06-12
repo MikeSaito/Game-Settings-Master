@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { getPresetServerStatus } from "../lib/api";
 
-/** Статус пресет-сервера — опрос при фокусе окна для актуального catalog_version. */
+/** Preset server status — polled on window focus for up-to-date catalog_version. */
 export function usePresetServerStatus() {
   const focused = useAppWindowFocused();
   return useQuery({

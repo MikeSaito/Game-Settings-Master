@@ -1,6 +1,7 @@
+import i18n from "../i18n";
 import type { GpuCapabilities, GameParameter } from "./types";
 
-/** Параметры, полностью скрываемые без поддержки DLSS/RTX. */
+/** Parameters fully hidden without DLSS/RTX support. */
 const NVIDIA_ONLY_KEYS = new Set([
   "DLSSMode",
   "DLSSQualityMode",
@@ -42,7 +43,7 @@ export function gpuSummaryLabel(gpu: GpuCapabilities): string {
   if (gpu.vendor === "nvidia") {
     if (gpu.supports_dlss_fg) parts.push("DLSS + FG");
     else if (gpu.supports_dlss) parts.push("DLSS");
-    else parts.push("без RTX");
+    else parts.push(i18n.t("common:gpuNoRtx"));
   } else if (gpu.vendor === "amd") {
     parts.push("FSR / TSR");
   }
@@ -51,16 +52,16 @@ export function gpuSummaryLabel(gpu: GpuCapabilities): string {
 
 export function gpuFilterHint(gpu: GpuCapabilities): string | null {
   if (gpu.vendor === "amd") {
-    return `Видеокарта ${gpu.name}: DLSS недоступен — пресеты автоматически подставят FSR 3 вместо DLSS.`;
+    return i18n.t("common:gpuFilterAmd", { name: gpu.name });
   }
   if (gpu.vendor === "intel") {
-    return `Видеокарта ${gpu.name}: DLSS недоступен — пресеты автоматически подставят FSR или TSR вместо DLSS.`;
+    return i18n.t("common:gpuFilterIntel", { name: gpu.name });
   }
   if (gpu.vendor === "nvidia" && !gpu.supports_dlss) {
-    return `Видеокарта ${gpu.name}: DLSS недоступен — пресеты автоматически подставят FSR вместо DLSS. GTX не поддерживает Tensor Cores.`;
+    return i18n.t("common:gpuFilterNvidiaNoDlss", { name: gpu.name });
   }
   if (gpu.vendor === "nvidia" && gpu.supports_dlss && !gpu.supports_dlss_fg) {
-    return `Видеокарта ${gpu.name}: DLSS доступен. Frame Generation (DLSS 3) — только на RTX 40-й серии и новее.`;
+    return i18n.t("common:gpuFilterNvidiaDlssOnly", { name: gpu.name });
   }
   return null;
 }

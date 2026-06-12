@@ -9,7 +9,7 @@ export const ENGINE_CATEGORIES = new Set([
   "PostProcess",
 ]);
 
-/** Уникальный id для состояния тоггла (ключ внутри Engine.ini). */
+/** Unique id for toggle state (key inside Engine.ini). */
 export function engineParamId(p: Pick<GameParameter, "file" | "key">): string {
   return `${p.file}::${p.key}`;
 }
@@ -18,7 +18,7 @@ export function paramId(p: Pick<GameParameter, "file" | "section" | "key">): str
   return `${p.file}|${p.section}|${p.key}`;
 }
 
-/** Параметры Engine.ini с тогглом вкл/выкл (редактируемые, не opaque). */
+/** Engine.ini parameters with on/off toggle (editable, not opaque). */
 export function isEngineToggleable(p: GameParameter): boolean {
   return (
     p.file === ENGINE_INI &&
@@ -46,7 +46,7 @@ export function isEngineEnabled(
   return enabled.has(engineParamId(p));
 }
 
-/** Параметр попадает в files при «Применить» / «Сохранить пресет». */
+/** Parameter is included in files on Apply / Save preset. */
 export function shouldIncludeInApply(
   p: GameParameter,
   engineEnabled: Set<string>,
@@ -59,8 +59,8 @@ export function shouldIncludeInApply(
 }
 
 /**
- * Категории, разрешённые для записи. Всегда объединяет данные игры
- * с базовым списком — иначе Engine.ini выпадает, если в ini только служебные ключи.
+ * Categories allowed for writing. Always merges game data with the base list —
+ * otherwise Engine.ini is omitted when ini contains only utility keys.
  */
 export function resolveEditableCategories(
   parameters: GameParameter[],

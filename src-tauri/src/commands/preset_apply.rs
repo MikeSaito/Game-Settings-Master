@@ -24,10 +24,16 @@ fn apply_forza_with_strategy(
     exe_name: Option<&str>,
 ) -> Result<ApplyResult, String> {
     let gid = game_id.ok_or_else(|| {
-        "Для применения пресета Forza укажите game_id".to_string()
+        crate::i18n::t(
+            "Для применения пресета Forza укажите game_id",
+            "Specify game_id to apply a Forza preset",
+        )
     })?;
     let install_raw = install_dir.ok_or_else(|| {
-        "Не указана папка установки Forza — нужна для копирования media/ (DefaultTrackSettings и др.).".to_string()
+        crate::i18n::t(
+            "Не указана папка установки Forza — нужна для копирования media/ (DefaultTrackSettings и др.).",
+            "Forza install folder is not specified — required to copy media/ (DefaultTrackSettings, etc.).",
+        )
     })?;
     let install = crate::forza::validate_forza_install_dir(install_raw)?;
     let trusted = resolve_trusted_profile(&GameProfile {
@@ -51,7 +57,10 @@ fn apply_forza_with_strategy(
     if crate::discovery::normalize_install_dir(&trusted.install_dir)
         != crate::discovery::normalize_install_dir(&install.to_string_lossy())
     {
-        return Err("install_dir не соответствует доверенному профилю game_id".to_string());
+        return Err(crate::i18n::t(
+            "install_dir не соответствует доверенному профилю game_id",
+            "install_dir does not match the trusted game_id profile",
+        ));
     }
     ensure_config_writable(path, exe_name)?;
     let backup_id = crate::forza::backup_forza_config(path)?;
@@ -123,10 +132,10 @@ pub fn apply_game_preset(
         );
     }
 
-    // Авто-пресеты для UE удалены как нерабочая функция — UE-игры настраиваются
-    // через ручной редактор. Применять «пресет» для UE больше нечего.
-    Err(
-        "Авто-пресеты для UE удалены. Настройте игру через ручной редактор."
-            .to_string(),
-    )
+    // UE auto-presets were removed as a non-working feature — UE games are configured
+    // via the manual editor. There is nothing left to "apply" as a preset for UE.
+    Err(crate::i18n::t(
+        "Авто-пресеты для UE удалены. Настройте игру через ручной редактор.",
+        "UE auto-presets have been removed. Configure the game via the manual editor.",
+    ))
 }

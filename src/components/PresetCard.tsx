@@ -1,4 +1,5 @@
 import { Check, Zap } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { PresetInfo } from "../lib/types";
 import { cn } from "../lib/cn";
 import { Badge } from "./ui/Badge";
@@ -34,6 +35,7 @@ function accentForPreset(id: string): string {
 const HIGHLIGHT_IDS = new Set(["ultra-high", "ultramax", "epic"]);
 
 export function PresetCard({ preset, selected, onSelect }: Props) {
+  const { t } = useTranslation("advanced");
   const accent = accentForPreset(preset.id);
   const showHighlight =
     HIGHLIGHT_IDS.has(preset.id) ||
@@ -65,8 +67,8 @@ export function PresetCard({ preset, selected, onSelect }: Props) {
             <span className="inline-flex items-center gap-1">
               <Zap size={10} />
               {preset.id === "ultra-high" || preset.id === "ultramax"
-                ? "Максимальное качество"
-                : "Рекомендуемый"}
+                ? t("preset.maxQuality")
+                : t("preset.recommended")}
             </span>
           </Badge>
         </div>

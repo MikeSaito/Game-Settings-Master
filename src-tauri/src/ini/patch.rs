@@ -1,7 +1,7 @@
 use indexmap::IndexMap;
 use std::collections::HashMap;
 
-/// Точечная правка ini по строкам — сохраняет preamble/пустые строки UE (важно для SN2 GUS).
+/// Line-by-line ini patch — preserves UE preamble/blank lines (important for SN2 GUS).
 pub fn patch_ini_text(
     content: &str,
     updates: &IndexMap<String, IndexMap<String, String>>,
@@ -57,7 +57,7 @@ pub fn patch_ini_text(
     for (update_section, entries) in updates {
         let sections = scan_sections(&lines);
         let Some(sec) = find_section(&sections, update_section) else {
-            // Новая секция — в конец файла
+            // New section — append at end of file
             if !lines.is_empty() && !lines.last().map(|l| l.is_empty()).unwrap_or(true) {
                 lines.push(String::new());
             }
@@ -155,7 +155,7 @@ fn line_key(line: &str) -> Option<&str> {
     Some(key)
 }
 
-/// Дублирует обновления во все секции файла, где ключ уже есть (SN2: UpscalingFrameGeneration и т.д.).
+/// Duplicates updates into every section in the file where the key already exists (SN2: UpscalingFrameGeneration, etc.).
 pub fn expand_mirror_key_updates(
     existing: &crate::models::IniFile,
     updates: &IndexMap<String, IndexMap<String, String>>,

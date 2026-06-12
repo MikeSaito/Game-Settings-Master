@@ -9,10 +9,20 @@ pub fn steam_header_url(app_id: &str) -> String {
 
 pub fn covers_dir() -> Result<PathBuf, String> {
     let dir = dirs::data_dir()
-        .ok_or_else(|| "Не удалось определить каталог AppData".to_string())?
+        .ok_or_else(|| {
+            crate::i18n::t(
+                "Не удалось определить каталог AppData",
+                "Failed to determine AppData directory",
+            )
+        })?
         .join("UESettingsMaster")
         .join("covers");
-    fs::create_dir_all(&dir).map_err(|e| format!("Не удалось создать каталог covers: {e}"))?;
+    fs::create_dir_all(&dir).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось создать каталог covers: {e}"),
+            &format!("Failed to create covers directory: {e}"),
+        )
+    })?;
     Ok(dir)
 }
 
@@ -48,37 +58,69 @@ fn extension_from_path(path: &Path) -> Option<String> {
 
 pub fn import_custom_cover(game_id: &str, source: &Path) -> Result<String, String> {
     if !source.exists() {
-        return Err("Файл изображения не найден".to_string());
+        return Err(crate::i18n::t(
+            "Файл изображения не найден",
+            "Image file not found",
+        ));
     }
     if source.is_dir() {
-        return Err("Укажите файл изображения, а не папку".to_string());
+        return Err(crate::i18n::t(
+            "Укажите файл изображения, а не папку",
+            "Specify an image file, not a folder",
+        ));
     }
-    let canonical = source
-        .canonicalize()
-        .map_err(|e| format!("Некорректный путь к изображению: {e}"))?;
+    let canonical = source.canonicalize().map_err(|e| {
+        crate::i18n::t(
+            &format!("Некорректный путь к изображению: {e}"),
+            &format!("Invalid image path: {e}"),
+        )
+    })?;
     if canonical.is_dir() {
-        return Err("Укажите файл изображения, а не папку".to_string());
+        return Err(crate::i18n::t(
+            "Укажите файл изображения, а не папку",
+            "Specify an image file, not a folder",
+        ));
     }
     let size = fs::metadata(&canonical)
-        .map_err(|e| format!("Не удалось прочитать изображение: {e}"))?
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось прочитать изображение: {e}"),
+                &format!("Failed to read image: {e}"),
+            )
+        })?
         .len();
     const MAX_COVER_BYTES: u64 = 10 * 1024 * 1024;
     if size > MAX_COVER_BYTES {
-        return Err("Изображение слишком большое (макс. 10 МБ)".to_string());
+        return Err(crate::i18n::t(
+            "Изображение слишком большое (макс. 10 МБ)",
+            "Image is too large (max 10 MB)",
+        ));
     }
     if canonical
         .symlink_metadata()
         .map(|m| m.file_type().is_symlink())
         .unwrap_or(false)
     {
-        return Err("Символические ссылки не поддерживаются".to_string());
+        return Err(crate::i18n::t(
+            "Символические ссылки не поддерживаются",
+            "Symbolic links are not supported",
+        ));
     }
 
-    let ext = extension_from_path(&canonical)
-        .ok_or_else(|| "Поддерживаются PNG, JPG, WEBP, GIF".to_string())?;
+    let ext = extension_from_path(&canonical).ok_or_else(|| {
+        crate::i18n::t(
+            "Поддерживаются PNG, JPG, WEBP, GIF",
+            "Supported formats: PNG, JPG, WEBP, GIF",
+        )
+    })?;
 
     let dest = covers_dir()?.join(cover_filename(game_id, &ext));
-    fs::copy(&canonical, &dest).map_err(|e| format!("Не удалось сохранить обложку: {e}"))?;
+    fs::copy(&canonical, &dest).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось сохранить обложку: {e}"),
+            &format!("Failed to save cover: {e}"),
+        )
+    })?;
 
     Ok(dest.to_string_lossy().to_string())
 }

@@ -99,7 +99,7 @@ pub fn ini_to_data(ini: &IniFile) -> HashMap<String, HashMap<String, String>> {
         .collect()
 }
 
-/// Сравнение значений ini: точное совпадение или эквивалентные числа (`2.2` == `2.200000`).
+/// Ini value comparison: exact match or equivalent numbers (`2.2` == `2.200000`).
 pub fn ini_values_equal(a: &str, b: &str) -> bool {
     if a == b {
         return true;
@@ -135,7 +135,7 @@ pub fn pick_canonical_section_name(a: &str, b: &str) -> String {
     }
 }
 
-/// Схлопывает дубли секций, отличающихся только регистром (типично для SN2).
+/// Collapses duplicate sections that differ only by case (typical SN2).
 pub fn coalesce_ini_sections(ini: &mut IniFile) {
     let mut merged: IndexMap<String, IniSection> = IndexMap::new();
     for (name, mut section) in ini.sections.drain(..) {

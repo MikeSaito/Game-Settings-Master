@@ -19,13 +19,13 @@ const QUALITY_INDEX_GROUPS: &[&str] = &[
     "CloudsQuality",
 ];
 
-/// Render scale в процентах — не индекс 0–4.
+/// Render scale in percent — not a 0–4 index.
 pub const RESOLUTION_SCALE_KEY: &str = "sg.ResolutionQuality";
 
-/// Стандартный максимум UE: 0=Low, 1=Medium, 2=High, 3=Epic, 4=Cinematic.
+/// Standard UE maximum: 0=Low, 1=Medium, 2=High, 3=Epic, 4=Cinematic.
 pub const UE_DEFAULT_SCALABILITY_MAX: u32 = 4;
 
-/// Индексы качества (0–4+), не проценты и не произвольные sg.*.
+/// Quality indices (0–4+), not percentages or arbitrary sg.*.
 pub fn is_scalability_quality_index(sg_key: &str) -> bool {
     if !sg_key.starts_with("sg.") {
         return false;
@@ -112,7 +112,7 @@ pub fn detect_scalability_limits(
         });
     }
 
-    // Дополнительные группы из DefaultScalability.ini (кроме ResolutionQuality).
+    // Additional groups from DefaultScalability.ini (except ResolutionQuality).
     for (group, max) in &max_from_ini {
         if group == "ResolutionQuality" {
             continue;

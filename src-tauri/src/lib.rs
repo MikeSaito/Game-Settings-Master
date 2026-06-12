@@ -9,6 +9,7 @@ mod display;
 mod forza;
 mod fs_util;
 mod gpu;
+mod i18n;
 mod ini;
 mod launch;
 mod models;
@@ -32,9 +33,9 @@ use commands::{
     launch_game_cmd, list_backups_cmd, list_presets_cmd, open_config_folder, preview_preset_cmd,
     remove_game_cover_cmd, remove_game_profile, remove_reshade_cmd, reset_config_to_user_cmd,
     resolve_config_from_path, restore_backup_cmd, save_game_override, save_game_profile,
-    scan_games, set_app_background_mode_cmd, set_game_config_dir, set_preset_server_url_cmd,
-    set_reshade_per_game_cmd, set_reshade_settings_cmd, should_prompt_reshade_api_cmd,
-    sync_presets_cmd, update_reshade_preset_cmd,
+    scan_games, set_app_background_mode_cmd, set_game_config_dir, set_language_cmd,
+    set_preset_server_url_cmd, set_reshade_per_game_cmd, set_reshade_settings_cmd,
+    should_prompt_reshade_api_cmd, sync_presets_cmd, update_reshade_preset_cmd,
 };
 
 use tauri::Manager;
@@ -50,6 +51,7 @@ pub fn run() {
             if let Ok(resource_dir) = app.path().resource_dir() {
                 resource_paths::init_resource_root(resource_dir);
             }
+            i18n::init_from_disk();
             if remote_presets::effective_base_url().is_some() {
                 std::thread::spawn(|| {
                     #[cfg(windows)]
@@ -71,6 +73,7 @@ pub fn run() {
             get_gpu_info_cmd,
             get_desktop_resolution_cmd,
             is_game_running_cmd,
+            set_language_cmd,
             set_app_background_mode_cmd,
             close_game_cmd,
             launch_game_cmd,

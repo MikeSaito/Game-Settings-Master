@@ -10,7 +10,7 @@ use walkdir::WalkDir;
 pub use boot_config::{apply_boot_config, parse_boot_config, preview_boot_config_diff};
 pub use presets::{apply_unity_preset, build_unity_combined_preset, preview_unity_preset};
 
-/// Каталог конфигурации Unity: папка `*_Data` (boot.config) или LocalLow.
+/// Unity config directory: `*_Data` folder (boot.config) or LocalLow.
 pub fn resolve_unity_config_dir(
     install_dir: &Path,
     exe_name: Option<&str>,
@@ -139,16 +139,16 @@ pub fn backup_unity_config(config_dir: &Path) -> Result<String, String> {
 
     let backup_root = backup_store_dir(config_dir);
     fs::create_dir_all(&backup_root)
-        .map_err(|e| format!("Не удалось создать каталог backup: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог backup: {e}"), &format!("Failed to create backup directory: {e}")))?;
 
     let backup_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
     let backup_path = backup_root.join(&backup_id);
-    fs::create_dir_all(&backup_path).map_err(|e| format!("Не удалось создать backup: {e}"))?;
+    fs::create_dir_all(&backup_path).map_err(|e| crate::i18n::t(&format!("Не удалось создать backup: {e}"), &format!("Failed to create backup: {e}")))?;
 
     let boot = boot_config_path(config_dir);
     if boot.exists() {
         fs::copy(&boot, backup_path.join("boot.config"))
-            .map_err(|e| format!("Не удалось сохранить backup boot.config: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить backup boot.config: {e}"), &format!("Failed to save backup boot.config: {e}")))?;
     }
 
     for entry in WalkDir::new(config_dir)
@@ -162,7 +162,7 @@ pub fn backup_unity_config(config_dir: &Path) -> Result<String, String> {
         let name = entry.file_name().to_string_lossy().to_string();
         if name.ends_with(".json") || name == "prefs" {
             fs::copy(entry.path(), backup_path.join(&name))
-                .map_err(|e| format!("Не удалось сохранить backup {name}: {e}"))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить backup {name}: {e}"), &format!("Failed to save backup {name}: {e}")))?;
         }
     }
 

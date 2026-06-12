@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { ReShadeDisclaimerKind } from "../ReShadeDisclaimerModal";
 import {
   getReShadePresetDetails,
@@ -50,6 +51,7 @@ interface PendingOverrideFlush {
 }
 
 export function useReShadePage(game: GameProfile) {
+  const { t } = useTranslation("reshade");
   const queryClient = useQueryClient();
   const [disclaimer, setDisclaimer] = useState<ReShadeDisclaimerKind | null>(null);
   const [message, setMessage] = useState<string>();
@@ -173,9 +175,7 @@ export function useReShadePage(game: GameProfile) {
       if (!isActiveMutationSession(variables.session, variables.gameId)) return;
       setDisclaimer(null);
       const warn = result.warnings?.length ? ` ${result.warnings.join(" ")}` : "";
-      setMessage(
-        `ReShade установлен (${apiLabel(result.graphics_api)}).${warn} Запустите игру — Home для меню ReShade.`,
-      );
+      setMessage(t("messages.installed", { api: apiLabel(result.graphics_api), warn }));
       setError(undefined);
       invalidateForGame(variables.gameId);
     },
@@ -190,11 +190,10 @@ export function useReShadePage(game: GameProfile) {
     mutationFn: (_vars: { gameId: string; session: number }) => removeReShade(game),
     onSuccess: (result, variables) => {
       if (!isActiveMutationSession(variables.session, variables.gameId)) return;
-      const base = status?.broken_install
-        ? "Повреждённая установка очищена — можно запускать игру."
-        : "ReShade удалён из папки игры.";
       const warn = result.warnings?.length ? ` ${result.warnings.join(" ")}` : "";
-      setMessage(`${base}${warn}`);
+      setMessage(
+        t(status?.broken_install ? "messages.removedBroken" : "messages.removed", { warn }),
+      );
       setError(undefined);
       invalidateForGame(variables.gameId);
     },
@@ -214,7 +213,7 @@ export function useReShadePage(game: GameProfile) {
     onSuccess: (result, variables) => {
       if (!isActiveMutationSession(variables.session, variables.gameId)) return;
       const warn = result.warnings?.length ? ` ${result.warnings[0]}` : "";
-      setMessage(`Пресет «${result.preset_id}» применён.${warn}`);
+      setMessage(t("messages.presetApplied", { preset: result.preset_id, warn }));
       setError(undefined);
       invalidateForGame(variables.gameId);
     },
@@ -262,9 +261,9 @@ export function useReShadePage(game: GameProfile) {
   });
 
   const [patchOverridesDebounced, flushOverridesNow] = useDebouncedCallback(() => {
-    // Снимок контекста (game/api/preset/settings/session) делается в момент правки —
-    // поэтому отложенная запись всегда уходит в нужную игру, даже если пользователь
-    // успел переключиться до срабатывания debounce.
+    // Context snapshot (game/api/preset/settings/session) is taken at edit time —
+    // so the debounced write always targets the correct game even if the user
+    // switched away before debounce fired.
     const snap = overridesToFlushRef.current;
     if (!snap) return;
     overridesToFlushRef.current = null;
@@ -359,7 +358,7 @@ export function useReShadePage(game: GameProfile) {
           onSuccess: () => {
             if (!isActiveMutationSession(session, game.id)) return;
             setDisclaimer(null);
-            setMessage("ReShade включён для всех игр.");
+            setMessage(t("messages.enabledForAll"));
           },
         },
       );
@@ -369,7 +368,7 @@ export function useReShadePage(game: GameProfile) {
     if (disclaimer === "install") {
       if (!bundleBinValid) {
         setDisclaimer(null);
-        setError("ReShade не встроен в сборку — см. технические детали.");
+        setError(t("messages.notBundled"));
         return;
       }
       const proceed = () => {
@@ -500,7 +499,7 @@ export function useReShadePage(game: GameProfile) {
       ? (presets.find((p) => p.id === effectivePresetId)?.name ?? effectivePresetId)
       : null;
 
-  const primaryCtaLabel = status?.installed ? "Обновить ReShade" : "Установить ReShade";
+  const primaryCtaLabel = status?.installed ? t("cta.update") : t("cta.install");
   const primaryCtaLoading = installMutation.isPending || updatePresetMutation.isPending;
   const canPrimaryCta =
     !gameRunning &&
@@ -515,7 +514,7 @@ export function useReShadePage(game: GameProfile) {
 
   const requestInstall = () => {
     if (!effectiveApi) {
-      setError("Сначала выберите графический API.");
+      setError(t("messages.selectApiFirst"));
       return;
     }
     if (!selectedApi && settings) {

@@ -13,7 +13,7 @@ pub struct GameProfile {
     pub is_ue: bool,
     #[serde(default)]
     pub is_unity: bool,
-    /// Игры с пресетами, разобранными автором приложения (Forza и др.).
+    /// Games with presets curated by the app author (Forza, etc.).
     #[serde(default)]
     pub is_author_curated: bool,
     #[serde(default)]
@@ -68,7 +68,7 @@ pub struct ApplyResult {
     pub backup_id: String,
     pub changed_files: Vec<String>,
     pub diff: Vec<ConfigDiffEntry>,
-    /// Актуальный каталог config после reconcile (может отличаться от сохранённого в профиле).
+    /// Current config directory after reconcile (may differ from the profile-stored path).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effective_config_dir: Option<String>,
 }
@@ -108,17 +108,17 @@ pub struct GameParameter {
     pub present_in_ini: bool,
     #[serde(default)]
     pub default_value: Option<String>,
-    /// Тип интерактивного контрола в ручном редакторе: "slider" | "toggle" | "select" | "stepper" | "text".
-    /// None — фронтенд сам подбирает по value_type/min/max.
+    /// Interactive control type in the manual editor: "slider" | "toggle" | "select" | "stepper" | "text".
+    /// None — frontend infers from value_type/min/max.
     #[serde(default)]
     pub ui_control: Option<String>,
-    /// Шаг для slider/stepper.
+    /// Step for slider/stepper.
     #[serde(default)]
     pub step: Option<String>,
-    /// Варианты для select.
+    /// Options for select.
     #[serde(default)]
     pub options: Option<Vec<ParameterOption>>,
-    /// Рекомендованное автором значение (показывается как подсказка/кнопка).
+    /// Author-recommended value (shown as hint/button).
     #[serde(default)]
     pub recommended: Option<String>,
 }

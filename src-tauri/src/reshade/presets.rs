@@ -16,19 +16,28 @@ pub fn list_presets() -> Vec<ReShadePresetInfo> {
         ReShadePresetInfo {
             id: "performance".to_string(),
             name: "Performance".to_string(),
-            description: "Лёгкое повышение резкости без тяжёлых эффектов — минимум нагрузки на GPU.".to_string(),
+            description: crate::i18n::t(
+                "Лёгкое повышение резкости без тяжёлых эффектов — минимум нагрузки на GPU.",
+                "Light sharpening without heavy effects — minimal GPU load.",
+            ),
             author: false,
         },
         ReShadePresetInfo {
             id: "clarity".to_string(),
             name: "Clarity".to_string(),
-            description: "Баланс чёткости и контраста для повседневной игры.".to_string(),
+            description: crate::i18n::t(
+                "Баланс чёткости и контраста для повседневной игры.",
+                "Balance of clarity and contrast for everyday play.",
+            ),
             author: false,
         },
         ReShadePresetInfo {
             id: "cinematic".to_string(),
             name: "Cinematic".to_string(),
-            description: "Мягкая цветокоррекция и виньетка — чуть кинематографичнее картинка.".to_string(),
+            description: crate::i18n::t(
+                "Мягкая цветокоррекция и виньетка — чуть кинематографичнее картинка.",
+                "Soft color grading and vignette — slightly more cinematic look.",
+            ),
             author: false,
         },
     ]
@@ -52,16 +61,19 @@ pub fn reshade_bundle_dir() -> PathBuf {
 
 pub fn preset_ini_path(preset_id: &str) -> Result<PathBuf, String> {
     if !preset_exists(preset_id) {
-        return Err(format!("Неизвестный пресет ReShade: {preset_id}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Неизвестный пресет ReShade: {preset_id}"), &format!("Unknown ReShade preset: {preset_id}")),
+            &format!("Unknown ReShade preset: {preset_id}"),
+        ));
     }
     let path = reshade_bundle_dir()
         .join("presets")
         .join(preset_id)
         .join("ReShade.ini");
     if !path.is_file() {
-        return Err(format!(
-            "Файл пресета не найден в бандле: {}",
-            path.display()
+        return Err(crate::i18n::t(
+            &format!("Файл пресета не найден в бандле: {}", path.display()),
+            &format!("Preset file not found in bundle: {}", path.display()),
         ));
     }
     Ok(path)
@@ -154,10 +166,16 @@ pub struct PresetDetails {
 
 pub fn preset_details(preset_id: &str, game_id: Option<&str>) -> Result<PresetDetails, String> {
     if !crate::fs_util::is_safe_pack_id(preset_id) {
-        return Err(format!("Недопустимый идентификатор пресета: {preset_id}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Недопустимый идентификатор пресета: {preset_id}"), &format!("Invalid preset identifier: {preset_id}")),
+            &format!("Invalid preset identifier: {preset_id}"),
+        ));
     }
     if !super::game_presets::preset_exists_for(preset_id, game_id) {
-        return Err(format!("Неизвестный пресет ReShade: {preset_id}"));
+        return Err(crate::i18n::t(
+            &crate::i18n::t(&format!("Неизвестный пресет ReShade: {preset_id}"), &format!("Unknown ReShade preset: {preset_id}")),
+            &format!("Unknown ReShade preset: {preset_id}"),
+        ));
     }
     let raw = super::game_presets::read_preset_ini_for(preset_id, game_id)?;
     Ok(PresetDetails {
@@ -232,15 +250,23 @@ pub fn preset_shaders_ready_for(preset_id: &str, game_id: Option<&str>) -> bool 
     required.iter().all(|f| dir.join(f).is_file())
 }
 
-/// Безопасный пресет без внешних эффектов — игра стартует даже без shader pack.
-pub fn safe_preset_overlay() -> &'static str {
-    "; GSM safe fallback — эффекты отключены (нет шейдеров в бандле)\nTechniques=\nTechniqueSorting=\n"
+/// Safe preset without external effects — game starts even without a shader pack.
+pub fn safe_preset_overlay() -> String {
+    crate::i18n::t(
+        "; GSM safe fallback — эффекты отключены (нет шейдеров в бандле)\nTechniques=\nTechniqueSorting=\n",
+        "; GSM safe fallback — effects disabled (no shaders in bundle)\nTechniques=\nTechniqueSorting=\n",
+    )
 }
 
 pub fn read_base_ini() -> Result<String, String> {
     let path = base_ini_path();
     if path.is_file() {
-        fs::read_to_string(&path).map_err(|e| format!("Не удалось прочитать ReShade.ini: {e}"))
+        fs::read_to_string(&path).map_err(|e| {
+            crate::i18n::t(
+                &crate::i18n::t(&format!("Не удалось прочитать ReShade.ini: {e}"), &format!("Failed to read ReShade.ini: {e}")),
+                &format!("Failed to read ReShade.ini: {e}"),
+            )
+        })
     } else {
         Ok(default_base_ini())
     }

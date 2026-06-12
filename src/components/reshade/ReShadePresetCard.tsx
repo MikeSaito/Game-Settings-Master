@@ -1,4 +1,5 @@
 import { Check, Sparkles, Zap } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { presetAccentForReShade } from "../../lib/reshade";
 import type { ReShadePresetInfo } from "../../lib/types";
 import { cn } from "../../lib/cn";
@@ -23,6 +24,7 @@ export function ReShadePresetCard({
   disabled,
   onSelect,
 }: Props) {
+  const { t } = useTranslation("reshade");
   const accent = presetAccentForReShade(preset.id);
   const showHighlight = HIGHLIGHT_IDS.has(preset.id) || preset.author;
 
@@ -43,7 +45,7 @@ export function ReShadePresetCard({
           <Badge tone="accent">
             <span className="inline-flex items-center gap-1">
               <Sparkles size={10} />
-              от автора
+              {t("presetCard.fromAuthor")}
             </span>
           </Badge>
         ) : (
@@ -52,12 +54,12 @@ export function ReShadePresetCard({
         <div className="flex shrink-0 items-center gap-1.5">
           {installed && (
             <Badge tone="success">
-              <span className="text-[10px]">В игре</span>
+              <span className="text-[10px]">{t("presetCard.inGame")}</span>
             </Badge>
           )}
           {appliesWhenAdapted && !installed && (
             <Badge tone="accent">
-              <span className="text-[10px]">Применится</span>
+              <span className="text-[10px]">{t("presetCard.willApply")}</span>
             </Badge>
           )}
           {selected && (
@@ -74,7 +76,7 @@ export function ReShadePresetCard({
           <Badge tone="accent">
             <span className="inline-flex items-center gap-1">
               <Zap size={10} />
-              {preset.author ? "Для этой игры" : "Рекомендуемый"}
+              {preset.author ? t("presetCard.forThisGame") : t("presetCard.recommended")}
             </span>
           </Badge>
         </div>

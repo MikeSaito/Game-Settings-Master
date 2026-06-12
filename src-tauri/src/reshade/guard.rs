@@ -3,7 +3,7 @@ use crate::app_error::running_game_reshade_blocked;
 use crate::fs_util::is_exe_running;
 use crate::models::GameProfile;
 
-/// Имя exe для проверки процесса: из профиля или поиск в папке установки.
+/// Exe name for process check: from profile or search in the install folder.
 pub(crate) fn running_exe_name(profile: &GameProfile) -> Option<String> {
     if let Some(exe) = profile.exe_name.as_deref().filter(|s| !s.is_empty()) {
         return Some(normalize_exe_name(exe));
@@ -25,11 +25,12 @@ fn normalize_exe_name(name: &str) -> String {
 
 pub fn ensure_game_not_running(profile: &GameProfile) -> Result<(), String> {
     let Some(exe) = running_exe_name(profile) else {
-        return Err(
+        return Err(crate::i18n::t(
             "Не удалось определить exe игры для проверки процесса. \
-             Укажите exe в профиле и закройте игру перед изменением ReShade."
-                .to_string(),
-        );
+             Укажите exe в профиле и закройте игру перед изменением ReShade.",
+            "Failed to determine game exe for process check. \
+             Set exe in profile and close the game before changing ReShade.",
+        ));
     };
     if is_exe_running(&exe) {
         return Err(running_game_reshade_blocked(&exe));

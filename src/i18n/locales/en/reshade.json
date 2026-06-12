@@ -1,0 +1,160 @@
+{
+  "emptyState": {
+    "title": "Select a game",
+    "description": "ReShade is configured per game from your library."
+  },
+  "messages": {
+    "installed": "ReShade installed ({{api}}).{{warn}} Launch the game — Home for the ReShade menu.",
+    "removed": "ReShade removed from the game folder.{{warn}}",
+    "removedBroken": "Broken installation cleaned up — you can launch the game.{{warn}}",
+    "presetApplied": "Preset «{{preset}}» applied.{{warn}}",
+    "enabledForAll": "ReShade enabled for all games.",
+    "notBundled": "ReShade is not bundled in this build — see technical details.",
+    "selectApiFirst": "Select a graphics API first."
+  },
+  "cta": {
+    "update": "Update ReShade",
+    "install": "Install ReShade"
+  },
+  "section": {
+    "enable": {
+      "title": "Enable"
+    },
+    "preset": {
+      "title": "Post-processing preset",
+      "hint": "Performance — FPS · Clarity — balanced · Cinematic — softer"
+    },
+    "fineTune": {
+      "title": "Fine-tuning",
+      "hint": "Optional — the full menu is in-game via Home"
+    }
+  },
+  "enable": {
+    "forGame": "ReShade for {{name}}",
+    "postProcess": "Post-processing before launching from GSM",
+    "loadingOption": "Loading…",
+    "recommendedSuffix": " · recommended",
+    "gpuAdapted": "Adapted for {{gpu}}: {{reason}}",
+    "proxyRemovedNote": "When launching from GSM, the proxy ReShade is removed from the game folder so the game starts without effects.",
+    "globalSettingsSummary": "Settings for all games ▾",
+    "globalToggleLabel": "ReShade enabled globally",
+    "defaultPreset": "Default preset: {{preset}}"
+  },
+  "fineTune": {
+    "show": "Configure effects and parameters",
+    "hide": "Hide effects and parameters",
+    "effects": "Effects",
+    "notInPresetSuffix": " · not in preset",
+    "loadingEffects": "Loading effects…",
+    "gpuSaving": {
+      "title": "GPU saving",
+      "desc": "Less load on the graphics card"
+    }
+  },
+  "licenses": {
+    "summary": "ReShade licenses and authors",
+    "addonSuffix": ". BSD 3-Clause license. Game Settings Master is not affiliated with or endorsed by ReShade's authors.",
+    "fullTextPath": "Full license text in the application directory:",
+    "shadersLabel": ". Shaders:",
+    "presetEffects": "GSM preset effects: Clarity (Ioxa), Vignette (CeeJay.dk), AdaptiveSharpen (bacondither) — see headers in"
+  },
+  "tech": {
+    "summary": "Technical details",
+    "dllInApp": "dll in app:",
+    "shadersInApp": "shaders in app:",
+    "shadersInGame": "shaders in game:",
+    "yes": "yes",
+    "no": "no",
+    "devHint": "Dev: addon DLL in src-tauri/presets/reshade/bin/, shaders — npm run reshade:setup"
+  },
+  "footer": {
+    "applying": "Applying…",
+    "remove": "Remove",
+    "openExeFolder": "Open exe folder",
+    "launchHintBefore": "Launch the game — the",
+    "playButton": "Play",
+    "launchHintMiddle": "button in the header. In game —",
+    "launchHintAfter": "for the ReShade menu."
+  },
+  "presetCard": {
+    "fromAuthor": "by author",
+    "inGame": "In game",
+    "willApply": "Will apply",
+    "forThisGame": "For this game",
+    "recommended": "Recommended"
+  },
+  "apiPicker": {
+    "title": "Which graphics API does the game use?",
+    "description": "GSM does not detect the API automatically — choose it manually, like in the ReShade installer. Not sure? Check the game's graphics settings: usually UE5 = DX12, older UE4 = DX11.",
+    "remember": "Remember for this game",
+    "cancel": "Cancel",
+    "confirm": "Continue"
+  },
+  "disclaimer": {
+    "enable": {
+      "title": "Enable ReShade?",
+      "body": "ReShade is a third-party post-processor (a DLL proxy in the game folder). In online games with anti-cheat this can lead to an account ban. GSM does not check for anti-cheat — you accept the risk yourself.",
+      "confirm": "I understand the risks, enable"
+    },
+    "install": {
+      "title": "Install ReShade into the game folder?",
+      "body": "GSM will copy the ReShade DLL, ReShade.ini and the preset into the exe directory. An existing proxy DLL (dxgi.dll / d3d11.dll) will be saved to a backup. Close the game before installing.",
+      "confirm": "Install"
+    },
+    "launch": {
+      "title": "Launch with ReShade",
+      "body": "Before launching, GSM will prepare ReShade in the game folder. Reminder: using ReShade in multiplayer is at your own risk.",
+      "confirm": "Launch"
+    },
+    "cancel": "Cancel"
+  },
+  "lib": {
+    "launchVia": "Launching via {{launcher}}…",
+    "blockedBrokenLaunch": "Broken ReShade install and no working DLLs in the app. Open the ReShade tab → Remove, or click Play without ReShade.",
+    "apiNotSelected": "Not selected",
+    "engineApiUe5": "UE5 → usually DirectX 12 (dxgi.dll)",
+    "engineApiUe4": "UE4 → usually DirectX 11 (d3d11.dll)",
+    "engineApiForza": "Forza → usually DirectX 12 (dxgi.dll)",
+    "engineApiUnity": "Unity → usually DirectX 11",
+    "engineApiGeneric": "Choose the API the game uses",
+    "healthGlobalOff": "ReShade disabled globally",
+    "healthGameOff": "ReShade disabled for this game",
+    "healthBroken": "Broken installation",
+    "healthBrokenDetail": "Invalid proxy in the game folder — Remove on the ReShade tab or Play in the header for auto-recovery",
+    "healthReady": "Ready to launch",
+    "healthNotInstalled": "Not installed",
+    "alertError": "Error",
+    "alertBrokenTitle": "Broken installation",
+    "alertBrokenMessage": "An invalid ReShade remains in the game folder (corrupt proxy or wrong file). Click Remove below or launch with Play in the header — GSM will try to restore the install.",
+    "alertRemove": "Remove",
+    "alertNoDllTitle": "ReShade not ready to install",
+    "alertNoDllMessage": "ReShade DLLs were not found in the app install. Reinstall Game Settings Master or click Play without ReShade.",
+    "alertDisclaimerTitle": "Warning",
+    "alertDisclaimerMessage": "GSM does not check for anti-cheat. ReShade may violate online game rules. Use at your own risk.",
+    "statusGlobalOff": "● ReShade disabled globally · proxy removed on launch",
+    "statusGameOff": "● Disabled for this game · proxy removed on launch",
+    "statusBroken": "● Error in game folder",
+    "statusApiNotSelected": "API not selected",
+    "statusInstalled": "● Installed · {{api}} · {{preset}}",
+    "statusPresetAdapted": "{{installed}} (selected {{requested}})",
+    "statusWillInstall": "● Not installed · {{api}} · will use {{preset}}",
+    "statusNotInstalled": "● Not installed · {{api}} · {{preset}}",
+    "effects": {
+      "Clarity": { "label": "Clarity", "hint": "Local contrast — detail without global sharpness" },
+      "Vignette": { "label": "Vignette", "hint": "Darkening at the frame edges" },
+      "AdaptiveSharpen": { "label": "Adaptive sharpen", "hint": "Sharp edges without colored halos" },
+      "Vibrance": { "label": "Vibrance", "hint": "Gently boosts colors" },
+      "LiftGammaGain": { "label": "Brightness and contrast", "hint": "Shadows, midtones and highlights" }
+    },
+    "sliders": {
+      "AdaptiveSharpen_sharp_strength": "Sharpness",
+      "Clarity_ClarityRadius": "Clarity radius",
+      "Clarity_ClarityOffset": "Clarity offset",
+      "Clarity_ClarityMaskIntensity": "Clarity mask",
+      "Vignette_Amount": "Vignette strength",
+      "Vignette_Radius": "Vignette radius",
+      "Vibrance_Vibrance": "Vibrance",
+      "LiftGammaGain_RGB_Gain": "Brightness (gain)"
+    }
+  }
+}

@@ -11,22 +11,37 @@ pub fn register_vulkan_layer(manifest_path: &Path) -> Result<(), String> {
 
     let manifest = manifest_path
         .canonicalize()
-        .map_err(|e| format!("Некорректный путь Vulkan manifest: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Некорректный путь Vulkan manifest: {e}"),
+                &format!("Invalid Vulkan manifest path: {e}"),
+            )
+        })?;
     if !manifest.is_file() {
-        return Err(format!(
-            "Vulkan manifest не найден: {}",
-            manifest_path.display()
+        return Err(crate::i18n::t(
+            &format!("Vulkan manifest не найден: {}", manifest_path.display()),
+            &format!("Vulkan manifest not found: {}", manifest_path.display()),
         ));
     }
 
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let (key, _) = hklm
         .create_subkey(IMPLICIT_LAYERS_KEY)
-        .map_err(|e| format!("Не удалось открыть реестр Vulkan layers: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось открыть реестр Vulkan layers: {e}"),
+                &format!("Failed to open Vulkan layers registry: {e}"),
+            )
+        })?;
     key.set_value(manifest.to_string_lossy().as_ref(), &0u32)
         .map_err(|e| {
-            format!(
-                "Не удалось зарегистрировать Vulkan layer (нужны права администратора?): {e}"
+            crate::i18n::t(
+                &format!(
+                    "Не удалось зарегистрировать Vulkan layer (нужны права администратора?): {e}"
+                ),
+                &format!(
+                    "Failed to register Vulkan layer (administrator rights required?): {e}"
+                ),
             )
         })?;
     Ok(())
@@ -41,7 +56,12 @@ pub fn unregister_vulkan_layer(manifest_path: &Path) -> Result<(), String> {
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let key = hklm
         .open_subkey_with_flags(IMPLICIT_LAYERS_KEY, KEY_SET_VALUE)
-        .map_err(|e| format!("Не удалось открыть реестр Vulkan layers: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось открыть реестр Vulkan layers: {e}"),
+                &format!("Failed to open Vulkan layers registry: {e}"),
+            )
+        })?;
 
     let raw = manifest_path.to_string_lossy().to_string();
     let mut candidates: Vec<String> = Vec::new();
@@ -57,7 +77,10 @@ pub fn unregister_vulkan_layer(manifest_path: &Path) -> Result<(), String> {
             Ok(_) => return Ok(()),
             Err(e) if e.kind() == ErrorKind::NotFound => continue,
             Err(e) => {
-                return Err(format!("Не удалось удалить запись Vulkan layer из реестра: {e}"));
+                return Err(crate::i18n::t(
+                    &format!("Не удалось удалить запись Vulkan layer из реестра: {e}"),
+                    &format!("Failed to remove Vulkan layer registry entry: {e}"),
+                ));
             }
         }
     }
@@ -66,7 +89,10 @@ pub fn unregister_vulkan_layer(manifest_path: &Path) -> Result<(), String> {
 
 #[cfg(not(windows))]
 pub fn register_vulkan_layer(_manifest_path: &Path) -> Result<(), String> {
-    Err("Vulkan layer registration поддерживается только на Windows.".to_string())
+    Err(crate::i18n::t(
+        "Vulkan layer registration поддерживается только на Windows.",
+        "Vulkan layer registration is only supported on Windows.",
+    ))
 }
 
 #[cfg(not(windows))]

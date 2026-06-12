@@ -1,4 +1,5 @@
 import { FolderOpen, Trash2, Wand2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ReShadePageState } from "./useReShadePage";
 import { Button } from "../ui/Button";
 
@@ -7,6 +8,8 @@ interface Props {
 }
 
 export function ReShadeWizardFooter({ page }: Props) {
+  const { t } = useTranslation("reshade");
+
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-center gap-4">
@@ -18,7 +21,7 @@ export function ReShadeWizardFooter({ page }: Props) {
           disabled={!page.canPrimaryCta}
           className="!px-6 !py-3 text-base"
         >
-          {page.primaryCtaLoading ? "Применение…" : page.primaryCtaLabel}
+          {page.primaryCtaLoading ? t("footer.applying") : page.primaryCtaLabel}
         </Button>
         <Button
           variant="ghost"
@@ -27,19 +30,20 @@ export function ReShadeWizardFooter({ page }: Props) {
           disabled={!page.canRemoveReShade}
           onClick={page.removeCurrentGameReShade}
         >
-          Удалить
+          {t("footer.remove")}
         </Button>
         <Button
           variant="ghost"
           icon={<FolderOpen size={16} />}
           onClick={() => page.openGameFolder()}
         >
-          Открыть папку exe
+          {t("footer.openExeFolder")}
         </Button>
       </div>
       <p className="text-sm text-muted">
-        Запуск игры — кнопка <strong>Играть</strong> в шапке. В игре — <strong>Home</strong> для
-        меню ReShade.
+        {t("footer.launchHintBefore")}{" "}
+        <strong>{t("footer.playButton")}</strong> {t("footer.launchHintMiddle")}{" "}
+        <strong>Home</strong> {t("footer.launchHintAfter")}
       </p>
     </section>
   );

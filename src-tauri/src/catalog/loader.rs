@@ -21,6 +21,14 @@ pub struct ParameterCatalogEntry {
     #[serde(default)]
     pub value_hint: Option<String>,
     #[serde(default)]
+    pub title_en: Option<String>,
+    #[serde(default)]
+    pub description_en: Option<String>,
+    #[serde(default)]
+    pub impact_en: Option<String>,
+    #[serde(default)]
+    pub value_hint_en: Option<String>,
+    #[serde(default)]
     pub in_game_label: Option<String>,
     #[serde(default)]
     pub file: Option<String>,
@@ -56,10 +64,29 @@ struct KeyHintEntry {
     pub max: Option<String>,
     #[serde(default)]
     pub value_hint: Option<String>,
+    #[serde(default)]
+    pub title_en: Option<String>,
+    #[serde(default)]
+    pub description_en: Option<String>,
+    #[serde(default)]
+    pub impact_en: Option<String>,
+    #[serde(default)]
+    pub value_hint_en: Option<String>,
     #[serde(default = "default_value_type")]
     pub value_type: String,
     #[serde(default = "default_editable")]
     pub editable: bool,
+}
+
+fn pick(ru: &str, en: &Option<String>) -> String {
+    match crate::i18n::current_lang() {
+        crate::i18n::Lang::En => en
+            .as_deref()
+            .filter(|s| !s.trim().is_empty())
+            .unwrap_or(ru)
+            .to_string(),
+        _ => ru.to_string(),
+    }
 }
 
 fn default_value_type() -> String {
@@ -403,7 +430,10 @@ pub fn get_game_parameters(
             }
             param.max = Some(max.to_string());
             if param.value_hint.is_none() {
-                param.value_hint = Some(format!("0 Low → {max} max (Cinematic+)"));
+                param.value_hint = Some(crate::i18n::t(
+                    &format!("0 Low → {max} макс. (Cinematic+)"),
+                    &format!("0 Low → {max} max (Cinematic+)"),
+                ));
             }
         } else {
             apply_known_range_patterns(param);
@@ -435,7 +465,7 @@ fn param_match_score(param: &GameParameter, index: &CatalogIndex) -> i32 {
     }
 }
 
-/// Один ключ в нескольких секциях GUS (SN2) — оставляем совпадение с каталогом.
+/// One key in multiple GUS sections (SN2) — keep the match aligned with the catalog.
 fn dedupe_parameters_by_file_key(parameters: &mut Vec<GameParameter>, index: &CatalogIndex) {
     let mut keep: HashMap<String, usize> = HashMap::new();
     let mut result = Vec::with_capacity(parameters.len());
@@ -493,13 +523,16 @@ fn entry_to_parameter(
         section: section.to_string(),
         file: file.to_string(),
         value: value.to_string(),
-        title: entry.title.clone(),
-        description: entry.description.clone(),
-        impact: entry.impact.clone(),
+        title: pick(&entry.title, &entry.title_en),
+        description: pick(&entry.description, &entry.description_en),
+        impact: pick(&entry.impact, &entry.impact_en),
         category: entry.category.clone(),
         min: entry.min.clone(),
         max: entry.max.clone(),
-        value_hint: entry.value_hint.clone(),
+        value_hint: entry
+            .value_hint
+            .as_ref()
+            .map(|h| pick(h, &entry.value_hint_en)),
         in_game_label: entry.in_game_label.clone(),
         value_type: entry.value_type.clone(),
         editable: entry.editable,
@@ -562,13 +595,16 @@ fn hint_to_parameter(
         section: section.to_string(),
         file: file.to_string(),
         value: value.to_string(),
-        title: hint.title.clone(),
-        description: hint.description.clone(),
-        impact: hint.impact.clone(),
+        title: pick(&hint.title, &hint.title_en),
+        description: pick(&hint.description, &hint.description_en),
+        impact: pick(&hint.impact, &hint.impact_en),
         category: hint.category.clone(),
         min: hint.min.clone(),
         max: hint.max.clone(),
-        value_hint: hint.value_hint.clone(),
+        value_hint: hint
+            .value_hint
+            .as_ref()
+            .map(|h| pick(h, &hint.value_hint_en)),
         in_game_label: None,
         value_type: hint.value_type.clone(),
         editable: hint.editable,
@@ -617,16 +653,24 @@ fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameP
             file: file.to_string(),
             value: value.to_string(),
             title: key.to_string(),
-            description: format!(
-                "Сложная структура из {file} (секция [{section}]). Редактирование в приложении недоступно."
+            description: crate::i18n::t(
+                &format!(
+                    "Сложная структура из {file} (секция [{section}]). Редактирование в приложении недоступно."
+                ),
+                &format!(
+                    "Complex structure from {file} (section [{section}]). Editing in the app is not available."
+                ),
             ),
-            impact: "Ключ хранит вложенные данные игры (привязки клавиш, профили и т.п.). Меняйте в меню игры или вручную в ini.".to_string(),
+            impact: crate::i18n::t(
+                "Ключ хранит вложенные данные игры (привязки клавиш, профили и т.п.). Меняйте в меню игры или вручную в ini.",
+                "This key stores nested game data (key bindings, profiles, etc.). Change it in the game menu or manually in the ini file.",
+            ),
             category: infer_category(section, key),
             min: None,
             max: None,
-            value_hint: Some(format!(
-                "Текущее значение ({})",
-                truncate_preview(value, 80)
+            value_hint: Some(crate::i18n::t(
+                &format!("Текущее значение ({})", truncate_preview(value, 80)),
+                &format!("Current value ({})", truncate_preview(value, 80)),
             )),
             in_game_label: None,
             value_type: "opaque".to_string(),
@@ -642,9 +686,21 @@ fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameP
     }
 
     let value_note = if value.chars().count() > 120 {
-        format!(" Текущее: «{}».", truncate_preview(value, 120))
+        format!(
+            " {}",
+            crate::i18n::t(
+                &format!("Текущее: «{}».", truncate_preview(value, 120)),
+                &format!("Current: «{}».", truncate_preview(value, 120)),
+            )
+        )
     } else {
-        format!(" Текущее значение: «{value}».")
+        format!(
+            " {}",
+            crate::i18n::t(
+                &format!("Текущее значение: «{value}»."),
+                &format!("Current value: «{value}»."),
+            )
+        )
     };
 
     let mut param = GameParameter {
@@ -653,10 +709,18 @@ fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameP
         file: file.to_string(),
         value: value.to_string(),
         title: humanize_cvar_key(key),
-        description: format!(
-            "Параметр «{key}» из {file} (секция [{section}]). В справочнике нет отдельной статьи — ниже подобран ориентировочный диапазон по типу ключа.{value_note}"
+        description: crate::i18n::t(
+            &format!(
+                "Параметр «{key}» из {file} (секция [{section}]). В справочнике нет отдельной статьи — ниже подобран ориентировочный диапазон по типу ключа.{value_note}"
+            ),
+            &format!(
+                "Parameter «{key}» from {file} (section [{section}]). No dedicated catalog entry — an approximate range is inferred from the key type below.{value_note}"
+            ),
         ),
-        impact: "Меняйте осторожно: эффект зависит от игры, возможен сброс при обновлении или смене пресета в меню.".to_string(),
+        impact: crate::i18n::t(
+            "Меняйте осторожно: эффект зависит от игры, возможен сброс при обновлении или смене пресета в меню.",
+            "Change with care: the effect depends on the game; values may reset after updates or when switching presets in the menu.",
+        ),
         category: infer_category(section, key),
         min: None,
         max: None,
@@ -707,13 +771,13 @@ fn humanize_cvar_key(key: &str) -> String {
         .map(|part| {
             let lower = part.to_lowercase();
             match lower.as_str() {
-                "max" => "макс.".to_string(),
-                "min" => "мин.".to_string(),
-                "quality" => "качество".to_string(),
-                "scale" => "масштаб".to_string(),
-                "distance" => "дальность".to_string(),
-                "shadow" => "тени".to_string(),
-                "streaming" => "стриминг".to_string(),
+                "max" => crate::i18n::t("макс.", "max").to_string(),
+                "min" => crate::i18n::t("мин.", "min").to_string(),
+                "quality" => crate::i18n::t("качество", "quality").to_string(),
+                "scale" => crate::i18n::t("масштаб", "scale").to_string(),
+                "distance" => crate::i18n::t("дальность", "distance").to_string(),
+                "shadow" => crate::i18n::t("тени", "shadows").to_string(),
+                "streaming" => crate::i18n::t("стриминг", "streaming").to_string(),
                 other => {
                     let mut chars = other.chars();
                     match chars.next() {
@@ -835,15 +899,24 @@ fn fill_generic_value_hint(param: &mut GameParameter) {
         return;
     }
     if param.value_type == "bool" {
-        param.value_hint = Some("True — вкл, False — выкл".to_string());
+        param.value_hint = Some(crate::i18n::t(
+            "True — вкл, False — выкл",
+            "True — on, False — off",
+        ));
         return;
     }
     if param.value_type == "enum" {
-        param.value_hint = Some("On — вкл, Off — выкл".to_string());
+        param.value_hint = Some(crate::i18n::t(
+            "On — вкл, Off — выкл",
+            "On — on, Off — off",
+        ));
         return;
     }
     if let (Some(min), Some(max)) = (&param.min, &param.max) {
-        param.value_hint = Some(format!("Допустимо: {min} – {max}"));
+        param.value_hint = Some(crate::i18n::t(
+            &format!("Допустимо: {min} – {max}"),
+            &format!("Allowed: {min} – {max}"),
+        ));
     }
 }
 
@@ -893,15 +966,18 @@ fn infer_range_from_value(param: &mut GameParameter) {
     if param.key == "sg.ResolutionQuality" {
         param.min = Some("25".to_string());
         param.max = Some("200".to_string());
-        param.value_hint = Some("Процент render scale, не индекс 0–4".to_string());
+        param.value_hint = Some(crate::i18n::t(
+            "Процент render scale, не индекс 0–4",
+            "Render scale percentage, not a 0–4 index",
+        ));
         return;
     }
 
     if param.value.trim() == "-1" || param.value.trim() == "-1.0" {
-        param.value_hint = Some(
-            "−1 — автоматически (движок/меню сами выбирают значение). Задайте число вручную, чтобы зафиксировать."
-                .to_string(),
-        );
+        param.value_hint = Some(crate::i18n::t(
+            "−1 — автоматически (движок/меню сами выбирают значение). Задайте число вручную, чтобы зафиксировать.",
+            "−1 — automatic (engine/menu chooses the value). Set a number manually to lock it in.",
+        ));
         return;
     }
 
@@ -958,7 +1034,12 @@ fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String>
     let boot_path = crate::unity::boot_config_path(config_dir);
     let boot_map = if boot_path.exists() {
         let content = std::fs::read_to_string(&boot_path)
-            .map_err(|e| format!("Не удалось прочитать boot.config: {e}"))?;
+            .map_err(|e| {
+                crate::i18n::t(
+                    &format!("Не удалось прочитать boot.config: {e}"),
+                    &format!("Failed to read boot.config: {e}"),
+                )
+            })?;
         crate::unity::parse_boot_config(&content)
     } else {
         HashMap::new()
@@ -1032,9 +1113,9 @@ fn get_forza_parameters(
                 .map(|dir| dir.join("media").join(&rel).is_file())
                 .unwrap_or(false);
             let value = if installed {
-                "установлено в игре".to_string()
+                crate::i18n::t("установлено в игре", "installed in game").to_string()
             } else {
-                "копируется пресетом".to_string()
+                crate::i18n::t("копируется пресетом", "copied by preset").to_string()
             };
             parameters.push(entry_to_parameter(
                 &entry, &entry.key, section, file, &value, true, installed,
@@ -1244,8 +1325,8 @@ mod tests {
 
     #[test]
     fn curated_scalability_entries_have_ui_controls() {
-        // Каталог берётся из bundled scalability.json (by_full_id — bundled выигрывает),
-        // поэтому курированные поля доходят до GameParameter независимо от удалённого кэша.
+        // Catalog comes from bundled scalability.json (by_full_id — bundled wins),
+        // so curated fields reach GameParameter regardless of remote cache.
         let dir = tempfile::tempdir().unwrap();
         fs::write(
             dir.path().join("GameUserSettings.ini"),

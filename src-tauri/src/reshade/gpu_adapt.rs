@@ -77,9 +77,15 @@ pub fn adapt_preset_with_gpu(requested: &str, gpu: &GpuCapabilities) -> GpuAdapt
     match requested {
         "cinematic" | "clarity" => GpuAdaptResult {
             preset_id: "performance".to_string(),
-            reason: Some(format!(
-                "Слабая GPU ({}) — выбран Performance вместо {}",
-                gpu.name, requested
+            reason: Some(crate::i18n::t(
+                &format!(
+                    "Слабая GPU ({}) — выбран Performance вместо {}",
+                    gpu.name, requested
+                ),
+                &format!(
+                    "Weak GPU ({}) — Performance selected instead of {}",
+                    gpu.name, requested
+                ),
             )),
         },
         _ => GpuAdaptResult {

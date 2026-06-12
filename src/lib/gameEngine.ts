@@ -1,12 +1,15 @@
+import i18n from "../i18n";
 import type { AppTab, GameProfile } from "./types";
 
-/** Игры с пресетами, разобранными автором (Forza и др.) — флаг из known.json / discovery. */
+/** Games with author-curated presets (Forza, etc.) — flag from known.json / discovery. */
 export function isAuthorCuratedGame(game: GameProfile | null | undefined): boolean {
   if (!game) return false;
   return game.is_author_curated === true;
 }
 
-export const AUTHOR_CURATED_SECTION_TITLE = "Разобрано автором";
+export function authorCuratedSectionTitle(): string {
+  return i18n.t("common:authorCuratedSection");
+}
 
 export function supportsIniPresets(game: GameProfile): boolean {
   return !!(
@@ -19,7 +22,7 @@ export function supportsReShade(game: GameProfile): boolean {
   return !!game.install_dir?.trim();
 }
 
-/** Вкладка авторских пресетов есть только у игр, разобранных автором (Forza и т.п.). */
+/** Author presets tab only for author-curated games (Forza, etc.). */
 export function supportsAuthorPresets(game: GameProfile): boolean {
   return !!(game.config_dir && isAuthorCuratedGame(game));
 }

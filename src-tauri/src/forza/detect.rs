@@ -21,18 +21,18 @@ pub fn is_forza_install(install_dir: &Path) -> bool {
 
 pub fn validate_forza_install_dir(install_dir: &Path) -> Result<PathBuf, String> {
     if !install_dir.exists() {
-        return Err(format!(
-            "Папка установки Forza не существует: {}",
-            install_dir.display()
+        return Err(crate::i18n::t(
+            &format!("Папка установки Forza не существует: {}", install_dir.display()),
+            &format!("Forza install directory does not exist: {}", install_dir.display()),
         ));
     }
     let canonical = install_dir
         .canonicalize()
-        .map_err(|e| format!("Некорректный путь установки Forza: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Некорректный путь установки Forza: {e}"), &format!("Invalid Forza install path: {e}")))?;
     if !is_forza_install(&canonical) {
-        return Err(format!(
-            "Папка не содержит Forza Horizon 6: {}",
-            canonical.display()
+        return Err(crate::i18n::t(
+            &format!("Папка не содержит Forza Horizon 6: {}", canonical.display()),
+            &format!("Directory does not contain Forza Horizon 6: {}", canonical.display()),
         ));
     }
     Ok(canonical)

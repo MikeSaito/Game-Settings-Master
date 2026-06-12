@@ -1,0 +1,60 @@
+{
+  "alerts": {
+    "errorTitle": "Error",
+    "coversTitle": "Covers",
+    "coversBody": "Steam games fetch the artwork automatically. For Epic and manual profiles, click \"Cover\" on the game card."
+  },
+  "header": {
+    "title": "Game Library",
+    "subtitle": "Steam · Epic · LocalAppData · manual add"
+  },
+  "badges": {
+    "withConfig": "{{count}} with config",
+    "withoutConfig": "{{count}} without config",
+    "ue": "{{count}} UE",
+    "unity": "{{count}} Unity",
+    "author": "{{count}} by author",
+    "other": "{{count}} other",
+    "withCover": "{{count}} with cover"
+  },
+  "source": {
+    "manual": "Manual"
+  },
+  "dialogs": {
+    "installFolder": "Select the game installation folder",
+    "configFolder": "Select the Saved/Config/Windows folder",
+    "coverFile": "Select a game cover",
+    "imageFilter": "Image"
+  },
+  "card": {
+    "fromAuthor": "By author",
+    "engineUnknown": "Engine not detected",
+    "probablyUe": "Probably UE",
+    "probablyUnity": "Probably Unity",
+    "select": "Select",
+    "cover": "Cover",
+    "resetCover": "Reset",
+    "removeProfile": "Remove profile"
+  },
+  "actions": {
+    "scan": "Scan",
+    "add": "Add",
+    "addManual": "Add manually"
+  },
+  "search": {
+    "placeholder": "Search or name for manual add…"
+  },
+  "loading": "Scanning Steam, Epic, LocalAppData…",
+  "empty": {
+    "nothingFound": "Nothing found",
+    "noGames": "No games found",
+    "tryAnother": "Try a different name or add a game manually.",
+    "scanOrAddPrefix": "Click \"Scan\" or \"Add\" to specify the installation folder. For Subnautica 2 config: "
+  },
+  "sections": {
+    "unityHint": "Presets modify boot.config in the *_Data folder.",
+    "authorHint": "Presets curated by the app author — a separate config format (Forza: UserConfigSelections + media).",
+    "otherTitle": "Other games",
+    "otherHint": "Engine not detected — automatic ini presets are unavailable. ReShade and launching from GSM are available."
+  }
+}

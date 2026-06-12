@@ -3,7 +3,7 @@ use sha2::{Digest, Sha256};
 use std::io::Read;
 use std::path::Path;
 
-/// Минимальный размер настоящего ReShade addon DLL (заглушки в dev — 2 байта «MZ»).
+/// Minimum size of a real ReShade addon DLL (dev stubs are 2-byte "MZ").
 pub const MIN_RESHADE_DLL_BYTES: u64 = 64 * 1024;
 const BINARY_HASHES_JSON: &str = include_str!("../../presets/reshade/binary-hashes.json");
 
@@ -51,26 +51,45 @@ pub fn is_valid_bundled_file(name: &str, path: &Path) -> bool {
 
 pub fn validate_bundled_file(name: &str, path: &Path) -> Result<(), String> {
     if !path.is_file() {
-        return Err(format!("Файл «{name}» не найден в бандле ReShade."));
+        return Err(crate::i18n::t(
+            &format!("Файл «{name}» не найден в бандле ReShade."),
+            &format!("File «{name}» not found in ReShade bundle."),
+        ));
     }
     let lower = name.to_ascii_lowercase();
     if lower.ends_with(".dll") && !is_valid_reshade_dll(path) {
         let size = fs_len(path).unwrap_or(0);
-        return Err(format!(
-            "«{name}» в бандле GSM — заглушка ({size} байт), не настоящий ReShade addon. \
-             Скачайте addon с https://reshade.me и положите в src-tauri/presets/reshade/bin/ \
-             (см. ATTRIBUTION.txt). Без этого игра не запустится — proxy DLL ломает DXGI/D3D."
+        return Err(crate::i18n::t(
+            &format!(
+                "«{name}» в бандле GSM — заглушка ({size} байт), не настоящий ReShade addon. \
+                 Скачайте addon с https://reshade.me и положите в src-tauri/presets/reshade/bin/ \
+                 (см. ATTRIBUTION.txt). Без этого игра не запустится — proxy DLL ломает DXGI/D3D."
+            ),
+            &format!(
+                "«{name}» in GSM bundle is a stub ({size} bytes), not a real ReShade addon. \
+                 Download the addon from https://reshade.me and place it in src-tauri/presets/reshade/bin/ \
+                 (see ATTRIBUTION.txt). Without it the game won't start — proxy DLL breaks DXGI/D3D."
+            ),
         ));
     }
     if lower.ends_with(".json") && !is_valid_bundled_json(path) {
-        return Err(format!("«{name}» в бандле повреждён или пуст."));
+        return Err(crate::i18n::t(
+            &format!("«{name}» в бандле повреждён или пуст."),
+            &format!("«{name}» in bundle is corrupted or empty."),
+        ));
     }
     if let Some(expected) = pinned_hash_for(name) {
         let actual = sha256_file(path)?;
         if !actual.eq_ignore_ascii_case(&expected) {
-            return Err(format!(
-                "«{name}» не прошёл SHA256-проверку (ожидался {expected}, получен {actual}). \
-                 Обновите бандл ReShade и binary-hashes.json."
+            return Err(crate::i18n::t(
+                &format!(
+                    "«{name}» не прошёл SHA256-проверку (ожидался {expected}, получен {actual}). \
+                     Обновите бандл ReShade и binary-hashes.json."
+                ),
+                &format!(
+                    "«{name}» failed SHA256 check (expected {expected}, got {actual}). \
+                     Update the ReShade bundle and binary-hashes.json."
+                ),
             ));
         }
     }
@@ -119,7 +138,12 @@ fn pinned_hash_for(name: &str) -> Option<String> {
 }
 
 fn sha256_file(path: &Path) -> Result<String, String> {
-    let data = std::fs::read(path).map_err(|e| format!("Не удалось прочитать {:?}: {e}", path))?;
+    let data = std::fs::read(path).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось прочитать {:?}: {e}", path),
+            &format!("Failed to read {:?}: {e}", path),
+        )
+    })?;
     let mut hasher = Sha256::new();
     hasher.update(&data);
     Ok(format!("{:x}", hasher.finalize()))

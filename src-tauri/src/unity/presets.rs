@@ -44,21 +44,21 @@ pub fn list_unity_presets() -> Result<Vec<PresetInfo>, String> {
 
 pub fn load_unity_preset(id: &str) -> Result<UnityPresetDefinition, String> {
     if !crate::fs_util::is_safe_pack_id(id) {
-        return Err(format!("Недопустимый идентификатор пресета: {id}"));
+        return Err(crate::i18n::t(&format!("Недопустимый идентификатор пресета: {id}"), &format!("Invalid preset identifier: {id}")));
     }
     if let Some(pack) = crate::remote_presets::find_unity_pack() {
         if let Some(result) = pack.load_unity_preset_json(id) {
             return result.and_then(|content| {
                 serde_json::from_str(&content)
-                    .map_err(|e| format!("Некорректный remote Unity-пресет '{id}': {e}"))
+                    .map_err(|e| crate::i18n::t(&format!("Некорректный remote Unity-пресет '{id}': {e}"), &format!("Invalid remote Unity preset '{id}': {e}")))
             });
         }
     }
 
     let path = presets_dir().join(format!("{id}.json"));
     let content =
-        fs::read_to_string(&path).map_err(|e| format!("Unity-пресет '{id}' не найден: {e}"))?;
-    serde_json::from_str(&content).map_err(|e| format!("Некорректный Unity-пресет '{id}': {e}"))
+        fs::read_to_string(&path).map_err(|e| crate::i18n::t(&format!("Unity-пресет '{id}' не найден: {e}"), &format!("Unity preset '{id}' not found: {e}")))?;
+    serde_json::from_str(&content).map_err(|e| crate::i18n::t(&format!("Некорректный Unity-пресет '{id}': {e}"), &format!("Invalid Unity preset '{id}': {e}")))
 }
 
 pub fn build_unity_combined_preset(base_id: &str) -> Result<UnityPresetDefinition, String> {

@@ -112,7 +112,10 @@ fn search_for_game_user_settings(root: &Path, max_depth: usize) -> Option<PathBu
 pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
     let path = PathBuf::from(config_dir.trim());
     if !path.exists() {
-        return Err(format!("Каталог конфигурации не существует: {config_dir}"));
+        return Err(crate::i18n::t(
+            &format!("Каталог конфигурации не существует: {config_dir}"),
+            &format!("Config directory does not exist: {config_dir}"),
+        ));
     }
 
     let resolved = path.canonicalize().unwrap_or_else(|_| path.clone());
@@ -127,16 +130,22 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
 
     let gus = resolved.join("GameUserSettings.ini");
     if !ue_path_has_saved_segment(&resolved) && !gus.exists() {
-        return Err(
-            "Каталог не похож на UE Saved/Config — нужен GameUserSettings.ini или путь .../Saved/Config/Windows"
-                .to_string(),
-        );
+        return Err(crate::i18n::t(
+            "Каталог не похож на UE Saved/Config — нужен GameUserSettings.ini или путь .../Saved/Config/Windows",
+            "Directory does not look like UE Saved/Config — GameUserSettings.ini or a .../Saved/Config/Windows path is required",
+        ));
     }
 
     if !gus.exists() {
-        return Err(format!(
-            "GameUserSettings.ini не найден в {}",
-            resolved.display()
+        return Err(crate::i18n::t(
+            &format!(
+                "GameUserSettings.ini не найден в {}",
+                resolved.display()
+            ),
+            &format!(
+                "GameUserSettings.ini not found in {}",
+                resolved.display()
+            ),
         ));
     }
 

@@ -4,7 +4,7 @@ pub struct ScreenResolution {
     pub height: u32,
 }
 
-/// Разрешение основного монитора (Windows). Для пресетов — нативный режим дисплея.
+/// Primary monitor resolution (Windows). For presets — native display mode.
 pub fn primary_resolution() -> Option<ScreenResolution> {
     #[cfg(windows)]
     {

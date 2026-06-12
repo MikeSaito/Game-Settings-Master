@@ -8,7 +8,7 @@ import {
 } from "./api";
 import type { AppTab, GameProfile } from "./types";
 
-/** Подгружает данные только для активной вкладки игры. */
+/** Prefetches data only for the active game tab. */
 export function prefetchGameWorkspace(
   queryClient: QueryClient,
   game: GameProfile,

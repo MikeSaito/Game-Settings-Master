@@ -1,4 +1,5 @@
 import { Palette } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ReShadeWizard } from "../components/reshade/ReShadeWizard";
 import { EmptyState } from "../components/ui/EmptyState";
 import type { GameProfile } from "../lib/types";
@@ -8,12 +9,13 @@ interface Props {
 }
 
 export function ReShade({ game }: Props) {
+  const { t } = useTranslation("reshade");
   if (!game) {
     return (
       <EmptyState
         icon={Palette}
-        title="Выберите игру"
-        description="ReShade настраивается для конкретной игры из библиотеки."
+        title={t("emptyState.title")}
+        description={t("emptyState.description")}
       />
     );
   }

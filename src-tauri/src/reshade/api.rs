@@ -36,7 +36,10 @@ impl GraphicsApi {
             "dx12" | "dxgi" => Ok(GraphicsApi::Dx12),
             "opengl" | "ogl" => Ok(GraphicsApi::OpenGL),
             "vulkan" | "vk" => Ok(GraphicsApi::Vulkan),
-            other => Err(format!("Неизвестный графический API: {other}")),
+            other => Err(crate::i18n::t(
+                &format!("Неизвестный графический API: {other}"),
+                &format!("Unknown graphics API: {other}"),
+            )),
         }
     }
 
@@ -60,19 +63,28 @@ impl GraphicsApi {
         }
     }
 
-    pub fn description(self) -> &'static str {
+    pub fn description(self) -> String {
         match self {
-            GraphicsApi::Dx9 => "Старые игры. Устанавливает d3d9.dll.",
-            GraphicsApi::Dx11 => {
-                "Классический D3D11 — d3d11.dll. Старые UE4, многие инди. Если не работает — попробуйте DX12."
-            }
-            GraphicsApi::Dx12 => {
-                "DX12 и DXGI-игры — dxgi.dll. Обычно UE5 и современные AAA."
-            }
-            GraphicsApi::OpenGL => "OpenGL-рендер — opengl32.dll.",
-            GraphicsApi::Vulkan => {
-                "Vulkan implicit layer: ReShade64.dll + ReShade64.json (реестр, как в официальном setup)."
-            }
+            GraphicsApi::Dx9 => crate::i18n::t(
+                "Старые игры. Устанавливает d3d9.dll.",
+                "Legacy games. Installs d3d9.dll.",
+            ),
+            GraphicsApi::Dx11 => crate::i18n::t(
+                "Классический D3D11 — d3d11.dll. Старые UE4, многие инди. Если не работает — попробуйте DX12.",
+                "Classic D3D11 — d3d11.dll. Older UE4, many indie games. If it fails — try DX12.",
+            ),
+            GraphicsApi::Dx12 => crate::i18n::t(
+                "DX12 и DXGI-игры — dxgi.dll. Обычно UE5 и современные AAA.",
+                "DX12 and DXGI games — dxgi.dll. Usually UE5 and modern AAA titles.",
+            ),
+            GraphicsApi::OpenGL => crate::i18n::t(
+                "OpenGL-рендер — opengl32.dll.",
+                "OpenGL renderer — opengl32.dll.",
+            ),
+            GraphicsApi::Vulkan => crate::i18n::t(
+                "Vulkan implicit layer: ReShade64.dll + ReShade64.json (реестр, как в официальном setup).",
+                "Vulkan implicit layer: ReShade64.dll + ReShade64.json (registry, like official setup).",
+            ),
         }
     }
 
@@ -102,7 +114,7 @@ pub fn list_graphics_apis() -> Vec<GraphicsApiInfo> {
         .map(|api| GraphicsApiInfo {
             id: api.as_str().to_string(),
             name: api.display_name().to_string(),
-            description: api.description().to_string(),
+            description: api.description(),
             files: api.files_to_install().iter().map(|f| (*f).to_string()).collect(),
         })
         .collect()

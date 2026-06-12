@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 import { cn } from "../../lib/cn";
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-/** Переключатель Выкл / Вкл */
+/** Off / On toggle switch */
 export function Toggle({ checked, onChange, disabled, className }: Props) {
   return (
     <button
@@ -40,7 +41,7 @@ export function Toggle({ checked, onChange, disabled, className }: Props) {
           checked ? "pr-6 text-white" : "pl-6 text-muted",
         )}
       >
-        {checked ? "Вкл" : "Выкл"}
+        {checked ? i18n.t("common:toggleOn") : i18n.t("common:toggleOff")}
       </span>
     </button>
   );

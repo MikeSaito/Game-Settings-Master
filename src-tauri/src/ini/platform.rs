@@ -13,7 +13,7 @@ pub fn config_root_from_platform_dir(config_dir: &Path) -> Option<PathBuf> {
     config_dir.parent().map(|p| p.to_path_buf())
 }
 
-/// Все платформенные папки, где есть GameUserSettings.ini.
+/// All platform folders that contain GameUserSettings.ini.
 pub fn platform_dirs_with_gus(config_root: &Path) -> Vec<PathBuf> {
     let mut dirs = Vec::new();
     for name in PLATFORM_DIRS {
@@ -37,7 +37,7 @@ fn ends_with_platform(path: &Path, platform: &str) -> bool {
         .is_some_and(|n| n.eq_ignore_ascii_case(platform))
 }
 
-/// Выбор папки config, которую реально использует игра.
+/// Picks the config folder the game actually uses.
 pub fn pick_platform_config_dir(config_root: &Path, hints: &PlatformHints) -> Option<PathBuf> {
     let with_gus = platform_dirs_with_gus(config_root);
     if with_gus.is_empty() {
@@ -75,14 +75,14 @@ pub fn pick_platform_config_dir(config_root: &Path, hints: &PlatformHints) -> Op
 
 fn platform_preference_order(engine_family: Option<&str>) -> &'static [&'static str] {
     match engine_family {
-        // Saved/Config/Windows — типичный путь UE5 (Subnautica 2 и др.). Win64 — папка exe, не config.
+        // Saved/Config/Windows — typical UE5 path (Subnautica 2, etc.). Win64 is the exe folder, not config.
         Some("ue5") => &["Windows", "WinGDK", "Win64", "WindowsNoEditor"],
         Some("ue4") => &["WindowsNoEditor", "Windows", "WinGDK", "Win64"],
         _ => &["Windows", "WindowsNoEditor", "WinGDK", "Win64"],
     }
 }
 
-/// Куда писать пресеты: все платформенные папки с GUS, если их несколько.
+/// Where to write presets: all platform folders with GUS when there are several.
 pub fn apply_target_dirs(config_dir: &Path, hints: &PlatformHints) -> Vec<PathBuf> {
     let Some(root) = config_root_from_platform_dir(config_dir) else {
         return vec![config_dir.to_path_buf()];
@@ -105,7 +105,7 @@ pub fn apply_target_dirs(config_dir: &Path, hints: &PlatformHints) -> Vec<PathBu
     targets
 }
 
-/// Если сохранённый путь устарел (другая платформа новее) — вернуть актуальный.
+/// If the saved path is stale (another platform is newer) — return the current one.
 pub fn reconcile_config_dir(config_dir: &Path, hints: &PlatformHints) -> PathBuf {
     let Some(root) = config_root_from_platform_dir(config_dir) else {
         return config_dir.to_path_buf();

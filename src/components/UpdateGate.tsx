@@ -1,5 +1,6 @@
 import { Download, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppUpdater } from "../hooks/useAppUpdater";
 import { Button } from "./ui/Button";
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function UpdateGate({ children }: Props) {
+  const { t } = useTranslation("updater");
   const {
     status,
     update,
@@ -36,14 +38,10 @@ export function UpdateGate({ children }: Props) {
             Game Settings Master
           </h1>
           <p className="mt-2 text-sm text-muted">
-            {status === "checking" && "Проверка обновлений…"}
-            {status === "required" &&
-              `Доступна новая версия ${update?.version}. Для продолжения нужно обновиться.`}
-            {status === "downloading" && "Загрузка и установка обновления…"}
-            {status === "error" &&
-              (update
-                ? "Не удалось установить обновление. Проверьте интернет и повторите."
-                : "Не удалось проверить обновления. Проверьте интернет и повторите.")}
+            {status === "checking" && t("checking")}
+            {status === "required" && t("required", { version: update?.version })}
+            {status === "downloading" && t("downloading")}
+            {status === "error" && (update ? t("installFailed") : t("checkFailed"))}
           </p>
         </div>
 
@@ -60,7 +58,7 @@ export function UpdateGate({ children }: Props) {
             onClick={() => void installUpdate()}
             className="w-full"
           >
-            Обновить до {update?.version}
+            {t("updateTo", { version: update?.version })}
           </Button>
         )}
 
@@ -91,11 +89,11 @@ export function UpdateGate({ children }: Props) {
               onClick={() => void retry()}
               className="w-full"
             >
-              Повторить
+              {t("retry")}
             </Button>
             {canBypassOnError && (
               <Button variant="ghost" onClick={continueWithoutUpdate} className="w-full">
-                Продолжить без обновления (офлайн)
+                {t("continueOffline")}
               </Button>
             )}
           </div>

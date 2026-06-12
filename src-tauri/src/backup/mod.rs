@@ -15,7 +15,7 @@ const INI_FILES: [&str; 6] = [
     "DeviceProfiles.ini",
 ];
 
-/// Override-файлы пресетов; при сбросе удаляются, GameUserSettings.ini остаётся.
+/// Preset override ini files; removed on reset, GameUserSettings.ini is kept.
 pub const OVERRIDE_INI_FILES: [&str; 5] = [
     "Engine.ini",
     "Game.ini",
@@ -47,26 +47,26 @@ fn legacy_backup_root(config_dir: &Path) -> PathBuf {
 pub fn backup_forza_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<String, String> {
     let backup_root = backup_store_dir(config_dir);
     fs::create_dir_all(&backup_root)
-        .map_err(|e| format!("Не удалось создать каталог backup: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог backup: {e}"), &format!("Failed to create backup directory: {e}")))?;
 
     let backup_id = match backup_id {
         Some(id) => {
             if !is_safe_backup_id(id) {
-                return Err(format!("Недопустимый идентификатор backup: {id}"));
+                return Err(crate::i18n::t(&format!("Недопустимый идентификатор backup: {id}"), &format!("Invalid backup identifier: {id}")));
             }
             id.to_string()
         }
         None => Local::now().format("%Y%m%d_%H%M%S").to_string(),
     };
     let backup_path = backup_root.join(&backup_id);
-    fs::create_dir_all(&backup_path).map_err(|e| format!("Не удалось создать backup: {e}"))?;
+    fs::create_dir_all(&backup_path).map_err(|e| crate::i18n::t(&format!("Не удалось создать backup: {e}"), &format!("Failed to create backup: {e}")))?;
 
     let src = crate::forza::user_config_file(config_dir);
     if src.is_file() {
         let dst = backup_path.join("UserConfigSelections");
         let bytes = read_file_bytes(&src)?;
         write_file_bytes(&dst, &bytes)
-            .map_err(|e| format!("Не удалось сохранить backup UserConfigSelections: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить backup UserConfigSelections: {e}"), &format!("Failed to save backup UserConfigSelections: {e}")))?;
     }
 
     Ok(backup_id)
@@ -78,19 +78,19 @@ pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<S
     }
     let backup_root = backup_store_dir(config_dir);
     fs::create_dir_all(&backup_root)
-        .map_err(|e| format!("Не удалось создать каталог backup: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог backup: {e}"), &format!("Failed to create backup directory: {e}")))?;
 
     let backup_id = match backup_id {
         Some(id) => {
             if !is_safe_backup_id(id) {
-                return Err(format!("Недопустимый идентификатор backup: {id}"));
+                return Err(crate::i18n::t(&format!("Недопустимый идентификатор backup: {id}"), &format!("Invalid backup identifier: {id}")));
             }
             id.to_string()
         }
         None => Local::now().format("%Y%m%d_%H%M%S").to_string(),
     };
     let backup_path = backup_root.join(&backup_id);
-    fs::create_dir_all(&backup_path).map_err(|e| format!("Не удалось создать backup: {e}"))?;
+    fs::create_dir_all(&backup_path).map_err(|e| crate::i18n::t(&format!("Не удалось создать backup: {e}"), &format!("Failed to create backup: {e}")))?;
 
     for file in INI_FILES {
         let src = config_dir.join(file);
@@ -100,7 +100,7 @@ pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<S
         let dst = backup_path.join(file);
         let bytes = read_file_bytes(&src)?;
         write_file_bytes(&dst, &bytes)
-            .map_err(|e| format!("Не удалось сохранить backup {file}: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить backup {file}: {e}"), &format!("Failed to save backup {file}: {e}")))?;
     }
 
     Ok(backup_id)
@@ -153,14 +153,14 @@ fn list_backups_in(backup_root: &Path) -> Result<Vec<(String, String, Vec<String
 
 fn resolve_backup_path(config_dir: &Path, backup_id: &str) -> Result<PathBuf, String> {
     if !is_safe_backup_id(backup_id) {
-        return Err(format!("Недопустимый идентификатор backup: {backup_id}"));
+        return Err(crate::i18n::t(&format!("Недопустимый идентификатор backup: {backup_id}"), &format!("Invalid backup identifier: {backup_id}")));
     }
 
     let store = backup_store_dir(config_dir);
     let primary = store.join(backup_id);
     if primary.exists() {
         if !path_within_root(&store, &primary) {
-            return Err(format!("Недопустимый путь backup: {backup_id}"));
+            return Err(crate::i18n::t(&format!("Недопустимый путь backup: {backup_id}"), &format!("Invalid backup path: {backup_id}")));
         }
         return Ok(primary);
     }
@@ -169,19 +169,19 @@ fn resolve_backup_path(config_dir: &Path, backup_id: &str) -> Result<PathBuf, St
     let legacy = legacy_root.join(backup_id);
     if legacy.exists() {
         if !path_within_root(&legacy_root, &legacy) {
-            return Err(format!("Недопустимый путь backup: {backup_id}"));
+            return Err(crate::i18n::t(&format!("Недопустимый путь backup: {backup_id}"), &format!("Invalid backup path: {backup_id}")));
         }
         return Ok(legacy);
     }
 
-    Err(format!("Backup '{backup_id}' не найден"))
+    Err(crate::i18n::t(&format!("Backup '{backup_id}' не найден"), &format!("Backup '{backup_id}' not found")))
 }
 
 pub fn backup_path_for(config_dir: &Path, backup_id: &str) -> Result<PathBuf, String> {
     resolve_backup_path(config_dir, backup_id)
 }
 
-/// Удаляет override ini, оставляя только GameUserSettings.ini (настройки из меню игры).
+/// Removes override ini files, keeping only GameUserSettings.ini (in-game menu settings).
 pub fn reset_config_to_user_settings(config_dir: &Path) -> Result<(String, Vec<String>), String> {
     let backup_id = backup_config_dir(config_dir, None)?;
     let deleted = reset_config_overrides(config_dir)?;
@@ -197,7 +197,7 @@ fn reset_config_overrides(config_dir: &Path) -> Result<Vec<String>, String> {
             continue;
         }
         crate::fs_util::clear_readonly(&path);
-        fs::remove_file(&path).map_err(|e| format!("Не удалось удалить {file}: {e}"))?;
+        fs::remove_file(&path).map_err(|e| crate::i18n::t(&format!("Не удалось удалить {file}: {e}"), &format!("Failed to delete {file}: {e}")))?;
         deleted.push(file.to_string());
     }
 
@@ -229,7 +229,7 @@ pub fn reset_config_all_targets(
                 if rollback_errors.is_empty() {
                     return Err(e);
                 }
-                return Err(format!("{e} (откат: {})", rollback_errors.join("; ")));
+                return Err(crate::i18n::t(&format!("{e} (откат: {})", rollback_errors.join("; ")), &format!("{e} (rollback: {})", rollback_errors.join("; "))));
             }
         }
     }
@@ -238,7 +238,7 @@ pub fn reset_config_all_targets(
     Ok((shared_id, all_deleted))
 }
 
-/// Откат apply: удаляет override-ini, созданные apply, затем восстанавливает snapshot.
+/// Apply rollback: deletes override ini created by apply, then restores the snapshot.
 pub fn rollback_apply_snapshot(config_dir: &Path, backup_id: &str) -> Result<Vec<String>, String> {
     let backup_path = resolve_backup_path(config_dir, backup_id)?;
     let mut backed_files = std::collections::HashSet::new();
@@ -253,7 +253,7 @@ pub fn rollback_apply_snapshot(config_dir: &Path, backup_id: &str) -> Result<Vec
         if path.exists() && !backed_files.contains(file) {
             crate::fs_util::clear_readonly(&path);
             if let Err(e) = fs::remove_file(&path) {
-                return Err(format!("Не удалось удалить {file} при откате: {e}"));
+                return Err(crate::i18n::t(&format!("Не удалось удалить {file} при откате: {e}"), &format!("Failed to delete {file} during rollback: {e}")));
             }
         }
     }
@@ -269,13 +269,13 @@ pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>,
         if entry.file_type().map_err(|e| e.to_string())?.is_file() {
             let name = entry.file_name().to_string_lossy().to_string();
             if !is_allowed_restore_filename(&name) {
-                return Err(format!("Недопустимый файл в backup: {name}"));
+                return Err(crate::i18n::t(&format!("Недопустимый файл в backup: {name}"), &format!("Invalid file in backup: {name}")));
             }
             let dst = config_dir.join(&name);
             let bytes = read_file_bytes(&entry.path())
-                .map_err(|e| format!("Не удалось прочитать backup {name}: {e}"))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось прочитать backup {name}: {e}"), &format!("Failed to read backup {name}: {e}")))?;
             write_file_bytes(&dst, &bytes)
-                .map_err(|e| format!("Не удалось восстановить {name}: {e}"))?;
+                .map_err(|e| crate::i18n::t(&format!("Не удалось восстановить {name}: {e}"), &format!("Failed to restore {name}: {e}")))?;
             restored.push(name);
         }
     }
@@ -311,7 +311,7 @@ pub fn restore_backup_all_targets(
                 if rollback_errors.is_empty() {
                     return Err(e);
                 }
-                return Err(format!("{e} (откат: {})", rollback_errors.join("; ")));
+                return Err(crate::i18n::t(&format!("{e} (откат: {})", rollback_errors.join("; ")), &format!("{e} (rollback: {})", rollback_errors.join("; "))));
             }
         }
     }

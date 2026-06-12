@@ -42,7 +42,7 @@ pub fn install_reshade(
     let preset = install_preset_for_game(&profile.id, preset_id)?;
 
     if !preset_exists_for(&preset, Some(&profile.id)) {
-        return Err(format!("Неизвестный пресет ReShade: {preset}"));
+        return Err(crate::i18n::t(&format!("Неизвестный пресет ReShade: {preset}"), &format!("Unknown ReShade preset: {preset}")));
     }
 
     validate_api_bundle(api)?;
@@ -52,9 +52,10 @@ pub fn install_reshade(
     let mut warnings = Vec::new();
     if !shaders_ready {
         warnings.push(
-            "Шейдеры пресета отсутствуют в бандле — установлен безопасный режим (эффекты выкл.). \
-             Добавьте reshade-shaders в presets/reshade/shaders/Shaders/ и переустановите."
-                .to_string(),
+            crate::i18n::t(
+                "Шейдеры пресета отсутствуют в бандле — установлен безопасный режим (эффекты выкл.). Добавьте reshade-shaders в presets/reshade/shaders/Shaders/ и переустановите.",
+                "Preset shaders are missing from the bundle — installed in safe mode (effects off). Add reshade-shaders to presets/reshade/shaders/Shaders/ and reinstall.",
+            ),
         );
     }
 
@@ -66,10 +67,9 @@ pub fn install_reshade(
     let needs_vulkan_registry = if api == GraphicsApi::Vulkan {
         let manifest = target_dir.join("ReShade64.json");
         if let Err(e) = register_vulkan_layer(&manifest) {
-            warnings.push(format!(
-                "VULKAN_REGISTRY_REQUIRED: Vulkan layer не зарегистрирован в реестре: {e}. \
-                 Установка завершена частично: прокси-файлы установлены, но для Vulkan нужен registry layer. \
-                 Запустите GSM от администратора или установите ReShade через официальный setup."
+            warnings.push(crate::i18n::t(
+                &format!("VULKAN_REGISTRY_REQUIRED: Vulkan layer не зарегистрирован в реестре: {e}. Установка завершена частично: прокси-файлы установлены, но для Vulkan нужен registry layer. Запустите GSM от администратора или установите ReShade через официальный setup."),
+                &format!("VULKAN_REGISTRY_REQUIRED: Vulkan layer is not registered in the registry: {e}. Installation partially completed: proxy files are installed, but Vulkan requires a registry layer. Run GSM as administrator or install ReShade via the official setup."),
             ));
             true
         } else {
@@ -89,8 +89,9 @@ pub fn install_reshade(
         let rollback_suffix = rollback_err
             .map(|msg| format!(" {msg}"))
             .unwrap_or_default();
-        return Err(format!(
-            "Не удалось создать ReShade.ini: {e}. Установка откатана.{rollback_suffix}"
+        return Err(crate::i18n::t(
+            &format!("Не удалось создать ReShade.ini: {e}. Установка откатана.{rollback_suffix}"),
+            &format!("Failed to create ReShade.ini: {e}. Installation rolled back.{rollback_suffix}"),
         ));
     }
     if let Err(e) = sync_shaders_from_bundle(&target_dir) {
@@ -98,8 +99,9 @@ pub fn install_reshade(
         let rollback_suffix = rollback_err
             .map(|msg| format!(" {msg}"))
             .unwrap_or_default();
-        return Err(format!(
-            "Не удалось синхронизировать шейдеры ReShade: {e}. Установка откатана.{rollback_suffix}"
+        return Err(crate::i18n::t(
+            &format!("Не удалось синхронизировать шейдеры ReShade: {e}. Установка откатана.{rollback_suffix}"),
+            &format!("Failed to sync ReShade shaders: {e}. Installation rolled back.{rollback_suffix}"),
         ));
     }
 
@@ -124,8 +126,9 @@ pub fn install_reshade(
         let rollback_suffix = rollback_err
             .map(|msg| format!(" {msg}"))
             .unwrap_or_default();
-        return Err(format!(
-            "Не удалось записать маркер установки ReShade: {e}. Установка откатана.{rollback_suffix}"
+        return Err(crate::i18n::t(
+            &format!("Не удалось записать маркер установки ReShade: {e}. Установка откатана.{rollback_suffix}"),
+            &format!("Failed to write ReShade install marker: {e}. Installation rolled back.{rollback_suffix}"),
         ));
     }
 
@@ -146,7 +149,7 @@ pub fn update_preset(
     ensure_game_not_running(profile)?;
     let preset = install_preset_for_game(&profile.id, Some(preset_id))?;
     if !preset_exists_for(&preset, Some(&profile.id)) {
-        return Err(format!("Неизвестный пресет ReShade: {preset}"));
+        return Err(crate::i18n::t(&format!("Неизвестный пресет ReShade: {preset}"), &format!("Unknown ReShade preset: {preset}")));
     }
     let target_dir = resolve_install_target(profile)?;
     let marker = read_marker(&target_dir);
@@ -183,9 +186,10 @@ pub fn update_preset(
     }
     let mut warnings = Vec::new();
     if !shaders_ready {
-        warnings.push(
-            "Пресет применён без эффектов — шейдеры не найдены в бандле.".to_string(),
-        );
+        warnings.push(crate::i18n::t(
+            "Пресет применён без эффектов — шейдеры не найдены в бандле.",
+            "Preset applied without effects — shaders not found in bundle.",
+        ));
     }
     Ok(InstallResult {
         target_dir: target_dir.to_string_lossy().to_string(),
@@ -249,11 +253,17 @@ fn skip_launch_should_remove_reshade(
     }
 }
 
-const PROXY_CLEANUP_FAILED_MSG: &str = "Запуск без ReShade, но не удалось удалить proxy DLL из папки игры. \
-Откройте вкладку ReShade → «Удалить» или удалите dxgi.dll/d3d11.dll вручную.";
+fn proxy_cleanup_failed_msg() -> String {
+    crate::i18n::t(
+        "Запуск без ReShade, но не удалось удалить proxy DLL из папки игры. \
+Откройте вкладку ReShade → «Удалить» или удалите dxgi.dll/d3d11.dll вручную.",
+        "Launch without ReShade, but failed to remove proxy DLL from the game folder. \
+Open ReShade tab → «Remove» or delete dxgi.dll/d3d11.dll manually.",
+    )
+}
 
-/// Удаляет proxy ReShade из папки игры перед запуском без эффектов.
-/// Запуск не блокируется; при сбое очистки возвращает предупреждение для UI.
+/// Removes ReShade proxy from the game folder before launch without effects.
+/// Launch is not blocked; cleanup failure returns a warning for the UI.
 pub fn prepare_launch_without_reshade(profile: &GameProfile) -> Result<Option<String>, String> {
     if !reshade_ops_possible(profile) {
         return Ok(None);
@@ -269,16 +279,16 @@ pub fn prepare_launch_without_reshade(profile: &GameProfile) -> Result<Option<St
         }
         if let Ok(dir) = resolve_install_target(profile) {
             if super::detect::read_marker(&dir).is_some() {
-                return Ok(Some(format!("{PROXY_CLEANUP_FAILED_MSG} ({e})")));
+                return Ok(Some(format!("{} ({e})", proxy_cleanup_failed_msg())));
             }
         }
-        return Ok(Some(format!("{PROXY_CLEANUP_FAILED_MSG} ({e})")));
+        return Ok(Some(format!("{} ({e})", proxy_cleanup_failed_msg())));
     }
 
     // remove_reshade already verifies GSM proxy removal before restore; restored originals are OK.
     if let Ok(dir) = resolve_install_target(profile) {
         if super::detect::read_marker(&dir).is_some() {
-            return Ok(Some(PROXY_CLEANUP_FAILED_MSG.to_string()));
+            return Ok(Some(proxy_cleanup_failed_msg().to_string()));
         }
     }
 
@@ -327,20 +337,32 @@ fn best_effort_cleanup_while_running(profile: &GameProfile, reason: &str) -> Str
 
         if failed.is_empty() {
             let _ = super::detect::remove_marker(&target_dir);
-            details.push(
-                "Сделана best-effort очистка ReShade (часть файлов могла остаться заблокированной)."
-                    .to_string(),
-            );
+            details.push(crate::i18n::t(
+                "Сделана best-effort очистка ReShade (часть файлов могла остаться заблокированной).",
+                "Best-effort ReShade cleanup done (some files may remain locked).",
+            ));
         } else {
-            details.push(format!("Часть файлов не удалось удалить: {}", failed.join("; ")));
+            details.push(crate::i18n::t(
+                &format!("Часть файлов не удалось удалить: {}", failed.join("; ")),
+                &format!("Some files could not be removed: {}", failed.join("; ")),
+            ));
         }
     } else {
-        details.push("Не удалось определить папку игры для best-effort очистки.".to_string());
+        details.push(crate::i18n::t(
+            "Не удалось определить папку игры для best-effort очистки.",
+            "Failed to determine game folder for best-effort cleanup.",
+        ));
     }
 
-    format!(
-        "Запуск без ReShade: игра всё ещё запущена, полная деинсталляция отложена. {}",
-        details.join(" ")
+    crate::i18n::t(
+        &format!(
+            "Запуск без ReShade: игра всё ещё запущена, полная деинсталляция отложена. {}",
+            details.join(" ")
+        ),
+        &format!(
+            "Launch without ReShade: game still running, full uninstall deferred. {}",
+            details.join(" ")
+        ),
     )
 }
 
@@ -368,9 +390,10 @@ pub fn ensure_before_launch(profile: &GameProfile) -> Result<Option<String>, Str
 
     let api = super::config::effective_api_for_game(&profile.id)?;
     let Some(api) = api else {
-        return Err(
-            "RESHADE_API_REQUIRED: Выберите графический API для ReShade перед запуском.".to_string(),
-        );
+        return Err(crate::i18n::t(
+            "RESHADE_API_REQUIRED: Выберите графический API для ReShade перед запуском.",
+            "RESHADE_API_REQUIRED: Select a graphics API for ReShade before launch.",
+        ));
     };
 
     let preset = effective_preset_for_game(&profile.id)?;
@@ -391,24 +414,35 @@ pub fn ensure_installed(
         repaired_broken = true;
         status = super::detect::get_status(profile)?;
         if status.broken_install {
-            return Err(
+            return Err(crate::i18n::t(
                 "ReShade установлен некорректно и не удалось очистить proxy DLL. \
-                 Откройте вкладку ReShade → «Удалить» или запустите «Без ReShade»."
-                    .to_string(),
-            );
+                 Откройте вкладку ReShade → «Удалить» или запустите «Без ReShade».",
+                "ReShade is installed incorrectly and proxy DLL could not be cleaned up. \
+                 Open ReShade tab → «Remove» or launch «Without ReShade».",
+            ));
         }
     }
 
     if !super::detect::bundle_binaries_valid_for_api(api) {
         let repaired_hint = if repaired_broken {
-            " Повреждённый ReShade уже удалён, но переустановить нельзя — "
+            crate::i18n::t(
+                " Повреждённый ReShade уже удалён, но переустановить нельзя — ",
+                " Broken ReShade already removed, but cannot reinstall — ",
+            )
         } else {
-            " "
+            " ".to_string()
         };
-        return Err(format!(
-            "В бандле GSM только заглушки ReShade, не настоящие addon DLL.{repaired_hint}\
-             Скачайте addon с https://reshade.me → presets/reshade/bin/. \
-             Либо «Играть без ReShade» / отключите ReShade."
+        return Err(crate::i18n::t(
+            &format!(
+                "В бандле GSM только заглушки ReShade, не настоящие addon DLL.{repaired_hint}\
+                 Скачайте addon с https://reshade.me → presets/reshade/bin/. \
+                 Либо «Играть без ReShade» / отключите ReShade."
+            ),
+            &format!(
+                "GSM bundle contains only ReShade stubs, not real addon DLLs.{repaired_hint}\
+                 Download addon from https://reshade.me → presets/reshade/bin/. \
+                 Or «Play without ReShade» / disable ReShade."
+            ),
         ));
     }
 
@@ -464,9 +498,9 @@ fn cleanup_previous_install(target_dir: &Path) -> Result<(), String> {
             })
             .cloned()
             .collect();
-        return Err(format!(
-            "Не удалось снять предыдущий proxy ReShade: {}",
-            left.join(", ")
+        return Err(crate::i18n::t(
+            &format!("Не удалось снять предыдущий proxy ReShade: {}", left.join(", ")),
+            &format!("Failed to remove previous ReShade proxy: {}", left.join(", ")),
         ));
     }
 
@@ -481,7 +515,7 @@ fn cleanup_previous_install(target_dir: &Path) -> Result<(), String> {
 fn backup_existing_files(target_dir: &Path, api: GraphicsApi) -> Result<(), String> {
     let backup = backup_dir(target_dir);
     fs::create_dir_all(&backup)
-        .map_err(|e| format!("Не удалось создать каталог бэкапа ReShade: {e}"))?;
+        .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог бэкапа ReShade: {e}"), &format!("Failed to create ReShade backup directory: {e}")))?;
 
     for file in api.files_to_install() {
         let proxy_path = target_dir.join(file);
@@ -494,7 +528,7 @@ fn backup_existing_files(target_dir: &Path, api: GraphicsApi) -> Result<(), Stri
         }
         clear_readonly(&proxy_path);
         fs::copy(&proxy_path, &dest)
-            .map_err(|e| format!("Не удалось сохранить бэкап {file}: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить бэкап {file}: {e}"), &format!("Failed to save backup {file}: {e}")))?;
     }
     Ok(())
 }
@@ -511,7 +545,7 @@ fn install_api_files(api: GraphicsApi, target_dir: &Path) -> Result<(), String> 
     for file in api.files_to_install() {
         let src = bundled_file(file);
         let dest = target_dir.join(file);
-        let bytes = fs::read(&src).map_err(|e| format!("Не удалось прочитать {src:?}: {e}"))?;
+        let bytes = fs::read(&src).map_err(|e| crate::i18n::t(&format!("Не удалось прочитать {src:?}: {e}"), &format!("Failed to read {src:?}: {e}")))?;
         if let Err(e) = write_file_bytes(&dest, &bytes) {
             rollback_partial_install(target_dir, &written);
             return Err(e);
@@ -557,7 +591,7 @@ fn rollback_failed_install(target_dir: &Path, api: GraphicsApi) -> Result<(), St
     if ini.is_file() {
         clear_readonly(&ini);
         if let Err(e) = fs::remove_file(&ini) {
-            rollback_errors.push(format!("Не удалось удалить ReShade.ini: {e}"));
+            rollback_errors.push(crate::i18n::t(&format!("Не удалось удалить ReShade.ini: {e}"), &format!("Failed to delete ReShade.ini: {e}")));
         }
     }
 
@@ -565,7 +599,7 @@ fn rollback_failed_install(target_dir: &Path, api: GraphicsApi) -> Result<(), St
     if shaders_dir.is_dir() {
         clear_readonly(&shaders_dir);
         if let Err(e) = fs::remove_dir_all(&shaders_dir) {
-            rollback_errors.push(format!("Не удалось удалить reshade-shaders: {e}"));
+            rollback_errors.push(crate::i18n::t(&format!("Не удалось удалить reshade-shaders: {e}"), &format!("Failed to delete reshade-shaders: {e}")));
         }
     }
 
@@ -576,9 +610,15 @@ fn rollback_failed_install(target_dir: &Path, api: GraphicsApi) -> Result<(), St
     if rollback_errors.is_empty() {
         Ok(())
     } else {
-        Err(format!(
-            "Откат после неудачной установки выполнен не полностью: {}",
-            rollback_errors.join("; ")
+        Err(crate::i18n::t(
+            &format!(
+                "Откат после неудачной установки выполнен не полностью: {}",
+                rollback_errors.join("; ")
+            ),
+            &format!(
+                "Rollback after failed install was incomplete: {}",
+                rollback_errors.join("; ")
+            ),
         ))
     }
 }
@@ -597,7 +637,7 @@ fn write_reshade_ini(
     let mut preset = if shaders_ready {
         read_preset_ini_for(preset_id, game_id)?
     } else {
-        safe_preset_overlay().to_string()
+        safe_preset_overlay()
     };
     if let Some(ov) = overrides {
         preset = apply_overrides_to_preset(&preset, ov);
@@ -635,7 +675,7 @@ fn sync_shaders_from_bundle(target_dir: &Path) -> Result<(), String> {
         }
         clear_readonly(&dest);
         fs::remove_dir_all(&dest)
-            .map_err(|e| format!("Не удалось удалить устаревшие шейдеры ReShade: {e}"))?;
+            .map_err(|e| crate::i18n::t(&format!("Не удалось удалить устаревшие шейдеры ReShade: {e}"), &format!("Failed to remove outdated ReShade shaders: {e}")))?;
     }
 
     copy_dir_recursive(&src, &dest)?;
@@ -644,8 +684,8 @@ fn sync_shaders_from_bundle(target_dir: &Path) -> Result<(), String> {
 
 fn copy_dir_recursive(src: &Path, dest: &Path) -> Result<(), String> {
     fs::create_dir_all(dest)
-        .map_err(|e| format!("Не удалось создать {dest:?}: {e}"))?;
-    for entry in fs::read_dir(src).map_err(|e| format!("Не удалось прочитать {src:?}: {e}"))? {
+        .map_err(|e| crate::i18n::t(&format!("Не удалось создать {dest:?}: {e}"), &format!("Failed to create {dest:?}: {e}")))?;
+    for entry in fs::read_dir(src).map_err(|e| crate::i18n::t(&format!("Не удалось прочитать {src:?}: {e}"), &format!("Failed to read {src:?}: {e}")))? {
         let entry = entry.map_err(|e| e.to_string())?;
         let file_type = entry.file_type().map_err(|e| e.to_string())?;
         let from = entry.path();
@@ -899,8 +939,8 @@ mod tests {
 
     #[test]
     fn prepare_launch_without_reshade_preserves_foreign_proxy_without_footprint() {
-        // Без следов GSM (ни маркера, ни бэкапа) чужой/неизвестный dxgi.dll не трогаем:
-        // он может быть родным proxy игры. Запуск не блокируется.
+        // No GSM traces (neither marker nor backup): do not touch foreign/unknown dxgi.dll —
+        // it may be the game's native proxy. Launch is not blocked.
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("Game.exe"), b"").unwrap();
         fs::write(dir.path().join("dxgi.dll"), b"foreign proxy").unwrap();

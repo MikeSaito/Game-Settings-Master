@@ -7,6 +7,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "../components/ui/Alert";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -33,6 +34,7 @@ function formatBackupDate(id: string): string {
 }
 
 export function Backups({ game }: Props) {
+  const { t } = useTranslation("backups");
   const queryClient = useQueryClient();
   const [successMessage, setSuccessMessage] = useState<string>();
   const [restoreError, setRestoreError] = useState<string>();
@@ -89,7 +91,10 @@ export function Backups({ game }: Props) {
       const gameId = activeGameIdRef.current;
       if (!gameId || gameId !== snapshot.gameId || configDir !== snapshot.configDir) return;
       setSuccessMessage(
-        `Восстановлен backup ${formatBackupDate(backupId)}: ${files.join(", ")}. Перезапустите игру.`,
+        t("restore.success", {
+          date: formatBackupDate(backupId),
+          files: files.join(", "),
+        }),
       );
       queryClient.invalidateQueries({ queryKey: ["backups", configDir, gameId] });
       queryClient.invalidateQueries({ queryKey: ["preview", configDir] });
@@ -122,12 +127,13 @@ export function Backups({ game }: Props) {
       const gameId = activeGameIdRef.current;
       if (!gameId || gameId !== snapshot.gameId || configDir !== snapshot.configDir) return;
       if (result.deleted_files.length === 0) {
-        setSuccessMessage(
-          "Override-файлы уже отсутствуют — остался только GameUserSettings.ini. Backup создан на всякий случай.",
-        );
+        setSuccessMessage(t("reset.noFiles"));
       } else {
         setSuccessMessage(
-          `Сброс выполнен: удалены ${result.deleted_files.join(", ")}. GameUserSettings.ini сохранён. Backup ${result.backup_id}. Перезапустите игру.`,
+          t("reset.success", {
+            files: result.deleted_files.join(", "),
+            backupId: result.backup_id,
+          }),
         );
       }
       queryClient.invalidateQueries({ queryKey: ["backups", configDir, gameId] });
@@ -142,16 +148,16 @@ export function Backups({ game }: Props) {
     return (
       <EmptyState
         icon={History}
-        title="Выберите игру"
-        description="Откройте библиотеку и выберите игру с config — здесь появится список резервных копий ini."
+        title={t("empty.selectGame")}
+        description={t("empty.selectGameDesc")}
       />
     );
   }
 
   if (!configDir) {
     return (
-      <Alert tone="warning" icon={AlertTriangle} title={`Config не найден — ${game.name}`}>
-        Укажите папку Saved/Config/Windows в библиотеке или запустите игру один раз.
+      <Alert tone="warning" icon={AlertTriangle} title={t("configMissing.title", { name: game.name })}>
+        {t("configMissing.body")}
       </Alert>
     );
   }
@@ -159,44 +165,43 @@ export function Backups({ game }: Props) {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Бекапы"
-        meta={<Badge tone="default">{backups.length} копий</Badge>}
+        title={t("header.title")}
+        meta={<Badge tone="default">{t("header.backupsCount", { count: backups.length })}</Badge>}
       />
 
-      <Alert tone="info" title="Как это работает">
-        Перед каждым применением пресета или ручных правок создаётся снимок ini-файлов в папке
-        `.uesm-backups` рядом с конфигами.
+      <Alert tone="info" title={t("howItWorks.title")}>
+        {t("howItWorks.body")}
       </Alert>
 
       <GameRunningAlert exeName={runningExeName} gameName={game.name} />
 
       {restoreError && (
-        <Alert tone="error" title="Ошибка восстановления">
+        <Alert tone="error" title={t("restore.errorTitle")}>
           {restoreError}
         </Alert>
       )}
 
       {resetError && (
-        <Alert tone="error" title="Ошибка сброса">
+        <Alert tone="error" title={t("reset.errorTitle")}>
           {resetError}
         </Alert>
       )}
 
       {successMessage && (
-        <Alert tone="success" icon={ShieldCheck} title="Готово">
+        <Alert tone="success" icon={ShieldCheck} title={t("successTitle")}>
           {successMessage}
         </Alert>
       )}
 
       <section>
         <SectionHeader
-          title="Сброс до пользовательских"
-          description="Удаляет Engine.ini, Game.ini, Scalability.ini и Input.ini. GameUserSettings.ini не трогается."
+          title={t("reset.sectionTitle")}
+          description={t("reset.sectionDesc")}
         />
         {resetConfirm ? (
           <Card padding="md" className="border-[#5a3030] bg-[#2a1818]">
             <p className="text-sm text-[var(--color-text-secondary)]">
-              Перед сбросом создаётся backup. Игра должна быть закрыта. Продолжить?
+              {t("reset.confirmBody")}
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Button
@@ -206,10 +211,10 @@ export function Backups({ game }: Props) {
                 loading={reset.isPending}
                 disabled={gameRunning}
               >
-                Да, сбросить
+                {t("reset.confirmYes")}
               </Button>
               <Button variant="secondary" onClick={() => setResetConfirm(false)} disabled={reset.isPending}>
-                Отмена
+                {t("reset.cancel")}
               </Button>
             </div>
           </Card>
@@ -220,18 +225,18 @@ export function Backups({ game }: Props) {
             onClick={() => setResetConfirm(true)}
             disabled={gameRunning || restore.isPending}
           >
-            Сброс (только GameUserSettings.ini)
+            {t("reset.button")}
           </Button>
         )}
       </section>
 
       <section>
         <SectionHeader
-          title="Список резервных копий"
-          description="Новые сверху."
+          title={t("list.title")}
+          description={t("list.desc")}
           hint={
             <Button variant="ghost" className="!px-2 !py-1 text-xs" onClick={() => refetch()}>
-              Обновить
+              {t("list.refresh")}
             </Button>
           }
         />
@@ -240,14 +245,14 @@ export function Backups({ game }: Props) {
           <Card padding="md">
             <div className="flex flex-col items-center gap-3 py-6">
               <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-              <p className="text-sm text-muted">Загрузка списка…</p>
+              <p className="text-sm text-muted">{t("list.loading")}</p>
             </div>
           </Card>
         ) : backups.length === 0 ? (
           <EmptyState
             icon={History}
-            title="Пока нет бекапов"
-            description="Примените пресет или сохраните ручные правки — первая копия появится автоматически."
+            title={t("list.emptyTitle")}
+            description={t("list.emptyDesc")}
           />
         ) : (
           <div className="space-y-2">
@@ -278,6 +283,7 @@ function BackupRow({
   disabled: boolean;
   onRestore: () => void;
 }) {
+  const { t } = useTranslation("backups");
   return (
     <Card padding="sm" className="!p-0">
       <div className="flex items-center justify-between gap-4 px-4 py-3">
@@ -304,7 +310,7 @@ function BackupRow({
           disabled={disabled}
           className="shrink-0 !py-2"
         >
-          Восстановить
+          {t("restore.button")}
         </Button>
       </div>
     </Card>

@@ -8,6 +8,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
 import { getGameConfig } from "../lib/api";
 import { formatPresetLabel, getLastPreset } from "../lib/lastPreset";
@@ -34,23 +36,6 @@ function detectUserOnly(files: Record<string, unknown> | undefined): boolean {
   return !OVERRIDE_INI.some((f) => f in files);
 }
 
-function fallbackPreset(game: GameProfile, userOnly: boolean): WorkspacePreset {
-  if (userOnly) {
-    return { label: "Пользовательский", mode: "user" };
-  }
-  const last = getLastPreset(game.id);
-  if (last) {
-    return { label: formatPresetLabel(last.presetId), mode: "applied" };
-  }
-  return { label: "Настроен", mode: "applied" };
-}
-
-export function presetBadgeText(preset: WorkspacePreset): string {
-  if (preset.mode === "user") return preset.label;
-  if (preset.mode === "selected") return preset.label;
-  return `Применён: ${preset.label}`;
-}
-
 interface ProviderProps {
   game: GameProfile;
   activeTab: AppTab;
@@ -58,6 +43,7 @@ interface ProviderProps {
 }
 
 export function GameWorkspaceProvider({ game, activeTab, children }: ProviderProps) {
+  const { t } = useTranslation("common");
   const [override, setOverride] = useState<WorkspacePreset | null>(null);
   const configDir = game.config_dir ?? "";
   const isGameTab = activeTab !== "library";
@@ -73,13 +59,27 @@ export function GameWorkspaceProvider({ game, activeTab, children }: ProviderPro
 
   const userOnly = detectUserOnly(gameConfig?.files);
 
+  const fallbackPreset = useCallback(
+    (userOnlyMode: boolean): WorkspacePreset => {
+      if (userOnlyMode) {
+        return { label: t("workspaceUser"), mode: "user" };
+      }
+      const last = getLastPreset(game.id);
+      if (last) {
+        return { label: formatPresetLabel(last.presetId), mode: "applied" };
+      }
+      return { label: t("workspaceApplied"), mode: "applied" };
+    },
+    [game.id, t],
+  );
+
   useEffect(() => {
     setOverride(null);
   }, [game.id, activeTab]);
 
   const preset = useMemo(
-    () => override ?? fallbackPreset(game, userOnly),
-    [override, game, userOnly],
+    () => override ?? fallbackPreset(userOnly),
+    [override, userOnly, fallbackPreset],
   );
 
   const setWorkspacePreset = useCallback((next: WorkspacePreset | null) => {
@@ -96,10 +96,16 @@ export function GameWorkspaceProvider({ game, activeTab, children }: ProviderPro
   );
 }
 
+export function presetBadgeText(preset: WorkspacePreset): string {
+  if (preset.mode === "user") return preset.label;
+  if (preset.mode === "selected") return preset.label;
+  return i18n.t("common:workspaceAppliedPrefix", { label: preset.label });
+}
+
 export function useGameWorkspace() {
   const ctx = useContext(GameWorkspaceContext);
   if (!ctx) {
-    throw new Error("useGameWorkspace вне GameWorkspaceProvider");
+    throw new Error("useGameWorkspace outside GameWorkspaceProvider");
   }
   return ctx;
 }

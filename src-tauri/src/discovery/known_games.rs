@@ -11,7 +11,7 @@ pub struct KnownGameEntry {
     #[allow(dead_code)]
     pub name: String,
     pub local_app_folder: String,
-    /// Платформа UE ini: Saved/Config/Windows, WindowsNoEditor и т.д. Не используется для Forza.
+    /// UE ini platform: Saved/Config/Windows, WindowsNoEditor, etc. Not used for Forza.
     #[serde(default)]
     pub config_platform: Option<String>,
     #[serde(default)]
@@ -21,22 +21,22 @@ pub struct KnownGameEntry {
     /// `%USERPROFILE%/AppData/LocalLow/{Company}/{Product}`
     #[serde(default)]
     pub local_low_folder: Option<String>,
-    /// Подпапка в install_dir, например `GameName_Data`
+    /// Subfolder in install_dir, e.g. `GameName_Data`
     #[serde(default)]
     pub unity_data_subdir: Option<String>,
-    /// Путь к UserConfigSelections относительно %LOCALAPPDATA%/{local_app_folder}
+    /// Path to UserConfigSelections relative to %LOCALAPPDATA%/{local_app_folder}
     #[serde(default)]
     pub forza_config_subpath: Option<String>,
-    /// Пресеты и конфиг разобраны автором приложения — отдельная категория в библиотеке.
+    /// Presets and config curated by the app author — separate library category.
     #[serde(default)]
     pub author_curated: Option<bool>,
-    /// Рекомендуемый графический API ReShade (dx9, dx11, dx12, opengl, vulkan).
+    /// Recommended ReShade graphics API (dx9, dx11, dx12, opengl, vulkan).
     #[serde(default)]
     pub suggested_reshade_api: Option<String>,
-    /// Идентификатор embedded/remote ReShade pack в presets/games/{id}/.
+    /// Embedded/remote ReShade pack id in presets/games/{id}/.
     #[serde(default)]
     pub reshade_pack: Option<String>,
-    /// Имена каталога Epic (CatalogItemId / AppName) для сопоставления с known.json.
+    /// Epic catalog names (CatalogItemId / AppName) for matching against known.json.
     #[serde(default)]
     pub epic_app_names: Vec<String>,
 }
@@ -126,7 +126,7 @@ pub fn known_config_dir(app_id: &str) -> Option<PathBuf> {
         }
     }
 
-    // PUBG и др.: папка WindowsNoEditor есть, но GameUserSettings.ini ещё не создан.
+    // PUBG etc.: WindowsNoEditor folder exists but GameUserSettings.ini is not created yet.
     if let Some(platform) = entry.config_platform.as_deref() {
         return Some(config_root.join(platform));
     }

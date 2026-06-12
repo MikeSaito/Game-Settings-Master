@@ -1,4 +1,4 @@
-/// Стабильный маркер в тексте ошибки «игра запущена» — не зависит от формулировки UI.
+/// Stable marker in the "game is running" error text — independent of UI wording.
 pub const RUNNING_GAME_ERROR_MARKER: &str = "GSM_ERR_GAME_RUNNING:";
 
 pub fn is_running_game_error(err: &str) -> bool {
@@ -6,14 +6,24 @@ pub fn is_running_game_error(err: &str) -> bool {
 }
 
 pub fn running_game_ini_blocked(exe: &str) -> String {
-    format!(
-        "{RUNNING_GAME_ERROR_MARKER}Игра «{exe}» запущена. Закройте игру перед применением — иначе ini-файлы заблокированы."
+    crate::i18n::t(
+        &format!(
+            "{RUNNING_GAME_ERROR_MARKER}Игра «{exe}» запущена. Закройте игру перед применением — иначе ini-файлы заблокированы."
+        ),
+        &format!(
+            "{RUNNING_GAME_ERROR_MARKER}Game «{exe}» is running. Close the game before applying changes — otherwise ini files are locked."
+        ),
     )
 }
 
 pub fn running_game_reshade_blocked(exe: &str) -> String {
-    format!(
-        "{RUNNING_GAME_ERROR_MARKER}Игра «{exe}» запущена. Закройте игру перед изменением ReShade — proxy DLL и ReShade.ini заблокированы процессом."
+    crate::i18n::t(
+        &format!(
+            "{RUNNING_GAME_ERROR_MARKER}Игра «{exe}» запущена. Закройте игру перед изменением ReShade — proxy DLL и ReShade.ini заблокированы процессом."
+        ),
+        &format!(
+            "{RUNNING_GAME_ERROR_MARKER}Game «{exe}» is running. Close the game before changing ReShade — proxy DLL and ReShade.ini are locked by the process."
+        ),
     )
 }
 

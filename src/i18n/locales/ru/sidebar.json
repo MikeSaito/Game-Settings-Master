@@ -1,0 +1,11 @@
+{
+  "tabs": {
+    "library": { "label": "Библиотека", "desc": "Игры и config" }
+  },
+  "activeGame": "Активная игра",
+  "pickGame": "Выберите игру в библиотеке",
+  "badge": {
+    "configOk": "Config OK",
+    "needInstallDir": "Нужен install_dir"
+  }
+}

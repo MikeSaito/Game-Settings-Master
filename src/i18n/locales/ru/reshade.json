@@ -1,0 +1,160 @@
+{
+  "emptyState": {
+    "title": "Выберите игру",
+    "description": "ReShade настраивается для конкретной игры из библиотеки."
+  },
+  "messages": {
+    "installed": "ReShade установлен ({{api}}).{{warn}} Запустите игру — Home для меню ReShade.",
+    "removed": "ReShade удалён из папки игры.{{warn}}",
+    "removedBroken": "Повреждённая установка очищена — можно запускать игру.{{warn}}",
+    "presetApplied": "Пресет «{{preset}}» применён.{{warn}}",
+    "enabledForAll": "ReShade включён для всех игр.",
+    "notBundled": "ReShade не встроен в сборку — см. технические детали.",
+    "selectApiFirst": "Сначала выберите графический API."
+  },
+  "cta": {
+    "update": "Обновить ReShade",
+    "install": "Установить ReShade"
+  },
+  "section": {
+    "enable": {
+      "title": "Включение"
+    },
+    "preset": {
+      "title": "Пресет постобработки",
+      "hint": "Performance — FPS · Clarity — баланс · Cinematic — мягче"
+    },
+    "fineTune": {
+      "title": "Тонкая настройка",
+      "hint": "Необязательно — в игре полное меню по Home"
+    }
+  },
+  "enable": {
+    "forGame": "ReShade для {{name}}",
+    "postProcess": "Постобработка перед запуском из GSM",
+    "loadingOption": "Загрузка…",
+    "recommendedSuffix": " · рекомендуем",
+    "gpuAdapted": "Подстроено под {{gpu}}: {{reason}}",
+    "proxyRemovedNote": "При запуске из GSM proxy ReShade удаляется из папки игры, чтобы игра стартовала без эффектов.",
+    "globalSettingsSummary": "Настройки для всех игр ▾",
+    "globalToggleLabel": "ReShade включён глобально",
+    "defaultPreset": "Пресет по умолчанию: {{preset}}"
+  },
+  "fineTune": {
+    "show": "Настроить эффекты и параметры",
+    "hide": "Скрыть эффекты и параметры",
+    "effects": "Эффекты",
+    "notInPresetSuffix": " · не в пресете",
+    "loadingEffects": "Загрузка эффектов…",
+    "gpuSaving": {
+      "title": "Экономия GPU",
+      "desc": "Меньше нагрузки на видеокарту"
+    }
+  },
+  "licenses": {
+    "summary": "Лицензии ReShade и авторы",
+    "addonSuffix": ". Лицензия BSD 3-Clause. Game Settings Master не связан с ReShade и не одобрен его авторами.",
+    "fullTextPath": "Полный текст лицензии в каталоге приложения:",
+    "shadersLabel": ". Шейдеры:",
+    "presetEffects": "Эффекты пресетов GSM: Clarity (Ioxa), Vignette (CeeJay.dk), AdaptiveSharpen (bacondither) — см. заголовки в"
+  },
+  "tech": {
+    "summary": "Технические детали",
+    "dllInApp": "dll в приложении:",
+    "shadersInApp": "шейдеры в приложении:",
+    "shadersInGame": "шейдеры в игре:",
+    "yes": "да",
+    "no": "нет",
+    "devHint": "Dev: addon DLL в src-tauri/presets/reshade/bin/, шейдеры — npm run reshade:setup"
+  },
+  "footer": {
+    "applying": "Применение…",
+    "remove": "Удалить",
+    "openExeFolder": "Открыть папку exe",
+    "launchHintBefore": "Запуск игры — кнопка",
+    "playButton": "Играть",
+    "launchHintMiddle": "в шапке. В игре —",
+    "launchHintAfter": "для меню ReShade."
+  },
+  "presetCard": {
+    "fromAuthor": "от автора",
+    "inGame": "В игре",
+    "willApply": "Применится",
+    "forThisGame": "Для этой игры",
+    "recommended": "Рекомендуемый"
+  },
+  "apiPicker": {
+    "title": "Какой графический API использует игра?",
+    "description": "GSM не определяет API автоматически — выберите вручную, как в установщике ReShade. Не знаете? Посмотрите настройки графики игры: обычно UE5 = DX12, старые UE4 = DX11.",
+    "remember": "Запомнить для этой игры",
+    "cancel": "Отмена",
+    "confirm": "Продолжить"
+  },
+  "disclaimer": {
+    "enable": {
+      "title": "Включить ReShade?",
+      "body": "ReShade — сторонний пост-обработчик (DLL-прокси в папке игры). В онлайн-играх с античитом это может привести к блокировке аккаунта. GSM не проверяет античит — вы принимаете риск самостоятельно.",
+      "confirm": "Понимаю риски, включить"
+    },
+    "install": {
+      "title": "Установить ReShade в папку игры?",
+      "body": "GSM скопирует ReShade DLL, ReShade.ini и пресет в каталог exe. Существующий proxy-DLL (dxgi.dll / d3d11.dll) будет сохранён в бэкап. Закройте игру перед установкой.",
+      "confirm": "Установить"
+    },
+    "launch": {
+      "title": "Запуск с ReShade",
+      "body": "Перед запуском GSM подготовит ReShade в папке игры. Напоминание: использование ReShade в мультиплеере — на ваш страх и риск.",
+      "confirm": "Запустить"
+    },
+    "cancel": "Отмена"
+  },
+  "lib": {
+    "launchVia": "Запуск через {{launcher}}…",
+    "blockedBrokenLaunch": "Повреждённая установка ReShade и в приложении нет рабочих DLL. Откройте вкладку ReShade → «Удалить» или нажмите «Без ReShade».",
+    "apiNotSelected": "Не выбран",
+    "engineApiUe5": "UE5 → обычно DirectX 12 (dxgi.dll)",
+    "engineApiUe4": "UE4 → обычно DirectX 11 (d3d11.dll)",
+    "engineApiForza": "Forza → обычно DirectX 12 (dxgi.dll)",
+    "engineApiUnity": "Unity → обычно DirectX 11",
+    "engineApiGeneric": "Выберите API, который использует игра",
+    "healthGlobalOff": "ReShade выключен глобально",
+    "healthGameOff": "ReShade выключен для этой игры",
+    "healthBroken": "Повреждённая установка",
+    "healthBrokenDetail": "Некорректный proxy в папке игры — «Удалить» на вкладке ReShade или «Играть» в шапке для авто-восстановления",
+    "healthReady": "Готов к запуску",
+    "healthNotInstalled": "Не установлен",
+    "alertError": "Ошибка",
+    "alertBrokenTitle": "Повреждённая установка",
+    "alertBrokenMessage": "В папке игры остался некорректный ReShade (битый proxy или неверный файл). Нажмите «Удалить» ниже или запустите игру кнопкой «Играть» в шапке — GSM попробует восстановить установку.",
+    "alertRemove": "Удалить",
+    "alertNoDllTitle": "ReShade не готов к установке",
+    "alertNoDllMessage": "ReShade DLL не найдены в установке приложения. Переустановите Game Settings Master или нажмите «Без ReShade».",
+    "alertDisclaimerTitle": "Внимание",
+    "alertDisclaimerMessage": "GSM не проверяет античит. ReShade может нарушать правила онлайн-игр. Используйте на свой риск.",
+    "statusGlobalOff": "● ReShade выключен глобально · proxy удаляется при запуске",
+    "statusGameOff": "● Выключен для этой игры · proxy удаляется при запуске",
+    "statusBroken": "● Ошибка в папке игры",
+    "statusApiNotSelected": "API не выбран",
+    "statusInstalled": "● Установлен · {{api}} · {{preset}}",
+    "statusPresetAdapted": "{{installed}} (выбран {{requested}})",
+    "statusWillInstall": "● Не установлен · {{api}} · будет {{preset}}",
+    "statusNotInstalled": "● Не установлен · {{api}} · {{preset}}",
+    "effects": {
+      "Clarity": { "label": "Чёткость", "hint": "Локальный контраст — детали без общей резкости" },
+      "Vignette": { "label": "Виньетка", "hint": "Затемнение по краям кадра" },
+      "AdaptiveSharpen": { "label": "Адаптивная резкость", "hint": "Чёткие края без цветных ореолов" },
+      "Vibrance": { "label": "Насыщенность", "hint": "Мягко усиливает цвета" },
+      "LiftGammaGain": { "label": "Яркость и контраст", "hint": "Тени, средние тона и свет" }
+    },
+    "sliders": {
+      "AdaptiveSharpen_sharp_strength": "Резкость",
+      "Clarity_ClarityRadius": "Радиус чёткости",
+      "Clarity_ClarityOffset": "Смещение чёткости",
+      "Clarity_ClarityMaskIntensity": "Маска чёткости",
+      "Vignette_Amount": "Сила виньетки",
+      "Vignette_Radius": "Радиус виньетки",
+      "Vibrance_Vibrance": "Насыщенность",
+      "LiftGammaGain_RGB_Gain": "Яркость (gain)"
+    }
+  }
+}

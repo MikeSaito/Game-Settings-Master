@@ -12,19 +12,23 @@ pub struct LaunchResult {
 }
 
 pub fn launch_game(profile: &GameProfile, skip_reshade: bool) -> Result<LaunchResult, String> {
-    // Подготовка ReShade НЕ должна блокировать запуск игры. Если установить/удалить proxy
-    // не удалось (файл занят, нет прав, битый proxy) — запускаем игру и показываем
-    // предупреждение, вместо того чтобы вовсе отменить запуск.
+    // ReShade setup must NOT block game launch. If installing/removing the proxy
+    // fails (file locked, no permissions, broken proxy) — still launch the game and show
+    // a warning instead of cancelling launch entirely.
     let warning = match crate::reshade::apply_launch_reshade_policy(profile, skip_reshade) {
         Ok(w) => w,
-        Err(e) => Some(format!("ReShade не подготовлен: {e}")),
+        Err(e) => Some(crate::i18n::t(
+            &format!("ReShade не подготовлен: {e}"),
+            &format!("ReShade was not prepared: {e}"),
+        )),
     };
     let mut result = match profile.source.as_str() {
         "steam" => launch_steam_profile(profile),
         "epic" => launch_epic_profile(profile),
         "manual" => launch_manual_profile(profile),
-        other => Err(format!(
-            "Запуск через магазин не поддерживается для источника «{other}»"
+        other => Err(crate::i18n::t(
+            &format!("Запуск через магазин не поддерживается для источника «{other}»"),
+            &format!("Store launch is not supported for source «{other}»"),
         )),
     }?;
     result.warning = match (result.warning.take(), warning) {
@@ -52,9 +56,10 @@ fn launch_manual_profile(profile: &GameProfile) -> Result<LaunchResult, String> 
     if let Some(app_name) = find_epic_app_name_for_install(&profile.install_dir) {
         return launch_epic_app_name(&app_name);
     }
-    Err(
-        "Не удалось определить лаунчер. Добавьте игру через сканирование Steam/Epic или укажите папку из steamapps/common.".to_string(),
-    )
+    Err(crate::i18n::t(
+        "Не удалось определить лаунчер. Добавьте игру через сканирование Steam/Epic или укажите папку из steamapps/common.",
+        "Could not determine launcher. Add the game via Steam/Epic scan or point to a folder under steamapps/common.",
+    ))
 }
 
 fn steam_app_id_from_profile(profile: &GameProfile) -> Result<&str, String> {
@@ -62,7 +67,12 @@ fn steam_app_id_from_profile(profile: &GameProfile) -> Result<&str, String> {
         .id
         .strip_prefix("steam-")
         .filter(|id| !id.is_empty() && id.chars().all(|c| c.is_ascii_digit()))
-        .ok_or_else(|| "Некорректный идентификатор Steam-игры".to_string())
+        .ok_or_else(|| {
+            crate::i18n::t(
+                "Некорректный идентификатор Steam-игры",
+                "Invalid Steam game identifier",
+            )
+        })
 }
 
 fn epic_app_name_from_profile(profile: &GameProfile) -> Result<&str, String> {
@@ -70,15 +80,23 @@ fn epic_app_name_from_profile(profile: &GameProfile) -> Result<&str, String> {
         .id
         .strip_prefix("epic-")
         .filter(|name| !name.is_empty())
-        .ok_or_else(|| "Некорректный идентификатор Epic-игры".to_string())
+        .ok_or_else(|| {
+            crate::i18n::t(
+                "Некорректный идентификатор Epic-игры",
+                "Invalid Epic game identifier",
+            )
+        })
 }
 
 pub fn launch_steam_app_id(app_id: &str) -> Result<LaunchResult, String> {
     if app_id.is_empty() || !app_id.chars().all(|c| c.is_ascii_digit()) {
-        return Err("Некорректный AppID Steam".to_string());
+        return Err(crate::i18n::t(
+            "Некорректный AppID Steam",
+            "Invalid Steam AppID",
+        ));
     }
-    // `steam://rungameid/<appid>` — канонический URI запуска (его использует сам Steam
-    // для ярлыков). Старый `steam://run/<appid>` нередко зависает на «Подготовка к запуску».
+    // `steam://rungameid/<appid>` — canonical launch URI (Steam uses it for shortcuts).
+    // The older `steam://run/<appid>` often hangs on "Preparing to launch".
     let url = format!("steam://rungameid/{app_id}");
     open_launch_url(&url)?;
     Ok(LaunchResult {
@@ -92,18 +110,25 @@ pub const MAX_EPIC_APP_NAME_LEN: usize = 128;
 
 pub fn validate_epic_app_name(app_name: &str) -> Result<(), String> {
     if app_name.is_empty() {
-        return Err("Некорректный AppName Epic".to_string());
+        return Err(crate::i18n::t(
+            "Некорректный AppName Epic",
+            "Invalid Epic AppName",
+        ));
     }
     if app_name.len() > MAX_EPIC_APP_NAME_LEN {
-        return Err(format!(
-            "Некорректный AppName Epic: длина > {MAX_EPIC_APP_NAME_LEN}"
+        return Err(crate::i18n::t(
+            &format!("Некорректный AppName Epic: длина > {MAX_EPIC_APP_NAME_LEN}"),
+            &format!("Invalid Epic AppName: length > {MAX_EPIC_APP_NAME_LEN}"),
         ));
     }
     if !app_name
         .chars()
         .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '.' || c == '-')
     {
-        return Err("Некорректный AppName Epic: недопустимые символы".to_string());
+        return Err(crate::i18n::t(
+            "Некорректный AppName Epic: недопустимые символы",
+            "Invalid Epic AppName: disallowed characters",
+        ));
     }
     Ok(())
 }
@@ -120,7 +145,12 @@ pub fn launch_epic_app_name(app_name: &str) -> Result<LaunchResult, String> {
 }
 
 fn open_launch_url(url: &str) -> Result<(), String> {
-    open::that(url).map_err(|e| format!("Не удалось открыть лаунчер: {e}"))
+    open::that(url).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось открыть лаунчер: {e}"),
+            &format!("Failed to open launcher: {e}"),
+        )
+    })
 }
 
 fn find_steam_app_id_for_install(install_dir: &str) -> Option<String> {

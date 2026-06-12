@@ -13,7 +13,7 @@ fn is_disposable_install_path(path: &Path) -> bool {
         || lower.contains("/tmp/")
 }
 
-/// Сохранённые профили от unit-тестов (cargo test) или с мёртвым install_dir.
+/// Profiles saved by unit tests (cargo test) or with a dead install_dir.
 pub fn is_stale_saved_profile(profile: &GameProfile) -> bool {
     if profile.id.starts_with("ipc-security-") {
         return true;
@@ -25,7 +25,7 @@ pub fn is_stale_saved_profile(profile: &GameProfile) -> bool {
     is_disposable_install_path(&install)
 }
 
-/// Удаляет из games.json тестовые/битые записи (temp install, ipc-security-*).
+/// Removes test/broken entries from games.json (temp install, ipc-security-*).
 pub fn prune_stale_saved_profiles() -> Result<usize, String> {
     let mut games = load_saved_profiles()?;
     let before = games.len();
@@ -44,21 +44,28 @@ pub fn prune_stale_saved_profiles() -> Result<usize, String> {
 pub fn validate_profile_paths(profile: &GameProfile) -> Result<(), String> {
     let install = PathBuf::from(profile.install_dir.trim());
     if profile.install_dir.trim().is_empty() {
-        return Err("Путь установки игры не указан".to_string());
-    }
-    if !install.exists() {
-        return Err(format!(
-            "Папка установки не существует: {}",
-            profile.install_dir
+        return Err(crate::i18n::t(
+            "Путь установки игры не указан",
+            "Game install path is not specified",
         ));
     }
-    let canonical = install
-        .canonicalize()
-        .map_err(|e| format!("Некорректный путь установки: {e}"))?;
+    if !install.exists() {
+        return Err(crate::i18n::t(
+            &format!("Папка установки не существует: {}", profile.install_dir),
+            &format!("Install folder does not exist: {}", profile.install_dir),
+        ));
+    }
+    let canonical = install.canonicalize().map_err(|e| {
+        crate::i18n::t(
+            &format!("Некорректный путь установки: {e}"),
+            &format!("Invalid install path: {e}"),
+        )
+    })?;
     if is_disposable_install_path(&canonical) {
-        return Err(
-            "Нельзя сохранить игру с путём установки во временной папке".to_string(),
-        );
+        return Err(crate::i18n::t(
+            "Нельзя сохранить игру с путём установки во временной папке",
+            "Cannot save a game with an install path in a temporary folder",
+        ));
     }
 
     if let Some(config_dir) = profile.config_dir.as_deref().filter(|s| !s.trim().is_empty()) {
@@ -66,7 +73,10 @@ pub fn validate_profile_paths(profile: &GameProfile) -> Result<(), String> {
     }
     if let Some(exe_name) = profile.exe_name.as_deref().filter(|s| !s.trim().is_empty()) {
         if !crate::fs_util::is_safe_exe_basename(exe_name) {
-            return Err(format!("Недопустимое имя процесса: {exe_name}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимое имя процесса: {exe_name}"),
+                &format!("Invalid process name: {exe_name}"),
+            ));
         }
     }
     Ok(())
@@ -80,16 +90,25 @@ pub fn resolve_trusted_profile(profile: &GameProfile) -> Result<GameProfile, Str
         .find(|g| g.id == profile.id)
         .or_else(|| crate::discovery::scan_all_games().into_iter().find(|g| g.id == profile.id))
         .ok_or_else(|| {
-            format!(
-                "Игра '{}' не найдена в сохранённых профилях или результате сканирования. Добавьте игру вручную.",
-                profile.id
+            crate::i18n::t(
+                &format!(
+                    "Игра '{}' не найдена в сохранённых профилях или результате сканирования. Добавьте игру вручную.",
+                    profile.id
+                ),
+                &format!(
+                    "Game '{}' was not found in saved profiles or scan results. Add the game manually.",
+                    profile.id
+                ),
             )
         })?;
 
     let trusted_install = crate::discovery::normalize_install_dir(&trusted.install_dir);
     let ipc_install = crate::discovery::normalize_install_dir(&profile.install_dir);
     if trusted_install != ipc_install {
-        return Err("install_dir не совпадает с доверенным профилем игры".to_string());
+        return Err(crate::i18n::t(
+            "install_dir не совпадает с доверенным профилем игры",
+            "install_dir does not match the trusted game profile",
+        ));
     }
 
     Ok(trusted)
@@ -102,7 +121,7 @@ pub fn ensure_trusted_ipc_profile(profile: &GameProfile) -> Result<GameProfile, 
 pub fn ensure_known_game_id(game_id: &str) -> Result<(), String> {
     let id = game_id.trim();
     if id.is_empty() || id.len() > 128 {
-        return Err("Недопустимый game_id".to_string());
+        return Err(crate::i18n::t("Недопустимый game_id", "Invalid game_id"));
     }
     let known_saved = load_saved_profiles()?.iter().any(|g| g.id == id);
     let known_scan = crate::discovery::scan_all_games()
@@ -111,15 +130,21 @@ pub fn ensure_known_game_id(game_id: &str) -> Result<(), String> {
     if known_saved || known_scan {
         Ok(())
     } else {
-        Err(format!(
-            "Игра '{id}' не найдена в сохранённых профилях или результате сканирования"
+        Err(crate::i18n::t(
+            &format!("Игра '{id}' не найдена в сохранённых профилях или результате сканирования"),
+            &format!("Game '{id}' was not found in saved profiles or scan results"),
         ))
     }
 }
 
 pub fn app_data_dir() -> Result<PathBuf, String> {
     let dir = dirs::data_dir()
-        .ok_or_else(|| "Не удалось определить каталог AppData".to_string())?
+        .ok_or_else(|| {
+            crate::i18n::t(
+                "Не удалось определить каталог AppData",
+                "Failed to determine AppData directory",
+            )
+        })?
         .join("UESettingsMaster");
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     Ok(dir)
@@ -143,18 +168,31 @@ pub fn load_saved_profiles() -> Result<Vec<GameProfile>, String> {
     }
     let meta = fs::metadata(&path).map_err(|e| e.to_string())?;
     if meta.len() as usize > MAX_PROFILES_JSON_BYTES {
-        return Err(format!(
-            "games.json слишком большой ({} KB, лимит {} KB)",
-            meta.len() / 1024,
-            MAX_PROFILES_JSON_BYTES / 1024
+        return Err(crate::i18n::t(
+            &format!(
+                "games.json слишком большой ({} KB, лимит {} KB)",
+                meta.len() / 1024,
+                MAX_PROFILES_JSON_BYTES / 1024
+            ),
+            &format!(
+                "games.json is too large ({} KB, limit {} KB)",
+                meta.len() / 1024,
+                MAX_PROFILES_JSON_BYTES / 1024
+            ),
         ));
     }
     let (content, had_bom) = crate::fs_util::read_utf8_text_file(&path)?;
     let saved: SavedProfiles = serde_json::from_str(&content).map_err(|e| e.to_string())?;
     if saved.games.len() > MAX_SAVED_GAMES {
-        return Err(format!(
-            "Слишком много сохранённых игр ({} > {MAX_SAVED_GAMES})",
-            saved.games.len()
+        return Err(crate::i18n::t(
+            &format!(
+                "Слишком много сохранённых игр ({} > {MAX_SAVED_GAMES})",
+                saved.games.len()
+            ),
+            &format!(
+                "Too many saved games ({} > {MAX_SAVED_GAMES})",
+                saved.games.len()
+            ),
         ));
     }
     if had_bom {
@@ -171,14 +209,23 @@ const MAX_OVERRIDE_JSON_BYTES: usize = 512 * 1024;
 
 pub fn validate_override_bounds(override_def: &GameOverride) -> Result<(), String> {
     if override_def.game_id.trim().is_empty() {
-        return Err("game_id override не указан".to_string());
+        return Err(crate::i18n::t(
+            "game_id override не указан",
+            "game_id override is not specified",
+        ));
     }
     if override_def.name.trim().is_empty() || override_def.name.len() > 120 {
-        return Err("Недопустимое имя override".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимое имя override",
+            "Invalid override name",
+        ));
     }
     let raw = serde_json::to_string(override_def).map_err(|e| e.to_string())?;
     if raw.len() > MAX_OVERRIDE_JSON_BYTES {
-        return Err("Override слишком большой".to_string());
+        return Err(crate::i18n::t(
+            "Override слишком большой",
+            "Override is too large",
+        ));
     }
     Ok(())
 }
@@ -187,12 +234,18 @@ fn validate_override_payload(override_def: &GameOverride) -> Result<(), String> 
     validate_override_bounds(override_def)?;
     for filename in override_def.files.keys() {
         if !crate::fs_util::is_allowed_config_ini_filename(filename) {
-            return Err(format!("Недопустимый ini в override: {filename}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимый ini в override: {filename}"),
+                &format!("Invalid ini in override: {filename}"),
+            ));
         }
     }
     for filename in override_def.removals.keys() {
         if !crate::fs_util::is_allowed_config_ini_filename(filename) {
-            return Err(format!("Недопустимый ini в removals: {filename}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимый ini в removals: {filename}"),
+                &format!("Invalid ini in removals: {filename}"),
+            ));
         }
     }
     Ok(())
@@ -241,18 +294,31 @@ pub fn load_overrides() -> Result<Vec<GameOverride>, String> {
     }
     let meta = fs::metadata(&path).map_err(|e| e.to_string())?;
     if meta.len() as usize > MAX_OVERRIDES_JSON_BYTES {
-        return Err(format!(
-            "overrides.json слишком большой ({} KB, лимит {} KB)",
-            meta.len() / 1024,
-            MAX_OVERRIDES_JSON_BYTES / 1024
+        return Err(crate::i18n::t(
+            &format!(
+                "overrides.json слишком большой ({} KB, лимит {} KB)",
+                meta.len() / 1024,
+                MAX_OVERRIDES_JSON_BYTES / 1024
+            ),
+            &format!(
+                "overrides.json is too large ({} KB, limit {} KB)",
+                meta.len() / 1024,
+                MAX_OVERRIDES_JSON_BYTES / 1024
+            ),
         ));
     }
     let (content, had_bom) = crate::fs_util::read_utf8_text_file(&path)?;
     let saved: SavedOverrides = serde_json::from_str(&content).map_err(|e| e.to_string())?;
     if saved.overrides.len() > MAX_SAVED_OVERRIDES {
-        return Err(format!(
-            "Слишком много override ({} > {MAX_SAVED_OVERRIDES})",
-            saved.overrides.len()
+        return Err(crate::i18n::t(
+            &format!(
+                "Слишком много override ({} > {MAX_SAVED_OVERRIDES})",
+                saved.overrides.len()
+            ),
+            &format!(
+                "Too many overrides ({} > {MAX_SAVED_OVERRIDES})",
+                saved.overrides.len()
+            ),
         ));
     }
     if had_bom {

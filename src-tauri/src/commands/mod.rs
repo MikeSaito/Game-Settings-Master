@@ -42,7 +42,10 @@ fn resolve_ue_config_path(
 fn validate_optional_exe_name(exe_name: Option<&str>) -> Result<(), String> {
     if let Some(exe) = exe_name.filter(|v| !v.trim().is_empty()) {
         if !is_safe_exe_basename(exe) {
-            return Err(format!("Недопустимое имя процесса: {exe}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимое имя процесса: {exe}"),
+                &format!("Invalid process name: {exe}"),
+            ));
         }
     }
     Ok(())
@@ -71,7 +74,10 @@ fn resolve_write_exe_name(
         if let Some(profile) = find_profile_by_id(gid)? {
             if let Some(exe) = profile.exe_name.as_deref().filter(|v| !v.trim().is_empty()) {
                 if !is_safe_exe_basename(exe) {
-                    return Err(format!("Недопустимое имя процесса в профиле игры: {exe}"));
+                    return Err(crate::i18n::t(
+                        &format!("Недопустимое имя процесса в профиле игры: {exe}"),
+                        &format!("Invalid process name in game profile: {exe}"),
+                    ));
                 }
                 return Ok(Some(exe.to_string()));
             }
@@ -86,7 +92,12 @@ fn validate_install_dir_for_game(game_id: &str, install_dir: &str) -> Result<(),
         return Ok(());
     }
     let trusted = find_profile_by_id(game_id)?
-        .ok_or_else(|| format!("Игра {game_id} не найдена"))?;
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Игра {game_id} не найдена"),
+                &format!("Game {game_id} not found"),
+            )
+        })?;
     let provided = if trusted.engine_family == "forza" {
         crate::forza::validate_forza_install_dir(Path::new(trimmed))?
             .to_string_lossy()
@@ -94,32 +105,54 @@ fn validate_install_dir_for_game(game_id: &str, install_dir: &str) -> Result<(),
     } else {
         let path = PathBuf::from(trimmed);
         if !path.exists() {
-            return Err("Папка установки не существует".to_string());
+            return Err(crate::i18n::t(
+                "Папка установки не существует",
+                "Install folder does not exist",
+            ));
         }
         path.canonicalize()
-            .map_err(|e| format!("Некорректный install_dir: {e}"))?
+            .map_err(|e| {
+                crate::i18n::t(
+                    &format!("Некорректный install_dir: {e}"),
+                    &format!("Invalid install_dir: {e}"),
+                )
+            })?
             .to_string_lossy()
             .to_string()
     };
     if normalize_path_cmp(&trusted.install_dir) != normalize_path_cmp(&provided) {
-        return Err("install_dir не соответствует доверенному профилю game_id".to_string());
+        return Err(crate::i18n::t(
+            "install_dir не соответствует доверенному профилю game_id",
+            "install_dir does not match the trusted game_id profile",
+        ));
     }
     Ok(())
 }
 
 fn validate_config_dir_for_game(game_id: &str, config_dir: &str) -> Result<(), String> {
     let trusted = find_profile_by_id(game_id)?
-        .ok_or_else(|| format!("Игра {game_id} не найдена"))?;
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Игра {game_id} не найдена"),
+                &format!("Game {game_id} not found"),
+            )
+        })?;
     let provided = validate_config_dir(config_dir)?;
     if trusted.engine_family == "forza" {
         if !crate::forza::is_forza_config_dir(&provided) {
-            return Err("Для Forza указан недопустимый config_dir".to_string());
+            return Err(crate::i18n::t(
+                "Для Forza указан недопустимый config_dir",
+                "Invalid config_dir specified for Forza",
+            ));
         }
         return Ok(());
     }
     if trusted.is_unity {
         if !crate::unity::is_unity_config_dir(&provided) {
-            return Err("Для Unity указан недопустимый config_dir".to_string());
+            return Err(crate::i18n::t(
+                "Для Unity указан недопустимый config_dir",
+                "Invalid config_dir specified for Unity",
+            ));
         }
         return Ok(());
     }
@@ -134,24 +167,28 @@ fn validate_config_dir_for_game(game_id: &str, config_dir: &str) -> Result<(), S
     {
         reconcile_config_dir(&from_install, &hints)
     } else {
-        return Err(
-            "Не удалось определить ожидаемый config_dir для игры — укажите папку конфигурации вручную"
-                .to_string(),
-        );
+        return Err(crate::i18n::t(
+            "Не удалось определить ожидаемый config_dir для игры — укажите папку конфигурации вручную",
+            "Could not determine the expected config_dir for the game — specify the config folder manually",
+        ));
     };
     if normalize_path_cmp(&expected.to_string_lossy())
         != normalize_path_cmp(&provided_reconciled.to_string_lossy())
     {
-        return Err(
-            "config_dir не соответствует пути конфигурации для install_dir игры".to_string(),
-        );
+        return Err(crate::i18n::t(
+            "config_dir не соответствует пути конфигурации для install_dir игры",
+            "config_dir does not match the config path for the game's install_dir",
+        ));
     }
     Ok(())
 }
 
 fn validate_preset_id_param(preset_id: &str) -> Result<(), String> {
     if !crate::fs_util::is_safe_pack_id(preset_id) {
-        return Err(format!("Недопустимый preset_id: {preset_id}"));
+        return Err(crate::i18n::t(
+            &format!("Недопустимый preset_id: {preset_id}"),
+            &format!("Invalid preset_id: {preset_id}"),
+        ));
     }
     Ok(())
 }
@@ -177,24 +214,42 @@ fn validate_custom_changes_payload(
 ) -> Result<(), String> {
     let file_count = changes.files.len() + changes.removals.len();
     if file_count > MAX_CUSTOM_CHANGE_FILES {
-        return Err(format!(
-            "Слишком много файлов в custom apply ({file_count} > {MAX_CUSTOM_CHANGE_FILES})"
+        return Err(crate::i18n::t(
+            &format!(
+                "Слишком много файлов в custom apply ({file_count} > {MAX_CUSTOM_CHANGE_FILES})"
+            ),
+            &format!(
+                "Too many files in custom apply ({file_count} > {MAX_CUSTOM_CHANGE_FILES})"
+            ),
         ));
     }
     let raw = serde_json::to_string(changes).map_err(|e| e.to_string())?;
     if raw.len() > MAX_CUSTOM_CHANGES_JSON_BYTES {
-        return Err(format!(
-            "Custom apply слишком большой ({} KB, лимит {} KB)",
-            raw.len() / 1024,
-            MAX_CUSTOM_CHANGES_JSON_BYTES / 1024
+        return Err(crate::i18n::t(
+            &format!(
+                "Custom apply слишком большой ({} KB, лимит {} KB)",
+                raw.len() / 1024,
+                MAX_CUSTOM_CHANGES_JSON_BYTES / 1024
+            ),
+            &format!(
+                "Custom apply is too large ({} KB, limit {} KB)",
+                raw.len() / 1024,
+                MAX_CUSTOM_CHANGES_JSON_BYTES / 1024
+            ),
         ));
     }
     if crate::forza::is_forza_config_dir(config_path) {
         for name in changes.files.keys().chain(changes.removals.keys()) {
             if name != crate::forza::parameters::FORZA_CONFIG_FILE {
-                return Err(format!(
-                    "Forza custom apply поддерживает только {}, не {name}",
-                    crate::forza::parameters::FORZA_CONFIG_FILE
+                return Err(crate::i18n::t(
+                    &format!(
+                        "Forza custom apply поддерживает только {}, не {name}",
+                        crate::forza::parameters::FORZA_CONFIG_FILE
+                    ),
+                    &format!(
+                        "Forza custom apply only supports {}, not {name}",
+                        crate::forza::parameters::FORZA_CONFIG_FILE
+                    ),
                 ));
             }
         }
@@ -203,8 +258,9 @@ fn validate_custom_changes_payload(
     if crate::unity::is_unity_config_dir(config_path) {
         for name in changes.files.keys().chain(changes.removals.keys()) {
             if name != "boot.config" {
-                return Err(format!(
-                    "Unity custom apply поддерживает только boot.config, не {name}"
+                return Err(crate::i18n::t(
+                    &format!("Unity custom apply поддерживает только boot.config, не {name}"),
+                    &format!("Unity custom apply only supports boot.config, not {name}"),
                 ));
             }
         }
@@ -212,7 +268,10 @@ fn validate_custom_changes_payload(
     }
     for name in changes.files.keys().chain(changes.removals.keys()) {
         if !crate::fs_util::is_allowed_config_ini_filename(name) {
-            return Err(format!("Недопустимое имя ini-файла: {name}"));
+            return Err(crate::i18n::t(
+                &format!("Недопустимое имя ini-файла: {name}"),
+                &format!("Invalid ini file name: {name}"),
+            ));
         }
     }
     Ok(())
@@ -222,7 +281,10 @@ fn guard_config_dir_for_write(game_id: Option<&str>, config_dir: &str) -> Result
     let path = validate_config_dir(config_dir)?;
     if crate::forza::is_forza_config_dir(&path) {
         let gid = game_id.ok_or_else(|| {
-            "Для записи в конфиг Forza укажите game_id".to_string()
+            crate::i18n::t(
+                "Для записи в конфиг Forza укажите game_id",
+                "Specify game_id to write to Forza config",
+            )
         })?;
         validate_config_dir_for_game(gid, config_dir)?;
         return Ok(());
@@ -234,10 +296,10 @@ fn guard_config_dir_for_write(game_id: Option<&str>, config_dir: &str) -> Result
     if crate::unity::is_unity_config_dir(&path) {
         return Ok(());
     }
-    Err(
-        "Для записи в конфиг Unreal Engine укажите game_id — без него путь не проверяется"
-            .to_string(),
-    )
+    Err(crate::i18n::t(
+        "Для записи в конфиг Unreal Engine укажите game_id — без него путь не проверяется",
+        "Specify game_id to write to Unreal Engine config — without it the path is not validated",
+    ))
 }
 
 fn ensure_all_targets_writable(
@@ -358,7 +420,12 @@ pub fn get_game_config(
         let boot_path = crate::unity::boot_config_path(&path);
         if boot_path.exists() {
             let content = std::fs::read_to_string(&boot_path)
-                .map_err(|e| format!("Не удалось прочитать boot.config: {e}"))?;
+                .map_err(|e| {
+                    crate::i18n::t(
+                        &format!("Не удалось прочитать boot.config: {e}"),
+                        &format!("Failed to read boot.config: {e}"),
+                    )
+                })?;
             let map = crate::unity::parse_boot_config(&content);
             files.insert(
                 "boot.config".to_string(),
@@ -402,7 +469,12 @@ pub fn get_gpu_info_cmd() -> Result<GpuCapabilities, String> {
 #[tauri::command]
 pub fn get_desktop_resolution_cmd() -> Result<crate::display::ScreenResolution, String> {
     crate::display::primary_resolution()
-        .ok_or_else(|| "Не удалось определить разрешение экрана".to_string())
+        .ok_or_else(|| {
+            crate::i18n::t(
+                "Не удалось определить разрешение экрана",
+                "Failed to determine screen resolution",
+            )
+        })
 }
 
 #[tauri::command]
@@ -422,13 +494,24 @@ pub fn set_app_background_mode_cmd(background: bool) {
 }
 
 #[tauri::command]
+pub fn set_language_cmd(lang: String) -> Result<(), String> {
+    crate::i18n::set_language(&lang)
+}
+
+#[tauri::command]
 pub fn close_game_cmd(exe_name: String) -> Result<(), String> {
     let trimmed = exe_name.trim();
     if trimmed.is_empty() {
-        return Err("Имя процесса не указано.".to_string());
+        return Err(crate::i18n::t(
+            "Имя процесса не указано.",
+            "Process name is not specified.",
+        ));
     }
     if !is_safe_exe_basename(trimmed) {
-        return Err(format!("Недопустимое имя процесса: {trimmed}"));
+        return Err(crate::i18n::t(
+            &format!("Недопустимое имя процесса: {trimmed}"),
+            &format!("Invalid process name: {trimmed}"),
+        ));
     }
     kill_exe(trimmed)
 }
@@ -522,9 +605,12 @@ pub fn preview_preset_cmd(
         );
     }
 
-    // Авто-пресеты для UE удалены как нерабочая функция — предпросмотр пресетов
-    // для UE больше не поддерживается. UE-игры настраиваются через ручной редактор.
-    Err("Авто-пресеты для UE удалены. Используйте ручной редактор.".to_string())
+    // UE auto-presets were removed as a non-working feature — preset preview
+    // for UE is no longer supported. UE games are configured via the manual editor.
+    Err(crate::i18n::t(
+        "Авто-пресеты для UE удалены. Используйте ручной редактор.",
+        "UE auto-presets have been removed. Use the manual editor.",
+    ))
 }
 
 #[tauri::command]
@@ -539,7 +625,10 @@ pub fn apply_game_preset_cmd(
 ) -> Result<ApplyResult, String> {
     validate_preset_id_param(&preset_id)?;
     if source.len() > 64 {
-        return Err("Недопустимый source пресета".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимый source пресета",
+            "Invalid preset source",
+        ));
     }
     guard_write_context(
         game_id.as_deref(),
@@ -654,7 +743,10 @@ fn extract_boot_config_changes(
     files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
 ) -> Result<HashMap<String, String>, String> {
     let Some(sections) = files.get("boot.config") else {
-        return Err("Нет изменений boot.config".to_string());
+        return Err(crate::i18n::t(
+            "Нет изменений boot.config",
+            "No boot.config changes",
+        ));
     };
     let mut changes = HashMap::new();
     for keys in sections.values() {
@@ -665,7 +757,10 @@ fn extract_boot_config_changes(
         }
     }
     if changes.is_empty() {
-        return Err("Нет изменений boot.config".to_string());
+        return Err(crate::i18n::t(
+            "Нет изменений boot.config",
+            "No boot.config changes",
+        ));
     }
     Ok(changes)
 }
@@ -712,7 +807,10 @@ pub fn restore_backup_cmd(
         let mut restored = restore_backup(&path, &backup_id)?;
         if let Some(install) = install_dir.as_deref().filter(|s| !s.trim().is_empty()) {
             let gid = game_id.as_deref().ok_or_else(|| {
-                "Для восстановления media Forza укажите game_id".to_string()
+                crate::i18n::t(
+                    "Для восстановления media Forza укажите game_id",
+                    "Specify game_id to restore Forza media",
+                )
             })?;
             validate_install_dir_for_game(gid, install)?;
             let install_path = crate::forza::validate_forza_install_dir(Path::new(install))?;
@@ -767,7 +865,10 @@ pub fn reset_config_to_user_cmd(
 pub fn add_manual_game(name: String, install_dir: String) -> Result<GameProfile, String> {
     let install_trimmed = install_dir.trim();
     if install_trimmed.is_empty() || install_trimmed.len() > 512 {
-        return Err("Недопустимый путь установки".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимый путь установки",
+            "Invalid install path",
+        ));
     }
     let mut profile = profile_from_manual_path(&name, install_trimmed)?;
     enrich_config_dir(&mut profile);
@@ -780,11 +881,17 @@ pub fn add_manual_game(name: String, install_dir: String) -> Result<GameProfile,
 pub fn resolve_config_from_path(install_dir: String) -> Result<Option<String>, String> {
     let trimmed = install_dir.trim();
     if trimmed.is_empty() || trimmed.len() > 512 {
-        return Err("Недопустимый путь установки".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимый путь установки",
+            "Invalid install path",
+        ));
     }
     let path = PathBuf::from(trimmed);
     if !path.exists() {
-        return Err("Папка установки не существует".to_string());
+        return Err(crate::i18n::t(
+            "Папка установки не существует",
+            "Install folder does not exist",
+        ));
     }
     Ok(resolve_config_dir_from_path(&path).map(|p| p.to_string_lossy().to_string()))
 }
@@ -826,7 +933,7 @@ pub fn update_game_profile_config_dir(
         return Ok(game.clone());
     }
 
-    Err("Игра не найдена".to_string())
+    Err(crate::i18n::t("Игра не найдена", "Game not found"))
 }
 
 #[tauri::command]
@@ -844,17 +951,20 @@ pub fn save_game_profile(profile: GameProfile) -> Result<(), String> {
         let trusted = resolve_trusted_profile(&profile)?;
         return save_profile(&trusted);
     }
-    Err(
-        "Игра не найдена в сохранённых профилях или результате сканирования. Добавьте игру через библиотеку."
-            .to_string(),
-    )
+    Err(crate::i18n::t(
+        "Игра не найдена в сохранённых профилях или результате сканирования. Добавьте игру через библиотеку.",
+        "Game not found in saved profiles or scan results. Add the game via the library.",
+    ))
 }
 
 #[tauri::command]
 pub fn remove_game_profile(id: String) -> Result<(), String> {
     let id = id.trim();
     if id.is_empty() || id.len() > 128 {
-        return Err("Недопустимый идентификатор игры".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимый идентификатор игры",
+            "Invalid game identifier",
+        ));
     }
     crate::profiles::ensure_known_game_id(id)?;
     remove_profile(id)
@@ -877,7 +987,10 @@ pub fn get_game_overrides(game_id: String) -> Result<Vec<GameOverride>, String> 
 pub fn delete_game_override(game_id: String, name: String) -> Result<(), String> {
     crate::profiles::ensure_known_game_id(&game_id)?;
     if name.trim().is_empty() || name.len() > 120 {
-        return Err("Недопустимое имя override".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимое имя override",
+            "Invalid override name",
+        ));
     }
     delete_override(&game_id, &name)
 }
@@ -907,7 +1020,10 @@ pub fn apply_game_override(
         .map(|g| g.id);
     if let Some(config_game_id) = matched_game_id {
         if config_game_id != override_def.game_id {
-            return Err("game_id override не соответствует указанному config_dir".to_string());
+            return Err(crate::i18n::t(
+                "game_id override не соответствует указанному config_dir",
+                "game_id override does not match the specified config_dir",
+            ));
         }
     } else {
         let conflict = load_saved_profiles()?
@@ -921,11 +1037,19 @@ pub fn apply_game_override(
                         .is_some_and(|cfg| cfg == path_key)
             });
         if conflict.is_some() {
-            return Err("config_dir принадлежит другой игре".to_string());
+            return Err(crate::i18n::t(
+                "config_dir принадлежит другой игре",
+                "config_dir belongs to another game",
+            ));
         }
     }
     let trusted = find_profile_by_id(&override_def.game_id)?
-        .ok_or_else(|| format!("Игра {} не найдена", override_def.game_id))?;
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Игра {} не найдена", override_def.game_id),
+                &format!("Game {} not found", override_def.game_id),
+            )
+        })?;
     let hints = platform_hints_for_game(
         Some(&override_def.game_id),
         Some(&trusted.engine_family),
@@ -957,7 +1081,10 @@ pub fn import_game_cover_cmd(game_id: String, image_path: String) -> Result<Game
     crate::profiles::ensure_known_game_id(&game_id)?;
     let image_path = image_path.trim();
     if image_path.is_empty() || image_path.len() > 1024 {
-        return Err("Недопустимый путь к изображению".to_string());
+        return Err(crate::i18n::t(
+            "Недопустимый путь к изображению",
+            "Invalid image path",
+        ));
     }
     let custom_cover = import_custom_cover(&game_id, &PathBuf::from(image_path))?;
 
@@ -985,7 +1112,10 @@ pub fn import_game_cover_cmd(game_id: String, image_path: String) -> Result<Game
     }
 
     let profile = games.iter_mut().find(|g| g.id == game_id).ok_or_else(|| {
-        format!("Игра «{game_id}» не найдена — нажмите «Сканировать» в библиотеке")
+        crate::i18n::t(
+            &format!("Игра «{game_id}» не найдена — нажмите «Сканировать» в библиотеке"),
+            &format!("Game «{game_id}» not found — click Scan in the library"),
+        )
     })?;
 
     profile.custom_cover = Some(custom_cover);
@@ -1002,7 +1132,12 @@ pub fn remove_game_cover_cmd(game_id: String) -> Result<GameProfile, String> {
         .into_iter()
         .find(|g| g.id == game_id)
         .or_else(|| scan_all_games().into_iter().find(|g| g.id == game_id))
-        .ok_or_else(|| format!("Игра '{game_id}' не найдена"))?;
+        .ok_or_else(|| {
+            crate::i18n::t(
+                &format!("Игра '{game_id}' не найдена"),
+                &format!("Game '{game_id}' not found"),
+            )
+        })?;
 
     profile.custom_cover = None;
     enrich_cover(&mut profile);
@@ -1016,7 +1151,12 @@ pub fn open_config_folder(config_dir: String, game_id: Option<String>) -> Result
         validate_config_dir_for_game(gid, &config_dir)?;
     }
     let path = validate_config_dir(&config_dir)?;
-    open::that(path).map_err(|e| format!("Не удалось открыть папку: {e}"))
+    open::that(path).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось открыть папку: {e}"),
+            &format!("Failed to open folder: {e}"),
+        )
+    })
 }
 
 #[tauri::command]

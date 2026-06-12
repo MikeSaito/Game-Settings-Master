@@ -1,0 +1,114 @@
+{
+  "title": "Manual",
+  "defaultPresetName": "My preset",
+  "category": {
+    "Scalability": "Scalability",
+    "Graphics": "Graphics",
+    "Display": "Display",
+    "API": "API / DXGI",
+    "Jobs": "Threads & GC",
+    "Rendering": "Rendering",
+    "Shadows": "Shadows",
+    "Textures": "Textures",
+    "PostProcess": "Post",
+    "Mirrors": "Mirrors",
+    "LOD": "LOD",
+    "World": "World",
+    "Media": "Media override",
+    "Startup": "Startup",
+    "AuthorCurated": "By author",
+    "GameSpecific": "Game",
+    "Audio": "Audio",
+    "System": "System",
+    "Debug": "Debug",
+    "Other": "Other"
+  },
+  "noGame": {
+    "title": "Manual — select a game",
+    "desc": "Open the library and select a game with a config to view and edit its parameters."
+  },
+  "noConfig": {
+    "title": "Config not found",
+    "unity": "Specify the *_Data folder with boot.config on the “Library” tab.",
+    "default": "Specify the path to Saved/Config/Windows on the “Library” tab."
+  },
+  "errorTitle": "Error",
+  "gpuHintTitle": "Graphics card",
+  "searchPlaceholder": "Search by key, name, description…",
+  "paramsCount_one": "{{count}} parameter",
+  "paramsCount_other": "{{count}} parameters",
+  "knownCount_one": "{{count}} in catalog",
+  "knownCount_other": "{{count}} in catalog",
+  "unknownCount_one": "{{count}} undocumented",
+  "unknownCount_other": "{{count}} undocumented",
+  "authorCurated": {
+    "title": "Curated by the app author",
+    "body": "Parameters from the game's custom sections with detailed descriptions. DLSS, TSR and FSR are synced automatically when presets are applied."
+  },
+  "forza": {
+    "before": "Parameters from AppData XML (like in your mod). Presets also copy ",
+    "after": " into the game folder — DefaultTrackSettings, routebudget, trees, etc. There is no Engine.ini here."
+  },
+  "engineIni": {
+    "title": "Engine.ini parameters",
+    "before": "Toggle ",
+    "onOff": "On/Off",
+    "after": " is whether the line exists in the file: on — the key will be written after “Apply”; off — the line is removed. Currently in Engine.ini: {{on}} of {{total}}."
+  },
+  "loadingParams": "Loading parameters…",
+  "emptyFiltered": {
+    "titleSearch": "Nothing found",
+    "titleEmpty": "Empty category",
+    "descSearch": "Try another query or switch the category.",
+    "descEmpty": "This category has no parameters for the selected game."
+  },
+  "applyAndSave": "Apply and save",
+  "presetNameLabel": "Preset name",
+  "apply": "Apply",
+  "savePreset": "Save preset",
+  "savedPresets": "Saved presets",
+  "errors": {
+    "noChanges": "No changes — enable Engine.ini parameters or change values.",
+    "noChangesUnity": "No changes — change boot.config values."
+  },
+  "applied": "Applied {{count}} edits · backup {{backupId}}. Restart the game.",
+  "presetSaved": "Preset “{{name}}” saved.",
+  "presetApplied": "Preset applied · backup {{backupId}}.",
+  "qualityDefault": "Default",
+  "reset": {
+    "recommended": "recommend.",
+    "default": "default"
+  },
+  "currentOption": "{{value}} (current)",
+  "inIni": "In ini",
+  "notInIni": "Not in ini",
+  "undocumented": "Undocumented",
+  "service": "Service",
+  "inPractice": "In practice: ",
+  "recommendedValues": "Recommended values: ",
+  "inGameMenu": "Look in the game menu: ",
+  "engineToggle": {
+    "off": "Off — the line is not in Engine.ini. Enable it and press “Apply” to add it.",
+    "on": "On — the line is in Engine.ini. Disable it to remove it on apply."
+  },
+  "sentinelHint": "The ini holds −1: the game substitutes its own value. Set 0–4 or another number to fix it manually.",
+  "rangeHint": "Range: {{range}} · approximate",
+  "newKey": "new key",
+  "loadingPreview": "Loading change preview...",
+  "noDiff": {
+    "title": "No changes",
+    "desc": "The current ini files on disk match the selected preset."
+  },
+  "table": {
+    "file": "File",
+    "param": "Parameter",
+    "was": "Was",
+    "willBe": "Will be"
+  },
+  "diffCount_one": "{{count}} change will be written to ini",
+  "diffCount_other": "{{count}} changes will be written to ini",
+  "preset": {
+    "maxQuality": "Maximum quality",
+    "recommended": "Recommended"
+  }
+}

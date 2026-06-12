@@ -1,0 +1,35 @@
+{
+  "tabs": {
+    "wizard": "Author",
+    "advanced": "Manual",
+    "backups": "Backups",
+    "reshade": "ReShade"
+  },
+  "source": {
+    "steam": "Steam",
+    "epic": "Epic",
+    "manual": "Manual"
+  },
+  "badge": {
+    "author": "By author",
+    "engineUnknown": "Engine ?",
+    "configOk": "Config OK",
+    "needConfig": "Config required"
+  },
+  "button": {
+    "close": "Close",
+    "withoutReShade": "Without ReShade",
+    "play": "Play",
+    "open": "Open"
+  },
+  "configLabel": "Config",
+  "gameSections": "Game sections",
+  "playWithoutReShadeTitle": "Launch the game once without ReShade effects",
+  "selectApiTitle": "Select an API before launch",
+  "launchVia": "Launching via {{launcher}}…",
+  "gameClosed": "Game closed.",
+  "errors": {
+    "loadReShade": "Failed to load ReShade settings",
+    "noProcessName": "Game process name is undefined"
+  }
+}

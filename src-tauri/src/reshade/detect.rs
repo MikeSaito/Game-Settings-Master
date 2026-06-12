@@ -20,7 +20,7 @@ pub struct InstallMarker {
     #[serde(default)]
     pub installed_files: Vec<String>,
     pub installed_at: String,
-    /// Vulkan layer не зарегистрирован в HKLM (нет прав / ошибка registry).
+    /// Vulkan layer not registered in HKLM (no permissions / registry error).
     #[serde(default)]
     pub needs_vulkan_registry: bool,
 }
@@ -91,9 +91,9 @@ pub struct ReShadeGameStatus {
     pub suggested_api: Option<String>,
     pub gpu_name: Option<String>,
     pub gpu_adapt_reason: Option<String>,
-    /// Выбранный пользователем пресет (до GPU-адаптации).
+    /// User-selected preset (before GPU adaptation).
     pub requested_preset: Option<String>,
-    /// Пресет, который будет установлен (после GPU-адаптации).
+    /// Preset that will be installed (after GPU adaptation).
     pub effective_preset: Option<String>,
 }
 
@@ -113,14 +113,24 @@ pub fn read_marker(target_dir: &Path) -> Option<InstallMarker> {
 pub fn write_marker(target_dir: &Path, marker: &InstallMarker) -> Result<(), String> {
     let path = marker_path(target_dir);
     let raw = serde_json::to_string_pretty(marker)
-        .map_err(|e| format!("Не удалось сериализовать маркер ReShade: {e}"))?;
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось сериализовать маркер ReShade: {e}"),
+                &format!("Failed to serialize ReShade marker: {e}"),
+            )
+        })?;
     crate::fs_util::write_file_bytes_opts(&path, raw.as_bytes(), true)
 }
 
 pub fn remove_marker(target_dir: &Path) -> Result<(), String> {
     let path = marker_path(target_dir);
     if path.exists() {
-        fs::remove_file(&path).map_err(|e| format!("Не удалось удалить маркер ReShade: {e}"))?;
+        fs::remove_file(&path).map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось удалить маркер ReShade: {e}"),
+                &format!("Failed to remove ReShade marker: {e}"),
+            )
+        })?;
     }
     Ok(())
 }
