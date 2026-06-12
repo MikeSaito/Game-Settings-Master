@@ -2,11 +2,11 @@
 export const basePath = import.meta.env.BASE_URL;
 
 export const siteUrl = (
-  import.meta.env.VITE_SITE_URL ?? "https://example.github.io/game-settings-master"
+  import.meta.env.VITE_SITE_URL ?? "https://mikesaito.github.io/Game-Settings-Master"
 ).replace(/\/$/, "");
 
 export const githubRepo =
-  import.meta.env.VITE_GITHUB_REPO ?? "Mike/game-settings-master";
+  import.meta.env.VITE_GITHUB_REPO ?? "MikeSaito/Game-Settings-Master";
 
 export const githubUrl = `https://github.com/${githubRepo}`;
 
