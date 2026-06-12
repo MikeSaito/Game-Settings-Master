@@ -20,9 +20,7 @@ function resolveAppVersion(): string {
 
 export const APP_VERSION = resolveAppVersion();
 
-export const downloadUrl =
-  import.meta.env.VITE_DOWNLOAD_URL?.trim() ||
-  `https://github.com/${githubRepo}/releases/latest/download/Game-Settings-Master_${APP_VERSION}_x64-setup.exe`;
+export const downloadUrl = `https://github.com/${githubRepo}/releases/latest/download/Game-Settings-Master_${APP_VERSION}_x64-setup.exe`;
 
 export const donateUrl = "https://dalink.to/mike_saito";
 

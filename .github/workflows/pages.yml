@@ -28,7 +28,12 @@ jobs:
         id: app_version
         shell: bash
         run: |
-          echo "value=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
+          VERSION=$(node -p "require('./package.json').version")
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read package.json version" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v5
         with:
@@ -42,8 +47,7 @@ jobs:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
           VITE_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
           VITE_GITHUB_REPO: ${{ github.repository }}
-          VITE_APP_VERSION: ${{ steps.app_version.outputs.value }}
-          VITE_DOWNLOAD_URL: https://github.com/${{ github.repository }}/releases/latest/download/Game-Settings-Master_${{ steps.app_version.outputs.value }}_x64-setup.exe
+          VITE_APP_VERSION: ${{ steps.app_version.outputs.version }}
         run: |
           npm ci
           npm run build
