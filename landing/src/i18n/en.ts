@@ -44,7 +44,7 @@ export const en: LocaleStrings = {
       id: "presets",
       step: "02",
       title: "Author presets",
-      text: "Ready-made setting packs for author-curated games (e.g. Forza Horizon 6) — apply in one click with a diff preview. Every change visible in configs.",
+      text: "Author-verified presets for select games (e.g. Forza Horizon 6) — apply in one click with a diff preview. Every change visible in configs.",
       illustration: illPresets,
       reverse: true,
     },
