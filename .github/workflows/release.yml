@@ -68,6 +68,12 @@ jobs:
         shell: pwsh
         run: npm run reshade:verify
 
+      - name: Build preset packs (bundled in installer)
+        working-directory: vps
+        run: |
+          npm ci
+          npm run build
+
       - name: Rust tests
         working-directory: src-tauri
         run: cargo test

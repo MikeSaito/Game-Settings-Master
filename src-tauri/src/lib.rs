@@ -52,6 +52,7 @@ pub fn run() {
                 resource_paths::init_resource_root(resource_dir);
             }
             i18n::init_from_disk();
+            let _ = remote_presets::seed_bundled_presets_if_needed();
             if remote_presets::effective_base_url().is_some() {
                 std::thread::spawn(|| {
                     #[cfg(windows)]

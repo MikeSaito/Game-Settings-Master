@@ -35,7 +35,7 @@ Installs post-processing into the game folder: Performance, Clarity and Cinemati
 
 Windows · free · no publisher signature
 
-* [Download the installer](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_0.3.1_x64-setup.exe)
+* [Download the installer](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_0.3.2_x64-setup.exe)
 * [GitHub](https://github.com/MikeSaito/Game-Settings-Master)
 * [Website](https://mikesaito.github.io/Game-Settings-Master/)
 
@@ -109,4 +109,4 @@ The GSM presets (Performance / Clarity / Cinematic) use the **Clarity** (Ioxa), 
 
 \---
 
-Game Settings Master v0.3.1
+Game Settings Master v0.3.2

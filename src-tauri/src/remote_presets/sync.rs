@@ -532,12 +532,211 @@ fn resolve_url(base: &str, relative: &str) -> Result<String, String> {
 }
 
 pub fn load_cached_catalog() -> Option<PresetCatalog> {
-    let path = cache_root().ok()?.join("catalog.json");
+    read_catalog_file(&cache_root().ok()?.join("catalog.json")).or_else(|| {
+        let _ = seed_bundled_presets_if_needed();
+        read_catalog_file(&cache_root().ok()?.join("catalog.json"))
+    })
+}
+
+fn read_catalog_file(path: &Path) -> Option<PresetCatalog> {
     let raw = fs::read_to_string(path).ok()?;
     serde_json::from_str(&raw).ok()
 }
 
+pub fn seed_bundled_presets_if_needed() -> Result<(), String> {
+    let bundled = crate::resource_paths::bundled_remote_presets_dir();
+    let catalog_path = bundled.join("catalog.json");
+    if !catalog_path.is_file() {
+        return Ok(());
+    }
+
+    let root = cache_root()?;
+    fs::create_dir_all(&root).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось создать кэш: {e}"),
+            &format!("Failed to create cache: {e}"),
+        )
+    })?;
+
+    let cache_catalog = root.join("catalog.json");
+    let bundled_raw = fs::read_to_string(&catalog_path).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось прочитать bundled catalog.json: {e}"),
+            &format!("Failed to read bundled catalog.json: {e}"),
+        )
+    })?;
+    let catalog: PresetCatalog = serde_json::from_str(&bundled_raw).map_err(|e| {
+        crate::i18n::t(
+            &format!("Некорректный bundled catalog.json: {e}"),
+            &format!("Invalid bundled catalog.json: {e}"),
+        )
+    })?;
+
+    let should_refresh_catalog = match read_catalog_file(&cache_catalog) {
+        None => true,
+        Some(cached) => cached.version != catalog.version,
+    };
+    if should_refresh_catalog {
+        write_catalog_atomic(&root, &bundled_raw)?;
+        super::invalidate_resolved_packs_cache();
+    }
+
+    for pack in &catalog.packs {
+        if crate::fs_util::is_safe_pack_id(&pack.id) {
+            let _ = seed_bundled_pack(&pack.id);
+        }
+    }
+    Ok(())
+}
+
+pub fn seed_bundled_pack(pack_id: &str) -> Result<bool, String> {
+    if !crate::fs_util::is_safe_pack_id(pack_id) {
+        return Err(crate::i18n::t(
+            &format!("Недопустимый идентификатор пака: {pack_id}"),
+            &format!("Invalid pack identifier: {pack_id}"),
+        ));
+    }
+
+    let bundled = crate::resource_paths::bundled_remote_presets_dir();
+    let pack_dir = bundled.join("packs").join(pack_id);
+    let manifest_path = pack_dir.join("manifest.json");
+    let zip_path = pack_dir.join("pack.zip");
+    if !manifest_path.is_file() || !zip_path.is_file() {
+        return Err(crate::i18n::t(
+            &format!("Bundled-пак '{pack_id}' не найден"),
+            &format!("Bundled pack '{pack_id}' not found"),
+        ));
+    }
+
+    let manifest_raw = fs::read_to_string(&manifest_path).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось прочитать bundled manifest '{pack_id}': {e}"),
+            &format!("Failed to read bundled manifest '{pack_id}': {e}"),
+        )
+    })?;
+    let manifest: PackManifest = serde_json::from_str(&manifest_raw).map_err(|e| {
+        crate::i18n::t(
+            &format!("Некорректный bundled manifest '{pack_id}': {e}"),
+            &format!("Invalid bundled manifest '{pack_id}': {e}"),
+        )
+    })?;
+
+    let expected_sha = manifest
+        .bundle
+        .as_ref()
+        .and_then(|b| b.sha256.as_deref());
+    let pack_cache = cache_root()?.join("packs").join(pack_id);
+    let stamp_path = pack_cache.join(".bundle.sha256");
+    let cached_sha = fs::read_to_string(&stamp_path).unwrap_or_default();
+    if try_load_cached_pack(pack_id).is_some()
+        && expected_sha.is_some_and(|sha| sha == cached_sha.trim())
+    {
+        return Ok(false);
+    }
+
+    if manifest.schema_version != 1 {
+        return Err(crate::i18n::t(
+            &format!(
+                "Неподдерживаемая schema_version bundled-пака '{pack_id}': {}",
+                manifest.schema_version
+            ),
+            &format!(
+                "Unsupported bundled pack '{pack_id}' schema_version: {}",
+                manifest.schema_version
+            ),
+        ));
+    }
+
+    if manifest.bundle.is_none() {
+        return Err(crate::i18n::t(
+            &format!("Bundled-пак '{pack_id}' не содержит bundle"),
+            &format!("Bundled pack '{pack_id}' has no bundle"),
+        ));
+    }
+
+    let zip_bytes = fs::read(&zip_path).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось прочитать bundled pack.zip '{pack_id}': {e}"),
+            &format!("Failed to read bundled pack.zip '{pack_id}': {e}"),
+        )
+    })?;
+
+    if expected_sha.is_none() && !unverified_packs_allowed() {
+        return Err(crate::i18n::t(
+            &format!("Bundled-пак '{pack_id}' не содержит bundle.sha256"),
+            &format!("Bundled pack '{pack_id}' has no bundle.sha256"),
+        ));
+    }
+    if let Some(expected) = expected_sha {
+        let actual = hex_sha256(&zip_bytes);
+        if actual != expected {
+            return Err(crate::i18n::t(
+                &format!(
+                    "SHA256 bundled-пака '{pack_id}' не совпадает: ожидалось {expected}, получено {actual}"
+                ),
+                &format!(
+                    "Bundled pack '{pack_id}' SHA256 mismatch: expected {expected}, got {actual}"
+                ),
+            ));
+        }
+    }
+
+    fs::create_dir_all(&pack_cache).map_err(|e| {
+        crate::i18n::t(
+            &format!("Не удалось создать кэш пака: {e}"),
+            &format!("Failed to create pack cache: {e}"),
+        )
+    })?;
+
+    crate::fs_util::write_file_bytes_opts(&pack_cache.join("manifest.json"), manifest_raw.as_bytes(), true)
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось сохранить manifest: {e}"),
+                &format!("Failed to save manifest: {e}"),
+            )
+        })?;
+    crate::fs_util::write_file_bytes_opts(&pack_cache.join("pack.zip"), &zip_bytes, true)
+        .map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось сохранить pack.zip: {e}"),
+                &format!("Failed to save pack.zip: {e}"),
+            )
+        })?;
+
+    let extract_dir = pack_cache.join("extracted");
+    let extract_new = pack_cache.join("extracted.new");
+    if extract_new.exists() {
+        fs::remove_dir_all(&extract_new).map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось очистить extracted.new: {e}"),
+                &format!("Failed to clean extracted.new: {e}"),
+            )
+        })?;
+    }
+    extract_zip(&pack_cache.join("pack.zip"), &extract_new)?;
+    replace_extracted_dir(&extract_dir, &extract_new)?;
+
+    if let Some(expected) = expected_sha {
+        fs::write(pack_cache.join(".bundle.sha256"), expected).map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось сохранить stamp: {e}"),
+                &format!("Failed to save stamp: {e}"),
+            )
+        })?;
+    }
+
+    super::invalidate_resolved_packs_cache();
+    Ok(true)
+}
+
 pub fn load_cached_pack(pack_id: &str) -> Option<(PackManifest, PathBuf)> {
+    try_load_cached_pack(pack_id).or_else(|| {
+        seed_bundled_pack(pack_id).ok()?;
+        try_load_cached_pack(pack_id)
+    })
+}
+
+fn try_load_cached_pack(pack_id: &str) -> Option<(PackManifest, PathBuf)> {
     if !crate::fs_util::is_safe_pack_id(pack_id) {
         return None;
     }

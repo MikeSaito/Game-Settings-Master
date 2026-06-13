@@ -63,6 +63,22 @@ pub fn catalog_dir() -> PathBuf {
     resolve_subdir("catalog")
 }
 
+/// Shipped preset catalog (`vps/public` in release; workspace fallback in dev).
+pub fn bundled_remote_presets_dir() -> PathBuf {
+    let bundled = resource_root().join("bundled-remote-presets");
+    if bundled.join("catalog.json").is_file() {
+        return bundled;
+    }
+    let dev = compile_time_src_root()
+        .join("..")
+        .join("vps")
+        .join("public");
+    if dev.join("catalog.json").is_file() {
+        return dev;
+    }
+    bundled
+}
+
 pub fn reshade_bundle_dir() -> PathBuf {
     presets_dir().join("reshade")
 }
