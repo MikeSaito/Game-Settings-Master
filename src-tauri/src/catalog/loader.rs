@@ -1233,8 +1233,12 @@ mod tests {
             "XeSSAA must parse"
         );
         assert!(
-            entries.iter().any(|e| e.file.as_deref() == Some("media")),
-            "media entries expected"
+            entries.iter().any(|e| !e.impact.is_empty()),
+            "impact fields expected"
+        );
+        assert!(
+            entries.iter().all(|e| e.file.as_deref() == Some("UserConfigSelections")),
+            "forza catalog uses Preset.xml selections (media ships as preset bundles)"
         );
     }
 

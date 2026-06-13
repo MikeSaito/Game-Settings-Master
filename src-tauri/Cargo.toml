@@ -1,6 +1,6 @@
 [package]
 name = "ue-settings-master"
-version = "0.3.3"
+version = "0.3.4"
 description = "UE Settings Master — мастер настроек для игр Unreal Engine"
 authors = ["Mike"]
 edition = "2021"
