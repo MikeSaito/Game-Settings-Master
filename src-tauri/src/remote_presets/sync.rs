@@ -1,6 +1,7 @@
 use super::config::{cache_root, load_config, save_config, PresetServerConfig};
 use super::manifest::{PackManifest, PresetCatalog};
 use sha2::{Digest, Sha256};
+use std::cmp::Ordering;
 use std::fs::{self, File};
 use std::io::{copy, Read};
 use std::path::{Path, PathBuf};
@@ -532,10 +533,32 @@ fn resolve_url(base: &str, relative: &str) -> Result<String, String> {
 }
 
 pub fn load_cached_catalog() -> Option<PresetCatalog> {
-    read_catalog_file(&cache_root().ok()?.join("catalog.json")).or_else(|| {
-        let _ = seed_bundled_presets_if_needed();
-        read_catalog_file(&cache_root().ok()?.join("catalog.json"))
-    })
+    let _ = seed_bundled_presets_if_needed();
+    read_catalog_file(&cache_root().ok()?.join("catalog.json"))
+}
+
+fn version_cmp(a: &str, b: &str) -> Ordering {
+    let pa: Vec<u32> = a.split('.').filter_map(|p| p.parse().ok()).collect();
+    let pb: Vec<u32> = b.split('.').filter_map(|p| p.parse().ok()).collect();
+    let len = pa.len().max(pb.len());
+    for i in 0..len {
+        let va = *pa.get(i).unwrap_or(&0);
+        let vb = *pb.get(i).unwrap_or(&0);
+        match va.cmp(&vb) {
+            Ordering::Equal => {}
+            other => return other,
+        }
+    }
+    Ordering::Equal
+}
+
+fn catalog_is_newer(candidate: &PresetCatalog, baseline: &PresetCatalog) -> bool {
+    if let (Some(c_ts), Some(b_ts)) = (&candidate.updated_at, &baseline.updated_at) {
+        if c_ts != b_ts {
+            return c_ts > b_ts;
+        }
+    }
+    version_cmp(&candidate.version, &baseline.version) == Ordering::Greater
 }
 
 fn read_catalog_file(path: &Path) -> Option<PresetCatalog> {
@@ -574,7 +597,7 @@ pub fn seed_bundled_presets_if_needed() -> Result<(), String> {
 
     let should_refresh_catalog = match read_catalog_file(&cache_catalog) {
         None => true,
-        Some(cached) => cached.version != catalog.version,
+        Some(cached) => catalog_is_newer(&catalog, &cached),
     };
     if should_refresh_catalog {
         write_catalog_atomic(&root, &bundled_raw)?;
@@ -631,6 +654,29 @@ pub fn seed_bundled_pack(pack_id: &str) -> Result<bool, String> {
     if try_load_cached_pack(pack_id).is_some()
         && expected_sha.is_some_and(|sha| sha == cached_sha.trim())
     {
+        let cached_manifest_path = pack_cache.join("manifest.json");
+        if fs::read_to_string(&cached_manifest_path).ok().as_deref() != Some(manifest_raw.as_str())
+        {
+            fs::create_dir_all(&pack_cache).map_err(|e| {
+                crate::i18n::t(
+                    &format!("Не удалось создать кэш пака: {e}"),
+                    &format!("Failed to create pack cache: {e}"),
+                )
+            })?;
+            crate::fs_util::write_file_bytes_opts(
+                &cached_manifest_path,
+                manifest_raw.as_bytes(),
+                true,
+            )
+            .map_err(|e| {
+                crate::i18n::t(
+                    &format!("Не удалось сохранить manifest: {e}"),
+                    &format!("Failed to save manifest: {e}"),
+                )
+            })?;
+            super::invalidate_resolved_packs_cache();
+            return Ok(true);
+        }
         return Ok(false);
     }
 
@@ -826,5 +872,39 @@ mod tests {
             join_url("http://localhost:8787/", "/packs/x/manifest.json"),
             "http://localhost:8787/packs/x/manifest.json"
         );
+    }
+
+    #[test]
+    fn version_cmp_orders_semver_parts() {
+        assert_eq!(version_cmp("1.5.0", "1.4.9"), Ordering::Greater);
+        assert_eq!(version_cmp("1.5.0", "1.5.0"), Ordering::Equal);
+        assert_eq!(version_cmp("1.4.0", "1.5.0"), Ordering::Less);
+    }
+
+    #[test]
+    fn catalog_is_newer_prefers_updated_at() {
+        use super::super::manifest::{CatalogPackRef, PresetCatalog};
+        let older = PresetCatalog {
+            schema_version: 1,
+            catalog_id: "a".into(),
+            version: "2.0.0".into(),
+            updated_at: Some("2026-01-01T00:00:00Z".into()),
+            base_url: None,
+            packs: vec![],
+        };
+        let newer = PresetCatalog {
+            schema_version: 1,
+            catalog_id: "a".into(),
+            version: "1.0.0".into(),
+            updated_at: Some("2026-06-01T00:00:00Z".into()),
+            base_url: None,
+            packs: vec![CatalogPackRef {
+                id: "x".into(),
+                manifest_url: "packs/x/manifest.json".into(),
+                sha256: None,
+            }],
+        };
+        assert!(catalog_is_newer(&newer, &older));
+        assert!(!catalog_is_newer(&older, &newer));
     }
 }

@@ -20,6 +20,7 @@ coverage/
 
 # ─── Rust / Tauri ───────────────────────────────────────────────────────────
 src-tauri/target/
+src-tauri/target-test-i18n/
 src-tauri/gen/schemas/
 
 # ─── Сборки Tauri (установщики, бинарники) ──────────────────────────────────
