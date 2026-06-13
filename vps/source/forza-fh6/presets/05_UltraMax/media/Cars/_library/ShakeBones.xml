@@ -1,0 +1,81 @@
+
+<ShakeBoneSettings Version="2">
+  <Camera name="SpectateCam">
+    <Bone name="boneNet_l" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="translateY" minVal="-5.000000" maxVal="5.000000"/>
+    </Bone>
+  </Camera>
+  <Camera name="Base">
+    <Bone name="boneHood" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000"/>
+    <Bone name="boneAntenna_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-6.000000" maxVal="6.000000"/>
+    </Bone>
+    <Bone name="boneAntenna_003" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="1.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-6.000000" maxVal="6.000000"/>
+    </Bone>
+    <Bone name="boneExhaustR_001" TranslationNoiseIndex="0" RotationNoiseIndex="1" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.300000">
+      <Transform Name="rotateZ" minVal="-2.000000" maxVal="2.000000"/>
+    </Bone>
+    <Bone name="boneExhaustL_001" TranslationNoiseIndex="0" RotationNoiseIndex="1" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateZ" minVal="-2.000000" maxVal="2.000000"/>
+    </Bone>
+    <Bone name="boneExhaustC_001" TranslationNoiseIndex="0" RotationNoiseIndex="1" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.500000">
+      <Transform Name="rotateZ" minVal="-2.000000" maxVal="2.000000"/>
+    </Bone>
+    <Bone name="boneMirrorC_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.500000">
+      <Transform Name="rotateY" minVal="-1.000000" maxVal="1.000000"/>
+    </Bone>
+    <Bone name="boneMirrorR_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-1.000000" maxVal="1.000000"/>
+    </Bone>
+    <Bone name="boneMirrorL_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-1.000000" maxVal="1.000000"/>
+    </Bone>
+    <Bone name="boneWingLF_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+    <Bone name="boneWingRF_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+	<Bone name="boneWingLF_003" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+    <Bone name="boneWingRF_003" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+    <Bone name="boneExhaustR_003" TranslationNoiseIndex="0" RotationNoiseIndex="1" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.300000">
+      <Transform Name="rotateZ" minVal="-2.000000" maxVal="2.000000"/>
+    </Bone>
+    <Bone name="boneExhaustL_003" TranslationNoiseIndex="0" RotationNoiseIndex="1" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateZ" minVal="-2.000000" maxVal="2.000000"/>
+    </Bone>
+    <Bone name="boneExhaustC_003" TranslationNoiseIndex="0" RotationNoiseIndex="1" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.500000">
+      <Transform Name="rotateZ" minVal="-3.000000" maxVal="3.000000"/>
+    </Bone>
+    <Bone name="boneVentR_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.800000">
+      <Transform Name="rotateX" minVal="-3.000000" maxVal="3.000000"/>
+    </Bone>
+    <Bone name="boneVentL_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.200000">
+      <Transform Name="rotateX" minVal="-3.000000" maxVal="3.000000"/>
+    </Bone>
+    <Bone name="boneWiperL" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.500000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+    <Bone name="boneWiperR" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="1.500000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+    <Bone name="boneWiperC" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-0.900000" maxVal="0.900000"/>
+    </Bone>
+    <Bone name="boneSteeringWheel_002" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000"/>
+    <Bone name="boneNetLF_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="translateX" minVal="-0.200000" maxVal="0.200000"/>
+    </Bone>
+    <Bone name="boneNetRF_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="translateX" minVal="-0.200000" maxVal="0.200000"/>
+    </Bone>
+    <Bone name="boneShifter_001" TranslationNoiseIndex="0" RotationNoiseIndex="0" TranslationNoiseLagS="0.000000" RotationNoiseLagS="0.000000">
+      <Transform Name="rotateY" minVal="-6.000000" maxVal="6.000000"/>
+    </Bone>
+  </Camera>
+</ShakeBoneSettings>

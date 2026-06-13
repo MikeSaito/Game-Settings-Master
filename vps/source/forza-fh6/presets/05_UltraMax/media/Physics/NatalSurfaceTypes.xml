@@ -1,0 +1,5472 @@
+<?xml version="1.0" ?>
+<Root>
+	<SurfaceCategories>
+		<Car />
+		<Cone />
+		<Tire />
+		<HardWorld />
+		<SoftWorld />
+		<RumbleStrip />
+		<TireWall />
+		<GuardRail />
+		<GenCollObj />
+		<Pylon />
+		<SoccerBall />
+	</SurfaceCategories>
+	
+	<CategoryToCategoryParams>
+		<Node Category0="Default" Category1="Default"         FrictionCoefficient="0.5" Elasticity="0.1"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		
+		<Node Category0="Car" Category1="HardWorld"           FrictionCoefficient="0.7" Elasticity="0.05"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.5" />
+		<Node Category0="Car" Category1="SoftWorld"           FrictionCoefficient="0.7" Elasticity="-0.1"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.7" />
+		<Node Category0="Car" Category1="RumbleStrip"         FrictionCoefficient="0.5" Elasticity="-0.7" FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.5" />
+		<Node Category0="Car" Category1="TireWall"            FrictionCoefficient="0.0" Elasticity="-0.6"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0"  FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="Car" Category1="GuardRail"           FrictionCoefficient="0.0" Elasticity="-0.97"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0"  FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+
+		<Node Category0="Cone" Category1="Car"          FrictionCoefficient="0.5" Elasticity="0.3"  FrictionNoiseFreqScale="3.0" FrictionNoiseInputNoise0="-1.0" FrictionNoiseInputNoise1="1.0" FrictionNoiseOutputFricAdd0="-0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Cone" Category1="HardWorld"          FrictionCoefficient="1.25" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.1" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Cone" Category1="SoftWorld"          FrictionCoefficient="0.8" Elasticity="-0.55"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.4" />
+		<Node Category0="Cone" Category1="RumbleStrip"        FrictionCoefficient="1.25" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Cone" Category1="TireWall"          FrictionCoefficient="1.25" Elasticity="-0.55"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Cone" Category1="GuardRail"          FrictionCoefficient="0.8" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.1" FrictionNoiseOutputFricAdd1="0.2" />
+
+		<Node Category0="Tire" Category1="HardWorld"          FrictionCoefficient="1.0" Elasticity="0.1"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="Tire" Category1="SoftWorld"          FrictionCoefficient="1.0" Elasticity="0.1"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="Tire" Category1="RumbleStrip"        FrictionCoefficient="1.0" Elasticity="0.1"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="Tire" Category1="TireWall"           FrictionCoefficient="1.0" Elasticity="0.1"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="Tire" Category1="GuardRail"          FrictionCoefficient="1.0" Elasticity="0.1"  FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+
+		<Node Category0="GenCollObj" Category1="Car"          FrictionCoefficient="0.5" Elasticity="0.3"  FrictionNoiseFreqScale="1.0" FrictionNoiseInputNoise0="-1.0" FrictionNoiseInputNoise1="1.0" FrictionNoiseOutputFricAdd0="-0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="GenCollObj" Category1="HardWorld"    FrictionCoefficient="1.25" Elasticity="-0.35"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.43" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="GenCollObj" Category1="SoftWorld"    FrictionCoefficient="0.8" Elasticity="-0.3"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.4" />
+		<Node Category0="GenCollObj" Category1="RumbleStrip"  FrictionCoefficient="1.25" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="GenCollObj" Category1="TireWall"     FrictionCoefficient="1.25" Elasticity="-0.55"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="GenCollObj" Category1="GuardRail"    FrictionCoefficient="0.8" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.1" FrictionNoiseOutputFricAdd1="0.2" />
+
+		<Node Category0="Pylon" Category1="Car"          	FrictionCoefficient="0.3" Elasticity="1.05"  FrictionNoiseFreqScale="3.0" FrictionNoiseInputNoise0="-1.0" FrictionNoiseInputNoise1="1.0" FrictionNoiseOutputFricAdd0="-0.1" FrictionNoiseOutputFricAdd1="0.1" />
+		<Node Category0="Pylon" Category1="HardWorld"          FrictionCoefficient="1.25" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.1" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Pylon" Category1="SoftWorld"          FrictionCoefficient="0.8" Elasticity="-0.55"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.4" />
+		<Node Category0="Pylon" Category1="RumbleStrip"        FrictionCoefficient="1.25" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Pylon" Category1="TireWall"          FrictionCoefficient="1.25" Elasticity="-0.55"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.2" FrictionNoiseOutputFricAdd1="0.2" />
+		<Node Category0="Pylon" Category1="GuardRail"          FrictionCoefficient="0.8" Elasticity="-0.5"  FrictionNoiseFreqScale="5.0" FrictionNoiseInputNoise0="0.6" FrictionNoiseInputNoise1="0.65" FrictionNoiseOutputFricAdd0="0.1" FrictionNoiseOutputFricAdd1="0.2" />
+	
+	    <Node Category0="SoccerBall" Category1="Car"          	FrictionCoefficient="0.3" Elasticity="0.45" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="HardWorld"      FrictionCoefficient="0.8" Elasticity="0.4" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="SoftWorld"      FrictionCoefficient="0.8" Elasticity="0.2" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="RumbleStrip"    FrictionCoefficient="0.8" Elasticity="0.2" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="TireWall"       FrictionCoefficient="0.8" Elasticity="0.45" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="GuardRail"      FrictionCoefficient="0.8" Elasticity="0.2" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="Cone"           FrictionCoefficient="0.8" Elasticity="-0.5" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+		<Node Category0="SoccerBall" Category1="GenCollObj"     FrictionCoefficient="0.8" Elasticity="-0.5" FrictionNoiseFreqScale="0.0" FrictionNoiseInputNoise0="0.0" FrictionNoiseInputNoise1="0.0" FrictionNoiseOutputFricAdd0="0.0" FrictionNoiseOutputFricAdd1="0.0" />
+       
+	</CategoryToCategoryParams>                                                                            
+	
+	<SurfaceTypes>
+		<Asphalt Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Asphalt>
+		<Dirt Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.8" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="20" />
+				<OffRoadWetPeakSA value="20" />
+				<VelDepFriction >
+					<VelPeak0 value="18" />
+					<VelPeak value="80" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="1.0" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.5" />
+					<TorqueVel0 value="10" />
+					<TorqueVel1 value="60" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="1.3" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="25" />
+					<LatTorqueScaleSlipAngle1 value="60" />
+					<LatTorqueScale0 value="0.15" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="0.8" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-0.7" />
+				<ClampMax value="1" />
+				<Scale value="0.03" />
+				<Offset value="0" />
+				<Rumble value="0.03" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="0.2" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.65" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="1"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="128" />
+				<ColorGreen  value="64" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Dirt>
+		<Grass Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.8" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="20" />
+				<OffRoadWetPeakSA value="20" />
+				<VelDepFriction >
+					<VelPeak0 value="18" />
+					<VelPeak value="50" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="1.5" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.5" />
+					<TorqueVel0 value="20" />
+					<TorqueVel1 value="30" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="1.75" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="25" />
+					<LatTorqueScaleSlipAngle1 value="60" />
+					<LatTorqueScale0 value="0.15" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0" />
+				<Rumble value="0.02" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.2" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.65" />
+				<SmokeType Smoke="0" Dust="0" Grass="1" Dirt="1"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="0" />
+				<ColorGreen  value="128" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Grass>
+		<GuardRail Category="GuardRail">
+			<Friction >
+				<FrictionScale value="0.0" />
+				<HeatTireScale value="0.6" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.00" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="128" />
+				<ColorGreen  value="128" />
+				<ColorBlue   value="128" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="2.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</GuardRail>
+		<ConcreteBarrier Category="GuardRail">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.7" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="192" />
+				<ColorGreen  value="192" />
+				<ColorBlue   value="192" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</ConcreteBarrier>
+		<Asphault2 Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="50" />
+				<ColorGreen  value="50" />
+				<ColorBlue   value="50" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Asphault2>
+		<RumbleStrip Category="RumbleStrip">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="60" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="SinWave" />
+				<Frequency value="0.73" />
+				<ClampMin value="-0.4" />
+				<ClampMax value="0.5" />
+				<Scale value="0.05" />
+				<Offset value="0.01" />
+				<Rumble value="0.03" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.8" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="225" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</RumbleStrip>
+		<CarAluminum Category="Car">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="0.5" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="0" />
+				<ColorGreen  value="255" />
+				<ColorBlue   value="255" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.6" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</CarAluminum>
+		<CarCarbonFiber Category="Car">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="0.5" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="155" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="255" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.65" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</CarCarbonFiber>
+		<Invisible Category="GuardRail">
+			<Friction >
+				<FrictionScale value="0" />
+				<HeatTireScale value="0.7" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="0" />
+				<ColorRed    value="0" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</Invisible>
+		<Brick Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.95" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.01" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.75" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.015" />
+				<Offset value="0.005" />
+				<Rumble value="0.01" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.8" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="128" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Brick>
+		<RubberTire Category="Tire">
+			<Friction >
+				<FrictionScale value="0.85" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="0" />
+				<ColorGreen  value="40" />
+				<ColorBlue   value="175" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</RubberTire>
+		<RubberCone Category="Cone">
+			<Friction >
+				<FrictionScale value="0.85" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="255" />
+				<ColorGreen  value="128" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</RubberCone>
+		<Grasscrete Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.9" />
+				<HeatTireScale value="0.8" />
+				<OffRoadness value="0.5" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="15" />
+				<OffRoadWetPeakSA value="15" />
+				<VelDepFriction >
+					<VelPeak0 value="18" />
+					<VelPeak value="80" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.2" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.2" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="3" />
+				<ClampMin value="-0.1" />
+				<ClampMax value="1" />
+				<Scale value="0.015" />
+				<Offset value="0.0001" />
+				<Rumble value="0.01" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueScale value="0.4" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="75" />
+				<ColorRed value="90" />
+				<ColorGreen value="80" />
+				<ColorBlue value="80" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="1" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="128" />
+				<ColorGreen  value="255" />
+				<ColorBlue   value="128" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Grasscrete>
+		<WireFence Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.7" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="120" />
+				<ColorGreen  value="130" />
+				<ColorBlue   value="155" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</WireFence>
+		<Wood Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.7" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="2" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.5" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="30.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="50" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="225" />
+				<ColorGreen  value="175" />
+				<ColorBlue   value="25" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</Wood>
+		<SafetyPlastic Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.7" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="205" />
+				<ColorGreen  value="205" />
+				<ColorBlue   value="250" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</SafetyPlastic>
+		<CarPartAluminum Category="GenCollObj">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="0.5" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="150" />
+				<ColorGreen  value="225" />
+				<ColorBlue   value="255" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.65" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</CarPartAluminum>
+		<CarPartCarbonFiber Category="GenCollObj">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="0.5" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="200" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="255" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.65" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</CarPartCarbonFiber>
+		<RubberTireSpringy Category="TireWall">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="true" />
+				<SpringK value="30" />
+				<SpringCompD value="7" />
+				<SpringRebD value="1" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="35" />
+				<ColorGreen  value="35" />
+				<ColorBlue   value="130" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</RubberTireSpringy>
+		<AsphaultNoPenalty Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="70" />
+				<ColorGreen  value="70" />
+				<ColorBlue   value="70" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </AsphaultNoPenalty>
+		<Asphault2NoPenalty Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="60" />
+				<ColorGreen  value="60" />
+				<ColorBlue   value="60" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Asphault2NoPenalty>
+		<HayBails Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.5" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="255" />
+				<ColorGreen  value="198" />
+				<ColorBlue   value="113" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</HayBails>
+		<Gravel Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.8" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="20" />
+					<VelPeak value="80" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="5" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="5" />
+					<TorqueVel0 value="20" />
+					<TorqueVel1 value="30" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="1.75" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="25" />
+					<LatTorqueScaleSlipAngle1 value="60" />
+					<LatTorqueScale0 value="0.01" />
+					<LatTorqueScale1 value="0.02" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="2.4" />
+				<ClampMin value="-0.7" />
+				<ClampMax value="1" />
+				<Scale value="0.03" />
+				<Offset value="0.0" />
+				<Rumble value="0.03" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.2" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.65" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="1"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="100" />
+				<ColorGreen  value="100" />
+				<ColorBlue   value="155" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Gravel>
+		<Sand Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.8" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="20" />
+					<VelPeak value="80" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="5" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="5" />
+					<TorqueVel0 value="20" />
+					<TorqueVel1 value="30" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="2.5" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="20" />
+					<LatTorqueScaleSlipAngle1 value="50" />
+					<LatTorqueScale0 value="0.15" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="3" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.03" />
+				<Offset value="0.0" />
+				<Rumble value="0.03" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.2" />
+				<SurfaceNoiseTorqueScale value="0.5" />
+				<SurfaceNoiseTorqueVel value="10.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.1" />
+				<SurfaceNoiseRandFreqMax0 value="0.2" />
+				<SurfaceNoiseRandFreqMin1 value="0.06" />
+				<SurfaceNoiseRandFreqMax1 value="0.12" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.65" />
+				<SmokeType Smoke="0" Dust="1" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="200" />
+				<ColorGreen  value="200" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Sand>
+		<SlowGrass Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.75" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="18" />
+					<VelPeak value="55" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="8" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="8" />
+					<TorqueVel0 value="20" />
+					<TorqueVel1 value="30" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="1.75" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="25" />
+					<LatTorqueScaleSlipAngle1 value="60" />
+					<LatTorqueScale0 value="0.15" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.015" />
+				<Offset value="0" />
+				<Rumble value="0.015" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.2" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.65" />
+				<SmokeType Smoke="0" Dust="0" Grass="1" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="165" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="115" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </SlowGrass>
+		<SlowAsphault Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.6" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.6" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="15" />
+					<VelPeak value="100" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="2.0" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="110" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </SlowAsphault>
+		<Quicksand Category="SoftWorld">
+			<Friction >
+				<FrictionScale value="0.75" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="8" />
+					<VelPeak value="25" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="10" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="10" />
+					<TorqueVel0 value="10" />
+					<TorqueVel1 value="30" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="2.5" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="20" />
+					<LatTorqueScaleSlipAngle1 value="50" />
+					<LatTorqueScale0 value="0.15" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="2.0" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.01" />
+				<Offset value="0.0" />
+				<Rumble value="0.01" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.2" />
+				<SurfaceNoiseTorqueScale value="0.5" />
+				<SurfaceNoiseTorqueVel value="10.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.1" />
+				<SurfaceNoiseRandFreqMax0 value="0.2" />
+				<SurfaceNoiseRandFreqMin1 value="0.06" />
+				<SurfaceNoiseRandFreqMax1 value="0.12" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0.65" />
+				<SmokeType Smoke="0" Dust="1" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="200" />
+				<ColorGreen  value="200" />
+				<ColorBlue   value="100" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Quicksand>
+		<Concrete Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Concrete>
+		<Concrete2 Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="200" />
+				<ColorGreen  value="215" />
+				<ColorBlue   value="170" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Concrete2>
+	    <CarPartAluminumSmall Category="GenCollObj">
+	        <Friction >
+	            <FrictionScale value="1" />
+	            <HeatTireScale value="0.5" />
+	            <OffRoadness value="0" />
+	            <OffRoadWetFrictionScale value="1" />
+	            <OffRoadDryPeakSA value="12" />
+	            <OffRoadWetPeakSA value="12" />
+	            <VelDepFriction >
+	                <VelPeak0 value="0" />
+	                <VelPeak value="8" />
+	                <LateralCoeff0 value="0" />
+	                <LateralCoeff value="0.03" />
+	                <LongCoeff0 value="0" />
+	                <LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+	            </VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+	        </Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+	        <Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+	        </Bumpiness>
+	        <Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+	        </Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+	        <SkidData >
+	            <ColorAlpha value="0" />
+	            <ColorRed value="0" />
+	            <ColorGreen value="0" />
+	            <ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+	        <DebugColor >
+	            <ColorAlpha  value="255" />
+	            <ColorRed    value="200" />
+	            <ColorGreen  value="240" />
+	            <ColorBlue   value="255" />
+	        </DebugColor>
+	        <ShouldSpark value="false" />
+	        <CarDamageScalar value="1.0" />
+	        <IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </CarPartAluminumSmall>
+	    <CarPartCarbonFiberSmall Category="GenCollObj">
+	        <Friction >
+	            <FrictionScale value="1" />
+	            <HeatTireScale value="0.5" />
+	            <OffRoadness value="0" />
+	            <OffRoadWetFrictionScale value="1" />
+	            <OffRoadDryPeakSA value="12" />
+	            <OffRoadWetPeakSA value="12" />
+	            <VelDepFriction >
+	                <VelPeak0 value="0" />
+	                <VelPeak value="8" />
+	                <LateralCoeff0 value="0" />
+	                <LateralCoeff value="0.03" />
+	                <LongCoeff0 value="0" />
+	                <LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+	            </VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+	        </Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+	        <Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+	        </Bumpiness>
+	        <Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+	        </Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+	        <SkidData >
+	            <ColorAlpha value="200" />
+	            <ColorRed value="0" />
+	            <ColorGreen value="0" />
+	            <ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+	        <DebugColor >
+	            <ColorAlpha  value="255" />
+	            <ColorRed    value="255" />
+	            <ColorGreen  value="0" />
+	            <ColorBlue   value="255" />
+	        </DebugColor>
+	        <ShouldSpark value="false" />
+	        <CarDamageScalar value="1.0" />
+	        <IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </CarPartCarbonFiberSmall>
+	    <BrakeMarkerPlastic Category="GenCollObj">
+	        <Friction >
+	            <FrictionScale value="1" />
+	            <HeatTireScale value="0.5" />
+	            <OffRoadness value="0" />
+	            <OffRoadWetFrictionScale value="1" />
+	            <OffRoadDryPeakSA value="12" />
+	            <OffRoadWetPeakSA value="12" />
+	            <VelDepFriction >
+	                <VelPeak0 value="0" />
+	                <VelPeak value="8" />
+	                <LateralCoeff0 value="0" />
+	                <LateralCoeff value="0.03" />
+	                <LongCoeff0 value="0" />
+	                <LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+	            </VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+	        </Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+	        <Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+	        </Bumpiness>
+	        <Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+	        </Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+	        <SkidData >
+	            <ColorAlpha value="200" />
+	            <ColorRed value="0" />
+	            <ColorGreen value="0" />
+	            <ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+	        <DebugColor >
+	            <ColorAlpha  value="255" />
+	            <ColorRed    value="255" />
+	            <ColorGreen  value="155" />
+	            <ColorBlue   value="205" />
+	        </DebugColor>
+	        <ShouldSpark value="false" />
+	        <CarDamageScalar value="1.0" />
+	        <IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </BrakeMarkerPlastic>
+	    <FoamBarrier Category="TireWall">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="true" />
+				<SpringK value="30" />
+				<SpringCompD value="7" />
+				<SpringRebD value="1" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="35" />
+				<ColorGreen  value="145" />
+				<ColorBlue   value="135" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</FoamBarrier>
+		<ConcreteNoPenalty Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.015" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </ConcreteNoPenalty>
+		<Concrete2NoPenalty Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.015" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="200" />
+				<ColorGreen  value="215" />
+				<ColorBlue   value="170" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Concrete2NoPenalty>
+		<ConcreteSlow Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.75" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="12" />
+					<VelPeak value="40" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="10" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="10" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </ConcreteSlow>
+		<Concrete2Slow Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.75" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="12" />
+					<VelPeak value="40" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="10" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="10" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="200" />
+				<ColorGreen  value="215" />
+				<ColorBlue   value="170" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Concrete2Slow>
+		<BrickNoPenalty Category="HardWorld">
+			<Friction >
+				<FrictionScale value="0.95" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.01" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.75" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.015" />
+				<Offset value="0.005" />
+				<Rumble value="0.01" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.8" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="128" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </BrickNoPenalty>
+		<BumpyAsphaltSlight Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex4" />
+				<Frequency value="0.02" />
+				<ClampMin value="-0.5" />
+				<ClampMax value="1" />
+				<Scale value="-0.045" />
+				<Offset value="0.0" />
+				<Rumble value="0.004" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </BumpyAsphaltSlight>
+		<BumpyAsphaltModerate Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.3" />
+				<ClampMin value="-1.0" />
+				<ClampMax value="0.5" />
+				<Scale value="0.01" />
+				<Offset value="0.0" />
+				<Rumble value="0.006" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </BumpyAsphaltModerate>
+		<BumpyAsphaltExtreme Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Ridges" />
+				<Frequency value="0.15" />
+				<ClampMin value="0.0" />
+				<ClampMax value="1" />
+				<Scale value="0.03" />
+				<Offset value="0" />
+				<Rumble value="0.016" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</BumpyAsphaltExtreme>
+		<BumpyConcreteSlight Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex4" />
+				<Frequency value="0.02" />
+				<ClampMin value="-0.5" />
+				<ClampMax value="1" />
+				<Scale value="-0.045" />
+				<Offset value="0.0" />
+				<Rumble value="0.004" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </BumpyConcreteSlight>
+		<BumpyConcreteModerate Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.3" />
+				<ClampMin value="-1.0" />
+				<ClampMax value="0.5" />
+				<Scale value="0.01" />
+				<Offset value="0.0" />
+				<Rumble value="0.006" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </BumpyConcreteModerate>
+		<BumpyConcreteExtreme Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Ridges" />
+				<Frequency value="0.15" />
+				<ClampMin value="0.0" />
+				<ClampMax value="1" />
+				<Scale value="0.03" />
+				<Offset value="0" />
+				<Rumble value="0.016" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</BumpyConcreteExtreme>
+			<ConcreteHighFriction Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1.0" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="1.0" />
+				<OffRoadDryPeakSA value="11" />
+				<OffRoadWetPeakSA value="11" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.006" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </ConcreteHighFriction>
+		<CobblestoneBig Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.08" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.7" />
+				<ClampMin value="-0.2" />
+				<ClampMax value="0.8" />
+				<Scale value="0.015" />
+				<Offset value="0.003" />
+				<Rumble value="0.020" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </CobblestoneBig>
+		<CobblestoneBig2 Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.08" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="1.7" />
+				<ClampMin value="-0.2" />
+				<ClampMax value="0.8" />
+				<Scale value="0.015" />
+				<Offset value="0.003" />
+				<Rumble value="0.020" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </CobblestoneBig2>
+		<CobblestoneSmall Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.17" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="4.5" />
+				<ClampMin value="-0.2" />
+				<ClampMax value="0.8" />
+				<Scale value="0.011" />
+				<Offset value="0.002" />
+				<Rumble value="0.015" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </CobblestoneSmall>
+		<CobblestoneSmall2 Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.17" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="HeightGrid" />
+				<Frequency value="4.5" />
+				<ClampMin value="-0.2" />
+				<ClampMax value="0.8" />
+				<Scale value="0.011" />
+				<Offset value="0.002" />
+				<Rumble value="0.015" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </CobblestoneSmall2>
+		<Shoulder Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="Simplex" />
+				<Frequency value="0.07" />
+			    <MoveToExtremesPower value="1" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="-0.009" />
+				<Offset value="0.0" />
+			    <Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+			<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+	 			<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="1" />
+	            <MinIntensity value="0" />
+				<SmokeType Smoke="0" Dust="1" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="80" />
+				<ColorGreen  value="80" />
+				<ColorBlue   value="80" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </Shoulder>
+		<SpeedBump Category="RumbleStrip">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="10" />
+					<VelPeak value="20" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="10" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="10" />
+					<TorqueVel0 value="10" />
+					<TorqueVel1 value="20" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="1.0" />
+					<TorqueLongitudinalCoeff0 value="0.01" />
+					<TorqueLongitudinalCoeff1 value="0.03" />
+					<LatTorqueScaleSlipAngle0 value="25" />
+					<LatTorqueScaleSlipAngle1 value="60" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="3" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.00" />
+				<Offset value="0.0" />
+				<Rumble value="0.3" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="0.8" />
+				<SurfaceNoiseTorqueScale value="0.6" />
+				<SurfaceNoiseTorqueVel value="20.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.1" />
+				<SurfaceNoiseNormLoadScale1 value="3.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="1.0" />
+				<SurfaceNoiseSpeedScale0 value="1.0" />
+				<SurfaceNoiseSpeedScale1 value="20.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="1.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="10.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="30.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.06" />
+				<SurfaceNoiseRandFreqMax0 value="0.12" />
+				<SurfaceNoiseRandFreqMin1 value="0.03" />
+				<SurfaceNoiseRandFreqMax1 value="0.06" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="225" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</SpeedBump>
+	    <FoamSign Category="Cone">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="true" />
+				<SpringK value="30" />
+				<SpringCompD value="7" />
+				<SpringRebD value="1" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="35" />
+				<ColorGreen  value="145" />
+				<ColorBlue   value="135" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</FoamSign>
+	    <ScoringPylon Category="Pylon">
+			<Friction >
+				<FrictionScale value="0.2" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="true" />
+				<SpringK value="30" />
+				<SpringCompD value="7" />
+				<SpringRebD value="1" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="35" />
+				<ColorGreen  value="145" />
+				<ColorBlue   value="135" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</ScoringPylon>
+		<SmoothBlacktop Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1" />
+				<HeatTireScale value="1" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="1" />
+				<OffRoadDryPeakSA value="12" />
+				<OffRoadWetPeakSA value="12" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="70" />
+				<ColorGreen  value="70" />
+				<ColorBlue   value="70" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="false" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </SmoothBlacktop>
+		<InvisibleTeleportingBorder Category="RumbleStrip">
+			<Friction >
+				<FrictionScale value="0.1" />
+				<HeatTireScale value="0.1" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="0.9" />
+				<OffRoadDryPeakSA value="30" />
+				<OffRoadWetPeakSA value="30" />
+				<VelDepFriction >
+					<VelPeak0 value="1" />
+					<VelPeak value="5" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="10" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="10" />
+					<TorqueVel0 value="1" />
+					<TorqueVel1 value="5" />
+					<TorqueLateralCoeff0 value="0.2" />
+					<TorqueLateralCoeff1 value="2.5" />
+					<TorqueLongitudinalCoeff0 value="0.1" />
+					<TorqueLongitudinalCoeff1 value="0.3" />
+					<LatTorqueScaleSlipAngle0 value="20" />
+					<LatTorqueScaleSlipAngle1 value="50" />
+					<LatTorqueScale0 value="0.15" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="0" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="0" />
+				<ColorRed    value="0" />
+				<ColorGreen  value="0" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="true" />
+		</InvisibleTeleportingBorder>
+		<SoccerBall Category="SoccerBall">
+			<Friction >
+				<FrictionScale value="0.85" />
+				<HeatTireScale value="0.85" />
+				<OffRoadness value="0" />
+				<OffRoadWetFrictionScale value="0.8" />
+				<OffRoadDryPeakSA value="10" />
+				<OffRoadWetPeakSA value="10" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="2.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.3" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.0" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="200.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="1.0" />
+				<NormDepSpringNormYCutoff value="0.707" />
+				<NormDepSpringSpeedCutoff value="4.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="125" />
+				<ColorRed value="255" />
+				<ColorGreen value="255" />
+				<ColorBlue value="255" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="0" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="255" />
+				<ColorGreen  value="128" />
+				<ColorBlue   value="0" />
+			</DebugColor>
+			<ShouldSpark value="false" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+		</SoccerBall>
+		<DragHighFrictionVHT Category="HardWorld">
+			<Friction >
+				<FrictionScale value="1.3" />
+				<HeatTireScale value="1.0" />
+				<OffRoadness value="1" />
+				<OffRoadWetFrictionScale value="1.0" />
+				<OffRoadDryPeakSA value="11" />
+				<OffRoadWetPeakSA value="11" />
+				<VelDepFriction >
+					<VelPeak0 value="0" />
+					<VelPeak value="8" />
+					<LateralCoeff0 value="0" />
+					<LateralCoeff value="0.03" />
+					<LongCoeff0 value="0" />
+					<LongCoeff value="0.01" />
+					<TorqueVel0 value="0" />
+					<TorqueVel1 value="8" />
+					<TorqueLateralCoeff0 value="0" />
+					<TorqueLateralCoeff1 value="0.03" />
+					<TorqueLongitudinalCoeff0 value="0" />
+					<TorqueLongitudinalCoeff1 value="0.01" />
+					<LatTorqueScaleSlipAngle0 value="0" />
+					<LatTorqueScaleSlipAngle1 value="0" />
+					<LatTorqueScale0 value="1" />
+					<LatTorqueScale1 value="1" />
+				</VelDepFriction>
+				<CarWorldCollFricMods>
+					<CarUpAxisY0 value="0.5" />
+					<CarUpAxisY1 value="0.866" />
+					<FrictionScale0 value="1.0" />
+					<FrictionScale1 value="1.0" />
+				</CarWorldCollFricMods>
+			</Friction>
+			<Aerodynamics>
+				<LinearDrag value="0.03" />
+				<AngularDrag value="0.1" />
+			</Aerodynamics>
+			<Bumpiness >
+				<NoiseType value="None" />
+				<Frequency value="3.5" />
+				<ClampMin value="-1" />
+				<ClampMax value="1" />
+				<Scale value="0.02" />
+				<Offset value="0.0" />
+				<Rumble value="0.006" />
+			</Bumpiness>
+			<Springiness >
+				<IsSpringy value="false" />
+				<SpringK value="291.0" />
+				<SpringCompD value="6.0" />
+				<SpringRebD value="62.0" />
+				<NormDepSpringNormYCutoff value="0.5" />
+				<NormDepSpringSpeedCutoff value="6.0" />
+			</Springiness>
+	   		<SteerTorque >
+				<FrictionTorqueScale value="1.0" />
+				<SurfaceNoiseTorqueScale value="0.0" />
+				<SurfaceNoiseTorqueVel value="0.0" />
+				<SurfaceNoiseNormLoadScale0 value="0.0" />
+				<SurfaceNoiseNormLoadScale1 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque0 value="0.0" />
+				<SurfaceNoiseNormLoadScaleTorque1 value="0.0" />
+				<SurfaceNoiseSpeedScale0 value="0.0" />
+				<SurfaceNoiseSpeedScale1 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque0 value="0.0" />
+				<SurfaceNoiseSpeedScaleTorque1 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale0 value="0.0" />
+				<SurfaceNoiseRandFreqSpeedScale1 value="0.0" />
+				<SurfaceNoiseRandFreqMin0 value="0.0" />
+				<SurfaceNoiseRandFreqMax0 value="0.0" />
+				<SurfaceNoiseRandFreqMin1 value="0.0" />
+				<SurfaceNoiseRandFreqMax1 value="0.0" />
+			</SteerTorque>
+			<SkidData >
+				<ColorAlpha value="200" />
+				<ColorRed value="0" />
+				<ColorGreen value="0" />
+				<ColorBlue value="0" />
+	            <TextureIndex value="0" />
+	            <MinIntensity value="0.35" />
+				<SmokeType Smoke="1" Dust="0" Grass="0" Dirt="0"/>
+			</SkidData>
+			<DebugColor >
+				<ColorAlpha  value="255" />
+				<ColorRed    value="220" />
+				<ColorGreen  value="220" />
+				<ColorBlue   value="200" />
+			</DebugColor>
+			<ShouldSpark value="true" />
+			<CarDamageScalar value="1.0" />
+			<IsPenaltySurface value="true" />
+			<IsHandOfGodTriggerSurface value="false" />
+	    </DragHighFrictionVHT>
+	</SurfaceTypes>
+</Root>
+

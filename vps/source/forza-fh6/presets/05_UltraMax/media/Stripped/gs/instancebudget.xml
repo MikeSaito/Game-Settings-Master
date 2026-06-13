@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstanceBudgets>
+	<!-- Only apply usage of Instance overhead per instance for routes in this list-->
+	<EnabledList>
+		<Routes value="0"/>
+		<Routes value="2492"/> <!-- Falcon route to fix bug: https://playground-games.visualstudio.com/Woodstock/_workitems/edit/3881367 -->
+		<Routes value="4461"/>
+		<Routes value="9057-9059"/>
+		<Routes value="40000-40004"/>
+		<!-- skipping series 2 routes due to high instance usage causing failures in BVTs/Season Monkeys.  These routes were added before the instance budget functionally was introduced --> 
+		<Routes value="40009-40180"/>
+		<!-- skipping series 18 routes due to high instance usage causing failures in BVTs/Season Monkeys.  These routes are a copy of Series 5 which were added before the instance budget functionally was introduced --> 
+		<Routes value="40185-49999"/>
+	</EnabledList>
+	<!-- Instance overhead budgets applied to all routes in Enabled List-->
+	<Budgets>
+	<!-- Reasoning for these numbers on https://confluence:8443/display/WSTK/Memory+Report+EW+-+Overhead+Per+Instance -->
+	<!-- Instance overhead multiplier for Anaconda and PC -->
+		<InstanceBudget UnknownSize="1.45" ProceduralSize="5.5" Quality="high" />
+	<!-- Instance overhead multiplier for Scorpio and Lockhart -->
+		<InstanceBudget UnknownSize="1.3" ProceduralSize="1.6" Quality="medium" />
+	<!-- Instance overhead multiplier for Durango -->
+		<InstanceBudget UnknownSize="1.3" ProceduralSize="1.3" Quality="low" />
+	</Budgets>
+</InstanceBudgets>

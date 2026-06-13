@@ -1,0 +1,1238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SpriteAtlas name="SpriteAtlas_Summer" version="1.1" >
+    <!-- Summer Distant Tree Templates - Generated Atlas Mapping (tight bounds) -->
+    <!-- uv_min/uv_max: optimised UV bounds for rendering -->
+    <!-- full_uv_min/full_uv_max: original 1x1 model UV window -->
+    <!-- Texture Types:
+         0  =  Colour
+         1  =  Normal
+         2  =  RTAO
+         3  =  LUT
+         4  =  World Tint
+    -->
+    <DefaultMaterialParams>
+        <!-- Material parameters from tracks\brio\Materials\Foliage\Impostor.material -->
+        <MaterialParameter name="AOToCavityMap_AOSpecRoughKillStrength" value="1"/>
+        <MaterialParameter name="AlwaysFacingSunVL_floatVal" value="0"/>
+        <MaterialParameter name="AlwaysFacingSun_floatVal" value="0"/>
+        <MaterialParameter name="AnimEndFadeDistance_floatVal" value="140"/>
+        <MaterialParameter name="AnimStartFadeDistance_floatVal" value="70"/>
+        <MaterialParameter name="BakedLightExposure_floatVal" value="0"/>
+        <MaterialParameter name="BakedLightIntensity_floatVal" value="0"/>
+        <MaterialParameter name="DistanceFader_AOSpecRoughKillEndFade" value="200"/>
+        <MaterialParameter name="DistanceFader_AOSpecRoughKillStartFade" value="180"/>
+        <MaterialParameter name="DistantColourBlendEndDistance_floatVal" value="5000"/>
+        <MaterialParameter name="DistantColourBlendStartDistance_floatVal" value="5000"/>
+        <MaterialParameter name="GIAOScale_floatVal" value="1"/>
+        <MaterialParameter name="GIRadScale_floatVal" value="1"/>
+        <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:1 Y:-1 Z:0 W:1"/>
+        <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.149 Z:0 W:0"/>
+        <MaterialParameter name="ImpostorInputsDepthMipClamp" value="0"/>
+        <MaterialParameter name="ImpostorInputsFramesXY_Colour" value="4"/>
+        <MaterialParameter name="ImpostorInputsFramesXY_Depth" value="6"/>
+        <MaterialParameter name="ImpostorInputsHemiOctahedronRemapYPower" value="1"/>
+        <MaterialParameter name="ImpostorInputsImpostorDiffuseWrap" value="0"/>
+        <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="3"/>
+        <MaterialParameter name="ImpostorInputsImpostorShadowPower" value="1"/>
+        <MaterialParameter name="ImpostorInputsImpostorShadowStrength" value="1"/>
+        <MaterialParameter name="IndirectSpecularScale0_floatVal" value="1"/>
+        <MaterialParameter name="LeafLateralAmpDurangoScale_floatVal" value="1"/>
+        <MaterialParameter name="LeafLateralAmplitude_floatVal" value="0.04"/>
+        <MaterialParameter name="LeafLateralFreqDurangoScale_floatVal" value="1"/>
+        <MaterialParameter name="LeafLateralFrequency_floatVal" value="0.8"/>
+        <MaterialParameter name="LeafMicroAmpDurangoScale_floatVal" value="1"/>
+        <MaterialParameter name="LeafMicroAmplitude_floatVal" value="0"/>
+        <MaterialParameter name="LeafMicroFreqDurangoScale_floatVal" value="1"/>
+        <MaterialParameter name="LeafMicroFrequency_floatVal" value="0"/>
+        <MaterialParameter name="LeafNormalDistortion_floatVal" value="0.7935"/>
+        <MaterialParameter name="LeafVerticalAmpDurangoScale_floatVal" value="1"/>
+        <MaterialParameter name="LeafVerticalAmplitude_floatVal" value="0.03"/>
+        <MaterialParameter name="LeafVerticalFreqDurangoScale_floatVal" value="1"/>
+        <MaterialParameter name="LeafVerticalFrequency_floatVal" value="0"/>
+        <MaterialParameter name="MediumDOIntensity_floatVal" value="1"/>
+        <MaterialParameter name="MediumDOPower_floatVal" value="5"/>
+        <MaterialParameter name="MegaTextureTintType_intVal" value="1"/>
+        <MaterialParameter name="NormalDistanceFaderEndFade" value="5000"/>
+        <MaterialParameter name="NormalDistanceFaderStartFade" value="5000"/>
+        <MaterialParameter name="NormalFadeOffset_floatVal" value="0"/>
+        <MaterialParameter name="ShadowAttenuationDensityFactor_floatVal" value="0.3"/>
+        <MaterialParameter name="ShadowAttenuationImmediateOcclusionScale_floatVal" value="1"/>
+        <MaterialParameter name="ShadowAttenuationPower_floatVal" value="1"/>
+        <MaterialParameter name="ShadowAttenuationRange_floatVal" value="1"/>
+        <MaterialParameter name="SkyTransmControl0Vector4" value="X:1 Y:2 Z:0.5 W:0"/>
+        <MaterialParameter name="SkyTransmFuzzinessVector4" value="X:-0.4 Y:0.4 Z:0 W:0.2"/>
+        <MaterialParameter name="SmallHeight_floatVal" value="2"/>
+        <MaterialParameter name="SmallTreeHeightStart_floatVal" value="0.2"/>
+        <MaterialParameter name="SmallTreeScale_floatVal" value="0"/>
+        <MaterialParameter name="SpecTransmCurve_floatVal" value="1"/>
+        <MaterialParameter name="SpecTransmIntensity_floatVal" value="1"/>
+        <MaterialParameter name="SpecularNormalElevation_floatVal" value="1"/>
+        <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.5"/>
+        <MaterialParameter name="TallHeight_floatVal" value="40"/>
+        <MaterialParameter name="TallTreeHeightStart_floatVal" value="7"/>
+        <MaterialParameter name="TallTreeScale_floatVal" value="0"/>
+        <MaterialParameter name="TransmDistanceFaderEndFade" value="5000"/>
+        <MaterialParameter name="TransmDistanceFaderStartFade" value="5000"/>
+        <MaterialParameter name="TrunkHeightScale_floatVal" value="0"/>
+        <MaterialParameter name="TrunkHeightStart_floatVal" value="0"/>
+        <MaterialParameter name="TrunkWindResponse_intVal" value="2"/>
+        <MaterialParameter name="UberFoliageTexturesAOUpBlend" value="0"/>
+        <MaterialParameter name="UberFoliageTexturesCanopyNormalCentreY" value="0.5"/>
+        <MaterialParameter name="UberFoliageTexturesCanopyNormalFadeDistance" value="38"/>
+        <MaterialParameter name="UberFoliageTexturesCanopyNormalMinNormalY" value="-0.2"/>
+        <MaterialParameter name="UberFoliageTexturesCanopyNormalStrengthFar" value="0.4"/>
+        <MaterialParameter name="UberFoliageTexturesCanopyNormalStrengthNear" value="0.1"/>
+        <MaterialParameter name="UberFoliageTexturesImpostorNormalStrength" value="X:1 Y:1 Z:0 W:0"/>
+        <MaterialParameter name="UberFoliageTexturesImpostorSpheriseNormal" value="1"/>
+        <MaterialParameter name="UberFoliageTexturesParamAOFader" value="X:0 Y:0 Z:0 W:0"/>
+        <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.7"/>
+        <MaterialParameter name="UberFoliageTexturesParamAlphaStepMin" value="0"/>
+        <MaterialParameter name="UberFoliageTexturesParamRoughnessScale" value="1"/>
+        <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7681512 Y:0.8468732 Z:0.02121901 W:1"/>
+        <MaterialParameter name="UberFoliageTexturesParamTransmissiveFuzziness" value="X:-0.2 Y:0.8 Z:0 W:0"/>
+        <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="4.5"/>
+        <MaterialParameter name="UberFoliageTexturesTransitionBegin" value="1"/>
+        <MaterialParameter name="UberFoliageTexturesTransitionEnd" value="1"/>
+        <MaterialParameter name="UberFoliageTexturesVLMaxTransmissiveScale" value="0"/>
+        <MaterialParameter name="VariantConstant_Animated" value="false"/>
+        <MaterialParameter name="VariantConstant_ApplyWetness" value="true"/>
+        <MaterialParameter name="VariantConstant_Baked_Lighting" value="false"/>
+        <MaterialParameter name="VariantConstant_Billboard" value="false"/>
+        <MaterialParameter name="VariantConstant_Billboard_Blend" value="false"/>
+        <MaterialParameter name="VariantConstant_Bush" value="false"/>
+        <MaterialParameter name="VariantConstant_BushSkeletalDeform" value="false"/>
+        <MaterialParameter name="VariantConstant_BushVertDeform" value="false"/>
+        <MaterialParameter name="VariantConstant_DistantColourBlend" value="false"/>
+        <MaterialParameter name="VariantConstant_DoubleSided" value="false"/>
+        <MaterialParameter name="VariantConstant_EnableMegaRoughness" value="false"/>
+        <MaterialParameter name="VariantConstant_Enable_Specular" value="true"/>
+        <MaterialParameter name="VariantConstant_Enable_Transmissivness" value="true"/>
+        <MaterialParameter name="VariantConstant_FullShadow" value="false"/>
+        <MaterialParameter name="VariantConstant_Grass" value="false"/>
+        <MaterialParameter name="VariantConstant_Impostor" value="true"/>
+        <MaterialParameter name="VariantConstant_LowIntensityWind" value="false"/>
+        <MaterialParameter name="VariantConstant_Morph" value="false"/>
+        <MaterialParameter name="VariantConstant_NoCameraFacing" value="false"/>
+        <MaterialParameter name="VariantConstant_NoFlatten" value="false"/>
+        <MaterialParameter name="VariantConstant_No_Clip" value="false"/>
+        <MaterialParameter name="VariantConstant_PalmFrond" value="false"/>
+        <MaterialParameter name="VariantConstant_PerPixelTint" value="false"/>
+        <MaterialParameter name="VariantConstant_Separate_DO" value="false"/>
+        <MaterialParameter name="VariantConstant_SimpleHit" value="false"/>
+        <MaterialParameter name="VariantConstant_SnowEmissive" value="false"/>
+        <MaterialParameter name="VariantConstant_SplineDeform" value="false"/>
+        <MaterialParameter name="VariantConstant_TerrainLightingBlend" value="false"/>
+        <MaterialParameter name="VariantConstant_Tint" value="false"/>
+        <MaterialParameter name="VariantConstant_Tree" value="true"/>
+        <MaterialParameter name="VariantConstant_UsePSSM" value="false"/>
+        <MaterialParameter name="VariantConstant_UseTerrainNormal" value="false"/>
+        <MaterialParameter name="VariantConstant_UseUPNormal" value="false"/>
+        <MaterialParameter name="VariantConstant_UseWorldTint" value="false"/>
+        <MaterialParameter name="VariantConstant_VC_Overlay" value="false"/>
+        <MaterialParameter name="VariantConstant_Vertex_AO" value="false"/>
+        <MaterialParameter name="VariantConstant_Vertex_Lighting" value="false"/>
+        <MaterialParameter name="VariantConstant_Winter" value="false"/>
+        <MaterialParameter name="VegetationFlattenAmountHorizontal_floatVal" value="1"/>
+        <MaterialParameter name="VegetationFlattenAmount_floatVal" value="1"/>
+        <MaterialParameter name="VegetationTiltInWindDirectionAmount_floatVal" value="0"/>
+        <MaterialParameter name="VegetationTiltInWindDirectionVariation_floatVal" value="0"/>
+        <MaterialParameter name="VegetationTiltPerpendicularToWindDirectionVariation_floatVal" value="0"/>
+        <MaterialParameter name="VertexRoughness_floatVal" value="0.5"/>
+        <MaterialParameter name="WetnessGlossStrength_WettenAsset_floatVal" value="0.65"/>
+        <MaterialParameter name="WetnessPorosity_floatVal" value="0.2"/>
+        <MaterialParameter name="WindIntensityRamp_floatVal" value="1"/>
+        <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+        <MaterialParameter name="WorldSpaceTintLUTResolution" value="X:16 Y:128 Z:0 W:0"/>
+        <MaterialParameter name="WorldSpaceTintMaxBrightness" value="1"/>
+        <MaterialParameter name="WorldSpaceTintMinBrightness" value="0.5"/>
+        <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+    </DefaultMaterialParams>
+    <AtlasTextures>
+        <AtlasTexture filename="tracks\brio\Scene\Models\Trees\Global\Swatches\distant_trees_xsummerx_diff_10a7189b-e2b8-4302-8f5b-a2cfb8b940d3.swatch" type="0" />
+        <AtlasTexture filename="tracks\brio\scene\models\trees\global\swatches\distant_trees_xsummerx_objnorm_d17d3d4d-b68f-4a04-83aa-d4e1c6b0f9ca.swatch" type="1" />
+        <AtlasTexture filename="tracks\brio\scene\models\trees\global\swatches\distant_trees_xsummerx_rtao_2ba535c4-be9b-452d-b590-baa965c44927.swatch" type="2" />
+        <AtlasTexture filename="tracks\brio\scene\models\trees\gbl\textures\swatches\tex_gbl_foliage_tint_b_xsummerx_bclr_e8f91f7e-ec79-410e-b449-817c6b12af19.swatch" type="3" />
+        <AtlasTexture filename="tracks\brio\Scene\Models\Trees\GBL\textures\swatches\Foliage_WorldTint_xSUMMERx_BCLR_8f6f7df1-3cf3-4535-a1b2-54460f279858.swatch" type="4 "/>
+    </AtlasTextures>
+    <AtlasInfo uv_scale_u="1.000000" uv_scale_v="0.500000" total_cols="16" total_rows="8"/>
+    <SpriteTemplates>
+        <SpriteTemplate name="tre_alp_snow_monster_b" season="summer" atlas_index="0" DebugAtlasCell="1,1" uv_min="0.019775,0.004395" uv_max="0.042725,0.120117" full_uv_min="0.000000,0.000000" full_uv_max="0.062500,0.125000" modelname="tracks\brio\scene\models\trees\alp\snow\tre_alp_snow_monster_b\impostor\tre_alp_snow_monster_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.11292736 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.9911021 Z:0.9911021 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="5"/>
+                <MaterialParameter name="MediumDOPower_floatVal" value="0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_alp_snow_monster_c" season="summer" atlas_index="1" DebugAtlasCell="2,1" uv_min="0.080322,0.005859" uv_max="0.106201,0.118652" full_uv_min="0.062500,0.000000" full_uv_max="0.125000,0.125000" modelname="tracks\brio\scene\models\trees\alp\snow\tre_alp_snow_monster_c\impostor\tre_alp_snow_monster_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.10030991 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:1 Y:1 Z:0.9911021 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="5"/>
+                <MaterialParameter name="MediumDOPower_floatVal" value="0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_a" season="summer" atlas_index="2" DebugAtlasCell="3,1" uv_min="0.126221,0.022461" uv_max="0.183350,0.103516" full_uv_min="0.125000,0.000000" full_uv_max="0.187500,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\tre_cst_ash_a\impostor\tre_cst_ash_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.16589464 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7529422 Y:0.838799 Z:0.50888133 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsHemiOctahedronRemapYPower" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_b" season="summer" atlas_index="3" DebugAtlasCell="4,1" uv_min="0.193848,0.029297" uv_max="0.245605,0.096680" full_uv_min="0.187500,0.000000" full_uv_max="0.250000,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\tre_cst_ash_b\impostor\tre_cst_ash_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.2210898 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7529422 Y:0.838799 Z:0.50888133 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_c" season="summer" atlas_index="4" DebugAtlasCell="5,1" uv_min="0.257080,0.030762" uv_max="0.306641,0.094727" full_uv_min="0.250000,0.000000" full_uv_max="0.312500,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\tre_cst_ash_c\impostor\tre_cst_ash_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.24240448 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7529422 Y:0.838799 Z:0.50888133 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_wnt_a" season="summer" atlas_index="5" DebugAtlasCell="6,1" uv_min="0.315430,0.020996" uv_max="0.367920,0.104980" full_uv_min="0.312500,0.000000" full_uv_max="0.375000,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\wnt\tre_cst_ash_wnt_a\impostor\tre_cst_ash_wnt_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.15526836 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_wnt_b" season="summer" atlas_index="6" DebugAtlasCell="7,1" uv_min="0.385742,0.027344" uv_max="0.429932,0.098145" full_uv_min="0.375000,0.000000" full_uv_max="0.437500,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\wnt\tre_cst_ash_wnt_b\impostor\tre_cst_ash_wnt_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.20858878 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_wnt_c" season="summer" atlas_index="7" DebugAtlasCell="8,1" uv_min="0.448486,0.026367" uv_max="0.494385,0.099121" full_uv_min="0.437500,0.000000" full_uv_max="0.500000,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\wnt\tre_cst_ash_wnt_c\impostor\tre_cst_ash_wnt_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.20764887 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_wnt_d" season="summer" atlas_index="8" DebugAtlasCell="9,1" uv_min="0.508789,0.019531" uv_max="0.554199,0.107910" full_uv_min="0.500000,0.000000" full_uv_max="0.562500,0.125000" modelname="tracks\brio\scene\models\trees\cst\ash\wnt\tre_cst_ash_wnt_d\impostor\tre_cst_ash_wnt_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.12924084 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_forest_a" season="summer" atlas_index="9" DebugAtlasCell="10,1" uv_min="0.576172,0.001465" uv_max="0.610352,0.123535" full_uv_min="0.562500,0.000000" full_uv_max="0.625000,0.125000" modelname="tracks\brio\scene\models\trees\cst\tre_cst_blackpine_forest_a\impostor\tre_cst_blackpine_forest_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.009084708 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7083758 Y:0.8069523 Z:0.2269659 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="10.001"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.565 Y:-0.609 Z:0.2 W:0.494"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_forest_b" season="summer" atlas_index="10" DebugAtlasCell="11,1" uv_min="0.637939,0.002930" uv_max="0.673584,0.122559" full_uv_min="0.625000,0.000000" full_uv_max="0.687500,0.125000" modelname="tracks\brio\scene\models\trees\cst\tre_cst_blackpine_forest_b\impostor\tre_cst_blackpine_forest_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.026316896 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7083758 Y:0.8069523 Z:0.2269659 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="10.001"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.634 Y:-0.696 Z:0.069 W:0.512"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_forest_c" season="summer" atlas_index="11" DebugAtlasCell="12,1" uv_min="0.700195,0.003418" uv_max="0.737305,0.123535" full_uv_min="0.687500,0.000000" full_uv_max="0.750000,0.125000" modelname="tracks\brio\scene\models\trees\cst\tre_cst_blackpine_forest_c\impostor\tre_cst_blackpine_forest_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.023646463 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7083758 Y:0.8069523 Z:0.2269659 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="10.001"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.582 Y:-0.6 Z:0.142 W:0.529"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_forest_d" season="summer" atlas_index="12" DebugAtlasCell="13,1" uv_min="0.761719,0.004883" uv_max="0.795898,0.120117" full_uv_min="0.750000,0.000000" full_uv_max="0.812500,0.125000" modelname="tracks\brio\scene\models\trees\cst\tre_cst_blackpine_forest_d\impostor\tre_cst_blackpine_forest_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.05736934 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7083758 Y:0.8069523 Z:0.2269659 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="10.001"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.564 Y:-0.792 Z:0.295 W:0.416"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_a" season="summer" atlas_index="13" DebugAtlasCell="14,1" uv_min="0.829834,0.001465" uv_max="0.861328,0.123535" full_uv_min="0.812500,0.000000" full_uv_max="0.875000,0.125000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_a\impostor\tre_gbl_birch_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.020504517 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_b" season="summer" atlas_index="14" DebugAtlasCell="15,1" uv_min="0.893066,0.002441" uv_max="0.918213,0.124023" full_uv_min="0.875000,0.000000" full_uv_max="0.937500,0.125000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_b\impostor\tre_gbl_birch_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.020279633 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="3"/>
+                <MaterialParameter name="ImpostorInputsFramesXY_Colour" value="4"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.563 Y:-0.574 Z:0.242 W:0.354"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_c" season="summer" atlas_index="15" DebugAtlasCell="16,1" uv_min="0.955811,0.001953" uv_max="0.983154,0.124023" full_uv_min="0.937500,0.000000" full_uv_max="1.000000,0.125000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_c\impostor\tre_gbl_birch_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.018589793 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="3"/>
+                <MaterialParameter name="ImpostorInputsFramesXY_Colour" value="4"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.547 Y:-0.532 Z:0.2 W:0.396"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_transition_a" season="summer" atlas_index="16" DebugAtlasCell="1,2" uv_min="0.010986,0.125977" uv_max="0.051270,0.249023" full_uv_min="0.000000,0.125000" full_uv_max="0.062500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_transition_a\impostor\tre_gbl_birch_transition_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.017062152 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:1 Y:-0.403 Z:-0.35 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_transition_b" season="summer" atlas_index="17" DebugAtlasCell="2,2" uv_min="0.076172,0.126953" uv_max="0.111572,0.248047" full_uv_min="0.062500,0.125000" full_uv_max="0.125000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_transition_b\impostor\tre_gbl_birch_transition_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.020538079 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:1 Y:-0.184 Z:-0.711 W:0.939"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_transition_c" season="summer" atlas_index="18" DebugAtlasCell="3,2" uv_min="0.140625,0.125977" uv_max="0.173340,0.249023" full_uv_min="0.125000,0.125000" full_uv_max="0.187500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_transition_c\impostor\tre_gbl_birch_transition_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.013105481 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.609 Y:-0.537 Z:0.133 W:0.496"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_transition_d" season="summer" atlas_index="19" DebugAtlasCell="4,2" uv_min="0.200928,0.126465" uv_max="0.238281,0.248535" full_uv_min="0.187500,0.125000" full_uv_max="0.250000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_transition_d\impostor\tre_gbl_birch_transition_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.015620468 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.591 Y:-0.575 Z:0.187 W:0.556"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_f" season="summer" atlas_index="20" DebugAtlasCell="5,2" uv_min="0.254150,0.140625" uv_max="0.307129,0.234375" full_uv_min="0.250000,0.125000" full_uv_max="0.312500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\cherry\tre_gbl_cherry_f\impostor\tre_gbl_cherry_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.12557754 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9646863 Y:0.9559733 Z:0.9559733 W:1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_c" season="summer" atlas_index="21" DebugAtlasCell="6,2" uv_min="0.319580,0.127441" uv_max="0.364990,0.247559" full_uv_min="0.312500,0.125000" full_uv_max="0.375000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\tre_gbl_deciduous_c\impostor\tre_gbl_deciduous_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.028909987 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9559733 Y:0.9646863 Z:0.76815116 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.61 Y:-0.62 Z:0.308 W:0.375"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_e" season="summer" atlas_index="22" DebugAtlasCell="7,2" uv_min="0.382568,0.133789" uv_max="0.433594,0.242188" full_uv_min="0.375000,0.125000" full_uv_max="0.437500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\tre_gbl_deciduous_e\impostor\tre_gbl_deciduous_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.07207378 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9559733 Y:0.9646863 Z:0.76815116 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:1 Y:-1 Z:0 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_wnt_a" season="summer" atlas_index="23" DebugAtlasCell="8,2" uv_min="0.446045,0.127930" uv_max="0.488770,0.249023" full_uv_min="0.437500,0.125000" full_uv_max="0.500000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\wnt\tre_gbl_deciduous_wnt_a\impostor\tre_gbl_deciduous_wnt_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.01733564 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_wnt_e" season="summer" atlas_index="24" DebugAtlasCell="9,2" uv_min="0.508057,0.136230" uv_max="0.558350,0.243652" full_uv_min="0.500000,0.125000" full_uv_max="0.562500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\wnt\tre_gbl_deciduous_wnt_e\impostor\tre_gbl_deciduous_wnt_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.058721606 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_b" season="summer" atlas_index="25" DebugAtlasCell="10,2" uv_min="0.572754,0.126465" uv_max="0.610352,0.248535" full_uv_min="0.562500,0.125000" full_uv_max="0.625000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_b\impostor\tre_gbl_pine_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0031442787 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.638 Y:-0.649 Z:-0.293 W:0.481"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.66538733 Z:0.34191445 W:1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_c" season="summer" atlas_index="26" DebugAtlasCell="11,2" uv_min="0.646729,0.126465" uv_max="0.666748,0.248535" full_uv_min="0.625000,0.125000" full_uv_max="0.687500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_c\impostor\tre_gbl_pine_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0021979085 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.682 Y:-0.507 Z:-0.084 W:0.338"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.66538733 Z:0.34191445 W:1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_d" season="summer" atlas_index="27" DebugAtlasCell="12,2" uv_min="0.704102,0.129883" uv_max="0.732178,0.245117" full_uv_min="0.687500,0.125000" full_uv_max="0.750000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_d\impostor\tre_gbl_pine_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.03232651 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.547 Y:-0.737 Z:-0.076 W:0.526"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.66538733 Z:0.34191445 W:1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_transition_a" season="summer" atlas_index="28" DebugAtlasCell="13,2" uv_min="0.767822,0.125977" uv_max="0.793945,0.249023" full_uv_min="0.750000,0.125000" full_uv_max="0.812500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_transition_a\impostor\tre_gbl_pine_transition_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.011211234 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.496933 Y:0.6795425 Z:0.2501583 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.668 Y:-1 Z:0.138 W:0.364"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_transition_b" season="summer" atlas_index="29" DebugAtlasCell="14,2" uv_min="0.832520,0.125977" uv_max="0.854004,0.248535" full_uv_min="0.812500,0.125000" full_uv_max="0.875000,0.250000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_transition_b\impostor\tre_gbl_pine_transition_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.018935872 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.65837485 Z:0.34191445 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.54 Y:-1 Z:0.29 W:0.318"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_wnt_b" season="summer" atlas_index="30" DebugAtlasCell="15,2" uv_min="0.892578,0.126953" uv_max="0.918213,0.247559" full_uv_min="0.875000,0.125000" full_uv_max="0.937500,0.250000" modelname="tracks\brio\scene\models\trees\gbl\pine\wnt\tre_gbl_pine_wnt_b\impostor\tre_gbl_pine_wnt_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.010372023 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_c" season="summer" atlas_index="31" DebugAtlasCell="16,2" uv_min="0.942383,0.133301" uv_max="0.994141,0.242676" full_uv_min="0.937500,0.125000" full_uv_max="1.000000,0.250000" modelname="tracks\brio\scene\models\trees\lmt\elm\tre_lmt_elm_c\impostor\tre_lmt_elm_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.05311843 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9301109 Y:0.9386857 Z:0.791298 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.787 Y:-0.75 Z:0 W:0.561"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_spg_a" season="summer" atlas_index="32" DebugAtlasCell="1,3" uv_min="0.003906,0.266113" uv_max="0.056152,0.362305" full_uv_min="0.000000,0.250000" full_uv_max="0.062500,0.375000" modelname="tracks\brio\scene\models\trees\lmt\elm\spg\tre_lmt_elm_spg_a\impostor\tre_lmt_elm_spg_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.096793614 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_f" season="summer" atlas_index="33" DebugAtlasCell="2,3" uv_min="0.066650,0.256348" uv_max="0.114746,0.368164" full_uv_min="0.062500,0.250000" full_uv_max="0.125000,0.375000" modelname="tracks\brio\scene\models\trees\lmt\maple\tre_lmt_maple_f\impostor\tre_lmt_maple_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.05566574 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.469 Y:-0.251 Z:0 W:0.507"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9822506 Z:0.8713671 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_topiary_a" season="summer" atlas_index="34" DebugAtlasCell="3,3" uv_min="0.131592,0.254883" uv_max="0.181885,0.371582" full_uv_min="0.125000,0.250000" full_uv_max="0.187500,0.375000" modelname="tracks\brio\scene\models\trees\urb\topiary\tre_urb_topiary_a\impostor\tre_urb_topiary_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.021800349 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_topiary_b" season="summer" atlas_index="35" DebugAtlasCell="4,3" uv_min="0.196777,0.260254" uv_max="0.239990,0.365723" full_uv_min="0.187500,0.250000" full_uv_max="0.250000,0.375000" modelname="tracks\brio\scene\models\trees\urb\topiary\tre_urb_topiary_b\impostor\tre_urb_topiary_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.06874564 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_topiary_d" season="summer" atlas_index="36" DebugAtlasCell="5,3" uv_min="0.268311,0.251465" uv_max="0.294434,0.374023" full_uv_min="0.250000,0.250000" full_uv_max="0.312500,0.375000" modelname="tracks\brio\scene\models\trees\urb\topiary\tre_urb_topiary_d\impostor\tre_urb_topiary_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.005808852 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_alp_snow_monster_a" season="summer" atlas_index="37" DebugAtlasCell="6,3" uv_min="0.332275,0.254395" uv_max="0.355225,0.370117" full_uv_min="0.312500,0.250000" full_uv_max="0.375000,0.375000" modelname="tracks\brio\scene\models\trees\alp\snow\tre_alp_snow_monster_a\impostor\tre_alp_snow_monster_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.093208864 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9646863 Y:0.9646863 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="5"/>
+                <MaterialParameter name="MediumDOPower_floatVal" value="0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cdg_cedar_a" season="summer" atlas_index="38" DebugAtlasCell="7,3" uv_min="0.397949,0.251465" uv_max="0.414551,0.374023" full_uv_min="0.375000,0.250000" full_uv_max="0.437500,0.375000" modelname="tracks\brio\scene\models\trees\cdg\cedar\tre_cdg_cedar_a\impostor\tre_cdg_cedar_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0033771945 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.622 Y:-1 Z:0 W:0.253"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5647115 Y:0.8468732 Z:0.021219011 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cdg_cedar_b" season="summer" atlas_index="39" DebugAtlasCell="8,3" uv_min="0.461670,0.251465" uv_max="0.476807,0.373535" full_uv_min="0.437500,0.250000" full_uv_max="0.500000,0.375000" modelname="tracks\brio\scene\models\trees\cdg\cedar\tre_cdg_cedar_b\impostor\tre_cdg_cedar_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.003977384 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:1 Y:-1 Z:0 W:0.341"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.4793202 Y:0.8468732 Z:0.021219011 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cdg_cedar_c" season="summer" atlas_index="40" DebugAtlasCell="9,3" uv_min="0.524170,0.250488" uv_max="0.537842,0.374023" full_uv_min="0.500000,0.250000" full_uv_max="0.562500,0.375000" modelname="tracks\brio\scene\models\trees\cdg\cedar\tre_cdg_cedar_c\impostor\tre_cdg_cedar_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0019571863 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.609 Y:-0.731 Z:0 W:0.18"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.65140563 Y:0.8468732 Z:0.021219011 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cdg_cedar_d" season="summer" atlas_index="41" DebugAtlasCell="10,3" uv_min="0.587158,0.250977" uv_max="0.600342,0.374023" full_uv_min="0.562500,0.250000" full_uv_max="0.625000,0.375000" modelname="tracks\brio\scene\models\trees\cdg\cedar\tre_cdg_cedar_d\impostor\tre_cdg_cedar_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0051267557 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.554 Y:-0.617 Z:0.265 W:0.151"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.60382736 Y:0.8468732 Z:0.021219011 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cdg_cedar_e" season="summer" atlas_index="42" DebugAtlasCell="11,3" uv_min="0.638184,0.257812" uv_max="0.673828,0.366211" full_uv_min="0.625000,0.250000" full_uv_max="0.687500,0.375000" modelname="tracks\brio\scene\models\trees\cdg\cedar\tre_cdg_cedar_e\impostor\tre_cdg_cedar_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.023140922 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:1 Y:-1 Z:0 W:0.678"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cdg_cedar_hero_a" season="summer" atlas_index="43" DebugAtlasCell="12,3" uv_min="0.698486,0.262207" uv_max="0.736572,0.363281" full_uv_min="0.687500,0.250000" full_uv_max="0.750000,0.375000" modelname="tracks\brio\scene\models\trees\cdg\cedar\tre_cdg_cedar_hero_a\impostor\tre_cdg_cedar_hero_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.10021614 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_ash_d" season="summer" atlas_index="44" DebugAtlasCell="13,3" uv_min="0.757812,0.272461" uv_max="0.804443,0.354004" full_uv_min="0.750000,0.250000" full_uv_max="0.812500,0.375000" modelname="tracks\brio\scene\models\trees\cst\ash\tre_cst_ash_d\impostor\tre_cst_ash_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.16060899 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7529422 Y:0.838799 Z:0.50888133 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_a" season="summer" atlas_index="45" DebugAtlasCell="14,3" uv_min="0.826904,0.251953" uv_max="0.861572,0.372559" full_uv_min="0.812500,0.250000" full_uv_max="0.875000,0.375000" modelname="tracks\brio\scene\models\trees\cst\blackpine\tre_cst_blackpine_a\impostor\tre_cst_blackpine_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.014931177 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7681512 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_b" season="summer" atlas_index="46" DebugAtlasCell="15,3" uv_min="0.887207,0.273926" uv_max="0.937256,0.351562" full_uv_min="0.875000,0.250000" full_uv_max="0.937500,0.375000" modelname="tracks\brio\scene\models\trees\cst\blackpine\tre_cst_blackpine_b\impostor\tre_cst_blackpine_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.19457231 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7681512 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_c" season="summer" atlas_index="47" DebugAtlasCell="16,3" uv_min="0.946045,0.263184" uv_max="0.994141,0.362793" full_uv_min="0.937500,0.250000" full_uv_max="1.000000,0.375000" modelname="tracks\brio\scene\models\trees\cst\blackpine\tre_cst_blackpine_c\impostor\tre_cst_blackpine_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.09724739 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7681512 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_cst_blackpine_d" season="summer" atlas_index="48" DebugAtlasCell="1,4" uv_min="0.000000,0.392578" uv_max="0.051025,0.483398" full_uv_min="0.000000,0.375000" full_uv_max="0.062500,0.500000" modelname="tracks\brio\scene\models\trees\cst\blackpine\tre_cst_blackpine_d\impostor\tre_cst_blackpine_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.13389532 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.7681512 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_birch_d" season="summer" atlas_index="49" DebugAtlasCell="2,4" uv_min="0.080566,0.377930" uv_max="0.105713,0.499023" full_uv_min="0.062500,0.375000" full_uv_max="0.125000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\birch\tre_gbl_birch_d\impostor\tre_gbl_birch_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.017543428 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5028865 Y:0.61049557 Z:0.3005438 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="2"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="3"/>
+                <MaterialParameter name="ImpostorInputsFramesXY_Colour" value="4"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.623 Y:-0.507 Z:0.158 W:0.38"/>
+                <MaterialParameter name="UberFoliageTexturesVLMaxTransmissiveScale" value="0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.7"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.2"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_a" season="summer" atlas_index="50" DebugAtlasCell="3,4" uv_min="0.131348,0.403809" uv_max="0.177490,0.472168" full_uv_min="0.125000,0.375000" full_uv_max="0.187500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\tre_gbl_cherry_a\impostor\tre_gbl_cherry_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.22021957 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9646863 Z:0.9473065 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_b" season="summer" atlas_index="51" DebugAtlasCell="4,4" uv_min="0.197266,0.381348" uv_max="0.244141,0.494629" full_uv_min="0.187500,0.375000" full_uv_max="0.250000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\tre_gbl_cherry_b\impostor\tre_gbl_cherry_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.059425343 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="7"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9646863 Z:0.9473065 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_c" season="summer" atlas_index="52" DebugAtlasCell="5,4" uv_min="0.259033,0.384277" uv_max="0.303711,0.491211" full_uv_min="0.250000,0.375000" full_uv_max="0.312500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\tre_gbl_cherry_c\impostor\tre_gbl_cherry_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0705066 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9646863 Z:0.9473065 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_d" season="summer" atlas_index="53" DebugAtlasCell="6,4" uv_min="0.321533,0.386230" uv_max="0.369873,0.489258" full_uv_min="0.312500,0.375000" full_uv_max="0.375000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\tre_gbl_cherry_d\impostor\tre_gbl_cherry_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.084948644 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9646863 Z:0.9473065 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_e" season="summer" atlas_index="54" DebugAtlasCell="7,4" uv_min="0.386475,0.378906" uv_max="0.429688,0.497070" full_uv_min="0.375000,0.375000" full_uv_max="0.437500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\tre_gbl_cherry_e\impostor\tre_gbl_cherry_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.032581944 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9646863 Y:0.9559733 Z:0.9559733 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_spg_a" season="summer" atlas_index="55" DebugAtlasCell="8,4" uv_min="0.442871,0.405273" uv_max="0.488525,0.469238" full_uv_min="0.437500,0.375000" full_uv_max="0.500000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\spg\tre_gbl_cherry_spg_a\impostor\tre_gbl_cherry_spg_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.2445318 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.8962694 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="true"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_spg_b" season="summer" atlas_index="56" DebugAtlasCell="9,4" uv_min="0.510498,0.385254" uv_max="0.560059,0.490234" full_uv_min="0.500000,0.375000" full_uv_max="0.562500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\spg\tre_gbl_cherry_spg_b\impostor\tre_gbl_cherry_spg_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.09302307 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.8962694 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="true"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_spg_c" season="summer" atlas_index="57" DebugAtlasCell="10,4" uv_min="0.572021,0.382812" uv_max="0.614746,0.492188" full_uv_min="0.562500,0.375000" full_uv_max="0.625000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\spg\tre_gbl_cherry_spg_c\impostor\tre_gbl_cherry_spg_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0621698 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.8962694 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="true"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_spg_d" season="summer" atlas_index="58" DebugAtlasCell="11,4" uv_min="0.634033,0.381836" uv_max="0.677734,0.493164" full_uv_min="0.625000,0.375000" full_uv_max="0.687500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\spg\tre_gbl_cherry_spg_d\impostor\tre_gbl_cherry_spg_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.054117665 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.8962694 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="true"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_spg_e" season="summer" atlas_index="59" DebugAtlasCell="12,4" uv_min="0.696777,0.378418" uv_max="0.745605,0.498047" full_uv_min="0.687500,0.375000" full_uv_max="0.750000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\spg\tre_gbl_cherry_spg_e\impostor\tre_gbl_cherry_spg_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.017537752 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.8962694 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="true"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_cherry_spg_f" season="summer" atlas_index="60" DebugAtlasCell="13,4" uv_min="0.753906,0.388184" uv_max="0.805908,0.486328" full_uv_min="0.750000,0.375000" full_uv_max="0.812500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\cherry\spg\tre_gbl_cherry_spg_f\impostor\tre_gbl_cherry_spg_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.11370073 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9911021 Y:0.8962694 Z:0.9473065 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="true"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="0.75"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_a" season="summer" atlas_index="61" DebugAtlasCell="14,4" uv_min="0.821289,0.377441" uv_max="0.865479,0.497559" full_uv_min="0.812500,0.375000" full_uv_max="0.875000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\tre_gbl_deciduous_a\impostor\tre_gbl_deciduous_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.02981 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9559733 Y:0.9646863 Z:0.76815116 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.554 Y:-0.558 Z:0 W:0.476"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_b" season="summer" atlas_index="62" DebugAtlasCell="15,4" uv_min="0.890869,0.376953" uv_max="0.926270,0.498047" full_uv_min="0.875000,0.375000" full_uv_max="0.937500,0.500000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\tre_gbl_deciduous_b\impostor\tre_gbl_deciduous_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.021076545 Z:0 W:0"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9559733 Y:0.9646863 Z:0.76815116 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.625 Y:-0.615 Z:0.25 W:0.283"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_d" season="summer" atlas_index="63" DebugAtlasCell="16,4" uv_min="0.954834,0.376953" uv_max="0.980225,0.498047" full_uv_min="0.937500,0.375000" full_uv_max="1.000000,0.500000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\tre_gbl_deciduous_d\impostor\tre_gbl_deciduous_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.01906906 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9559733 Y:0.9646863 Z:0.76815116 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.699 Y:-1 Z:0.22 W:0.347"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_deciduous_wnt_b" season="summer" atlas_index="64" DebugAtlasCell="1,5" uv_min="0.016357,0.504883" uv_max="0.050537,0.622559" full_uv_min="0.000000,0.500000" full_uv_max="0.062500,0.625000" modelname="tracks\brio\scene\models\trees\gbl\deciduous\wnt\tre_gbl_deciduous_wnt_b\impostor\tre_gbl_deciduous_wnt_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.024140414 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_a" season="summer" atlas_index="65" DebugAtlasCell="2,5" uv_min="0.076172,0.501953" uv_max="0.113770,0.623047" full_uv_min="0.062500,0.500000" full_uv_max="0.125000,0.625000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_a\impostor\tre_gbl_pine_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.008476915 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorShadowPower" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorShadowStrength" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.806 Y:-0.861 Z:-0.288 W:0.93"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.66538733 Z:0.34191445 W:1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_transition_c" season="summer" atlas_index="66" DebugAtlasCell="3,5" uv_min="0.140137,0.500488" uv_max="0.169922,0.624023" full_uv_min="0.125000,0.500000" full_uv_max="0.187500,0.625000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_transition_c\impostor\tre_gbl_pine_transition_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.008787334 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.66538733 Z:0.34191445 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.648 Y:-1 Z:0.193 W:0.464"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_transition_d" season="summer" atlas_index="67" DebugAtlasCell="4,5" uv_min="0.205811,0.500977" uv_max="0.231934,0.623535" full_uv_min="0.187500,0.500000" full_uv_max="0.250000,0.625000" modelname="tracks\brio\scene\models\trees\gbl\pine\tre_gbl_pine_transition_d\impostor\tre_gbl_pine_transition_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.021285644 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.58407843 Y:0.66538733 Z:0.34191445 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="6"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="2"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="2"/>
+                <MaterialParameter name="WorldSpaceTintMaxBrightness" value="2"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_gbl_pine_wnt_a" season="summer" atlas_index="68" DebugAtlasCell="5,5" uv_min="0.266846,0.503906" uv_max="0.294189,0.621094" full_uv_min="0.250000,0.500000" full_uv_max="0.312500,0.625000" modelname="tracks\brio\scene\models\trees\gbl\pine\wnt\tre_gbl_pine_wnt_a\impostor\tre_gbl_pine_wnt_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.025971282 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_bamboo_a" season="summer" atlas_index="69" DebugAtlasCell="6,5" uv_min="0.336914,0.501465" uv_max="0.349854,0.623047" full_uv_min="0.312500,0.500000" full_uv_max="0.375000,0.625000" modelname="tracks\brio\scene\models\trees\lmt\bamboo\tre_lmt_bamboo_a\impostor\tre_lmt_bamboo_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0074342988 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.557 Y:-0.643 Z:0.411 W:0.187"/>
+                <MaterialParameter name="IndirectSpecularScale0_floatVal" value="0.1"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_bamboo_b" season="summer" atlas_index="70" DebugAtlasCell="7,5" uv_min="0.399902,0.501465" uv_max="0.413574,0.623047" full_uv_min="0.375000,0.500000" full_uv_max="0.437500,0.625000" modelname="tracks\brio\scene\models\trees\lmt\bamboo\tre_lmt_bamboo_b\impostor\tre_lmt_bamboo_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.512 Y:-0.56 Z:0.4 W:0.143"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1.2"/>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0077094072 Z:0 W:0"/>
+                <MaterialParameter name="IndirectSpecularScale0_floatVal" value="0.1"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_bamboo_c" season="summer" atlas_index="71" DebugAtlasCell="8,5" uv_min="0.462891,0.501953" uv_max="0.475342,0.623535" full_uv_min="0.437500,0.500000" full_uv_max="0.500000,0.625000" modelname="tracks\brio\scene\models\trees\lmt\bamboo\tre_lmt_bamboo_c\impostor\tre_lmt_bamboo_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.005398924 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.56 Y:-0.496 Z:0.376 W:0.162"/>
+                <MaterialParameter name="IndirectSpecularScale0_floatVal" value="0.1"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_bamboo_d" season="summer" atlas_index="72" DebugAtlasCell="9,5" uv_min="0.520996,0.504883" uv_max="0.541504,0.622070" full_uv_min="0.500000,0.500000" full_uv_max="0.562500,0.625000" modelname="tracks\brio\scene\models\trees\lmt\bamboo\tre_lmt_bamboo_d\impostor\tre_lmt_bamboo_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.017661022 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.625 Y:-0.523 Z:0.393 W:0.299"/>
+                <MaterialParameter name="IndirectSpecularScale0_floatVal" value="0.1"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_bamboo_e" season="summer" atlas_index="73" DebugAtlasCell="10,5" uv_min="0.586914,0.501953" uv_max="0.600098,0.624023" full_uv_min="0.562500,0.500000" full_uv_max="0.625000,0.625000" modelname="tracks\brio\scene\models\trees\lmt\bamboo\tre_lmt_bamboo_e\impostor\tre_lmt_bamboo_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0033944964 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.56 Y:-0.543 Z:0.357 W:0.143"/>
+                <MaterialParameter name="IndirectSpecularScale0_floatVal" value="0.1"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_bamboo_f" season="summer" atlas_index="74" DebugAtlasCell="11,5" uv_min="0.654541,0.500977" uv_max="0.658691,0.624023" full_uv_min="0.625000,0.500000" full_uv_max="0.687500,0.625000" modelname="tracks\brio\scene\models\trees\lmt\bamboo\tre_lmt_bamboo_f\impostor\tre_lmt_bamboo_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0023643044 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.484 Y:-0.542 Z:0.311 W:0.092"/>
+                <MaterialParameter name="IndirectSpecularScale0_floatVal" value="0.1"/>
+                <MaterialParameter name="SpecularScale_AOSpecRoughKill_floatVal" value="0.1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_cedar_a" season="summer" atlas_index="75" DebugAtlasCell="12,5" uv_min="0.711426,0.500977" uv_max="0.726318,0.624023" full_uv_min="0.687500,0.500000" full_uv_max="0.750000,0.625000" modelname="tracks\brio\scene\models\trees\lmt\cedar\tre_lmt_cedar_a\impostor\tre_lmt_cedar_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.00057840603 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.678 Y:-0.629 Z:0.038 W:0.18"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5840784 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_cedar_b" season="summer" atlas_index="76" DebugAtlasCell="13,5" uv_min="0.773193,0.500488" uv_max="0.789307,0.624023" full_uv_min="0.750000,0.500000" full_uv_max="0.812500,0.625000" modelname="tracks\brio\scene\models\trees\lmt\cedar\tre_lmt_cedar_b\impostor\tre_lmt_cedar_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.002010862 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.583 Y:-0.578 Z:0.164 W:0.151"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5840784 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_cedar_c" season="summer" atlas_index="77" DebugAtlasCell="14,5" uv_min="0.834717,0.500977" uv_max="0.852295,0.624023" full_uv_min="0.812500,0.500000" full_uv_max="0.875000,0.625000" modelname="tracks\brio\scene\models\trees\lmt\cedar\tre_lmt_cedar_c\impostor\tre_lmt_cedar_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0023706027 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.59 Y:-0.564 Z:0.245 W:0.599"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5840784 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_cedar_d" season="summer" atlas_index="78" DebugAtlasCell="15,5" uv_min="0.899170,0.500488" uv_max="0.912842,0.624023" full_uv_min="0.875000,0.500000" full_uv_max="0.937500,0.625000" modelname="tracks\brio\scene\models\trees\lmt\cedar\tre_lmt_cedar_d\impostor\tre_lmt_cedar_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.001911125 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.668 Y:-0.576 Z:0.145 W:0.195"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.5840784 Y:0.8468732 Z:0.02121901 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorShadowPower" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_a" season="summer" atlas_index="79" DebugAtlasCell="16,5" uv_min="0.941406,0.515625" uv_max="0.993896,0.610352" full_uv_min="0.937500,0.500000" full_uv_max="1.000000,0.625000" modelname="tracks\brio\scene\models\trees\lmt\elm\tre_lmt_elm_a\impostor\tre_lmt_elm_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.10975187 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9301109 Y:0.9386857 Z:0.791298 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.46 Y:1 Z:-0.185 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_b" season="summer" atlas_index="80" DebugAtlasCell="1,6" uv_min="0.005127,0.632812" uv_max="0.052490,0.744141" full_uv_min="0.000000,0.625000" full_uv_max="0.062500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\tre_lmt_elm_b\impostor\tre_lmt_elm_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.038364746 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9301109 Y:0.9386857 Z:0.791298 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.64 Y:-0.524 Z:0 W:0.506"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_d" season="summer" atlas_index="81" DebugAtlasCell="2,6" uv_min="0.074463,0.628906" uv_max="0.111328,0.747070" full_uv_min="0.062500,0.625000" full_uv_max="0.125000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\tre_lmt_elm_d\impostor\tre_lmt_elm_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.02066649 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9301109 Y:0.9386857 Z:0.791298 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.708 Y:-0.627 Z:0 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_e" season="summer" atlas_index="82" DebugAtlasCell="3,6" uv_min="0.134277,0.630859" uv_max="0.178955,0.745117" full_uv_min="0.125000,0.625000" full_uv_max="0.187500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\tre_lmt_elm_e\impostor\tre_lmt_elm_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.033764347 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9301109 Y:0.9386857 Z:0.791298 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="0.1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.574 Y:-0.515 Z:0.118 W:0.4"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_f" season="summer" atlas_index="83" DebugAtlasCell="4,6" uv_min="0.193115,0.632324" uv_max="0.240967,0.743652" full_uv_min="0.187500,0.625000" full_uv_max="0.250000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\tre_lmt_elm_f\impostor\tre_lmt_elm_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.049870726 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9301109 Y:0.9386857 Z:0.791298 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="ImpostorInputsImpostorSelfShadowFadeRange" value="0.1"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.582 Y:-0.517 Z:0.206 W:0.409"/>
+                <MaterialParameter name="VariantConstant_Tint" value="True"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="MediumDOPower_floatVal" value="0.1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_wnt_a" season="summer" atlas_index="84" DebugAtlasCell="5,6" uv_min="0.253418,0.639160" uv_max="0.307373,0.737305" full_uv_min="0.250000,0.625000" full_uv_max="0.312500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\wnt\tre_lmt_elm_wnt_a\impostor\tre_lmt_elm_wnt_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.096793614 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.528 Y:-0.657 Z:-0.071 W:0.607"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_wnt_b" season="summer" atlas_index="85" DebugAtlasCell="6,6" uv_min="0.318359,0.632812" uv_max="0.364990,0.744141" full_uv_min="0.312500,0.625000" full_uv_max="0.375000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\wnt\tre_lmt_elm_wnt_b\impostor\tre_lmt_elm_wnt_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.040040363 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.577 Y:-0.675 Z:0.063 W:0.539"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_wnt_c" season="summer" atlas_index="86" DebugAtlasCell="7,6" uv_min="0.379150,0.634277" uv_max="0.428711,0.740723" full_uv_min="0.375000,0.625000" full_uv_max="0.437500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\wnt\tre_lmt_elm_wnt_c\impostor\tre_lmt_elm_wnt_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.06629455 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.543 Y:-0.333 Z:0.098 W:0.552"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_wnt_d" season="summer" atlas_index="87" DebugAtlasCell="8,6" uv_min="0.451416,0.628906" uv_max="0.486084,0.747070" full_uv_min="0.437500,0.625000" full_uv_max="0.500000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\wnt\tre_lmt_elm_wnt_d\impostor\tre_lmt_elm_wnt_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.019771697 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_wnt_e" season="summer" atlas_index="88" DebugAtlasCell="9,6" uv_min="0.510254,0.632812" uv_max="0.552979,0.744629" full_uv_min="0.500000,0.625000" full_uv_max="0.562500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\wnt\tre_lmt_elm_wnt_e\impostor\tre_lmt_elm_wnt_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.03642637 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_elm_wnt_f" season="summer" atlas_index="89" DebugAtlasCell="10,6" uv_min="0.568115,0.633301" uv_max="0.615479,0.745605" full_uv_min="0.562500,0.625000" full_uv_max="0.625000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\elm\wnt\tre_lmt_elm_wnt_f\impostor\tre_lmt_elm_wnt_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.036394738 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_a" season="summer" atlas_index="90" DebugAtlasCell="11,6" uv_min="0.628906,0.633301" uv_max="0.682129,0.741211" full_uv_min="0.625000,0.625000" full_uv_max="0.687500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\maple\tre_lmt_maple_a\impostor\tre_lmt_maple_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.068220794 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.461 Y:-0.608 Z:0.271 W:0.615"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9822506 Z:0.8713671 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_b" season="summer" atlas_index="91" DebugAtlasCell="12,6" uv_min="0.695068,0.632812" uv_max="0.739990,0.741699" full_uv_min="0.687500,0.625000" full_uv_max="0.750000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\maple\tre_lmt_maple_b\impostor\tre_lmt_maple_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.07626116 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.575 Y:-1 Z:0.316 W:1"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9822506 Z:0.8713671 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_c" season="summer" atlas_index="92" DebugAtlasCell="13,6" uv_min="0.757324,0.632812" uv_max="0.800049,0.741699" full_uv_min="0.750000,0.625000" full_uv_max="0.812500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\maple\tre_lmt_maple_c\impostor\tre_lmt_maple_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.075005636 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.606 Y:-0.519 Z:0.112 W:0.621"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9822506 Z:0.8713671 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_d" season="summer" atlas_index="93" DebugAtlasCell="14,6" uv_min="0.816650,0.636230" uv_max="0.869629,0.738770" full_uv_min="0.812500,0.625000" full_uv_max="0.875000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\maple\tre_lmt_maple_d\impostor\tre_lmt_maple_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.1065805 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.477 Y:-0.555 Z:0.206 W:0.597"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9822506 Z:0.8713671 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_e" season="summer" atlas_index="94" DebugAtlasCell="15,6" uv_min="0.881348,0.630859" uv_max="0.927734,0.744141" full_uv_min="0.875000,0.625000" full_uv_max="0.937500,0.750000" modelname="tracks\brio\scene\models\trees\lmt\maple\tre_lmt_maple_e\impostor\tre_lmt_maple_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.06384831 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.585 Y:-0.499 Z:0.163 W:0.583"/>
+                <MaterialParameter name="VariantConstant_Tint" value="False"/>
+                <MaterialParameter name="WorldSpaceTintTintStrength" value="1"/>
+                <MaterialParameter name="WorldSpaceTintHueRow" value="12"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:0.9734453 Y:0.9822506 Z:0.8713671 W:1"/>
+                <MaterialParameter name="WorldSpaceTintMinBrightness" value="1"/>
+                <MaterialParameter name="UberFoliageTexturesParamAlphaStepMax" value="0.3"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_wnt_a" season="summer" atlas_index="95" DebugAtlasCell="16,6" uv_min="0.943359,0.635742" uv_max="0.993164,0.738770" full_uv_min="0.937500,0.625000" full_uv_max="1.000000,0.750000" modelname="tracks\brio\scene\models\trees\lmt\maple\wnt\tre_lmt_maple_wnt_a\impostor\tre_lmt_maple_wnt_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.087114036 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_wnt_b" season="summer" atlas_index="96" DebugAtlasCell="1,7" uv_min="0.007324,0.759766" uv_max="0.052490,0.865234" full_uv_min="0.000000,0.750000" full_uv_max="0.062500,0.875000" modelname="tracks\brio\scene\models\trees\lmt\maple\wnt\tre_lmt_maple_wnt_b\impostor\tre_lmt_maple_wnt_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0890983 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_wnt_c" season="summer" atlas_index="97" DebugAtlasCell="2,7" uv_min="0.069092,0.758301" uv_max="0.112305,0.866211" full_uv_min="0.062500,0.750000" full_uv_max="0.125000,0.875000" modelname="tracks\brio\scene\models\trees\lmt\maple\wnt\tre_lmt_maple_wnt_c\impostor\tre_lmt_maple_wnt_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.07922838 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.65 Y:-0.552 Z:0.127 W:0.642"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_wnt_d" season="summer" atlas_index="98" DebugAtlasCell="3,7" uv_min="0.130127,0.760254" uv_max="0.179932,0.864258" full_uv_min="0.125000,0.750000" full_uv_max="0.187500,0.875000" modelname="tracks\brio\scene\models\trees\lmt\maple\wnt\tre_lmt_maple_wnt_d\impostor\tre_lmt_maple_wnt_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.099883825 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_wnt_e" season="summer" atlas_index="99" DebugAtlasCell="4,7" uv_min="0.196045,0.758301" uv_max="0.242676,0.867676" full_uv_min="0.187500,0.750000" full_uv_max="0.250000,0.875000" modelname="tracks\brio\scene\models\trees\lmt\maple\wnt\tre_lmt_maple_wnt_e\impostor\tre_lmt_maple_wnt_e_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.07330838 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_lmt_maple_wnt_f" season="summer" atlas_index="100" DebugAtlasCell="5,7" uv_min="0.255615,0.756348" uv_max="0.302734,0.869141" full_uv_min="0.250000,0.750000" full_uv_max="0.312500,0.875000" modelname="tracks\brio\scene\models\trees\lmt\maple\wnt\tre_lmt_maple_wnt_f\impostor\tre_lmt_maple_wnt_f_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.04879981 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_bonzai_a" season="summer" atlas_index="101" DebugAtlasCell="6,7" uv_min="0.331787,0.754883" uv_max="0.358398,0.871582" full_uv_min="0.312500,0.750000" full_uv_max="0.375000,0.875000" modelname="tracks\brio\scene\models\trees\urb\bonzai\tre_urb_bonzai_a\impostor\tre_urb_bonzai_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.03982661 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.631 Y:-0.482 Z:-0.059 W:0.497"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_bonzai_b" season="summer" atlas_index="102" DebugAtlasCell="7,7" uv_min="0.389893,0.756836" uv_max="0.423828,0.869629" full_uv_min="0.375000,0.750000" full_uv_max="0.437500,0.875000" modelname="tracks\brio\scene\models\trees\urb\bonzai\tre_urb_bonzai_b\impostor\tre_urb_bonzai_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.056155995 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.698 Y:-0.557 Z:0 W:0.572"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_bonzai_c" season="summer" atlas_index="103" DebugAtlasCell="8,7" uv_min="0.452393,0.756348" uv_max="0.492432,0.870117" full_uv_min="0.437500,0.750000" full_uv_max="0.500000,0.875000" modelname="tracks\brio\scene\models\trees\urb\bonzai\tre_urb_bonzai_c\impostor\tre_urb_bonzai_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.043791696 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.656 Y:-0.532 Z:0.124 W:0.756"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_bonzai_d" season="summer" atlas_index="104" DebugAtlasCell="9,7" uv_min="0.518799,0.778320" uv_max="0.553223,0.847168" full_uv_min="0.500000,0.750000" full_uv_max="0.562500,0.875000" modelname="tracks\brio\scene\models\trees\urb\bonzai\tre_urb_bonzai_d\impostor\tre_urb_bonzai_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.2324501 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.531 Y:-0.448 Z:0 W:1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_a" season="summer" atlas_index="105" DebugAtlasCell="10,7" uv_min="0.580322,0.750977" uv_max="0.605713,0.874023" full_uv_min="0.562500,0.750000" full_uv_max="0.625000,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\tre_urb_ginkgo_a\impostor\tre_urb_ginkgo_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.003976872 Z:0 W:0"/>
+                <MaterialParameter name="ImpostorInputsBillboardClippingParams" value="X:0.596 Y:-0.618 Z:-0.294 W:0.282"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_b" season="summer" atlas_index="106" DebugAtlasCell="11,7" uv_min="0.645752,0.750977" uv_max="0.665039,0.874023" full_uv_min="0.625000,0.750000" full_uv_max="0.687500,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\tre_urb_ginkgo_b\impostor\tre_urb_ginkgo_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0032999406 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_c" season="summer" atlas_index="107" DebugAtlasCell="12,7" uv_min="0.692627,0.751465" uv_max="0.744629,0.874023" full_uv_min="0.687500,0.750000" full_uv_max="0.750000,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\tre_urb_ginkgo_c\impostor\tre_urb_ginkgo_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0067871073 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_d" season="summer" atlas_index="108" DebugAtlasCell="13,7" uv_min="0.766113,0.751465" uv_max="0.795654,0.874023" full_uv_min="0.750000,0.750000" full_uv_max="0.812500,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\tre_urb_ginkgo_d\impostor\tre_urb_ginkgo_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.004982242 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_wnt_a" season="summer" atlas_index="109" DebugAtlasCell="14,7" uv_min="0.831299,0.750977" uv_max="0.856201,0.874023" full_uv_min="0.812500,0.750000" full_uv_max="0.875000,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\wnt\tre_urb_ginkgo_wnt_a\impostor\tre_urb_ginkgo_wnt_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0041674906 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:1 Y:1 Z:0.9911021 W:1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_wnt_b" season="summer" atlas_index="110" DebugAtlasCell="15,7" uv_min="0.895508,0.750488" uv_max="0.915283,0.874023" full_uv_min="0.875000,0.750000" full_uv_max="0.937500,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\wnt\tre_urb_ginkgo_wnt_b\impostor\tre_urb_ginkgo_wnt_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0035358851 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:1 Y:1 Z:0.9911021 W:1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_wnt_c" season="summer" atlas_index="111" DebugAtlasCell="16,7" uv_min="0.940918,0.750488" uv_max="0.993652,0.874023" full_uv_min="0.937500,0.750000" full_uv_max="1.000000,0.875000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\wnt\tre_urb_ginkgo_wnt_c\impostor\tre_urb_ginkgo_wnt_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0070458697 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:1 Y:1 Z:0.9911021 W:1"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_ginkgo_wnt_d" season="summer" atlas_index="112" DebugAtlasCell="1,8" uv_min="0.015869,0.875488" uv_max="0.046143,0.999023" full_uv_min="0.000000,0.875000" full_uv_max="0.062500,1.000000" modelname="tracks\brio\scene\models\trees\urb\ginkgo\wnt\tre_urb_ginkgo_wnt_d\impostor\tre_urb_ginkgo_wnt_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.005355727 Z:0 W:0"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveColor" value="X:1 Y:1 Z:0.9911021 W:1"/>
+                <MaterialParameter name="UberFoliageTexturesParamTransmissiveScale" value="4.5"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_pine_a" season="summer" atlas_index="113" DebugAtlasCell="2,8" uv_min="0.078369,0.881836" uv_max="0.113037,0.994141" full_uv_min="0.062500,0.875000" full_uv_max="0.125000,1.000000" modelname="tracks\brio\scene\models\trees\urb\pine\tre_urb_pine_a\impostor\tre_urb_pine_a_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.05671843 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_pine_b" season="summer" atlas_index="114" DebugAtlasCell="3,8" uv_min="0.141846,0.882324" uv_max="0.170898,0.997070" full_uv_min="0.125000,0.875000" full_uv_max="0.187500,1.000000" modelname="tracks\brio\scene\models\trees\urb\pine\tre_urb_pine_b\impostor\tre_urb_pine_b_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.023718525 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_pine_c" season="summer" atlas_index="115" DebugAtlasCell="4,8" uv_min="0.200195,0.882324" uv_max="0.239502,0.996094" full_uv_min="0.187500,0.875000" full_uv_max="0.250000,1.000000" modelname="tracks\brio\scene\models\trees\urb\pine\tre_urb_pine_c\impostor\tre_urb_pine_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.029465858 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_pine_d" season="summer" atlas_index="116" DebugAtlasCell="5,8" uv_min="0.255859,0.885254" uv_max="0.298828,0.994141" full_uv_min="0.250000,0.875000" full_uv_max="0.312500,1.000000" modelname="tracks\brio\scene\models\trees\urb\pine\tre_urb_pine_d\impostor\tre_urb_pine_d_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.046957377 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+        <SpriteTemplate name="tre_urb_topiary_c" season="summer" atlas_index="117" DebugAtlasCell="6,8" uv_min="0.321777,0.877441" uv_max="0.365723,0.999023" full_uv_min="0.312500,0.875000" full_uv_max="0.375000,1.000000" modelname="tracks\brio\scene\models\trees\urb\topiary\tre_urb_topiary_c\impostor\tre_urb_topiary_c_impostor.model">
+            <MaterialParameters>
+                <MaterialParameter name="ImpostorInputsBillboardPivot" value="X:0 Y:-0.0029263766 Z:0 W:0"/>
+            </MaterialParameters>
+        </SpriteTemplate>
+    </SpriteTemplates>
+</SpriteAtlas>

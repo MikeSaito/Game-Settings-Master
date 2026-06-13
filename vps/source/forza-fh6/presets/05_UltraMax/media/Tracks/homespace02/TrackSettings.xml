@@ -1,9 +1,10 @@
-<TrackSettings Version="93">
+
+<TrackSettings Version="84">
   <SkyboxHeightOffset Version="2" value="-650.000000" rotation="0.000000"/>
   <SkyboxIndex value="1"/>
   <SunHeightOffset value="38.000000"/>
   <LightAmbient r="0.142109" g="0.175171" b="0.197850" a="0.000000"/>
-  <SaturateAmount value="1.000000"/>
+  <DesaturateAmount value="1.000000"/>
   <DesatLuminosity r="0.212600" g="0.715200" b="0.072200" a="1.000000"/>
   <DesatPostMod r="1.000000" g="1.000000" b="1.000000" a="1.000000"/>
   <WorldClear r="0.000000" g="0.000000" b="0.000000"/>
@@ -914,7 +915,7 @@
   <ShadowColor r="0.200000" g="0.200000" b="0.201800" a="1.000000"/>
   <StaticShadowColor r="0.000000" g="0.000000" b="0.000000" a="1.000000"/>
   <GrassHeightScale value="1.300000"/>
-  <GlobalSpecularLevel Version="2" value="6.500000"/>
+  <GlobalSpecularLevel Version="2" value="5.000000"/>
   <MinSpecLevel value="0.000000"/>
   <DetailBlurAmount1 value="0.100000"/>
   <DetailBlurAmount2 value="0.200000"/>
@@ -923,12 +924,12 @@
   <DetailBlurContrastAmount2 value="1.000000"/>
   <DetailBlurContrastAmount3 value="1.000000"/>
   <DetailBlurIntensityAmount1 value="1.000000"/>
-  <DetailBlurIntensityAmount2 value="1.000000"/>
+  <DetailBluIntensityAmount2 value="1.000000"/>
   <DetailBlurIntensityAmount3 value="1.000000"/>
   <DetailBlurContrastAmountFinal value="0.950000"/>
   <DetailBlurIntensityAmountFinal value="2.600000"/>
   <DetailBlurMPHForMaxBlur value="50.000000"/>
-  <bloomCutoffScale value="0.0000"/>
+  <bloomCutoffScale value="0.000000"/>
   <bloomPersist value="0.000000"/>
   <motionBlurAmount value="0.000000"/>
   <dofFocalDistance value="4.000000"/>
@@ -945,18 +946,18 @@
   <GrassFadeEndDistance value="130.000000"/>
   <GrassLOD value="2"/>
   <TonemapEnabled value="1"/>
-  <ToneMapAdaptiveExposure Key_ExtraDark="0.000000" Key_Dark="20.000000" Key_Light="95.000000" Key_ExtraLight="160.000000" Exp_ExtraDark="3.00000" Exp_Dark="1.9000" Exp_Light="1.0000" Exp_ExtraLight="0.60000"/>
-  <ToneMapCockpitExposure Key_ExtraDark="0.000000" Key_Dark="7.000000" Key_Light="35.000000" Key_ExtraLight="101.000000" Exp_ExtraDark="3.170000" Exp_Dark="1.900000" Exp_Light="1.00000" Exp_ExtraLight="0.600000"/>
+  <ToneMapAdaptiveExposure Key_ExtraDark="15.000000" Key_Dark="35.000000" Key_Light="92.250000" Key_ExtraLight="101.000000" Exp_ExtraDark="1.300003" Exp_Dark="0.000000" Exp_Light="0.000000" Exp_ExtraLight="-0.300997"/>
+  <ToneMapCockpitExposure Key_ExtraDark="0.000000" Key_Dark="35.000000" Key_Light="50.000000" Key_ExtraLight="60.000000" Exp_ExtraDark="1.500000" Exp_Dark="0.000000" Exp_Light="0.000000" Exp_ExtraLight="-0.750000"/>
   <bloomEnable value="1"/>
-  <bloomCutoff value="0.90000"/>
-  <bloomScale value="1.050000"/>    <!-- Bloom_SmallBlurScale -->
-  <bloomPersist value="4.000000"/>  <!-- Bloom_LargeBlurCutoff -->
-  <bloomWeights x="2.600000" y="1.100000" z="8.500000" w="1.350000"/> <!-- x=Bloom_LargeBlurScale, y=Bloom_LargeBlurSpread, z=LargeCap, w=SmallCap -->
+  <bloomCutoff value="0.900000"/>
+  <bloomScale value="1.050000"/>
+  <bloomPersist value="0.000000"/>
+  <bloomWeights x="2.600000" y="1.100000" z="8.500000" w="1.350000"/>
   <cockpitBloomEnable value="1"/>
-  <cockpitBloomCutoff value="1.0000"/>
-  <cockpitBloomScale value="0.750000"/>
-  <cockpitBloomPersist value="4.000000"/>
-  <cockpitBloomWeights x="0.200000" y="0.700000" z="5.000000" w="1.000000"/>
+  <cockpitBloomCutoff value="0.320000"/>
+  <cockpitBloomScale value="0.250000"/>
+  <cockpitBloomPersist value="0.000000"/>
+  <cockpitBloomWeights x="1.000000" y="0.000000" z="0.000000" w="0.000000"/>
   <skyGain value="0.000000"/>
   <sunGainScale threshold="0.000000" power="999900.000000" scale="20000.000000"/>
   <GrassMaxNumShells value="24.000000"/>
@@ -966,19 +967,8 @@
   <MirrorRenderingParameters x="0.000000" y="0.000000" z="0.000000" AmbientIntensity="1.000000" SunIntensity="1.000000" SkyScale="1.000000"/>
   <Mirror VisibilityThreshold="32"/>
   <ShadowLightDirection x="-0.197420" y="-0.302618" z="0.932442"/>
-  <MaxCubemapInShadow value="1.0"/>
-  <TrackMaxCubemapInShadow value="1.0"/>
-  <WetMaterialParams
-    MaterialWetnessScale="99.000000"
-    GlossAtMinPorosity="0.500000"
-    GlossAtMaxPorosity="0.100000"
-    DiffuseDarkeningAtMaxPorosity="0.600000"
-    DarkenRange="0.400000"
-    SaturationRange="0.300000"
-    PuddleRange="0.480000"
-    WetF0="0.020000"
-    SaturatedGloss="0.980000"
-    PuddleGloss="1.000000" />
+  <MaxCubemapInShadow value="100.000000"/>
+  <TrackMaxCubemapInShadow value="100.000000"/>
   <SunSpecularScale value="1280.0"/>
   <SunRadius value="2.0"/>
   <SunCarScale value="1.072785"/>
@@ -986,23 +976,24 @@
   <SunCarRadius value="2.0"/>
   <LensFlareIntensity value="0.750000"/>
   <CockpitLensFlareIntensity value="0.620000"/>
-  <EmissiveScale value="1.000000"/>
+  <EmissiveScale value="1.500000"/>
+  <CubemapEmissiveScale value="1.0"/>
   <LODGroups StartFade0="50000.000000" FadeDist0="50.000000" StartFade1="50000.000000" FadeDist1="50.000000" StartFade2="50000.000000" FadeDist2="50.000000" StartFade3="50000.000000" FadeDist3="50.000000" StartFade4="50000.000000" FadeDist4="50.000000" StartFade5="50000.000000" FadeDist5="50.000000" StartFade6="50000.000000" FadeDist6="50.000000" StartFade7="50000.000000" FadeDist7="50.000000"/>
   <MipMapLodBiasModifier value="0.000000"/>
   <Crowds Version="4" dark_x="0.602000" dark_y="0.602000" dark_z="0.602000" dark_w="1.000000" light_x="0.905000" light_y="0.905000" light_z="0.906000" light_w="1.000000" lod0="5.000000" lod1="8.000000" lod2="10.000000" lod3="15.000000" SpriteDistance="85.000000" VisibleDistance="320.000000" VisibleDistanceForShadow="45.000000" VisibleDistanceForModel="160.000000" DepthFadeStart="180.000000" DepthFadeRange="40.000000"/>
   <DropShadowColor r="0.000000" g="-0.000000" b="-0.000000" a="1.000000"/>
   <TrackLightMapTransition MidPoint="0.000000" Width="0.000000" Color="0.000000"/>
   <TrackLightMapColor r="0.000000" g="0.000000" b="0.000000"/>
-  <GlobalFresnel OpaqueAngle="76.000000" TransparentMultiplier="1.480000"/>
-  <ToneMapeDelay val="0.02"/>
-  <CockpitToneMapeDelay val="0.055000"/>
+  <GlobalFresnel OpaqueAngle="70.000000" TransparentMultiplier="1.200000"/>
+  <ToneMapeDelay val="0.070000"/>
+  <CockpitToneMapeDelay val="0.070000"/>
   <CameraExposureRange minval="-2.000000" maxval="6.000000"/>
   <DetailBlurScale Version="2" val="0.420000"/>
   <SunSize min="0.000000" max="109.000000"/>
   <SunAdjust Version="2" decay="0.440000" brightness="1.150000" scale="1.120000" cockpitScale="1.080000"/>
   <Performance DynamicCubemap="1" NonFocusCarProjectedShadows="1" FocusCarProjectedShadows="1" DetailBlur="1" Lightmap="1" CrowdSize="1536"/>
   <ShadowEnds ShadowNear="25.000000" InGameShadowEnd="85.000000" TrackSegCamShadowEnd="200.000000" ShadowMipBias="-0.750000"/>
-  <CommandBufferRecording TimeAllowed="0.000000" NumTextureFixupsAllowed="0" NumGraphsAllowed="0" PrerecordNextZone="1"/>
+  <CommandBufferRecording TimeAllowed="0.000000" NumTextureFixupsAllowed="0" NumGraphsAllowed="0" PrerecordNextZone="0"/>
   <RoadSpecular RoadSpecular="-0.059000" RoadSpecular2="0.750000" RoadSkid="-0.050003" RoadSkid2="0.835003" RoadGlossiness="20.000000" RoadGlossiness2="20.000000" RoadLightmapDarkPoint="0.450000" RoadLightmapLightPoint="0.900000"/>
   <TrackLightMapParams DarkPoint="0.450000" LightPoint="0.800000"/>
   <skyScale value="1.880000"/>
@@ -1010,12 +1001,12 @@
   <cubeSkySaturation value="0.880000"/>
   <homespaceCamLightDirOffset Enabled="0" x="0.000000" y="0.000000" z="0.000000"/>
   <DropShadowOpacityAdjustment value="0.000000"/>
-  <FileChunkSize value="2097152" limit="8388608"/>
+  <FileChunkSize value="1048576" limit="4194304"/>
   <ResourcePriority Texture="0" Model="0"/>
   <imageBasedLighting Version="3" Enable="1" LogLuvEncode="0" iblAmbientScale="1.350000" iblAmbientSaturation="0.820000" iblDirectScale="0.420000" iblSunColorR="0.049332" iblSunColorG="0.082580" iblSunColorB="0.115279"/>
   <cubeReflGroundScale value="1.000000"/>
   <filmicTone Version="2" white="11.500000" shoulderStrength="0.380000" linearStrength="0.155000" linearAngle="0.280000" toeStrength="0.160000" toeNumerator="0.01000" toeDenominator="0.260000" exposure="0.155000"/>
-  <CockpitFilmicTone white="11.0" shoulderStrength="0.3" linearStrength="0.100" linearAngle="0.200" toeStrength="0.20" toeNumerator="0.010" toeDenominator="0.3" exposure="0.5"/>
+  <CockpitFilmicTone white="1.500000" shoulderStrength="0.151000" linearStrength="0.050000" linearAngle="0.566000" toeStrength="0.210000" toeNumerator="0.003000" toeDenominator="0.141000" exposure="1.800000"/>
   <wholeTrackLightmapRadius value="409.409882"/>
   <TrackGroundColor r="0.100000" g="0.100000" b="0.100000"/>
   <TrackSkyColor r="1.000000" g="1.000000" b="1.000000"/>
@@ -1032,32 +1023,25 @@
   <planarReflection numBlurPasses="2" distortionFactor="0.080000"/>
   <RaceLineIntensity r="1.000000" g="1.000000" b="1.000000" a="1.000000"/>
   <CrowdMovement2D WaveDistanceStart="40.000000" WaveDistanceRange="40.000000" WaveFrequencyTiling="20.000000" WaveStrengthTiling="10.000000" WaveStrengthMin="0.100000" WaveFrequency="3.000000" HorizontalWave="0.100000" VerticalWave="0.100000"/>
-  <screenAreaDistances mainScene="200.000000" cubeMap="70.000000" mirror="10.000000" depth="60.000000" shadow="100.000000" cinematic="140.000000" groundreflection="48"/>
-  <StaticCubemapOverride diffuse="" specular="" />
-  <SpecAOStepValues carMin="0" carMax="0.4" trackMin="0" trackMax="1.0" />
-  <WaterOnLens RefractionScalar="7" RefractionIndex="0.8" />
-  <TrackRTAOPow value="2.0" />
-  <CarRTAOPow value="2.0" />
-  <RTAODistance value="2.0" />
-  <RTAOCarDistance value="2.0" />
-  <DXRAnimatedModelDistance value="180" />
-  <SurfelCellDataSettings 
-    PCHighQualityMaxSupportedLODs="2"
-    PCLowQualityMaxSupportedLODs="1"
-    PCHighQualityBounceLODOffset="0"
-    PCLowQualityBounceLODOffset="1"
-    DurangoHighQualityMaxSupportedLODs="1"
-    DurangoLowQualityMaxSupportedLODs="1"
-    DurangoHighQualityBounceLODOffset="0"
-    DurangoLowQualityBounceLODOffset="1"
-    ScarlettHighQualityMaxSupportedLODs="1"
-    ScarlettLowQualityMaxSupportedLODs="1"
-    ScarlettHighQualityBounceLODOffset="0"
-    ScarlettLowQualityBounceLODOffset="0" />
-  <WetifyParams 
+  <screenAreaDistances mainScene="360.000000" cubeMap="70.000000" mirror="10.000000" depth="60.000000" shadow="100.000000" cinematic="140.000000" groundreflection="48"/>
+  <StaticCubemapOverride diffuse="game:\media\_library\TexturesPG\objects\Swatches\CubemapProbeDiffuse_Thumbnail.swatchbin" specular="game:\media\_library\TexturesPG\objects\Swatches\CubemapProbeSpecular_Thumbnail.swatchbin" />
+
+  <WetMaterialParams
+    MaterialWetnessScale="99.000000"
+    GlossAtMinPorosity="0.500000"
+    GlossAtMaxPorosity="0.100000"
+    DiffuseDarkeningAtMaxPorosity="0.600000"
+    DarkenRange="0.400000"
+    SaturationRange="0.300000"
+    PuddleRange="0.480000"
+    WetF0="0.020000"
+    SaturatedGloss="0.980000"
+    PuddleGloss="1.000000" />
+  <WetifyParams
     RoughnessDampeningFactorMax="0.75"
     OverhangWetnessReductionScale="2.0"
     WetnessMaskThreshold="0.025"
     PorousDiffuseDarkeningPower="3.0"
     PorousGlossReductionPower="10.0" />
-  </TrackSettings>
+  <WaterOnLens RefractionScalar="7" RefractionIndex="0.8" />
+</TrackSettings>

@@ -54,14 +54,14 @@
     {
       "id": "ultramax",
       "name": "Ultra Max",
-      "description": "RT отражения + RTGI. Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.",
+      "description": "RT отражения + RTGI + AtmosphereMax (28 XML: погода, освещение, аудио, LOD). Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.",
       "profile_folder": "05_UltraMax"
     }
   ],
   "bundle": {
     "file": "pack.zip",
-    "sha256": "2d7af5b8a33911d6de19be115a62981e660fef1f8548929be4b4daaded2e4afb"
+    "sha256": "28f927b9f66c29ab7fe50f5010bc53af78e3acf818f5f03f3cd2ad37b561caa8"
   },
-  "revision": "1.4.0",
-  "updated_at": "2026-06-11T14:52:58.025Z"
+  "revision": "1.5.0",
+  "updated_at": "2026-06-13T20:41:35.358Z"
 }

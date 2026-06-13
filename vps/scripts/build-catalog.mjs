@@ -25,7 +25,7 @@ const FORZA_PRESETS = [
   { id: "low", name: "Low", description: "Производительность для 12 GB VRAM. Сбалансированный FPS.", profile_folder: "02_Low" },
   { id: "medium", name: "Medium", description: "Фотореализм без ray tracing — баланс картинки и FPS.", profile_folder: "03_Medium" },
   { id: "high", name: "High", description: "Высокое качество без RT. DLSS Performance на RTX, FSR на AMD.", profile_folder: "04_High" },
-  { id: "ultramax", name: "Ultra Max", description: "RT отражения + RTGI. Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.", profile_folder: "05_UltraMax" },
+  { id: "ultramax", name: "Ultra Max", description: "RT отражения + RTGI + AtmosphereMax (28 XML: погода, освещение, аудио, LOD). Нужно 12–16+ GB VRAM. Без DLAA/NVIDIATech.", profile_folder: "05_UltraMax" },
 ];
 
 const CATALOG_VERSION = "1.5.0";
