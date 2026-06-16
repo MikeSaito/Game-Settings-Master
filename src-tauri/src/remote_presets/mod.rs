@@ -236,12 +236,6 @@ pub fn sync_forza_pack_if_needed(force: bool) -> Result<(), String> {
     if sync::seed_bundled_pack("forza-fh6").is_ok() && forza_pack_ready(None) {
         return Ok(());
     }
-    if effective_base_url().is_none() {
-        return Err(crate::i18n::t(
-            "Не удалось загрузить пресеты Forza.",
-            "Failed to load Forza presets.",
-        ));
-    }
     sync_pack_by_id("forza-fh6", force)?;
     Ok(())
 }

@@ -198,7 +198,7 @@ pub fn merge_preset_with_policy(
     }
 }
 
-/// Safe GPU clamp: VPS values are not overwritten, only unsupported options are disabled.
+/// Safe GPU clamp: catalog values are not overwritten, only unsupported options are disabled.
 pub fn tune_forza_selections(selections: &mut BTreeMap<String, String>, gpu: &GpuCapabilities) {
     if !gpu.supports_dlss {
         for key in [

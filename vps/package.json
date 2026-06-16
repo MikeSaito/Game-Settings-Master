@@ -2,7 +2,7 @@
   "name": "gsm-preset-server",
   "version": "1.0.0",
   "private": true,
-  "description": "Статический сервер пресетов для Game Settings Master",
+  "description": "Author preset catalog for Game Settings Master (built into vps/public, synced from GitHub)",
   "type": "module",
   "scripts": {
     "build": "node scripts/build-catalog.mjs",

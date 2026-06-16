@@ -1,4 +1,0 @@
-services:
-  presets:
-    ports:
-      - "8787:8787"

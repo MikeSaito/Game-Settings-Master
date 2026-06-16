@@ -1,0 +1,27 @@
+name: Author presets catalog
+
+on:
+  push:
+    paths:
+      - "vps/**"
+      - ".github/workflows/author-presets.yml"
+  pull_request:
+    paths:
+      - "vps/**"
+      - ".github/workflows/author-presets.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vps
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: vps/package-lock.json
+      - run: npm ci
+      - run: npm run validate

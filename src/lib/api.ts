@@ -327,12 +327,10 @@ export function installReShade(
 export function ensureReShadeInstalled(
   profile: GameProfile,
   api: string,
-  presetId?: string,
 ): Promise<void> {
   return invoke("ensure_reshade_installed_cmd", {
     profile,
     api,
-    presetId: presetId ?? null,
   });
 }
 

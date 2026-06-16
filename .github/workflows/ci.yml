@@ -36,6 +36,10 @@ jobs:
         shell: pwsh
         run: npm run reshade:verify
 
+      - name: Validate author presets catalog
+        working-directory: vps
+        run: npm ci && npm run validate
+
       - name: Rust tests
         working-directory: src-tauri
         run: cargo test

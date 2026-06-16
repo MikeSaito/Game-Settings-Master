@@ -3,7 +3,7 @@ use super::remove::{
     broken_proxy_files_present, gsm_managed_proxy_artifacts, known_proxy_files_present,
     remove_installed_proxy, remove_reshade, remove_reshade_for_launch, restore_file_from_backup,
 };
-use super::config::{effective_preset_for_game, install_preset_for_game};
+use super::config::{install_preset_for_game};
 use super::detect::{backup_dir, read_marker, safe_marker_path, write_marker, InstallMarker};
 use super::bundle::validate_bundled_file;
 use super::vulkan_layer::{register_vulkan_layer, unregister_vulkan_layer};
@@ -39,25 +39,29 @@ pub fn install_reshade(
     preset_id: Option<&str>,
 ) -> Result<InstallResult, String> {
     ensure_game_not_running(profile)?;
-    let preset = install_preset_for_game(&profile.id, preset_id)?;
-
-    if !preset_exists_for(&preset, Some(&profile.id)) {
-        return Err(crate::i18n::t(&format!("Неизвестный пресет ReShade: {preset}"), &format!("Unknown ReShade preset: {preset}")));
-    }
-
     validate_api_bundle(api)?;
 
     let overrides = preset_overrides_for_game(&profile.id)?;
-    let shaders_ready = preset_shaders_ready_for(&preset, Some(&profile.id));
     let mut warnings = Vec::new();
-    if !shaders_ready {
-        warnings.push(
-            crate::i18n::t(
-                "Шейдеры пресета отсутствуют в бандле — установлен безопасный режим (эффекты выкл.). Добавьте reshade-shaders в presets/reshade/shaders/Shaders/ и переустановите.",
-                "Preset shaders are missing from the bundle — installed in safe mode (effects off). Add reshade-shaders to presets/reshade/shaders/Shaders/ and reinstall.",
-            ),
-        );
-    }
+    let resolved_preset = match preset_id {
+        Some(id) => {
+            let preset = install_preset_for_game(&profile.id, Some(id))?;
+            if !preset_exists_for(&preset, Some(&profile.id)) {
+                return Err(crate::i18n::t(
+                    &format!("Неизвестный пресет ReShade: {preset}"),
+                    &format!("Unknown ReShade preset: {preset}"),
+                ));
+            }
+            if !preset_shaders_ready_for(&preset, Some(&profile.id)) {
+                warnings.push(crate::i18n::t(
+                    "Шейдеры пресета отсутствуют в бандле — установлен безопасный режим (эффекты выкл.). Добавьте reshade-shaders в presets/reshade/shaders/Shaders/ и переустановите.",
+                    "Preset shaders are missing from the bundle — installed in safe mode (effects off). Add reshade-shaders to presets/reshade/shaders/Shaders/ and reinstall.",
+                ));
+            }
+            Some(preset)
+        }
+        None => None,
+    };
 
     let target_dir = resolve_install_target(profile)?;
     cleanup_previous_install(&target_dir)?;
@@ -80,9 +84,8 @@ pub fn install_reshade(
     };
     if let Err(e) = write_reshade_ini(
         &target_dir,
-        &preset,
+        resolved_preset.as_deref(),
         Some(&profile.id),
-        shaders_ready,
         overrides.as_ref(),
     ) {
         let rollback_err = rollback_failed_install(&target_dir, api).err();
@@ -111,10 +114,11 @@ pub fn install_reshade(
         .map(|f| (*f).to_string())
         .collect();
 
+    let marker_preset = resolved_preset.clone().unwrap_or_default();
     if let Err(e) = write_marker(
         &target_dir,
         &InstallMarker {
-            preset_id: preset.clone(),
+            preset_id: marker_preset.clone(),
             graphics_api: api.as_str().to_string(),
             proxy_dll: None,
             installed_files: installed_files.clone(),
@@ -134,7 +138,7 @@ pub fn install_reshade(
 
     Ok(InstallResult {
         target_dir: target_dir.to_string_lossy().to_string(),
-        preset_id: preset,
+        preset_id: marker_preset,
         graphics_api: api,
         installed_files,
         warnings,
@@ -166,9 +170,8 @@ pub fn update_preset(
     let shaders_ready = preset_shaders_ready_for(&preset, Some(&profile.id));
     write_reshade_ini(
         &target_dir,
-        &preset,
+        Some(&preset),
         Some(&profile.id),
-        shaders_ready,
         overrides.as_ref(),
     )?;
     sync_shaders_from_bundle(&target_dir)?;
@@ -396,16 +399,11 @@ pub fn ensure_before_launch(profile: &GameProfile) -> Result<Option<String>, Str
         ));
     };
 
-    let preset = effective_preset_for_game(&profile.id)?;
-    ensure_installed(profile, api, &preset)?;
+    ensure_installed(profile, api)?;
     Ok(None)
 }
 
-pub fn ensure_installed(
-    profile: &GameProfile,
-    api: GraphicsApi,
-    preset: &str,
-) -> Result<(), String> {
+pub fn ensure_installed(profile: &GameProfile, api: GraphicsApi) -> Result<(), String> {
     let mut status = super::detect::get_status(profile)?;
     let mut repaired_broken = false;
 
@@ -446,23 +444,20 @@ pub fn ensure_installed(
         ));
     }
 
-    let needs_install = !status.installed
-        || status.installed_api.as_deref() != Some(api.as_str())
-        || status.active_preset.as_deref() != Some(preset);
+    let needs_install =
+        !status.installed || status.installed_api.as_deref() != Some(api.as_str());
 
     if needs_install {
-        install_reshade(profile, api, Some(preset))?;
+        install_reshade(profile, api, None)?;
     } else {
         ensure_game_not_running(profile)?;
         let target_dir = resolve_install_target(profile)?;
         if !target_dir.join("ReShade.ini").is_file() {
             let overrides = preset_overrides_for_game(&profile.id)?;
-            let shaders_ready = preset_shaders_ready_for(preset, Some(&profile.id));
             write_reshade_ini(
                 &target_dir,
-                preset,
+                None,
                 Some(&profile.id),
-                shaders_ready,
                 overrides.as_ref(),
             )?;
         }
@@ -625,25 +620,33 @@ fn rollback_failed_install(target_dir: &Path, api: GraphicsApi) -> Result<(), St
 
 fn write_reshade_ini(
     target_dir: &Path,
-    preset_id: &str,
+    preset_id: Option<&str>,
     game_id: Option<&str>,
-    shaders_ready: bool,
     overrides: Option<&PresetOverrides>,
 ) -> Result<(), String> {
     let mut base = read_base_ini()?;
     if let Some(behavior) = overrides.and_then(|o| o.behavior.as_ref()) {
         base = apply_behavior_to_base(&base, behavior);
     }
-    let mut preset = if shaders_ready {
-        read_preset_ini_for(preset_id, game_id)?
+    let content = if let Some(preset_id) = preset_id {
+        let shaders_ready = preset_shaders_ready_for(preset_id, game_id);
+        let mut preset = if shaders_ready {
+            read_preset_ini_for(preset_id, game_id)?
+        } else {
+            safe_preset_overlay()
+        };
+        if let Some(ov) = overrides {
+            preset = apply_overrides_to_preset(&preset, ov);
+        }
+        merge_ini_sections(&base, &preset)
     } else {
-        safe_preset_overlay()
+        let mut out = base.trim_end().to_string();
+        if !out.ends_with('\n') {
+            out.push('\n');
+        }
+        out
     };
-    if let Some(ov) = overrides {
-        preset = apply_overrides_to_preset(&preset, ov);
-    }
-    let merged = merge_ini_sections(&base, &preset);
-    write_file_bytes(&target_dir.join("ReShade.ini"), merged.as_bytes())
+    write_file_bytes(&target_dir.join("ReShade.ini"), content.as_bytes())
 }
 
 fn merge_ini_sections(base: &str, preset: &str) -> String {
@@ -861,7 +864,7 @@ mod tests {
         fs::create_dir_all(dir.path().join(BACKUP_DIR)).unwrap();
         fs::write(dir.path().join(BACKUP_DIR).join("dxgi.dll"), b"original").unwrap();
 
-        assert!(ensure_installed(&profile(dir.path()), GraphicsApi::Dx12, "clarity").is_err());
+        assert!(ensure_installed(&profile(dir.path()), GraphicsApi::Dx12).is_err());
         assert!(!dir.path().join(".gsm-reshade-installed.json").exists());
         assert_eq!(fs::read_to_string(dir.path().join("dxgi.dll")).unwrap(), "original");
     }
@@ -1189,7 +1192,7 @@ mod tests {
     }
 
     #[test]
-    fn ensure_installed_no_op_when_marker_matches_adapted_preset() {
+    fn ensure_installed_no_op_when_api_already_installed() {
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("Game.exe"), b"").unwrap();
 
@@ -1198,15 +1201,16 @@ mod tests {
         }
 
         let prof = profile(dir.path());
-        install_reshade(&prof, GraphicsApi::Dx12, Some("clarity")).unwrap();
+        install_reshade(&prof, GraphicsApi::Dx12, None).unwrap();
         let marker_before = super::super::detect::read_marker(dir.path()).unwrap();
-        let preset = effective_preset_for_game(&prof.id).unwrap();
-        assert_eq!(marker_before.preset_id, preset);
+        assert!(marker_before.preset_id.is_empty());
 
-        ensure_installed(&prof, GraphicsApi::Dx12, &preset).unwrap();
+        ensure_installed(&prof, GraphicsApi::Dx12).unwrap();
         let marker_after = super::super::detect::read_marker(dir.path()).unwrap();
         assert_eq!(marker_before.installed_at, marker_after.installed_at);
-        assert_eq!(marker_after.preset_id, preset);
+        assert!(marker_after.preset_id.is_empty());
+        let ini = fs::read_to_string(dir.path().join("ReShade.ini")).unwrap();
+        assert!(!ini.contains("; --- GSM preset ---"));
     }
 
     #[test]

@@ -11,7 +11,7 @@
   "paramDisabled": "Параметр выключен (тоггл «Выкл»). Включите и нажмите «Применить», чтобы редактировать.",
   "gpuNoRtx": "без RTX",
   "presetSyncLoadingTitle": "Загрузка пресетов",
-  "presetSyncLoadingMessage": "Синхронизация каталога с сервером…",
+  "presetSyncLoadingMessage": "Синхронизация каталога с GitHub…",
   "presetSyncErrorTitle": "Пресеты",
   "presetSyncErrorMessage": "Не удалось проверить статус синхронизации. Используется локальный кэш, если он есть.",
   "presetSyncOfflineTitle": "Офлайн",

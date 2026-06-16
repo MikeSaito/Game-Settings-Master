@@ -144,19 +144,10 @@ pub fn install_reshade_cmd(
 }
 
 #[tauri::command]
-pub fn ensure_reshade_installed_cmd(
-    profile: GameProfile,
-    api: String,
-    preset_id: Option<String>,
-) -> Result<(), String> {
+pub fn ensure_reshade_installed_cmd(profile: GameProfile, api: String) -> Result<(), String> {
     let profile = ensure_trusted_ipc_profile(&profile)?;
-    validate_optional_reshade_preset_id(preset_id.as_deref())?;
     let api = GraphicsApi::from_str_id(&api)?;
-    let preset = match preset_id {
-        Some(id) => id,
-        None => crate::reshade::effective_preset_for_game(&profile.id)?,
-    };
-    ensure_installed(&profile, api, &preset)
+    ensure_installed(&profile, api)
 }
 
 #[tauri::command]

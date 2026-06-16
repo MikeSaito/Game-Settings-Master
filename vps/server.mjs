@@ -1,3 +1,5 @@
+// Local dev preview only. Production catalog is vps/public in the GitHub repo
+// (raw.githubusercontent.com/.../vps/public); the app syncs from there.
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

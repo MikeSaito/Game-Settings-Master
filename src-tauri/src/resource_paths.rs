@@ -63,7 +63,7 @@ pub fn catalog_dir() -> PathBuf {
     resolve_subdir("catalog")
 }
 
-/// Shipped preset catalog (`vps/public` in release; workspace fallback in dev).
+/// Shipped author preset catalog (`vps/public` in repo; synced from GitHub by default).
 pub fn bundled_remote_presets_dir() -> PathBuf {
     let bundled = resource_root().join("bundled-remote-presets");
     if bundled.join("catalog.json").is_file() {

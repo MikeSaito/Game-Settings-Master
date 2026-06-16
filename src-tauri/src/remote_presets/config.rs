@@ -103,7 +103,20 @@ fn bundled_base_url() -> String {
     const RAW: &str = include_str!("../../preset-server.default.json");
     serde_json::from_str::<DefaultServerFile>(RAW)
         .map(|d| d.base_url.trim().trim_end_matches('/').to_string())
-        .unwrap_or_else(|_| "http://localhost:8787".to_string())
+        .unwrap_or_default()
+}
+
+#[cfg(test)]
+mod bundled_url {
+    use super::DefaultServerFile;
+
+    #[test]
+    fn default_catalog_url_is_github_raw() {
+        const RAW: &str = include_str!("../../preset-server.default.json");
+        let parsed: DefaultServerFile = serde_json::from_str(RAW).unwrap();
+        assert!(parsed.base_url.contains("raw.githubusercontent.com"));
+        assert!(parsed.base_url.ends_with("/vps/public"));
+    }
 }
 
 pub fn effective_base_url() -> Option<String> {
@@ -182,8 +195,8 @@ pub fn validate_preset_server_url(url: &str) -> Result<(), String> {
     }
     let err = || {
         crate::i18n::t(
-            "URL сервера пресетов должен быть https:// (http:// только для localhost)",
-            "Preset server URL must be https:// (http:// only for localhost)",
+            "URL каталога пресетов должен быть https:// (http:// только для localhost)",
+            "Preset catalog URL must be https:// (http:// only for localhost)",
         )
     };
     let (is_https, host) = parse_http_host(trimmed).ok_or_else(err)?;
@@ -215,6 +228,14 @@ mod tests {
     fn https_any_host_ok() {
         assert!(validate_preset_server_url("https://github.com/x").is_ok());
         assert!(validate_preset_server_url("https://example.com:8443").is_ok());
+    }
+
+    #[test]
+    fn github_raw_catalog_url_ok() {
+        assert!(validate_preset_server_url(
+            "https://raw.githubusercontent.com/MikeSaito/Game-Settings-Master/main/vps/public"
+        )
+        .is_ok());
     }
 
     #[test]

@@ -11,7 +11,7 @@
   "paramDisabled": "Parameter is off (Off toggle). Turn it on and click Apply to edit.",
   "gpuNoRtx": "no RTX",
   "presetSyncLoadingTitle": "Loading presets",
-  "presetSyncLoadingMessage": "Syncing catalog from server…",
+  "presetSyncLoadingMessage": "Syncing catalog from GitHub…",
   "presetSyncErrorTitle": "Presets",
   "presetSyncErrorMessage": "Could not check sync status. Using local cache if available.",
   "presetSyncOfflineTitle": "Offline",

@@ -21,8 +21,8 @@ pub struct SyncReport {
 
 fn preset_server_url_missing() -> String {
     crate::i18n::t(
-        "URL сервера пресетов не задан",
-        "Preset server URL is not configured",
+        "URL каталога пресетов не задан",
+        "Preset catalog URL is not configured",
     )
 }
 

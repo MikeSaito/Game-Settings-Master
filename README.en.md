@@ -25,11 +25,11 @@ Interactive sliders, toggles and dropdowns for key UE4/UE5 parameters — with d
 **05 — Backups**  
 A snapshot before every apply. Roll back to the previous state in one click — no fear of breaking your config.
 
-**06 — Cloud presets**  
-Content syncs from the server without an app release. Offline — a built-in cache fallback.
+**06 — Author preset catalog**  
+The catalog lives in this repo (`vps/public/`). The app pulls updates from GitHub on startup; offline, the bundled copy in the installer is used.
 
 **07 — ReShade**  
-Installs post-processing into the game folder: Performance, Clarity and Cinematic presets, plus author ini packs for specific games (e.g. Subnautica 2). Choose the graphics API, launch with or without ReShade — the proxy is removed when effects are not needed.
+Installs post-processing into the game folder: on launch — proxy DLL and base ini only (no auto-presets). Manually — Performance, Clarity, Cinematic presets and author ini packs for select games. Choose the graphics API, launch with or without ReShade.
 
 ## Download
 
@@ -47,6 +47,23 @@ The app is not yet commercially signed — SmartScreen may show a blue warning. 
 2. Then **Run anyway**
 
 After the first launch Windows usually stops asking.
+
+\---
+
+## Author preset catalog (development)
+
+Sources: `vps/source/`. Build and validate:
+
+```powershell
+cd vps
+npm ci
+npm run validate
+```
+
+Commit `vps/public/` to `main` — the app syncs from  
+`raw.githubusercontent.com/MikeSaito/Game-Settings-Master/main/vps/public`.
+
+Local preview: `cd vps && npm run dev` (http://localhost:8787).
 
 \---
 

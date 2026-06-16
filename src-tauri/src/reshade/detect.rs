@@ -220,7 +220,13 @@ pub fn get_status_with_settings(
         installed_api,
         installed_files,
         installed,
-        active_preset: marker.map(|m| m.preset_id),
+        active_preset: marker.and_then(|m| {
+            if m.preset_id.is_empty() {
+                None
+            } else {
+                Some(m.preset_id)
+            }
+        }),
         api_matches_install,
         reshade_ini_present,
         bundle_ready,

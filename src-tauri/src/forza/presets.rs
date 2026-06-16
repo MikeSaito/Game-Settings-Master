@@ -13,9 +13,6 @@ pub fn ensure_forza_profiles_synced(game_id: Option<&str>) -> Result<(), String>
     if crate::remote_presets::forza_pack_ready(game_id) {
         return Ok(());
     }
-    if crate::remote_presets::effective_base_url().is_none() {
-        return Err(crate::i18n::t("Не удалось загрузить пресеты Forza.", "Failed to load Forza presets."));
-    }
     crate::remote_presets::sync_forza_pack_if_needed(false)?;
     if !crate::remote_presets::forza_pack_ready(game_id) {
         crate::remote_presets::sync_forza_pack_if_needed(true)?;
@@ -42,9 +39,7 @@ pub fn list_forza_presets(game_id: Option<&str>) -> Result<Vec<PresetInfo>, Stri
         }
     }
 
-    if crate::remote_presets::effective_base_url().is_some()
-        && !crate::process_util::is_app_background()
-    {
+    if !crate::process_util::is_app_background() {
         let _ = crate::remote_presets::sync_forza_pack_if_needed(false);
         if let Some(presets) = crate::remote_presets::forza_presets_from_cache(game_id) {
             if !presets.is_empty() {
@@ -55,7 +50,7 @@ pub fn list_forza_presets(game_id: Option<&str>) -> Result<Vec<PresetInfo>, Stri
 
     ensure_forza_profiles_synced(game_id)?;
     crate::remote_presets::forza_presets_from_cache(game_id)
-        .ok_or_else(|| crate::i18n::t("На сервере нет списка пресетов Forza (pack forza-fh6).", "Server has no Forza preset list (pack forza-fh6)."))
+        .ok_or_else(|| crate::i18n::t("В каталоге нет списка пресетов Forza (pack forza-fh6).", "Author catalog has no Forza preset list (pack forza-fh6)."))
 }
 
 fn preset_profile_dir(pack: &ResolvedPack, preset_id: &str) -> Result<PathBuf, String> {
@@ -68,8 +63,8 @@ fn preset_profile_dir(pack: &ResolvedPack, preset_id: &str) -> Result<PathBuf, S
     pack.forza_profile_dir(preset_id)
         .ok_or_else(|| {
             crate::i18n::t(
-                &format!("Профиль пресета '{preset_id}' не найден в кэше сервера"),
-                &format!("Preset profile '{preset_id}' not found in server cache"),
+                &format!("Профиль пресета '{preset_id}' не найден в кэше каталога"),
+                &format!("Preset profile '{preset_id}' not found in catalog cache"),
             )
         })
 }
