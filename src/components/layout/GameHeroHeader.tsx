@@ -3,26 +3,14 @@ import {
   AlertTriangle,
   FolderOpen,
   History,
-  Palette,
   Play,
   SlidersHorizontal,
-  Sparkles,
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ReShadeApiPickerModal } from "../ReShadeApiPickerModal";
-import { ReShadeDisclaimerModal } from "../ReShadeDisclaimerModal";
-import {
-  closeGame,
-  getGpuInfo,
-  getReShadeSettings,
-  getReShadeStatus,
-  getReShadeWorkspace,
-  launchGame,
-  openConfigFolder,
-  setReShadeSettings,
-} from "../../lib/api";
+import { Link, useNavigate } from "react-router-dom";
+import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "../../lib/api";
 import { exeNameForRunningCheck } from "../../lib/gameRunning";
 import { formatInvokeError } from "../../lib/errors";
 import { useBackgroundSafeEnabled } from "../../hooks/useBackgroundSafeEnabled";
@@ -31,24 +19,10 @@ import {
   gameCoverFallbackLetter,
   resolveGameHeroCoverCandidates,
 } from "../../lib/gameCover";
-import {
-  isAuthorCuratedGame,
-  resolveGameTab,
-  supportsAuthorPresets,
-  supportsIniPresets,
-  supportsReShade,
-} from "../../lib/gameEngine";
+import { resolveGameTabRoute, supportsIniPresets } from "../../lib/gameEngine";
+import { gameTabPath } from "../../lib/routes";
 import { gpuSummaryLabel } from "../../lib/gpuCompat";
-import {
-  blocksReShadeLaunch,
-  buildPerGamePatch,
-  isReShadeActiveForGame,
-  isValidReShadeApi,
-  savedGameApi,
-  shouldPromptApi,
-  suggestApiForGame,
-} from "../../lib/reshade";
-import type { AppTab, GameProfile, ReShadeSettings } from "../../lib/types";
+import type { AppTab, GameProfile, GameTabRoute } from "../../lib/types";
 import { cn } from "../../lib/cn";
 import { Alert } from "../ui/Alert";
 import { Badge } from "../ui/Badge";
@@ -57,21 +31,19 @@ import { Button } from "../ui/Button";
 interface Props {
   game: GameProfile;
   activeTab: AppTab;
-  onTabChange: (tab: AppTab) => void;
 }
 
 const tabs: {
-  id: AppTab;
-  icon: typeof Sparkles | typeof History | typeof SlidersHorizontal;
+  id: GameTabRoute;
+  icon: typeof History | typeof SlidersHorizontal;
 }[] = [
-  { id: "wizard", icon: Sparkles },
   { id: "advanced", icon: SlidersHorizontal },
   { id: "backups", icon: History },
-  { id: "reshade", icon: Palette },
 ];
 
-export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
+export function GameHeroHeader({ game, activeTab }: Props) {
   const { t } = useTranslation("header");
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const coverCandidates = resolveGameHeroCoverCandidates(game);
   const [coverIndex, setCoverIndex] = useState(0);
@@ -88,10 +60,6 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
   const [launchMessage, setLaunchMessage] = useState<string>();
   const [launchWarning, setLaunchWarning] = useState<string>();
   const [launchError, setLaunchError] = useState<string>();
-  const [launchDisclaimerOpen, setLaunchDisclaimerOpen] = useState(false);
-  const [apiPickerOpen, setApiPickerOpen] = useState(false);
-  const [playPreflightPending, setPlayPreflightPending] = useState(false);
-  const [launchConfirmPending, setLaunchConfirmPending] = useState(false);
 
   const launchSessionRef = useRef(0);
 
@@ -100,86 +68,22 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
     setLaunchMessage(undefined);
     setLaunchWarning(undefined);
     setLaunchError(undefined);
-    setLaunchDisclaimerOpen(false);
-    setApiPickerOpen(false);
-    setPlayPreflightPending(false);
-    setLaunchConfirmPending(false);
   }, [game.id]);
 
-  const reshadeSettingsQueryKey = ["reshade-settings", game.id] as const;
-  const reshadeWorkspaceQueryKey = ["reshade-workspace", game.id] as const;
-
-  const loadFreshReShadeWorkspace = async (opts?: { retainSettingsCache?: boolean }) => {
-    if (!opts?.retainSettingsCache) {
-      await queryClient.invalidateQueries({ queryKey: reshadeSettingsQueryKey });
-    }
-    await queryClient.invalidateQueries({ queryKey: reshadeWorkspaceQueryKey });
-    const workspace = await queryClient.fetchQuery({
-      queryKey: reshadeWorkspaceQueryKey,
-      queryFn: () => getReShadeWorkspace(game),
-    });
-    queryClient.setQueryData(reshadeSettingsQueryKey, workspace.settings);
-    return workspace;
-  };
-
-  const reshadeOk = supportsReShade(game);
-
-  const { data: reshadeSettings } = useQuery({
-    queryKey: reshadeSettingsQueryKey,
-    queryFn: () => getReShadeSettings(game.id, game.engine_family),
-    enabled: reshadeOk,
-    staleTime: 30_000,
-    retry: 1,
-  });
-
-  const { data: reshadeStatus } = useQuery({
-    queryKey: ["reshade-status", game.id],
-    queryFn: () => getReShadeStatus(game),
-    enabled: reshadeOk,
-    staleTime: 10_000,
-    retry: 1,
-  });
-
-  const reshadeActiveForPrefetch = isReShadeActiveForGame(reshadeSettings?.settings, game.id);
-
-  const { data: reshadeWorkspace } = useQuery({
-    queryKey: reshadeWorkspaceQueryKey,
-    queryFn: () => getReShadeWorkspace(game),
-    enabled: reshadeOk && reshadeActiveForPrefetch,
-    staleTime: 10_000,
-    retry: 1,
-  });
-
-  const runningExeName = exeNameForRunningCheck(
-    game.exe_name,
-    reshadeWorkspace?.status.exe_path ?? reshadeStatus?.exe_path,
-  );
+  const runningExeName = exeNameForRunningCheck(game.exe_name, undefined);
   const gameRunning = useGameRunning(runningExeName);
 
-  const syncReShadeSettingsCache = (updated: ReShadeSettings) => {
-    queryClient.setQueryData(
-      reshadeSettingsQueryKey,
-      (old: Awaited<ReturnType<typeof getReShadeSettings>> | undefined) =>
-        old ? { ...old, settings: updated } : old,
-    );
-  };
-
-  const apis = reshadeWorkspace?.settings.apis ?? reshadeSettings?.apis ?? [];
-
   const launchMutation = useMutation({
-    mutationFn: ({ skipReShade, session }: { skipReShade: boolean; session: number }) =>
-      launchGame(game, skipReShade).then((result) => ({ result, session })),
+    mutationFn: (session: number) =>
+      launchGame(game).then((result) => ({ result, session })),
     onSuccess: ({ result, session }) => {
       if (session !== launchSessionRef.current) return;
       setLaunchError(undefined);
       setLaunchMessage(t("launchVia", { launcher: result.launcher }));
-      setLaunchWarning(result.warning);
+      setLaunchWarning(result.warning ?? undefined);
       queryClient.invalidateQueries({ queryKey: ["game-running"] });
-      queryClient.invalidateQueries({ queryKey: ["reshade-workspace", game.id] });
-      queryClient.invalidateQueries({ queryKey: ["reshade-status", game.id] });
-      queryClient.invalidateQueries({ queryKey: ["reshade-settings", game.id] });
     },
-    onError: (err, { session }) => {
+    onError: (err, session) => {
       if (session !== launchSessionRef.current) return;
       setLaunchMessage(undefined);
       setLaunchWarning(undefined);
@@ -207,198 +111,12 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
     },
   });
 
-  const isStaleLaunchSession = (session: number) => session !== launchSessionRef.current;
-
-  const runLaunch = async (skipReShade = false) => {
-    const session = launchSessionRef.current;
-    try {
-      await launchMutation.mutateAsync({ skipReShade, session });
-      if (isStaleLaunchSession(session)) return;
-    } catch {
-      // Error is shown in launchMutation.onError
-    }
-  };
-
-  // Launch without effects: backend temporarily removes ReShade; no preflight/API picker needed.
-  const handlePlayWithoutReShade = () => {
-    if (launchBusy) return;
+  const handlePlayClick = () => {
+    if (launchMutation.isPending) return;
     setLaunchError(undefined);
     setLaunchMessage(undefined);
     setLaunchWarning(undefined);
-    void runLaunch(true);
-  };
-
-  const continueLaunchWithApi = async (api: string, remember: boolean) => {
-    if (launchConfirmPending || launchMutation.isPending) return;
-    const session = launchSessionRef.current;
-    setLaunchConfirmPending(true);
-    try {
-      let workspace;
-      try {
-        workspace = await loadFreshReShadeWorkspace();
-        if (isStaleLaunchSession(session)) return;
-      } catch (err) {
-        setLaunchError(
-          formatInvokeError(
-            err instanceof Error ? err : new Error(t("errors.loadReShade")),
-          ),
-        );
-        setApiPickerOpen(false);
-        return;
-      }
-
-      const block = blocksReShadeLaunch(workspace.status);
-      if (block) {
-        setLaunchError(block);
-        setApiPickerOpen(false);
-        return;
-      }
-
-      const settings = workspace.settings.settings;
-      const next = buildPerGamePatch(settings, game.id, {
-        api,
-        api_remembered: remember,
-      });
-
-      const updated = await setReShadeSettings(next);
-      if (isStaleLaunchSession(session)) return;
-      syncReShadeSettingsCache(updated);
-      setApiPickerOpen(false);
-      await runLaunch();
-    } catch (err) {
-      setLaunchError(formatInvokeError(err));
-      setApiPickerOpen(false);
-    } finally {
-      setLaunchConfirmPending(false);
-    }
-  };
-
-  const handlePlayClick = async () => {
-    if (playPreflightPending || launchMutation.isPending) return;
-    const session = launchSessionRef.current;
-
-    if (!reshadeOk) {
-      void runLaunch();
-      return;
-    }
-
-    setPlayPreflightPending(true);
-    setLaunchError(undefined);
-    try {
-      let settingsResp;
-      try {
-        await queryClient.invalidateQueries({ queryKey: reshadeSettingsQueryKey });
-        settingsResp = await queryClient.fetchQuery({
-          queryKey: reshadeSettingsQueryKey,
-          queryFn: () => getReShadeSettings(game.id, game.engine_family),
-        });
-        if (isStaleLaunchSession(session)) return;
-      } catch (err) {
-        setLaunchMessage(undefined);
-        setLaunchError(
-          formatInvokeError(
-            err instanceof Error ? err : new Error(t("errors.loadReShade")),
-          ),
-        );
-        return;
-      }
-
-      if (!isReShadeActiveForGame(settingsResp.settings, game.id)) {
-        await runLaunch();
-        return;
-      }
-
-      let workspace;
-      try {
-        workspace = await loadFreshReShadeWorkspace({ retainSettingsCache: true });
-        if (isStaleLaunchSession(session)) return;
-      } catch (err) {
-        setLaunchMessage(undefined);
-        setLaunchError(
-          formatInvokeError(
-            err instanceof Error ? err : new Error(t("errors.loadReShade")),
-          ),
-        );
-        return;
-      }
-
-      const settings = workspace.settings.settings;
-      const block = blocksReShadeLaunch(workspace.status);
-      if (block) {
-        setLaunchMessage(undefined);
-        setLaunchError(block);
-        return;
-      }
-
-      if (!settings.launch_warning_acknowledged) {
-        setLaunchDisclaimerOpen(true);
-        return;
-      }
-
-      if (shouldPromptApi(settings, game.id)) {
-        setApiPickerOpen(true);
-        return;
-      }
-
-      const api = savedGameApi(settings, game.id);
-      if (!api || !isValidReShadeApi(api)) {
-        setApiPickerOpen(true);
-        return;
-      }
-
-      await runLaunch();
-    } finally {
-      setPlayPreflightPending(false);
-    }
-  };
-
-  const confirmLaunchDisclaimer = async () => {
-    if (launchConfirmPending || launchMutation.isPending) return;
-    const session = launchSessionRef.current;
-    setLaunchConfirmPending(true);
-    try {
-      let workspace;
-      try {
-        workspace = await loadFreshReShadeWorkspace();
-        if (isStaleLaunchSession(session)) return;
-      } catch (err) {
-        setLaunchDisclaimerOpen(false);
-        setLaunchError(
-          formatInvokeError(
-            err instanceof Error ? err : new Error(t("errors.loadReShade")),
-          ),
-        );
-        return;
-      }
-
-      const block = blocksReShadeLaunch(workspace.status);
-      if (block) {
-        setLaunchDisclaimerOpen(false);
-        setLaunchError(block);
-        return;
-      }
-
-      const settings = workspace.settings.settings;
-      const updated = await setReShadeSettings({
-        ...settings,
-        launch_warning_acknowledged: true,
-      });
-      if (isStaleLaunchSession(session)) return;
-      syncReShadeSettingsCache(updated);
-      setLaunchDisclaimerOpen(false);
-
-      if (shouldPromptApi(updated, game.id) || !savedGameApi(updated, game.id)) {
-        setApiPickerOpen(true);
-        return;
-      }
-
-      await runLaunch();
-    } catch (err) {
-      setLaunchError(formatInvokeError(err));
-      setLaunchDisclaimerOpen(false);
-    } finally {
-      setLaunchConfirmPending(false);
-    }
+    launchMutation.mutate(launchSessionRef.current);
   };
 
   useEffect(() => {
@@ -412,31 +130,23 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
   }, [game.id]);
 
   const iniPresets = supportsIniPresets(game);
-  const authorPresets = supportsAuthorPresets(game);
 
-  const visibleTabs = tabs.filter(({ id }) => {
-    if (id === "reshade") return reshadeOk;
-    if (id === "wizard") return authorPresets;
-    return iniPresets;
-  });
+  const visibleTabs = tabs.filter(() => iniPresets);
 
   useEffect(() => {
     const tabAllowed =
-      activeTab === "reshade"
-        ? reshadeOk
-        : activeTab === "wizard"
-          ? authorPresets
-          : activeTab === "advanced" || activeTab === "backups"
-            ? iniPresets
-            : true;
+      activeTab === "advanced" || activeTab === "backups" ? iniPresets : true;
     if (!tabAllowed) {
-      onTabChange(resolveGameTab(game));
+      const fallback = resolveGameTabRoute(game);
+      if (fallback) {
+        navigate(gameTabPath(game.id, fallback), { replace: true });
+      }
     }
-  }, [game, activeTab, iniPresets, authorPresets, reshadeOk, onTabChange]);
+  }, [game, activeTab, iniPresets, navigate]);
 
   const showCover = !!coverSrc;
   const configDir = game.config_dir;
-  const launchBusy = launchMutation.isPending || playPreflightPending || launchConfirmPending;
+  const launchBusy = launchMutation.isPending;
 
   return (
     <header>
@@ -479,28 +189,15 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               {t("button.close")}
             </Button>
           ) : (
-            <div className="flex items-center gap-2">
-              {reshadeOk && reshadeActiveForPrefetch && (
-                <Button
-                  variant="secondary"
-                  onClick={handlePlayWithoutReShade}
-                  disabled={launchBusy}
-                  className="shadow-lg"
-                  title={t("playWithoutReShadeTitle")}
-                >
-                  {t("button.withoutReShade")}
-                </Button>
-              )}
-              <Button
-                variant="primary"
-                icon={<Play size={16} fill="currentColor" />}
-                onClick={() => void handlePlayClick()}
-                loading={launchBusy}
-                className="shadow-lg"
-              >
-                {t("button.play")}
-              </Button>
-            </div>
+            <Button
+              variant="primary"
+              icon={<Play size={16} fill="currentColor" />}
+              onClick={handlePlayClick}
+              loading={launchBusy}
+              className="shadow-lg"
+            >
+              {t("button.play")}
+            </Button>
           )}
         </div>
 
@@ -511,9 +208,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
             </h1>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              {isAuthorCuratedGame(game) ? (
-                <Badge tone="accent">{t("badge.author")}</Badge>
-              ) : game.is_unity ? (
+              {game.is_unity ? (
                 <Badge tone="accent">Unity</Badge>
               ) : game.is_ue ? (
                 game.engine_family === "ue4" ? (
@@ -554,7 +249,7 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
               <p className="text-sm text-[var(--color-accent)]">{launchMessage}</p>
             )}
             {launchWarning && (
-              <Alert tone="warning" icon={AlertTriangle} title="ReShade">
+              <Alert tone="warning" icon={AlertTriangle} title={t("launchWarningTitle")}>
                 {launchWarning}
               </Alert>
             )}
@@ -584,58 +279,35 @@ export function GameHeroHeader({ game, activeTab, onTabChange }: Props) {
         </div>
       )}
 
-      <div className="border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-8 py-2">
-        <div className="mx-auto max-w-6xl">
-          <nav
-            className="flex flex-wrap gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-1"
-            aria-label={t("gameSections")}
-          >
-            {visibleTabs.map(({ id, icon: Icon }) => {
-              const isActive = activeTab === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => onTabChange(id)}
-                  className={cn(
-                    "flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition",
-                    isActive
-                      ? "bg-[var(--color-bg-active)] text-[var(--color-text)] shadow-sm ring-1 ring-[var(--color-accent)]/35"
-                      : "text-muted hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]",
-                  )}
-                >
-                  <Icon size={16} className={isActive ? "text-accent" : undefined} />
-                  {t(`tabs.${id}`)}
-                </button>
-              );
-            })}
-          </nav>
+      {visibleTabs.length > 0 && (
+        <div className="border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-8 py-2">
+          <div className="mx-auto max-w-6xl">
+            <nav
+              className="flex flex-wrap gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-1"
+              aria-label={t("gameSections")}
+            >
+              {visibleTabs.map(({ id, icon: Icon }) => {
+                const isActive = activeTab === id;
+                return (
+                  <Link
+                    key={id}
+                    to={gameTabPath(game.id, id)}
+                    className={cn(
+                      "flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition",
+                      isActive
+                        ? "bg-[var(--color-bg-active)] text-[var(--color-text)] shadow-sm ring-1 ring-[var(--color-accent)]/35"
+                        : "text-muted hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]",
+                    )}
+                  >
+                    <Icon size={16} className={isActive ? "text-accent" : undefined} />
+                    {t(`tabs.${id}`)}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
         </div>
-      </div>
-
-      <ReShadeDisclaimerModal
-        kind="launch"
-        open={launchDisclaimerOpen}
-        loading={launchBusy}
-        onConfirm={() => void confirmLaunchDisclaimer()}
-        onCancel={() => setLaunchDisclaimerOpen(false)}
-      />
-
-      <ReShadeApiPickerModal
-        open={apiPickerOpen}
-        apis={apis}
-        initialApi={
-          reshadeSettings?.settings
-            ? savedGameApi(reshadeSettings.settings, game.id) ??
-              suggestApiForGame(game, reshadeSettings.suggested_api)
-            : suggestApiForGame(game, reshadeSettings?.suggested_api)
-        }
-        rememberDefault
-        loading={launchBusy}
-        title={t("selectApiTitle")}
-        onConfirm={(api, remember) => void continueLaunchWithApi(api, remember)}
-        onCancel={() => setApiPickerOpen(false)}
-      />
+      )}
     </header>
   );
 }

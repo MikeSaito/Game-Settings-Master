@@ -1,25 +1,9 @@
 use crate::ini::platform::{apply_target_dirs, PlatformHints};
 use crate::ini::{merge_ini, read_ini_file, remove_ini_keys, write_ini_file_with_encoding_hint};
-use crate::models::{ConfigDiffEntry, PresetInfo};
+use crate::models::ConfigDiffEntry;
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-
-/// UE auto-presets were removed as a non-working feature. Only author packs remain
-/// (Forza and similar) and Unity. For UE we return an empty list — the user
-/// configures the game via the manual editor.
-pub fn list_presets(
-    engine_family: Option<&str>,
-    game_id: Option<&str>,
-) -> Result<Vec<PresetInfo>, String> {
-    if engine_family == Some("unity") {
-        return crate::unity::presets::list_unity_presets();
-    }
-    if engine_family == Some("forza") {
-        return crate::forza::list_forza_presets(game_id);
-    }
-    Ok(Vec::new())
-}
 
 pub fn apply_changes_to_dir(
     config_dir: &Path,

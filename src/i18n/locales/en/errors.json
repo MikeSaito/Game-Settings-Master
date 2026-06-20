@@ -1,6 +1,5 @@
 {
   "gameRunningTitle": "{{label}} is running",
-  "gameRunningReshade": "Close the game before installing or removing ReShade — proxy DLLs (dxgi.dll, etc.) are locked by the process.",
   "gameRunningIni": "Close the game before applying — Engine.ini and other files are locked by the process.",
   "paramSync": {
     "DLSSQualityMode": "Linked to DLSSMode",

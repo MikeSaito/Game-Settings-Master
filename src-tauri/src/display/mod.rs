@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy, serde::Serialize)]
+#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct ScreenResolution {
     pub width: u32,
     pub height: u32,

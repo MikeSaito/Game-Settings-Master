@@ -21,10 +21,6 @@ if (-not $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD) {
     }
 }
 
-Write-Host "Bundling ReShade resources..." -ForegroundColor Cyan
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "reshade-setup.ps1")
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
 Write-Host "Building with updater signature..." -ForegroundColor Cyan
 npm run tauri build
 

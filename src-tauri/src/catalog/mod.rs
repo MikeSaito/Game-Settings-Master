@@ -1,3 +1,3 @@
 mod loader;
 
-pub use loader::get_game_parameters;
+pub use loader::{get_game_parameters, invalidate_catalog_cache};

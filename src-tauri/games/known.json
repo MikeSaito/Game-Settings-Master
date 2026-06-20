@@ -9,18 +9,7 @@
     "name": "Subnautica 2",
     "local_app_folder": "Subnautica2",
     "config_platform": "Windows",
-    "overlay_preset": "subnautica2",
     "engine_family": "ue5",
-    "suggested_reshade_api": "dx12",
-    "reshade_pack": "subnautica2-reshade",
     "epic_app_names": ["Subnautica2"]
-  },
-  "2483190": {
-    "name": "Forza Horizon 6",
-    "local_app_folder": "ForzaHorizon6",
-    "engine_family": "forza",
-    "author_curated": true,
-    "suggested_reshade_api": "dx12",
-    "forza_config_subpath": "LocalStorage_Shared/ForzaUserConfigSelections"
   }
 }

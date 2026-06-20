@@ -5,6 +5,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
+use std::sync::{Mutex, OnceLock};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ParameterCatalogEntry {
@@ -97,6 +98,7 @@ fn default_editable() -> bool {
     true
 }
 
+#[derive(Clone)]
 struct CatalogIndex {
     by_full_id: HashMap<String, ParameterCatalogEntry>,
     by_file_key: HashMap<String, ParameterCatalogEntry>,
@@ -104,13 +106,58 @@ struct CatalogIndex {
     key_hints: HashMap<String, KeyHintEntry>,
 }
 
+static CATALOG_INDEX_CACHE: OnceLock<Mutex<HashMap<String, CatalogIndex>>> = OnceLock::new();
+
+fn catalog_cache() -> &'static Mutex<HashMap<String, CatalogIndex>> {
+    CATALOG_INDEX_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+#[cfg(test)]
+static CATALOG_BUILD_COUNT: std::sync::atomic::AtomicUsize =
+    std::sync::atomic::AtomicUsize::new(0);
+
+pub fn invalidate_catalog_cache() {
+    if let Ok(mut guard) = catalog_cache().lock() {
+        guard.clear();
+    }
+}
+
+fn catalog_cache_key(engine_family: Option<&str>) -> &'static str {
+    if engine_family == Some("ue4") {
+        "ue4"
+    } else {
+        "ue5"
+    }
+}
+
+fn get_or_build_catalog_index(engine_family: Option<&str>) -> CatalogIndex {
+    let key = catalog_cache_key(engine_family);
+
+    if let Ok(guard) = catalog_cache().lock() {
+        if let Some(index) = guard.get(key) {
+            return index.clone();
+        }
+    }
+
+    let catalog = load_parameter_catalog_for_family(engine_family);
+    let index = build_catalog_index(catalog);
+    #[cfg(test)]
+    CATALOG_BUILD_COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+
+    if let Ok(mut guard) = catalog_cache().lock() {
+        if let Some(existing) = guard.get(key) {
+            return existing.clone();
+        }
+        guard.insert(key.to_string(), index.clone());
+    }
+    index
+}
+
 pub fn load_parameter_catalog_for_family(
     engine_family: Option<&str>,
 ) -> Vec<ParameterCatalogEntry> {
     let is_ue4 = engine_family == Some("ue4");
-    let mut entries = load_remote_parameter_catalog(is_ue4);
-    entries.extend(load_bundled_parameter_catalog(is_ue4));
-    entries
+    load_bundled_parameter_catalog(is_ue4)
 }
 
 fn filter_catalog_entries(
@@ -129,25 +176,9 @@ fn should_load_catalog_file(name: &str, is_ue4: bool) -> bool {
         return false;
     }
     if is_ue4 {
-        return matches!(name, "ue4.json" | "display.json" | "subnautica2.json");
+        return matches!(name, "ue4.json" | "display.json");
     }
     name != "ue4.json"
-}
-
-fn load_remote_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
-    let mut entries = Vec::new();
-    for pack in crate::remote_presets::find_catalog_packs() {
-        if let Some(files) = pack.load_catalog_json_files() {
-            for path in files {
-                let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
-                if !should_load_catalog_file(name, is_ue4) {
-                    continue;
-                }
-                entries.extend(filter_catalog_entries(parse_catalog_file(&path), is_ue4));
-            }
-        }
-    }
-    entries
 }
 
 fn load_bundled_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
@@ -174,30 +205,6 @@ fn load_bundled_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
     }
 
     entries
-}
-
-fn load_author_catalog(
-    game_id: Option<&str>,
-    ini_has_subnautica: bool,
-) -> Vec<ParameterCatalogEntry> {
-    if game_id != Some("steam-1962700") && !ini_has_subnautica {
-        return Vec::new();
-    }
-    let path = crate::resource_paths::catalog_dir().join("subnautica2.json");
-    parse_catalog_file(&path)
-}
-
-fn config_dir_has_subnautica_sections(config_dir: &Path) -> bool {
-    let gus = config_dir.join("GameUserSettings.ini");
-    if !gus.exists() {
-        return false;
-    }
-    let Ok(ini) = read_ini_file(&gus) else {
-        return false;
-    };
-    ini_to_data(&ini)
-        .keys()
-        .any(|section| section.to_lowercase().contains("subnautica"))
 }
 
 pub fn parse_catalog_file(path: &Path) -> Vec<ParameterCatalogEntry> {
@@ -335,7 +342,7 @@ const HIDDEN_UE_MANUAL_KEYS: &[&str] = &[
 
 pub fn get_game_parameters(
     config_dir: &Path,
-    game_id: Option<&str>,
+    _game_id: Option<&str>,
     install_dir: Option<&Path>,
     engine_family: Option<&str>,
 ) -> Result<Vec<GameParameter>, String> {
@@ -343,15 +350,8 @@ pub fn get_game_parameters(
         return get_unity_parameters(config_dir);
     }
 
-    if engine_family == Some("forza") || crate::forza::is_forza_config_dir(config_dir) {
-        return get_forza_parameters(config_dir, install_dir, game_id);
-    }
-
     let is_ue4 = engine_family == Some("ue4");
-    let ini_has_subnautica = config_dir_has_subnautica_sections(config_dir);
-    let mut catalog = load_parameter_catalog_for_family(engine_family);
-    catalog.extend(load_author_catalog(game_id, ini_has_subnautica));
-    let index = build_catalog_index(catalog);
+    let index = get_or_build_catalog_index(engine_family);
 
     let ini_files = [
         "GameUserSettings.ini",
@@ -392,7 +392,7 @@ pub fn get_game_parameters(
         if seen.contains_key(full_id) {
             continue;
         }
-        if !should_include_catalog_entry(entry, game_id, ini_has_subnautica, is_ue4) {
+        if !should_include_catalog_entry(entry, is_ue4) {
             continue;
         }
         let file = entry.file.as_deref().unwrap_or("GameUserSettings.ini");
@@ -1003,15 +1003,8 @@ fn infer_range_from_value(param: &mut GameParameter) {
 
 fn should_include_catalog_entry(
     entry: &ParameterCatalogEntry,
-    game_id: Option<&str>,
-    ini_has_subnautica: bool,
     is_ue4: bool,
 ) -> bool {
-    if entry.category == "AuthorCurated" {
-        let section = entry.section.as_deref().unwrap_or("").to_lowercase();
-        return section.contains("subnautica")
-            && (game_id == Some("steam-1962700") || ini_has_subnautica);
-    }
     if is_ue4 && is_ue5_only_catalog_key(&entry.key) {
         return false;
     }
@@ -1077,124 +1070,6 @@ fn get_unity_parameters(config_dir: &Path) -> Result<Vec<GameParameter>, String>
     Ok(parameters)
 }
 
-pub fn load_forza_parameter_catalog(game_id: Option<&str>) -> Option<Vec<ParameterCatalogEntry>> {
-    crate::remote_presets::ensure_synced();
-    let pack = crate::remote_presets::find_pack(game_id, Some("forza"), None)?;
-    let path = pack.forza_parameter_catalog_path()?;
-    Some(parse_catalog_file(&path))
-}
-
-fn load_forza_catalog_entries(game_id: Option<&str>) -> Vec<ParameterCatalogEntry> {
-    load_forza_parameter_catalog(game_id).unwrap_or_default()
-}
-
-fn get_forza_parameters(
-    config_dir: &Path,
-    install_dir: Option<&Path>,
-    game_id: Option<&str>,
-) -> Result<Vec<GameParameter>, String> {
-    use crate::forza::user_config::read_user_config;
-
-    let entries = load_forza_catalog_entries(game_id);
-    let (settings, selections) = read_user_config(config_dir)?;
-
-    let mut parameters = Vec::new();
-    for entry in entries {
-        let file = entry.file.as_deref().unwrap_or("UserConfigSelections");
-        let section = entry.section.as_deref().unwrap_or("selections");
-
-        if file == "media" {
-            let rel = if section.is_empty() {
-                entry.key.clone()
-            } else {
-                format!("{section}/{}", entry.key)
-            };
-            let installed = install_dir
-                .map(|dir| dir.join("media").join(&rel).is_file())
-                .unwrap_or(false);
-            let value = if installed {
-                crate::i18n::t("установлено в игре", "installed in game").to_string()
-            } else {
-                crate::i18n::t("копируется пресетом", "copied by preset").to_string()
-            };
-            parameters.push(entry_to_parameter(
-                &entry, &entry.key, section, file, &value, true, installed,
-            ));
-            continue;
-        }
-
-        let value = if section == "selections" {
-            selections.get(&entry.key).cloned().unwrap_or_default()
-        } else {
-            forza_setting_display_value(settings.get(&entry.key))
-        };
-        let present = if section == "selections" {
-            selections.contains_key(&entry.key)
-        } else {
-            settings.contains_key(&entry.key)
-        };
-        parameters.push(entry_to_parameter(
-            &entry, &entry.key, section, file, &value, true, present,
-        ));
-    }
-
-    for (id, value) in &selections {
-        if parameters
-            .iter()
-            .any(|p| p.section == "selections" && p.key == *id)
-        {
-            continue;
-        }
-        parameters.push(unknown_parameter(
-            id,
-            "selections",
-            "UserConfigSelections",
-            value,
-        ));
-    }
-
-    for (tag, node) in &settings {
-        if parameters
-            .iter()
-            .any(|p| p.section == "settings" && p.key == *tag)
-        {
-            continue;
-        }
-        let value = forza_setting_display_value(Some(node));
-        parameters.push(unknown_parameter(
-            tag,
-            "settings",
-            "UserConfigSelections",
-            &value,
-        ));
-    }
-
-    parameters.sort_by(|a, b| {
-        a.category
-            .cmp(&b.category)
-            .then(a.section.cmp(&b.section))
-            .then(a.key.cmp(&b.key))
-    });
-    Ok(parameters)
-}
-
-fn forza_setting_display_value(node: Option<&crate::forza::user_config::XmlNode>) -> String {
-    let Some(node) = node else {
-        return String::new();
-    };
-    node.attrs
-        .get("value")
-        .or_else(|| node.attrs.get("TrackCullDistanceReduced"))
-        .cloned()
-        .unwrap_or_else(|| {
-            node.attrs
-                .iter()
-                .map(|(k, v)| format!("{k}={v}"))
-                .collect::<Vec<_>>()
-                .join(", ")
-        })
-}
-
 fn infer_value_type(value: &str) -> String {
     if value.eq_ignore_ascii_case("true") || value.eq_ignore_ascii_case("false") {
         "bool".to_string()
@@ -1215,31 +1090,8 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
-    #[test]
-    fn forza_catalog_parses_with_optional_impact() {
-        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("..")
-            .join("vps")
-            .join("source")
-            .join("forza-fh6")
-            .join("parameter-catalog.json");
-        if !path.is_file() {
-            return;
-        }
-        let entries = parse_catalog_file(&path);
-        assert!(entries.len() > 30, "expected rich forza catalog");
-        assert!(
-            entries.iter().any(|e| e.key == "XeSSAA"),
-            "XeSSAA must parse"
-        );
-        assert!(
-            entries.iter().any(|e| !e.impact.is_empty()),
-            "impact fields expected"
-        );
-        assert!(
-            entries.iter().all(|e| e.file.as_deref() == Some("UserConfigSelections")),
-            "forza catalog uses Preset.xml selections (media ships as preset bundles)"
-        );
+    fn catalog_build_count() -> usize {
+        CATALOG_BUILD_COUNT.load(std::sync::atomic::Ordering::SeqCst)
     }
 
     #[test]
@@ -1250,7 +1102,7 @@ mod tests {
         assert!(catalog.iter().any(|e| e.key == "sg.LandscapeQuality"));
         assert!(
             catalog.iter().any(|e| e.key == "gfx-enable-gfx-jobs"),
-            "merged catalog includes unity entries from ue-catalog pack"
+            "merged catalog includes unity entries"
         );
     }
 
@@ -1359,5 +1211,27 @@ mod tests {
         );
         assert!(p.min.is_some() && p.max.is_some());
         assert!(p.value_hint.is_some());
+    }
+
+    #[test]
+    fn catalog_index_is_reused_for_same_engine_family() {
+        invalidate_catalog_cache();
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=2\r\n",
+        )
+        .unwrap();
+
+        let _ = get_game_parameters(dir.path(), None, None, Some("ue5")).unwrap();
+        let builds_after_first = catalog_build_count();
+        assert!(builds_after_first >= 1);
+
+        let _ = get_game_parameters(dir.path(), None, None, Some("ue5")).unwrap();
+        assert_eq!(
+            catalog_build_count(),
+            builds_after_first,
+            "second call should reuse cached catalog index"
+        );
     }
 }

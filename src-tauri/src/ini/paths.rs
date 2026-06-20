@@ -124,10 +124,6 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
         return Ok(resolved);
     }
 
-    if crate::forza::is_forza_config_dir(&resolved) {
-        return Ok(resolved);
-    }
-
     let gus = resolved.join("GameUserSettings.ini");
     if !ue_path_has_saved_segment(&resolved) && !gus.exists() {
         return Err(crate::i18n::t(

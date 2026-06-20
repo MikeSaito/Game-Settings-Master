@@ -41,7 +41,7 @@ fn group_to_sg_key(group: &str) -> String {
     format!("sg.{group}")
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct ScalabilityLimits {
     pub groups: HashMap<String, u32>,
     pub global_max: u32,

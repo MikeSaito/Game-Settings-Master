@@ -6,6 +6,6 @@
   "pickGame": "Select a game in the library",
   "badge": {
     "configOk": "Config OK",
-    "needInstallDir": "install_dir required"
+    "needConfig": "Config required"
   }
 }

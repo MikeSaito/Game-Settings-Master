@@ -36,26 +36,21 @@ export function useGameRunning(exeName: string | null | undefined): boolean {
 interface GameRunningAlertProps {
   exeName: string | null | undefined;
   gameName?: string;
-  /** reshade — proxy DLL; config (default) — ini files */
-  context?: "config" | "reshade";
 }
 
 export function GameRunningAlert({
   exeName,
   gameName,
-  context = "config",
 }: GameRunningAlertProps) {
   const { t } = useTranslation("errors");
   const running = useGameRunning(exeName);
   if (!exeName || !running) return null;
 
   const label = gameName ?? exeName;
-  const body =
-    context === "reshade" ? t("gameRunningReshade") : t("gameRunningIni");
 
   return (
     <Alert tone="warning" icon={AlertTriangle} title={t("gameRunningTitle", { label })}>
-      {body}
+      {t("gameRunningIni")}
     </Alert>
   );
 }

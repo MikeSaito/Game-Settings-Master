@@ -41,14 +41,6 @@
   "knownCount_other": "{{count}} in catalog",
   "unknownCount_one": "{{count}} undocumented",
   "unknownCount_other": "{{count}} undocumented",
-  "authorCurated": {
-    "title": "Curated by the app author",
-    "body": "Parameters from the game's custom sections with detailed descriptions. DLSS, TSR and FSR are synced automatically when presets are applied."
-  },
-  "forza": {
-    "before": "Parameters from AppData XML (like in your mod). Presets also copy ",
-    "after": " into the game folder — DefaultTrackSettings, routebudget, trees, etc. There is no Engine.ini here."
-  },
   "engineIni": {
     "title": "Engine.ini parameters",
     "before": "Toggle ",

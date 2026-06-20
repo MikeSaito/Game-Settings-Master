@@ -1,10 +1,8 @@
 import illLibrary from "../svg/ill-library.svg?raw";
-import illPresets from "../svg/ill-presets.svg?raw";
 import illGpu from "../svg/ill-gpu.svg?raw";
 import illEditor from "../svg/ill-editor.svg?raw";
 import illBackup from "../svg/ill-backup.svg?raw";
-import illCloud from "../svg/ill-cloud.svg?raw";
-import illReshade from "../svg/ill-reshade.svg?raw";
+import illCatalog from "../svg/ill-cloud.svg?raw";
 import type { LocaleStrings } from "./types";
 
 export const en: LocaleStrings = {
@@ -12,11 +10,11 @@ export const en: LocaleStrings = {
   htmlLang: "en",
   siteName: "Game Settings Master",
   meta: {
-    title: "Game Settings Master — graphics presets for games",
+    title: "Game Settings Master — UE & Unity config editor",
     description:
-      "Presets, manual editor, ReShade and cloud sync for Unreal Engine, Unity and author-curated game breakdowns.",
+      "Read and tune Unreal Engine and Unity game configs — with parameter descriptions, GPU-aware options, and backups.",
     keywords:
-      "game settings, graphics presets, Unreal Engine, Unity, DLSS, FSR, ReShade, config editor",
+      "game settings, Unreal Engine, Unity, DLSS, FSR, config editor, ini",
     ogLocale: "en_US",
   },
   nav: {
@@ -29,9 +27,9 @@ export const en: LocaleStrings = {
     title: "Game settings",
     titleAccent: "in focus",
     subtitle:
-      "Graphics master for Unreal Engine, Unity and author-curated breakdowns — without digging through configs manually.",
+      "Read and tune Unreal Engine and Unity game configs — with parameter descriptions, GPU-aware options, and backups.",
   },
-  engineTags: ["UE 4", "UE 5", "Unity", "ReShade", "Author-curated"],
+  engineTags: ["UE 4", "UE 5", "Unity"],
   features: [
     {
       id: "library",
@@ -41,49 +39,34 @@ export const en: LocaleStrings = {
       illustration: illLibrary,
     },
     {
-      id: "presets",
+      id: "editor",
       step: "02",
-      title: "Author presets",
-      text: "Author-verified presets for select games (e.g. Forza Horizon 6) — apply in one click with a diff preview. Every change visible in configs.",
-      illustration: illPresets,
+      title: "Parameter editor",
+      text: "Interactive sliders, toggles and dropdowns for key UE4/UE5 and Unity parameters — with descriptions, categories and dependencies.",
+      illustration: illEditor,
       reverse: true,
     },
     {
       id: "smart",
       step: "03",
-      title: "Smart tuning",
+      title: "GPU-aware filters",
       text: "DLSS, FSR, ray tracing and Frame Generation — safe clamp for your GPU. No pointless options on weak hardware.",
       illustration: illGpu,
     },
     {
-      id: "editor",
-      step: "04",
-      title: "Manual editor",
-      text: "Interactive sliders, toggles and dropdowns for key UE4/UE5 parameters — with descriptions, categories and dependencies.",
-      illustration: illEditor,
-      reverse: true,
-    },
-    {
       id: "backup",
-      step: "05",
+      step: "04",
       title: "Backups",
       text: "Snapshot before every apply. Roll back to the previous state in one click — no fear of breaking your config.",
       illustration: illBackup,
-    },
-    {
-      id: "cloud",
-      step: "06",
-      title: "Cloud presets",
-      text: "Content syncs from the server without an app release. Offline — built-in cache fallback.",
-      illustration: illCloud,
       reverse: true,
     },
     {
-      id: "reshade",
-      step: "07",
-      title: "ReShade",
-      text: "Install post-processing into the game folder: Performance, Clarity and Cinematic presets, plus author ini packs for specific games. Launch with or without ReShade — proxies are removed automatically when off.",
-      illustration: illReshade,
+      id: "catalog",
+      step: "05",
+      title: "Parameter catalog",
+      text: "Bundled metadata for the editor — a reference of keys, sections and hints. Not ready-made presets, but parameter descriptions.",
+      illustration: illCatalog,
     },
   ],
   download: {

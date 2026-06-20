@@ -18,31 +18,16 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
-      - name: Ensure 7-Zip (ReShade Setup extraction)
-        shell: pwsh
-        run: |
-          if (-not (Test-Path "C:\Program Files\7-Zip\7z.exe")) {
-            choco install 7zip -y --no-progress
-          }
-
       - name: Install frontend dependencies
         run: npm ci
-
-      - name: Bundle ReShade (shaders + addon DLL)
-        shell: pwsh
-        run: npm run reshade:setup
-
-      - name: Verify ReShade bundle
-        shell: pwsh
-        run: npm run reshade:verify
-
-      - name: Validate author presets catalog
-        working-directory: vps
-        run: npm ci && npm run validate
 
       - name: Rust tests
         working-directory: src-tauri
         run: cargo test
+
+      - name: Verify TypeScript bindings in sync
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File scripts/verify-types-sync.ps1
 
       - name: Rust release compile check
         working-directory: src-tauri
@@ -50,6 +35,9 @@ jobs:
 
       - name: Frontend build
         run: npm run build
+
+      - name: Frontend unit tests
+        run: npm test
 
       - name: Landing build
         run: npm ci --prefix landing && npm run build --prefix landing

@@ -47,14 +47,6 @@
   "unknownCount_few": "{{count}} без описания",
   "unknownCount_many": "{{count}} без описания",
   "unknownCount_other": "{{count}} без описания",
-  "authorCurated": {
-    "title": "Разобрано автором приложения",
-    "body": "Параметры из кастомных секций игры с подробными описаниями. DLSS, TSR и FSR синхронизируются автоматически при применении пресетов."
-  },
-  "forza": {
-    "before": "Параметры из AppData XML (как в вашем моде). Пресеты также копируют ",
-    "after": " в папку игры — DefaultTrackSettings, routebudget, деревья и др. Engine.ini здесь нет."
-  },
   "engineIni": {
     "title": "Параметры Engine.ini",
     "before": "Тоггл ",

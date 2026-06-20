@@ -85,10 +85,7 @@ pub fn validate_profile_paths(profile: &GameProfile) -> Result<(), String> {
 pub fn resolve_trusted_profile(profile: &GameProfile) -> Result<GameProfile, String> {
     validate_profile_paths(profile)?;
 
-    let trusted = load_saved_profiles()?
-        .into_iter()
-        .find(|g| g.id == profile.id)
-        .or_else(|| crate::discovery::scan_all_games().into_iter().find(|g| g.id == profile.id))
+    let trusted = crate::discovery::find_game_by_id(&profile.id)?
         .ok_or_else(|| {
             crate::i18n::t(
                 &format!(
@@ -123,11 +120,7 @@ pub fn ensure_known_game_id(game_id: &str) -> Result<(), String> {
     if id.is_empty() || id.len() > 128 {
         return Err(crate::i18n::t("Недопустимый game_id", "Invalid game_id"));
     }
-    let known_saved = load_saved_profiles()?.iter().any(|g| g.id == id);
-    let known_scan = crate::discovery::scan_all_games()
-        .iter()
-        .any(|g| g.id == id);
-    if known_saved || known_scan {
+    if crate::discovery::find_game_by_id(id)?.is_some() {
         Ok(())
     } else {
         Err(crate::i18n::t(
@@ -375,7 +368,6 @@ mod tests {
             exe_name: None,
             is_ue: true,
             is_unity: false,
-            is_author_curated: false,
             possible_unity: false,
             possible_ue: false,
             cover_url: None,
@@ -398,7 +390,6 @@ mod tests {
             exe_name: None,
             is_ue: true,
             is_unity: false,
-            is_author_curated: false,
             possible_unity: false,
             possible_ue: false,
             cover_url: None,
@@ -439,7 +430,6 @@ mod tests {
             exe_name: None,
             is_ue: true,
             is_unity: false,
-            is_author_curated: false,
             possible_unity: false,
             possible_ue: false,
             cover_url: None,
@@ -473,7 +463,6 @@ mod tests {
             exe_name: None,
             is_ue: true,
             is_unity: false,
-            is_author_curated: false,
             possible_unity: false,
             possible_ue: false,
             cover_url: None,

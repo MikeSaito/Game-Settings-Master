@@ -10,6 +10,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::time::SystemTime;
 
 pub fn scan_steam_games() -> Vec<GameProfile> {
     let mut games: HashMap<String, GameProfile> = HashMap::new();
@@ -147,21 +148,16 @@ fn parse_steam_manifest(
         return None;
     }
 
-    let known_forza = known.get(&app_id).and_then(|k| k.engine_family.as_deref()) == Some("forza");
-    let is_forza = known_forza || crate::forza::is_forza_install(&install_path);
-
     let unity = detect_unity_engine(&install_path);
-    let is_unity = !is_forza && unity != UnityDetectResult::NotUnity;
+    let is_unity = unity != UnityDetectResult::NotUnity;
     let ue = detect_unreal_engine(&install_path);
-    let is_ue = !is_forza && !is_unity && ue != UeDetectResult::NotUe;
+    let is_ue = !is_unity && ue != UeDetectResult::NotUe;
 
     let exe_name = find_executables(&install_path)
         .first()
         .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()));
 
-    let config_dir = if is_forza {
-        crate::forza::resolve_forza_config_dir(Some(&app_id))
-    } else if is_unity {
+    let config_dir = if is_unity {
         resolve_unity_config_dir(
             &install_path,
             exe_name.as_deref(),
@@ -199,16 +195,12 @@ fn parse_steam_manifest(
         exe_name,
         is_ue,
         is_unity,
-        is_author_curated: is_forza
-            || crate::discovery::known_games::is_author_curated_app(&app_id),
         possible_unity: unity == UnityDetectResult::Probable,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: Some(crate::covers::steam_header_url(&app_id)),
         custom_cover: None,
         build_id,
-        engine_family: if is_forza {
-            "forza".to_string()
-        } else if is_unity {
+        engine_family: if is_unity {
             "unity".to_string()
         } else {
             "unknown".to_string()
@@ -216,6 +208,52 @@ fn parse_steam_manifest(
         engine_version: None,
     };
     Some(profile)
+}
+
+fn path_modified(path: &Path) -> Option<SystemTime> {
+    fs::metadata(path).ok().and_then(|m| m.modified().ok())
+}
+
+/// Latest mtime signal for a Steam library root (steamapps manifests + libraryfolders.vdf).
+pub fn steam_library_signal_mtime(library: &Path) -> Option<SystemTime> {
+    let steamapps = library.join("steamapps");
+    if !steamapps.exists() {
+        return path_modified(library);
+    }
+    let mut latest = path_modified(&steamapps)?;
+    if let Ok(entries) = fs::read_dir(&steamapps) {
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with("appmanifest_") && name.ends_with(".acf") {
+                if let Some(t) = path_modified(&entry.path()) {
+                    if t > latest {
+                        latest = t;
+                    }
+                }
+            }
+        }
+    }
+    let vdf = steamapps.join("libraryfolders.vdf");
+    if let Some(t) = path_modified(&vdf) {
+        if t > latest {
+            latest = t;
+        }
+    }
+    Some(latest)
+}
+
+/// Steam library roots with their discovery signal mtimes (for cache invalidation).
+pub fn collect_steam_library_mtimes() -> Vec<(PathBuf, SystemTime)> {
+    let mut out = Vec::new();
+    for steam_root in dedupe_paths(find_steam_install_paths()) {
+        for library in dedupe_paths(parse_library_folders(&steam_root)) {
+            if let Some(mtime) = steam_library_signal_mtime(&library) {
+                out.push((library, mtime));
+            }
+        }
+    }
+    out.sort_by(|a, b| a.0.cmp(&b.0));
+    out
 }
 
 fn extract_acf_value(content: &str, key: &str) -> Option<String> {

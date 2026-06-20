@@ -13,7 +13,6 @@
     "withoutConfig": "{{count}} без config",
     "ue": "{{count}} UE",
     "unity": "{{count}} Unity",
-    "author": "{{count}} от автора",
     "other": "{{count}} прочие",
     "withCover": "{{count}} с обложкой"
   },
@@ -27,7 +26,6 @@
     "imageFilter": "Изображение"
   },
   "card": {
-    "fromAuthor": "От автора",
     "engineUnknown": "Движок не определён",
     "probablyUe": "Вероятно UE",
     "probablyUnity": "Вероятно Unity",
@@ -49,12 +47,11 @@
     "nothingFound": "Ничего не найдено",
     "noGames": "Игры не найдены",
     "tryAnother": "Попробуйте другое название или добавьте игру вручную.",
-    "scanOrAddPrefix": "Нажмите «Сканировать» или «Добавить», чтобы указать папку установки. Для Subnautica 2 config: "
+    "scanOrAddPrefix": "Нажмите «Сканировать» или «Добавить», чтобы указать папку установки UE или Unity."
   },
   "sections": {
-    "unityHint": "Пресеты меняют boot.config в папке *_Data.",
-    "authorHint": "Пресеты разобраны автором приложения — отдельный формат конфига (Forza: UserConfigSelections + media).",
+    "unityHint": "Редактор меняет boot.config в папке *_Data.",
     "otherTitle": "Другие игры",
-    "otherHint": "Движок не определён — авто-пресеты ini недоступны. ReShade и запуск из GSM — доступны."
+    "otherHint": "Движок не определён — редактор конфигов недоступен. Запуск из GSM по-прежнему доступен."
   }
 }

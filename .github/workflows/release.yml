@@ -44,7 +44,6 @@ jobs:
         shell: pwsh
         run: |
           $tag = "v${{ env.VERSION }}"
-          # gh exits 1 when release is missing — must not fail the step (GHA pwsh native error preference).
           $ErrorActionPreference = "Continue"
           $PSNativeCommandUseErrorActionPreference = $false
           gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
@@ -52,27 +51,6 @@ jobs:
             throw "GitHub release $tag already exists"
           }
           exit 0
-
-      - name: Ensure 7-Zip (ReShade Setup extraction)
-        shell: pwsh
-        run: |
-          if (-not (Test-Path "C:\Program Files\7-Zip\7z.exe")) {
-            choco install 7zip -y --no-progress
-          }
-
-      - name: Bundle ReShade (shaders + addon DLL for installer)
-        shell: pwsh
-        run: npm run reshade:setup
-
-      - name: Verify ReShade bundle
-        shell: pwsh
-        run: npm run reshade:verify
-
-      - name: Build preset packs (bundled in installer)
-        working-directory: vps
-        run: |
-          npm ci
-          npm run build
 
       - name: Rust tests
         working-directory: src-tauri
@@ -83,10 +61,6 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: npm run tauri build
-
-      - name: Verify ReShade in build output
-        shell: pwsh
-        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/verify-reshade-bundle-output.ps1
 
       - name: Prepare release assets
         shell: pwsh

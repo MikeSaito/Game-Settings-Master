@@ -3,7 +3,7 @@ use std::sync::OnceLock;
 
 static GPU_CACHE: OnceLock<GpuCapabilities> = OnceLock::new();
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "lowercase")]
 pub enum GpuVendor {
     Nvidia,
@@ -12,7 +12,7 @@ pub enum GpuVendor {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GpuCapabilities {
     pub name: String,
     pub vendor: GpuVendor,

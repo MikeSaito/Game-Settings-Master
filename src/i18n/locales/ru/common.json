@@ -1,5 +1,4 @@
 {
-  "authorCuratedSection": "Разобрано автором",
   "toggleOn": "Вкл",
   "toggleOff": "Выкл",
   "workspaceUser": "Пользовательский",
@@ -10,18 +9,11 @@
   "paramReadOnly": "Служебный параметр — только для чтения. Игра сама обновляет это значение; ручное изменение может сломать настройки.",
   "paramDisabled": "Параметр выключен (тоггл «Выкл»). Включите и нажмите «Применить», чтобы редактировать.",
   "gpuNoRtx": "без RTX",
-  "presetSyncLoadingTitle": "Загрузка пресетов",
-  "presetSyncLoadingMessage": "Синхронизация каталога с GitHub…",
-  "presetSyncErrorTitle": "Пресеты",
-  "presetSyncErrorMessage": "Не удалось проверить статус синхронизации. Используется локальный кэш, если он есть.",
-  "presetSyncOfflineTitle": "Офлайн",
-  "presetSyncNotLoadedTitle": "Пресеты не загружены",
-  "presetSyncOfflineMessage": "Не удалось обновить пресеты. Используется кэш v{{version}}.",
   "workspaceAppliedPrefix": "Применён: {{label}}",
   "paramSentinel": "−1 · автоматически (по умолчанию движка)",
-  "gpuFilterAmd": "Видеокарта {{name}}: DLSS недоступен — пресеты автоматически подставят FSR 3 вместо DLSS.",
-  "gpuFilterIntel": "Видеокарта {{name}}: DLSS недоступен — пресеты автоматически подставят FSR или TSR вместо DLSS.",
-  "gpuFilterNvidiaNoDlss": "Видеокарта {{name}}: DLSS недоступен — пресеты автоматически подставят FSR вместо DLSS. GTX не поддерживает Tensor Cores.",
-  "gpuFilterNvidiaNoFg": "Видеокарта {{name}}: Frame Generation недоступен — пресеты не будут включать DLSS FG.",
+  "gpuFilterAmd": "Видеокарта {{name}}: DLSS недоступен — редактор скроет DLSS и предложит FSR 3.",
+  "gpuFilterIntel": "Видеокарта {{name}}: DLSS недоступен — редактор скроет DLSS и предложит FSR или TSR.",
+  "gpuFilterNvidiaNoDlss": "Видеокарта {{name}}: DLSS недоступен — GTX не поддерживает Tensor Cores.",
+  "gpuFilterNvidiaNoFg": "Видеокарта {{name}}: Frame Generation недоступен — DLSS FG будет скрыт.",
   "gpuFilterNvidiaDlssOnly": "Видеокарта {{name}}: DLSS доступен. Frame Generation (DLSS 3) — только на RTX 40-й серии и новее."
 }

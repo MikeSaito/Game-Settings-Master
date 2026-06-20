@@ -1,6 +1,0 @@
-{
-  "id": "epic",
-  "name": "Epic",
-  "description": "Unity — нативные настройки игры, без boot-ограничений (пустой пресет = defaults).",
-  "boot_config": {}
-}

@@ -2,7 +2,7 @@ use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GameProfile {
     pub id: String,
     pub name: String,
@@ -13,9 +13,6 @@ pub struct GameProfile {
     pub is_ue: bool,
     #[serde(default)]
     pub is_unity: bool,
-    /// Games with presets curated by the app author (Forza, etc.).
-    #[serde(default)]
-    pub is_author_curated: bool,
     #[serde(default)]
     pub possible_unity: bool,
     #[serde(default)]
@@ -36,25 +33,18 @@ fn default_engine_family() -> String {
     "unknown".to_string()
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GameConfig {
     pub config_dir: String,
     pub files: HashMap<String, IniFileData>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct IniFileData {
     pub sections: HashMap<String, HashMap<String, String>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PresetInfo {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ConfigDiffEntry {
     pub file: String,
     pub section: String,
@@ -63,7 +53,7 @@ pub struct ConfigDiffEntry {
     pub new_value: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ApplyResult {
     pub backup_id: String,
     pub changed_files: Vec<String>,
@@ -73,20 +63,20 @@ pub struct ApplyResult {
     pub effective_config_dir: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct BackupInfo {
     pub id: String,
     pub created_at: String,
     pub files: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ConfigResetResult {
     pub backup_id: String,
     pub deleted_files: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GameParameter {
     pub key: String,
     pub section: String,
@@ -123,7 +113,7 @@ pub struct GameParameter {
     pub recommended: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ParameterOption {
     pub value: String,
     pub label: String,
@@ -145,7 +135,7 @@ pub struct SavedProfiles {
     pub games: Vec<GameProfile>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GameOverride {
     pub game_id: String,
     pub name: String,

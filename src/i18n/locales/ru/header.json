@@ -1,9 +1,7 @@
 {
   "tabs": {
-    "wizard": "Авторские",
     "advanced": "Ручной",
-    "backups": "Бекапы",
-    "reshade": "ReShade"
+    "backups": "Бекапы"
   },
   "source": {
     "steam": "Steam",
@@ -11,25 +9,21 @@
     "manual": "Вручную"
   },
   "badge": {
-    "author": "От автора",
     "engineUnknown": "Движок ?",
     "configOk": "Config OK",
     "needConfig": "Нужен config"
   },
   "button": {
     "close": "Закрыть",
-    "withoutReShade": "Без ReShade",
     "play": "Играть",
     "open": "Открыть"
   },
   "configLabel": "Config",
   "gameSections": "Разделы игры",
-  "playWithoutReShadeTitle": "Запустить игру один раз без эффектов ReShade",
-  "selectApiTitle": "Выберите API перед запуском",
+  "launchWarningTitle": "Предупреждение при запуске",
   "launchVia": "Запуск через {{launcher}}…",
   "gameClosed": "Игра закрыта.",
   "errors": {
-    "loadReShade": "Не удалось загрузить настройки ReShade",
     "noProcessName": "Имя процесса игры не определено"
   }
 }

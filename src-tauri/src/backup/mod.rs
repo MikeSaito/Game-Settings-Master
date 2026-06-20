@@ -44,38 +44,15 @@ fn legacy_backup_root(config_dir: &Path) -> PathBuf {
     config_dir.join(BACKUP_DIR_LEGACY)
 }
 
-pub fn backup_forza_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<String, String> {
-    let backup_root = backup_store_dir(config_dir);
-    fs::create_dir_all(&backup_root)
-        .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог backup: {e}"), &format!("Failed to create backup directory: {e}")))?;
-
-    let backup_id = match backup_id {
-        Some(id) => {
-            if !is_safe_backup_id(id) {
-                return Err(crate::i18n::t(&format!("Недопустимый идентификатор backup: {id}"), &format!("Invalid backup identifier: {id}")));
-            }
-            id.to_string()
-        }
-        None => Local::now().format("%Y%m%d_%H%M%S").to_string(),
-    };
-    let backup_path = backup_root.join(&backup_id);
-    fs::create_dir_all(&backup_path).map_err(|e| crate::i18n::t(&format!("Не удалось создать backup: {e}"), &format!("Failed to create backup: {e}")))?;
-
-    let src = crate::forza::user_config_file(config_dir);
-    if src.is_file() {
-        let dst = backup_path.join("UserConfigSelections");
-        let bytes = read_file_bytes(&src)?;
-        write_file_bytes(&dst, &bytes)
-            .map_err(|e| crate::i18n::t(&format!("Не удалось сохранить backup UserConfigSelections: {e}"), &format!("Failed to save backup UserConfigSelections: {e}")))?;
+pub fn backup_all_targets(targets: &[PathBuf]) -> Result<String, String> {
+    let shared_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    for target in targets {
+        backup_config_dir(target, Some(&shared_id))?;
     }
-
-    Ok(backup_id)
+    Ok(shared_id.to_string())
 }
 
 pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<String, String> {
-    if crate::forza::is_forza_config_dir(config_dir) {
-        return backup_forza_config_dir(config_dir, backup_id);
-    }
     let backup_root = backup_store_dir(config_dir);
     fs::create_dir_all(&backup_root)
         .map_err(|e| crate::i18n::t(&format!("Не удалось создать каталог backup: {e}"), &format!("Failed to create backup directory: {e}")))?;

@@ -1,10 +1,8 @@
 import illLibrary from "../svg/ill-library.svg?raw";
-import illPresets from "../svg/ill-presets.svg?raw";
 import illGpu from "../svg/ill-gpu.svg?raw";
 import illEditor from "../svg/ill-editor.svg?raw";
 import illBackup from "../svg/ill-backup.svg?raw";
-import illCloud from "../svg/ill-cloud.svg?raw";
-import illReshade from "../svg/ill-reshade.svg?raw";
+import illCatalog from "../svg/ill-cloud.svg?raw";
 import type { LocaleStrings } from "./types";
 
 export const ru: LocaleStrings = {
@@ -12,11 +10,11 @@ export const ru: LocaleStrings = {
   htmlLang: "ru",
   siteName: "Game Settings Master",
   meta: {
-    title: "Game Settings Master — мастер графики для игр",
+    title: "Game Settings Master — редактор конфигов UE и Unity",
     description:
-      "Пресеты, ручной редактор, ReShade и облачная синхронизация настроек для Unreal Engine, Unity и авторских разборов.",
+      "Читайте и настраивайте ini/boot.config игр на UE и Unity — с описаниями параметров, фильтрами под GPU и бэкапами.",
     keywords:
-      "game settings, пресеты графики, Unreal Engine, Unity, настройки игр, DLSS, FSR, ReShade",
+      "game settings, Unreal Engine, Unity, настройки игр, DLSS, FSR, config editor, ini",
     ogLocale: "ru_RU",
   },
   nav: {
@@ -29,9 +27,9 @@ export const ru: LocaleStrings = {
     title: "Настройки игр",
     titleAccent: "в фокусе",
     subtitle:
-      "Мастер графики для Unreal Engine, Unity и авторских разборов других игр — без ручного ковыряния в конфигах.",
+      "Читайте и настраивайте ini/boot.config игр на UE и Unity — с описаниями параметров, фильтрами под GPU и бэкапами.",
   },
-  engineTags: ["UE 4", "UE 5", "Unity", "ReShade", "Авторские разборы"],
+  engineTags: ["UE 4", "UE 5", "Unity"],
   features: [
     {
       id: "library",
@@ -41,49 +39,34 @@ export const ru: LocaleStrings = {
       illustration: illLibrary,
     },
     {
-      id: "presets",
+      id: "editor",
       step: "02",
-      title: "Авторские пресеты",
-      text: "Проверенные автором пресеты для некоторых игр (например Forza Horizon 6) — применение в один клик с предпросмотром diff. Видно каждую правку в конфигах.",
-      illustration: illPresets,
+      title: "Редактор параметров",
+      text: "Интерактивные ползунки, переключатели и списки для ключевых параметров UE4/UE5 и Unity — с описаниями, категориями и зависимостями.",
+      illustration: illEditor,
       reverse: true,
     },
     {
       id: "smart",
       step: "03",
-      title: "Умная настройка",
+      title: "GPU-aware фильтры",
       text: "DLSS, FSR, ray tracing и Frame Generation — безопасный clamp под ваш GPU. Без бессмысленных опций на слабом железе.",
       illustration: illGpu,
     },
     {
-      id: "editor",
-      step: "04",
-      title: "Ручной редактор",
-      text: "Интерактивные ползунки, переключатели и списки для ключевых параметров UE4/UE5 — с описаниями, категориями и зависимостями.",
-      illustration: illEditor,
-      reverse: true,
-    },
-    {
       id: "backup",
-      step: "05",
+      step: "04",
       title: "Бэкапы",
       text: "Snapshot перед каждым apply. Откат к предыдущему состоянию одним кликом — без страха сломать конфиг.",
       illustration: illBackup,
-    },
-    {
-      id: "cloud",
-      step: "06",
-      title: "Облачные пресеты",
-      text: "Контент с сервера синхронизируется без релиза приложения. Offline — встроенный fallback из кэша.",
-      illustration: illCloud,
       reverse: true,
     },
     {
-      id: "reshade",
-      step: "07",
-      title: "ReShade",
-      text: "Установка post-processing в папку игры: пресеты Performance, Clarity и Cinematic, авторские ini для отдельных игр. Запуск с ReShade или без — proxy снимается автоматически.",
-      illustration: illReshade,
+      id: "catalog",
+      step: "05",
+      title: "Каталог описаний",
+      text: "Встроенные metadata для редактора — справочник ключей, секций и подсказок. Не готовые пресеты, а описания параметров.",
+      illustration: illCatalog,
     },
   ],
   download: {
@@ -104,8 +87,8 @@ export const ru: LocaleStrings = {
   },
   donate: {
     title: "Поддержать разработку",
-    text: "Сбор средств на сертификат подписи Windows и дальнейшее развитие приложения.",
-    button: "Поддержать проект",
+    text: "Помогите оплатить подпись кода для Windows и будущие обновления.",
+    button: "Поддержать",
   },
   footer: {
     version: (v: string) => `Game Settings Master v${v}`,

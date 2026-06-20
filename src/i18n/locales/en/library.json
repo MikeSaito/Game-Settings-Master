@@ -2,10 +2,10 @@
   "alerts": {
     "errorTitle": "Error",
     "coversTitle": "Covers",
-    "coversBody": "Steam games fetch the artwork automatically. For Epic and manual profiles, click \"Cover\" on the game card."
+    "coversBody": "Steam games fetch artwork automatically. For Epic and manual profiles, click Cover on the game card."
   },
   "header": {
-    "title": "Game Library",
+    "title": "Game library",
     "subtitle": "Steam · Epic · LocalAppData · manual add"
   },
   "badges": {
@@ -13,7 +13,6 @@
     "withoutConfig": "{{count}} without config",
     "ue": "{{count}} UE",
     "unity": "{{count}} Unity",
-    "author": "{{count}} by author",
     "other": "{{count}} other",
     "withCover": "{{count}} with cover"
   },
@@ -21,16 +20,15 @@
     "manual": "Manual"
   },
   "dialogs": {
-    "installFolder": "Select the game installation folder",
-    "configFolder": "Select the Saved/Config/Windows folder",
-    "coverFile": "Select a game cover",
+    "installFolder": "Select the game install folder",
+    "configFolder": "Select Saved/Config/Windows folder",
+    "coverFile": "Select game cover image",
     "imageFilter": "Image"
   },
   "card": {
-    "fromAuthor": "By author",
-    "engineUnknown": "Engine not detected",
-    "probablyUe": "Probably UE",
-    "probablyUnity": "Probably Unity",
+    "engineUnknown": "Engine unknown",
+    "probablyUe": "Likely UE",
+    "probablyUnity": "Likely Unity",
     "select": "Select",
     "cover": "Cover",
     "resetCover": "Reset",
@@ -42,19 +40,18 @@
     "addManual": "Add manually"
   },
   "search": {
-    "placeholder": "Search or name for manual add…"
+    "placeholder": "Search or type a name to add manually…"
   },
   "loading": "Scanning Steam, Epic, LocalAppData…",
   "empty": {
     "nothingFound": "Nothing found",
     "noGames": "No games found",
-    "tryAnother": "Try a different name or add a game manually.",
-    "scanOrAddPrefix": "Click \"Scan\" or \"Add\" to specify the installation folder. For Subnautica 2 config: "
+    "tryAnother": "Try another name or add a game manually.",
+    "scanOrAddPrefix": "Click Scan or Add to point at a UE or Unity install folder."
   },
   "sections": {
-    "unityHint": "Presets modify boot.config in the *_Data folder.",
-    "authorHint": "Presets curated by the app author — a separate config format (Forza: UserConfigSelections + media).",
+    "unityHint": "The editor changes boot.config in the *_Data folder.",
     "otherTitle": "Other games",
-    "otherHint": "Engine not detected — automatic ini presets are unavailable. ReShade and launching from GSM are available."
+    "otherHint": "Engine not detected — config editor unavailable. Launch from GSM still works."
   }
 }

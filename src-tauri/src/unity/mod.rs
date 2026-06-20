@@ -1,5 +1,4 @@
 mod boot_config;
-pub mod presets;
 
 use crate::discovery::{find_unity_data_dir, load_known_games};
 use std::env;
@@ -8,7 +7,6 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 pub use boot_config::{apply_boot_config, parse_boot_config, preview_boot_config_diff};
-pub use presets::{apply_unity_preset, build_unity_combined_preset, preview_unity_preset};
 
 /// Unity config directory: `*_Data` folder (boot.config) or LocalLow.
 pub fn resolve_unity_config_dir(

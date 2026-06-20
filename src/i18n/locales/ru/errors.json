@@ -1,6 +1,5 @@
 {
   "gameRunningTitle": "{{label}} запущена",
-  "gameRunningReshade": "Закройте игру перед установкой или удалением ReShade — proxy DLL (dxgi.dll и др.) заблокированы процессом.",
   "gameRunningIni": "Закройте игру перед применением — Engine.ini и другие файлы заблокированы процессом.",
   "paramSync": {
     "DLSSQualityMode": "Связан с DLSSMode",

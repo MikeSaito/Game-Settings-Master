@@ -5,7 +5,6 @@ import {
   FolderSearch,
   Gamepad2,
   ImagePlus,
-  Palette,
   Plus,
   RefreshCw,
   Search,
@@ -24,12 +23,7 @@ import {
   scanGames,
   setGameConfigDir,
 } from "../lib/api";
-import {
-  authorCuratedSectionTitle,
-  isAuthorCuratedGame,
-  supportsIniPresets,
-  supportsReShade,
-} from "../lib/gameEngine";
+import { supportsIniPresets } from "../lib/gameEngine";
 import type { GameProfile } from "../lib/types";
 import { formatInvokeError } from "../lib/errors";
 import { Alert } from "../components/ui/Alert";
@@ -75,17 +69,14 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
       withoutConfig: games.filter((g) => !g.config_dir).length,
       ue: games.filter((g) => g.is_ue).length,
       unity: games.filter((g) => g.is_unity).length,
-      author: games.filter((g) => isAuthorCuratedGame(g)).length,
-      other: games.filter(
-        (g) => !g.is_ue && !g.is_unity && !isAuthorCuratedGame(g),
-      ).length,
+      other: games.filter((g) => !g.is_ue && !g.is_unity).length,
       total: games.length,
       withCover: games.filter((g) => g.custom_cover || g.cover_url).length,
     }),
     [games],
   );
 
-  const { ueGames, unityGames, authorGames, otherGames } = useMemo(() => {
+  const { ueGames, unityGames, otherGames } = useMemo(() => {
     const q = query.toLowerCase();
     const matched = games.filter((g) => g.name.toLowerCase().includes(q));
     const byName = (a: GameProfile, b: GameProfile) =>
@@ -93,10 +84,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
     return {
       ueGames: matched.filter((g) => g.is_ue).sort(byName),
       unityGames: matched.filter((g) => g.is_unity).sort(byName),
-      authorGames: matched.filter((g) => isAuthorCuratedGame(g)).sort(byName),
-      otherGames: matched
-        .filter((g) => !g.is_ue && !g.is_unity && !isAuthorCuratedGame(g))
-        .sort(byName),
+      otherGames: matched.filter((g) => !g.is_ue && !g.is_unity).sort(byName),
     };
   }, [games, query]);
 
@@ -220,9 +208,6 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
                   ? t("source.manual")
                   : sourceLabels[game.source] ?? game.source}
               </Badge>
-              {isAuthorCuratedGame(game) && (
-                <Badge tone="accent">{t("card.fromAuthor")}</Badge>
-              )}
               {game.is_unity && (
                 <Badge tone="accent">Unity</Badge>
               )}
@@ -235,7 +220,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
                       : "Unreal"}
                 </Badge>
               )}
-              {!game.is_ue && !game.is_unity && !isAuthorCuratedGame(game) && (
+              {!game.is_ue && !game.is_unity && (
                 <Badge tone="warning">{t("card.engineUnknown")}</Badge>
               )}
               {game.is_ue && game.possible_ue && (
@@ -255,7 +240,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
         </button>
 
         <div className="flex flex-wrap gap-2 border-t border-[var(--color-border)] px-4 py-3">
-          {supportsIniPresets(game) ? (
+          {supportsIniPresets(game) && (
             <Button
               variant="ghost"
               className="!px-2 !py-1.5 text-xs text-accent"
@@ -264,16 +249,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             >
               {t("card.select")}
             </Button>
-          ) : supportsReShade(game) ? (
-            <Button
-              variant="ghost"
-              className="!px-2 !py-1.5 text-xs text-accent"
-              icon={<Palette size={14} />}
-              onClick={() => onSelectGame(game)}
-            >
-              ReShade
-            </Button>
-          ) : null}
+          )}
           {!game.config_dir && (
             <Button
               variant="secondary"
@@ -340,9 +316,6 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
             {scanSummary.unity > 0 && (
               <Badge tone="default">{t("badges.unity", { count: scanSummary.unity })}</Badge>
             )}
-            {scanSummary.author > 0 && (
-              <Badge tone="accent">{t("badges.author", { count: scanSummary.author })}</Badge>
-            )}
             {scanSummary.other > 0 && (
               <Badge tone="warning">{t("badges.other", { count: scanSummary.other })}</Badge>
             )}
@@ -391,7 +364,6 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
         </div>
       ) : ueGames.length === 0 &&
         unityGames.length === 0 &&
-        authorGames.length === 0 &&
         otherGames.length === 0 ? (
         <EmptyState
           icon={Gamepad2}
@@ -446,22 +418,6 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
               </div>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {unityGames.map(renderGameCard)}
-              </div>
-            </section>
-          )}
-
-          {authorGames.length > 0 && (
-            <section className="space-y-4 border-t border-[var(--color-border)] pt-8">
-              <div>
-                <h2 className="text-lg font-semibold text-[var(--color-text)]">
-                  {authorCuratedSectionTitle()}
-                </h2>
-                <p className="mt-1 text-sm text-muted">
-                  {t("sections.authorHint")}
-                </p>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {authorGames.map(renderGameCard)}
               </div>
             </section>
           )}

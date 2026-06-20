@@ -9,6 +9,7 @@ use crate::unity::resolve_unity_config_dir;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::time::SystemTime;
 
 const MAX_EPIC_MANIFEST_BYTES: u64 = 512 * 1024;
 
@@ -60,6 +61,38 @@ fn epic_manifest_dirs() -> Vec<PathBuf> {
         );
     }
     dirs
+}
+
+fn path_modified(path: &Path) -> Option<SystemTime> {
+    fs::metadata(path).ok().and_then(|m| m.modified().ok())
+}
+
+fn dir_max_mtime(dir: &Path) -> Option<SystemTime> {
+    let mut latest = path_modified(dir)?;
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            if let Some(t) = path_modified(&entry.path()) {
+                if t > latest {
+                    latest = t;
+                }
+            }
+        }
+    }
+    Some(latest)
+}
+
+/// Latest mtime across Epic manifest directories (for cache invalidation).
+pub fn epic_manifests_signal_mtime() -> Option<SystemTime> {
+    let mut latest: Option<SystemTime> = None;
+    for dir in epic_manifest_dirs() {
+        if let Some(t) = dir_max_mtime(&dir) {
+            latest = Some(match latest {
+                Some(l) => l.max(t),
+                None => t,
+            });
+        }
+    }
+    latest
 }
 
 fn read_epic_manifest_limited(path: &Path) -> Option<String> {
@@ -156,7 +189,6 @@ fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
         exe_name,
         is_ue,
         is_unity,
-        is_author_curated: false,
         possible_unity: unity == UnityDetectResult::Probable,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: None,

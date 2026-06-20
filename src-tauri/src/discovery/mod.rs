@@ -1,6 +1,8 @@
 mod config_index;
 mod epic;
 pub mod known_games;
+mod mtime_snapshot;
+mod registry;
 mod steam;
 mod ue_detect;
 mod ue_version;
@@ -19,8 +21,11 @@ pub use config_index::{
 };
 pub use epic::scan_epic_games;
 pub use known_games::{
-    known_app_id_for_game, known_config_dir, load_known_games, overlay_preset_for_game,
-    platform_hints_for_game,
+    known_app_id_for_game, known_config_dir, load_known_games, platform_hints_for_game,
+};
+pub use registry::{
+    cached_scan_all_games, find_game_by_id, force_refresh_scan_all_games,
+    invalidate_game_scan_cache,
 };
 pub use steam::scan_steam_games;
 pub use ue_detect::{detect_unreal_engine, find_executables, is_non_game_install, UeDetectResult};
@@ -64,7 +69,6 @@ pub fn merge_game_profile(target: &mut GameProfile, other: &GameProfile) {
     merge_saved_cover(target, other);
     target.is_ue = target.is_ue || other.is_ue;
     target.is_unity = target.is_unity || other.is_unity;
-    target.is_author_curated = target.is_author_curated || other.is_author_curated;
     if !target.possible_ue {
         target.possible_ue = other.possible_ue;
     }
@@ -182,22 +186,19 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
         ));
     }
 
-    let is_forza = crate::forza::is_forza_install(&path);
     let unity = detect_unity_engine(&path);
-    let is_unity = !is_forza && unity != UnityDetectResult::NotUnity;
+    let is_unity = unity != UnityDetectResult::NotUnity;
     let ue = detect_unreal_engine(&path);
-    let is_ue = !is_forza && !is_unity && ue != UeDetectResult::NotUe;
+    let is_ue = !is_unity && ue != UeDetectResult::NotUe;
 
-    if !is_forza && !is_unity && !is_ue {
+    if !is_unity && !is_ue {
         return Err(crate::i18n::t(
-            "Папка не похожа на Unreal Engine, Unity или Forza Horizon 6 (нет Shipping.exe, *_Data, forzahorizon6.exe и т.д.)",
-            "Folder does not look like Unreal Engine, Unity, or Forza Horizon 6 (no Shipping.exe, *_Data, forzahorizon6.exe, etc.)",
+            "Папка не похожа на Unreal Engine или Unity (нет Shipping.exe, *_Data и т.д.)",
+            "Folder does not look like Unreal Engine or Unity (no Shipping.exe, *_Data, etc.)",
         ));
     }
 
-    let config_dir = if is_forza {
-        crate::forza::resolve_forza_config_dir(None)
-    } else if is_unity {
+    let config_dir = if is_unity {
         crate::unity::resolve_unity_config_dir(&path, None, Some(display_name), None)
     } else {
         resolve_config_dir(&path, None, Some(display_name), None)
@@ -213,15 +214,12 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
         exe_name: None,
         is_ue,
         is_unity,
-        is_author_curated: is_forza,
         possible_unity: unity == UnityDetectResult::Probable,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: None,
         custom_cover: None,
         build_id: None,
-        engine_family: if is_forza {
-            "forza".to_string()
-        } else if is_unity {
+        engine_family: if is_unity {
             "unity".to_string()
         } else {
             "unknown".to_string()
@@ -241,27 +239,7 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
                 .map(str::to_string)
         });
     let known = load_known_games();
-    let known_forza = resolved_app_id
-        .as_ref()
-        .and_then(|id| known.get(id))
-        .and_then(|e| e.engine_family.as_deref())
-        == Some("forza");
-    let is_forza = known_forza || crate::forza::is_forza_install(&install);
-
-    if is_forza {
-        profile.is_ue = false;
-        profile.is_unity = false;
-        profile.is_author_curated = true;
-        profile.possible_ue = false;
-        profile.possible_unity = false;
-        profile.engine_family = "forza".to_string();
-        return;
-    }
-
     if let Some(app_id) = resolved_app_id.as_deref() {
-        if crate::discovery::known_games::is_author_curated_app(app_id) {
-            profile.is_author_curated = true;
-        }
         if let Some(entry) = known.get(app_id) {
             match entry.engine_family.as_deref() {
                 Some("ue4") | Some("ue5") => {
@@ -306,9 +284,7 @@ pub fn enrich_config_dir(profile: &mut GameProfile) {
         });
 
     if profile.config_dir.is_none() {
-        profile.config_dir = if profile.engine_family == "forza" {
-            crate::forza::resolve_forza_config_dir(resolved_app_id.as_deref())
-        } else if profile.is_unity {
+        profile.config_dir = if profile.is_unity {
             crate::unity::resolve_unity_config_dir(
                 &install,
                 profile.exe_name.as_deref(),
@@ -330,7 +306,7 @@ pub fn enrich_config_dir(profile: &mut GameProfile) {
 }
 
 fn reconcile_profile_config_dir(profile: &mut GameProfile) {
-    if profile.engine_family == "forza" || profile.is_unity {
+    if profile.is_unity {
         return;
     }
     let Some(ref config_dir) = profile.config_dir else {
@@ -359,7 +335,6 @@ mod tests {
             exe_name: None,
             is_ue: true,
             is_unity: false,
-            is_author_curated: false,
             possible_unity: false,
             possible_ue: false,
             cover_url: if source == "steam" {

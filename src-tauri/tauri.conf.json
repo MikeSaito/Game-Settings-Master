@@ -1,12 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Game Settings Master",
-  "version": "0.3.4",
+  "version": "1.0.0",
   "identifier": "com.mike.ue-settings-master",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build && npm run reshade:verify",
+    "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
   "app": {
@@ -20,7 +20,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: data: https://cdn.cloudflare.steamstatic.com; connect-src 'self' https://github.com https://raw.githubusercontent.com ipc: http://localhost:* http://127.0.0.1:*; style-src 'self' 'unsafe-inline'; script-src 'self'"
+      "csp": "default-src 'self'; img-src 'self' asset: data: https://cdn.cloudflare.steamstatic.com; connect-src 'self' https://github.com ipc: http://localhost:* http://127.0.0.1:*; style-src 'self' 'unsafe-inline'; script-src 'self'"
     }
   },
   "bundle": {
@@ -35,10 +35,8 @@
       "icons/icon.ico"
     ],
     "resources": {
-      "presets/": "presets/",
       "catalog/": "catalog/",
-      "games/": "games/",
-      "../vps/public/": "bundled-remote-presets/"
+      "games/": "games/"
     },
     "windows": {
       "nsis": {

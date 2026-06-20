@@ -3,7 +3,7 @@ use crate::models::GameProfile;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Clone, serde::Serialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct LaunchResult {
     pub launcher: String,
     pub detail: String,
@@ -11,18 +11,8 @@ pub struct LaunchResult {
     pub warning: Option<String>,
 }
 
-pub fn launch_game(profile: &GameProfile, skip_reshade: bool) -> Result<LaunchResult, String> {
-    // ReShade setup must NOT block game launch. If installing/removing the proxy
-    // fails (file locked, no permissions, broken proxy) — still launch the game and show
-    // a warning instead of cancelling launch entirely.
-    let warning = match crate::reshade::apply_launch_reshade_policy(profile, skip_reshade) {
-        Ok(w) => w,
-        Err(e) => Some(crate::i18n::t(
-            &format!("ReShade не подготовлен: {e}"),
-            &format!("ReShade was not prepared: {e}"),
-        )),
-    };
-    let mut result = match profile.source.as_str() {
+pub fn launch_game(profile: &GameProfile) -> Result<LaunchResult, String> {
+    match profile.source.as_str() {
         "steam" => launch_steam_profile(profile),
         "epic" => launch_epic_profile(profile),
         "manual" => launch_manual_profile(profile),
@@ -30,13 +20,7 @@ pub fn launch_game(profile: &GameProfile, skip_reshade: bool) -> Result<LaunchRe
             &format!("Запуск через магазин не поддерживается для источника «{other}»"),
             &format!("Store launch is not supported for source «{other}»"),
         )),
-    }?;
-    result.warning = match (result.warning.take(), warning) {
-        (Some(a), Some(b)) => Some(format!("{a} {b}")),
-        (Some(a), None) => Some(a),
-        (None, b) => b,
-    };
-    Ok(result)
+    }
 }
 
 fn launch_steam_profile(profile: &GameProfile) -> Result<LaunchResult, String> {
@@ -292,7 +276,6 @@ mod tests {
             exe_name: None,
             is_ue: false,
             is_unity: false,
-            is_author_curated: false,
             possible_unity: false,
             possible_ue: false,
             cover_url: None,

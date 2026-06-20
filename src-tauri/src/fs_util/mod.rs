@@ -567,10 +567,6 @@ const CONFIG_INI_FILES: [&str; 6] = [
 ];
 
 pub fn clear_config_readonly(config_dir: &Path) {
-    if crate::forza::is_forza_config_dir(config_dir) {
-        clear_readonly(&crate::forza::user_config_file(config_dir));
-        return;
-    }
     for file in CONFIG_INI_FILES {
         clear_readonly(&config_dir.join(file));
     }
@@ -584,13 +580,6 @@ pub fn ensure_config_writable(config_dir: &Path, exe_name: Option<&str>) -> Resu
     }
 
     clear_config_readonly(config_dir);
-
-    if crate::forza::is_forza_config_dir(config_dir) {
-        let path = crate::forza::user_config_file(config_dir);
-        let bytes = read_file_bytes(&path)?;
-        write_file_bytes(&path, &bytes)?;
-        return Ok(());
-    }
 
     for file in ["GameUserSettings.ini", "Engine.ini"] {
         let path = config_dir.join(file);

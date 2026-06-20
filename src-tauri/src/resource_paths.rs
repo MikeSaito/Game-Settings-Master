@@ -63,26 +63,6 @@ pub fn catalog_dir() -> PathBuf {
     resolve_subdir("catalog")
 }
 
-/// Shipped author preset catalog (`vps/public` in repo; synced from GitHub by default).
-pub fn bundled_remote_presets_dir() -> PathBuf {
-    let bundled = resource_root().join("bundled-remote-presets");
-    if bundled.join("catalog.json").is_file() {
-        return bundled;
-    }
-    let dev = compile_time_src_root()
-        .join("..")
-        .join("vps")
-        .join("public");
-    if dev.join("catalog.json").is_file() {
-        return dev;
-    }
-    bundled
-}
-
-pub fn reshade_bundle_dir() -> PathBuf {
-    presets_dir().join("reshade")
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -91,14 +71,5 @@ mod tests {
     fn compile_time_presets_dir_exists_in_workspace() {
         let dir = compile_time_src_root().join("presets");
         assert!(dir.is_dir(), "dev presets dir: {}", dir.display());
-    }
-
-    #[test]
-    fn reshade_bundle_has_bin_dir_in_workspace() {
-        let bin = compile_time_src_root()
-            .join("presets")
-            .join("reshade")
-            .join("bin");
-        assert!(bin.is_dir(), "reshade bin: {}", bin.display());
     }
 }

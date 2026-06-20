@@ -1,6 +1,8 @@
 import { Monitor } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { supportsIniPresets, supportsReShade } from "../../lib/gameEngine";
+import { Link } from "react-router-dom";
+import { supportsIniPresets } from "../../lib/gameEngine";
+import { libraryPath } from "../../lib/routes";
 import type { AppTab, GameProfile } from "../../lib/types";
 import { cn } from "../../lib/cn";
 import { GameCover } from "../GameCover";
@@ -9,16 +11,14 @@ import { LanguageToggle } from "./LanguageToggle";
 
 interface Props {
   active: AppTab;
-  onChange: (tab: AppTab) => void;
   selectedGame: GameProfile | null;
-  onGoLibrary: () => void;
 }
 
 const tabs: { id: AppTab; icon: typeof Monitor }[] = [
   { id: "library", icon: Monitor },
 ];
 
-export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) {
+export function Sidebar({ active, selectedGame }: Props) {
   const { t } = useTranslation("sidebar");
   return (
     <aside className="surface-panel flex w-[252px] shrink-0 flex-col border-r">
@@ -35,7 +35,7 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
             <div className="truncate text-sm font-semibold text-[var(--color-text)]">
               Game Settings Master
             </div>
-            <div className="mt-0.5 text-xs text-muted">UE · Unity · ReShade</div>
+            <div className="mt-0.5 text-xs text-muted">UE · Unity</div>
           </div>
         </div>
       </div>
@@ -46,10 +46,9 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
           const label = t(`tabs.${id}.label`);
           const desc = t(`tabs.${id}.desc`);
           return (
-            <button
+            <Link
               key={id}
-              type="button"
-              onClick={() => onChange(id)}
+              to={libraryPath()}
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition",
                 isActive
@@ -71,7 +70,7 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
                 <span className="block text-sm font-medium">{label}</span>
                 <span className="block text-xs text-muted">{desc}</span>
               </span>
-            </button>
+            </Link>
           );
         })}
       </nav>
@@ -79,10 +78,9 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
       <div className="space-y-3 border-t border-[var(--color-border)] p-3">
         <LanguageToggle />
         {selectedGame ? (
-          <button
-            type="button"
-            onClick={onGoLibrary}
-            className="w-full overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-card)] text-left transition hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-hover)]"
+          <Link
+            to={libraryPath()}
+            className="block w-full overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-card)] text-left transition hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-hover)]"
           >
             <GameCover game={selectedGame} aspect="sidebar" className="rounded-none rounded-t-lg" />
             <div className="p-3">
@@ -95,14 +93,12 @@ export function Sidebar({ active, onChange, selectedGame, onGoLibrary }: Props) 
               <div className="mt-2">
                 {supportsIniPresets(selectedGame) ? (
                   <Badge tone="success">{t("badge.configOk")}</Badge>
-                ) : supportsReShade(selectedGame) ? (
-                  <Badge tone="accent">ReShade</Badge>
                 ) : (
-                  <Badge tone="warning">{t("badge.needInstallDir")}</Badge>
+                  <Badge tone="warning">{t("badge.needConfig")}</Badge>
                 )}
               </div>
             </div>
-          </button>
+          </Link>
         ) : (
           <div className="rounded-lg border border-dashed border-[var(--color-border)] p-3 text-center text-sm text-muted">
             {t("pickGame")}
