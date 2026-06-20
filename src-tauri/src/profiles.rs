@@ -15,6 +15,9 @@ fn is_disposable_install_path(path: &Path) -> bool {
 
 /// Profiles saved by unit tests (cargo test) or with a dead install_dir.
 pub fn is_stale_saved_profile(profile: &GameProfile) -> bool {
+    if profile.engine_family.eq_ignore_ascii_case("unity") {
+        return true;
+    }
     if profile.id.starts_with("ipc-security-") {
         return true;
     }
@@ -68,7 +71,11 @@ pub fn validate_profile_paths(profile: &GameProfile) -> Result<(), String> {
         ));
     }
 
-    if let Some(config_dir) = profile.config_dir.as_deref().filter(|s| !s.trim().is_empty()) {
+    if let Some(config_dir) = profile
+        .config_dir
+        .as_deref()
+        .filter(|s| !s.trim().is_empty())
+    {
         crate::ini::paths::validate_config_dir(config_dir)?;
     }
     if let Some(exe_name) = profile.exe_name.as_deref().filter(|s| !s.trim().is_empty()) {
@@ -241,6 +248,48 @@ fn validate_override_payload(override_def: &GameOverride) -> Result<(), String> 
             ));
         }
     }
+    for (filename, sections) in &override_def.files {
+        for (section, entries) in sections {
+            if !crate::fs_util::is_safe_ini_section_name(section) {
+                return Err(crate::i18n::t(
+                    &format!("Недопустимая INI-секция в override {filename}: {section}"),
+                    &format!("Invalid INI section in override {filename}: {section}"),
+                ));
+            }
+            for (key, value) in entries {
+                if !crate::fs_util::is_safe_ini_key_name(key) {
+                    return Err(crate::i18n::t(
+                        &format!("Недопустимый INI-ключ в override {filename}: {key}"),
+                        &format!("Invalid INI key in override {filename}: {key}"),
+                    ));
+                }
+                if !crate::fs_util::is_safe_ini_value(value) {
+                    return Err(crate::i18n::t(
+                        &format!("Недопустимое INI-значение для {key}"),
+                        &format!("Invalid INI value for {key}"),
+                    ));
+                }
+            }
+        }
+    }
+    for (filename, sections) in &override_def.removals {
+        for (section, keys) in sections {
+            if !crate::fs_util::is_safe_ini_section_name(section) {
+                return Err(crate::i18n::t(
+                    &format!("Недопустимая INI-секция в removals {filename}: {section}"),
+                    &format!("Invalid INI section in removals {filename}: {section}"),
+                ));
+            }
+            for key in keys {
+                if !crate::fs_util::is_safe_ini_key_name(key) {
+                    return Err(crate::i18n::t(
+                        &format!("Недопустимый INI-ключ в removals {filename}: {key}"),
+                        &format!("Invalid INI key in removals {filename}: {key}"),
+                    ));
+                }
+            }
+        }
+    }
     Ok(())
 }
 
@@ -270,8 +319,8 @@ pub fn remove_profile(id: &str) -> Result<(), String> {
     overrides.retain(|o| o.game_id != id);
     if overrides.len() != before {
         let opath = overrides_path()?;
-        let ocontent =
-            serde_json::to_string_pretty(&SavedOverrides { overrides }).map_err(|e| e.to_string())?;
+        let ocontent = serde_json::to_string_pretty(&SavedOverrides { overrides })
+            .map_err(|e| e.to_string())?;
         write_json_atomic(&opath, &ocontent)?;
     }
     Ok(())
@@ -367,8 +416,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: true,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: None,
             custom_cover: None,
@@ -389,8 +436,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: true,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: None,
             custom_cover: None,
@@ -429,8 +474,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: true,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: None,
             custom_cover: None,
@@ -462,8 +505,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: true,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: None,
             custom_cover: None,
@@ -472,5 +513,25 @@ mod tests {
             engine_version: None,
         };
         assert!(is_stale_saved_profile(&profile));
+    }
+
+    #[test]
+    fn override_rejects_ini_injection_payload() {
+        let override_def = GameOverride {
+            game_id: "steam-1962700".to_string(),
+            name: "bad".to_string(),
+            files: std::collections::HashMap::from([(
+                "Engine.ini".to_string(),
+                std::collections::HashMap::from([(
+                    "SystemSettings".to_string(),
+                    std::collections::HashMap::from([(
+                        "r.Safe".to_string(),
+                        "1\nInjected=True".to_string(),
+                    )]),
+                )]),
+            )]),
+            removals: std::collections::HashMap::new(),
+        };
+        assert!(validate_override_payload(&override_def).is_err());
     }
 }

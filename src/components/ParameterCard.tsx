@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { GameParameter } from "../lib/types";
 import { cn } from "../lib/cn";
 import {
+  clampParamValue,
   formatParamDisplayValue,
   isUeSentinelValue,
   readOnlyReason,
@@ -171,6 +172,11 @@ export const ParameterCard = memo(function ParameterCard({
         ? { value: param.default_value, label: t("reset.default") }
         : null;
 
+  const emitChange = (next: string) => {
+    if (!onChange) return;
+    onChange(clampParamValue(next, param));
+  };
+
   const valueControl = canEdit ? (
     controlKind === "toggle" ? (
       (() => {
@@ -185,7 +191,7 @@ export const ParameterCard = memo(function ParameterCard({
           >
             <Toggle
               checked={checked}
-              onChange={(next) => onChange(next ? states.on : states.off)}
+              onChange={(next) => emitChange(next ? states.on : states.off)}
             />
             <span className="font-mono text-xs text-muted">{param.value}</span>
           </div>
@@ -210,7 +216,7 @@ export const ParameterCard = memo(function ParameterCard({
         return (
           <select
             value={known ? param.value : opts[0]?.value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => emitChange(e.target.value)}
             className={cn(inputClass, "w-full")}
             onClick={(e) => e.stopPropagation()}
           >
@@ -248,7 +254,7 @@ export const ParameterCard = memo(function ParameterCard({
                 max={max}
                 step={step}
                 value={safeCurrent}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => emitChange(e.target.value)}
                 className="h-2 flex-1 cursor-pointer accent-[var(--color-accent)]"
               />
               <input
@@ -257,7 +263,7 @@ export const ParameterCard = memo(function ParameterCard({
                 max={param.max ?? undefined}
                 step={step}
                 value={param.value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => emitChange(e.target.value)}
                 className={cn(inputClass, "w-20 shrink-0")}
               />
             </div>
@@ -275,14 +281,14 @@ export const ParameterCard = memo(function ParameterCard({
         max={param.max ?? undefined}
         step={param.step ?? (param.value_type === "float" ? "any" : "1")}
         value={param.value}
-        onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => emitChange(e.target.value)}
         className={cn(inputClass, "w-full")}
         onClick={(e) => e.stopPropagation()}
       />
     ) : (
       <input
         value={param.value}
-        onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => emitChange(e.target.value)}
         className={cn(inputClass, "w-full")}
         onClick={(e) => e.stopPropagation()}
       />
@@ -368,6 +374,14 @@ export const ParameterCard = memo(function ParameterCard({
                 <span className="font-medium text-muted">{t("recommendedValues")}</span>
                 {param.value_hint}
               </p>
+            )}
+            {param.tier_hint && (
+              <details className="mt-1.5 text-sm text-muted">
+                <summary className="cursor-pointer font-medium text-[var(--color-text-secondary)]">
+                  {t("tierHintLabel")}
+                </summary>
+                <p className="mt-1 leading-relaxed">{param.tier_hint}</p>
+              </details>
             )}
             {param.in_game_label && (
               <p className="mt-1.5 text-sm text-muted">

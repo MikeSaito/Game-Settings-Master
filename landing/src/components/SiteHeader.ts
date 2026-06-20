@@ -16,16 +16,33 @@ export function createSiteHeader(t: LocaleStrings): HTMLElement {
     </a>
     <nav class="site-header__nav" aria-label="${t.nav.aria}">
       <a href="${homeHref}#features">${t.nav.features}</a>
+      <a href="${homeHref}#how-it-works">${t.nav.howItWorks}</a>
+      <a href="${homeHref}#catalog">${t.nav.catalog}</a>
+      <a href="${homeHref}#faq">${t.nav.faq}</a>
       <a href="${homeHref}#download">${t.nav.download}</a>
       <a href="${otherHref}" class="site-header__locale" hreflang="${t.lang === "en" ? "ru" : "en"}">${otherLabel}</a>
     </nav>
   `;
 
-  const onScroll = () => {
-    header.classList.toggle("is-scrolled", window.scrollY > 50);
+  let ticking = false;
+  let isScrolled = false;
+
+  const updateScrollState = () => {
+    ticking = false;
+    const nextScrolled = window.scrollY > 50;
+    if (nextScrolled === isScrolled) return;
+    isScrolled = nextScrolled;
+    header.classList.toggle("is-scrolled", isScrolled);
   };
+
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateScrollState);
+  };
+
   window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  updateScrollState();
 
   return header;
 }

@@ -27,7 +27,9 @@ pub fn patch_ini_text(
         })
         .collect();
 
-    if content.ends_with('\n') && (lines.is_empty() || !lines.last().map(|l| l.is_empty()).unwrap_or(false)) {
+    if content.ends_with('\n')
+        && (lines.is_empty() || !lines.last().map(|l| l.is_empty()).unwrap_or(false))
+    {
         // split_inclusive already handled; trailing empty only if file ended with newline on last empty line
     }
 
@@ -132,9 +134,7 @@ fn scan_sections(lines: &[String]) -> Vec<SectionSpan> {
 }
 
 fn find_section<'a>(sections: &'a [SectionSpan], name: &str) -> Option<&'a SectionSpan> {
-    sections
-        .iter()
-        .find(|s| s.name.eq_ignore_ascii_case(name))
+    sections.iter().find(|s| s.name.eq_ignore_ascii_case(name))
 }
 
 fn line_key(line: &str) -> Option<&str> {
@@ -206,10 +206,7 @@ mod tests {
         let mut updates = IndexMap::new();
         let mut local = IndexMap::new();
         local.insert("GammaValue".to_string(), "1.8".to_string());
-        updates.insert(
-            "/Script/Subnautica2.SN2SettingsLocal".to_string(),
-            local,
-        );
+        updates.insert("/Script/Subnautica2.SN2SettingsLocal".to_string(), local);
 
         let patched = patch_ini_text(SN2_GUS_SAMPLE, &updates, &HashMap::new());
         assert!(patched.contains("\r\n\r\n\r\nGammaValue=1.8"), "{patched}");
@@ -221,10 +218,7 @@ mod tests {
         let mut updates = IndexMap::new();
         let mut s2 = IndexMap::new();
         s2.insert("DLSSMode".to_string(), "Quality".to_string());
-        updates.insert(
-            "/script/subnautica2.s2gameusersettings".to_string(),
-            s2,
-        );
+        updates.insert("/script/subnautica2.s2gameusersettings".to_string(), s2);
 
         let patched = patch_ini_text(SN2_GUS_SAMPLE, &updates, &HashMap::new());
         assert!(patched.contains("DLSSMode=Quality"), "{patched}");
@@ -237,10 +231,7 @@ mod tests {
         let mut updates = IndexMap::new();
         let mut s2 = IndexMap::new();
         s2.insert("UpscalingFrameGeneration".to_string(), "1".to_string());
-        updates.insert(
-            "/script/subnautica2.s2gameusersettings".to_string(),
-            s2,
-        );
+        updates.insert("/script/subnautica2.s2gameusersettings".to_string(), s2);
         let expanded = expand_mirror_key_updates(&ini, &updates);
         let patched = patch_ini_text(SN2_GUS_SAMPLE, &expanded, &HashMap::new());
 
@@ -256,10 +247,7 @@ mod tests {
         let mut updates = IndexMap::new();
         let mut s2 = IndexMap::new();
         s2.insert("FieldOfView".to_string(), "95".to_string());
-        updates.insert(
-            "/script/subnautica2.s2gameusersettings".to_string(),
-            s2,
-        );
+        updates.insert("/script/subnautica2.s2gameusersettings".to_string(), s2);
 
         let patched = patch_ini_text(SN2_GUS_SAMPLE, &updates, &HashMap::new());
         assert!(patched.contains("FieldOfView=95"), "{patched}");
@@ -282,10 +270,7 @@ mod tests {
         let mut updates = IndexMap::new();
         let mut local = IndexMap::new();
         local.insert("GammaValue".to_string(), "2.200000".to_string());
-        updates.insert(
-            "/Script/Subnautica2.SN2SettingsLocal".to_string(),
-            local,
-        );
+        updates.insert("/Script/Subnautica2.SN2SettingsLocal".to_string(), local);
         let patched = patch_ini_text(&before, &updates, &HashMap::new());
 
         assert!(

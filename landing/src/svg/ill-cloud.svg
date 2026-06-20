@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200" fill="none">
-  <path d="M 88 88 C 72 88 64 100 68 112 C 56 116 52 128 60 140 C 68 152 84 156 100 148 L 180 148 C 200 148 212 132 208 118 C 212 102 198 88 180 88 C 176 72 154 64 138 72 C 128 64 108 64 100 76 C 92 80 88 84 88 88 Z" fill="rgba(91,141,239,0.1)" stroke="#5b8def" stroke-width="1.5"/>
-  <path d="M 140 108 L 140 128" stroke="#5b8def" stroke-width="2" stroke-linecap="round"/>
-  <path d="M 134 122 L 140 128 L 146 122" stroke="#5b8def" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <rect x="100" y="132" width="80" height="36" rx="8" fill="#1a1f28" stroke="#434b58"/>
-  <text x="140" y="154" fill="#9aa3b2" font-size="8" font-family="JetBrains Mono, monospace" text-anchor="middle">catalog.json</text>
-  <circle cx="198" cy="96" r="3.5" fill="#5b8def" opacity="0.55"/>
-  <circle cx="210" cy="104" r="2.5" fill="#5b8def" opacity="0.4"/>
-  <circle cx="188" cy="108" r="2" fill="#5b8def" opacity="0.35"/>
+  <path d="M 88 88 C 72 88 64 100 68 112 C 56 116 52 128 60 140 C 68 152 84 156 100 148 L 180 148 C 200 148 212 132 208 118 C 212 102 198 88 180 88 C 176 72 154 64 138 72 C 128 64 108 64 100 76 C 92 80 88 84 88 88 Z" fill="rgba(217,154,43,0.1)" stroke="#d99a2b" stroke-width="1.5"/>
+  <path d="M 140 108 L 140 128" stroke="#efb347" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 134 122 L 140 128 L 146 122" stroke="#efb347" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <rect x="100" y="132" width="80" height="36" rx="8" fill="#1a1915" stroke="#4a4436"/>
+  <text x="140" y="154" fill="#cbc4b4" font-size="8" font-family="IBM Plex Mono, monospace" text-anchor="middle">catalog.json</text>
+  <circle cx="198" cy="96" r="3.5" fill="#efb347" opacity="0.58"/>
+  <circle cx="210" cy="104" r="2.5" fill="#d99a2b" opacity="0.46"/>
+  <circle cx="188" cy="108" r="2" fill="#f1c15f" opacity="0.42"/>
 </svg>

@@ -5,6 +5,7 @@ import { currentLanguage } from "../i18n";
 import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { useWorkspacePreset } from "../context/GameWorkspaceContext";
 import { useBackgroundSafeEnabled } from "./useBackgroundSafeEnabled";
+import { useAppSettings } from "./useAppSettings";
 import { useGameRunning } from "./useGameRunning";
 import { useRunningExeName } from "./useRunningExeName";
 import {
@@ -19,9 +20,24 @@ import {
 } from "../lib/api";
 import {
   buildCategoryList,
+  ALL_CATEGORY,
   countEngineStats,
   filterParamsByCategoryAndSearch,
+  normalizeParameterCategories,
 } from "../lib/advancedEditorFilters";
+import {
+  type EditorPanel,
+  type EditorFilterMode,
+  defaultFilterMode,
+  filterParamsByMode,
+  filterParamsByPanel,
+  panelFromHash,
+  readStoredFilterMode,
+  readStoredPanel,
+  syncPanelToHash,
+  writeStoredFilterMode,
+  writeStoredPanel,
+} from "../lib/editorPanels";
 import { isParamVisible } from "../lib/gpuCompat";
 import { applyParamDependencies } from "../lib/paramDependencies";
 import { buildCustomChanges } from "../lib/buildCustomChanges";
@@ -35,15 +51,6 @@ import {
 import { formatInvokeError } from "../lib/errors";
 import type { GameParameter, GameProfile } from "../lib/types";
 
-const UNITY_EDITABLE = new Set([
-  "Graphics",
-  "Display",
-  "API",
-  "Jobs",
-  "Startup",
-  "System",
-]);
-
 const EDITABLE_FOR_APPLY = new Set([
   "Scalability",
   "Rendering",
@@ -51,15 +58,78 @@ const EDITABLE_FOR_APPLY = new Set([
   "Textures",
   "PostProcess",
   "Display",
+  "Window",
   "GameSpecific",
   "Audio",
+  "Performance",
+  "Other",
 ]);
+
+function countPendingChanges(
+  files: Record<string, Record<string, Record<string, string>>>,
+  removals: Record<string, Record<string, string[]>>,
+  allParams: GameParameter[],
+) {
+  const breakdown = { sg: 0, display: 0, engine: 0 };
+  const pendingKeys = new Set<string>();
+  let total = 0;
+
+  for (const [file, sections] of Object.entries(files)) {
+    for (const entries of Object.values(sections)) {
+      for (const key of Object.keys(entries)) {
+        pendingKeys.add(key);
+        total += 1;
+        if (key.startsWith("sg.")) breakdown.sg += 1;
+        else if (file === "GameUserSettings.ini") {
+          breakdown.display += 1;
+        } else {
+          breakdown.engine += 1;
+        }
+      }
+    }
+  }
+
+  for (const [file, sections] of Object.entries(removals)) {
+    for (const keys of Object.values(sections)) {
+      for (const key of keys) {
+        pendingKeys.add(key);
+        total += 1;
+        if (key.startsWith("sg.")) breakdown.sg += 1;
+        else if (file === "GameUserSettings.ini") breakdown.display += 1;
+        else breakdown.engine += 1;
+      }
+    }
+  }
+
+  const lowerKeys = [...pendingKeys].map((key) => key.toLowerCase());
+  const hasSgShadow = lowerKeys.includes("sg.shadowquality");
+  const shadowRKeys = lowerKeys.filter((key) => key.startsWith("r.shadow"));
+  const conflictKeys = new Set<string>();
+  if (hasSgShadow && shadowRKeys.length > 0) {
+    conflictKeys.add("sg.shadowquality");
+    for (const key of shadowRKeys) conflictKeys.add(key);
+  }
+  if (!hasSgShadow && shadowRKeys.length > 0) {
+    const activeSgShadow = allParams.some(
+      (param) =>
+        param.key.toLowerCase() === "sg.shadowquality" &&
+        param.file === "GameUserSettings.ini" &&
+        param.present_in_ini &&
+        param.value.trim() !== "",
+    );
+    if (activeSgShadow) {
+      for (const key of shadowRKeys) conflictKeys.add(key);
+    }
+  }
+
+  return { total, breakdown, conflictKeys };
+}
 
 export function useAdvancedEditorState(game: GameProfile | null) {
   const { t } = useTranslation("advanced");
+  const { settings } = useAppSettings();
   const queryClient = useQueryClient();
   const configDir = game?.config_dir ?? "";
-  const isUnity = game?.is_unity || game?.engine_family === "unity";
   const runningExeName = useRunningExeName(game);
   const gameRunning = useGameRunning(runningExeName);
   const queriesEnabled = useBackgroundSafeEnabled(!!configDir && !!game?.id);
@@ -71,29 +141,107 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   const paramsDirtyRef = useRef(false);
   const activeGameIdRef = useRef(game?.id);
   activeGameIdRef.current = game?.id;
-  const [overrideName, setOverrideName] = useState(t("defaultPresetName"));
+  const defaultOverrideName = t("defaultPresetName");
+  const overrideNameTouchedRef = useRef(false);
+  const [overrideName, setOverrideNameState] = useState(defaultOverrideName);
   const [message, setMessage] = useState<string>();
   const [applyError, setApplyError] = useState<string>();
-  const [activeCategory, setActiveCategory] = useState<string>(
-    isUnity ? "Graphics" : "Scalability",
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(ALL_CATEGORY);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
+  const [panel, setPanelState] = useState<EditorPanel>("basic");
+  const [filterMode, setFilterModeState] = useState<EditorFilterMode>("recommended");
+
+  useEffect(() => {
+    const handle = window.setTimeout(() => setDebouncedSearch(search), 180);
+    return () => window.clearTimeout(handle);
+  }, [search]);
+
+  useEffect(() => {
+    if (!game?.id) return;
+    const fromHash = panelFromHash();
+    const stored = readStoredPanel(game.id);
+    const nextPanel = fromHash ?? stored ?? settings.defaultEditorPanel;
+    setPanelState(nextPanel);
+    const storedFilter = readStoredFilterMode(game.id, nextPanel);
+    setFilterModeState(storedFilter ?? defaultFilterMode(nextPanel));
+  }, [game?.id, settings.defaultEditorPanel]);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const fromHash = panelFromHash();
+      if (!fromHash) return;
+      setPanelState(fromHash);
+      if (game?.id) {
+        writeStoredPanel(game.id, fromHash);
+        const storedFilter = readStoredFilterMode(game.id, fromHash);
+        setFilterModeState(storedFilter ?? defaultFilterMode(fromHash));
+      }
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, [game?.id]);
+
+  const setPanel = useCallback(
+    (next: EditorPanel) => {
+      setPanelState(next);
+      if (game?.id) {
+        writeStoredPanel(game.id, next);
+        syncPanelToHash(next);
+        const storedFilter = readStoredFilterMode(game.id, next);
+        setFilterModeState(storedFilter ?? defaultFilterMode(next));
+      } else {
+        setFilterModeState(defaultFilterMode(next));
+      }
+      setActiveCategory(ALL_CATEGORY);
+    },
+    [game?.id],
+  );
+
+  const setFilterMode = useCallback(
+    (mode: EditorFilterMode) => {
+      setFilterModeState(mode);
+      if (game?.id) writeStoredFilterMode(game.id, panel, mode);
+    },
+    [game?.id, panel],
+  );
 
   useEffect(() => {
     setMessage(undefined);
     setApplyError(undefined);
     paramsDirtyRef.current = false;
+    overrideNameTouchedRef.current = false;
+    setOverrideNameState(defaultOverrideName);
   }, [game?.id]);
 
+  useEffect(() => {
+    if (!overrideNameTouchedRef.current) {
+      setOverrideNameState(defaultOverrideName);
+    }
+  }, [defaultOverrideName]);
+
+  const setOverrideName = useCallback((value: string) => {
+    overrideNameTouchedRef.current = true;
+    setOverrideNameState(value);
+  }, []);
+
   const { data: parameters = [], isLoading, isFetching } = useQuery({
-    queryKey: ["parameters", configDir, game?.id, game?.engine_family, currentLanguage()],
+    queryKey: [
+      "parameters",
+      configDir,
+      game?.id,
+      game?.engine_family,
+      game?.engine_version,
+      currentLanguage(),
+    ],
     queryFn: () =>
       getGameParameters(
         configDir,
         game?.id,
         game?.install_dir,
         game?.engine_family,
+        game?.engine_version,
       ),
     enabled: queriesEnabled,
     staleTime: 5 * 60_000,
@@ -103,6 +251,10 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   });
 
   const parametersLoading = (isLoading || isFetching) && parameters.length === 0;
+  const normalizedParameters = useMemo(
+    () => normalizeParameterCategories(parameters),
+    [parameters],
+  );
 
   const { data: limits } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir, game?.id],
@@ -159,65 +311,91 @@ export function useAdvancedEditorState(game: GameProfile | null) {
 
   useEffect(() => {
     if (paramsDirtyRef.current) return;
-    setParams(parameters);
-    setEngineEnabled(initialEngineEnabledKeys(parameters));
-    if (isUnity) {
-      setActiveCategory("Graphics");
-    }
-  }, [parameters, isUnity]);
+    setParams(normalizedParameters);
+    setEngineEnabled(initialEngineEnabledKeys(normalizedParameters));
+  }, [normalizedParameters]);
+
+  const panelParams = useMemo(
+    () => filterParamsByPanel(visibleParams, panel),
+    [visibleParams, panel],
+  );
+
+  const modeFilteredParams = useMemo(
+    () => filterParamsByMode(panelParams, filterMode, panel, debouncedSearch),
+    [panelParams, filterMode, panel, debouncedSearch],
+  );
 
   const categories = useMemo(
-    () => buildCategoryList(visibleParams),
-    [visibleParams],
+    () => buildCategoryList(modeFilteredParams),
+    [modeFilteredParams],
   );
 
   useEffect(() => {
     if (categories.length && !categories.some((c) => c.cat === activeCategory)) {
       setActiveCategory(categories[0].cat);
     }
-  }, [categories, activeCategory]);
+  }, [categories, activeCategory, panel]);
 
   const filteredParams = useMemo(
     () =>
       filterParamsByCategoryAndSearch(
-        visibleParams,
+        modeFilteredParams,
         activeCategory,
-        search,
+        debouncedSearch,
         engineEnabled,
       ),
-    [visibleParams, activeCategory, search, engineEnabled],
+    [modeFilteredParams, activeCategory, debouncedSearch, engineEnabled],
   );
 
   const engineStats = useMemo(
-    () => countEngineStats(visibleParams, engineEnabled),
-    [visibleParams, engineEnabled],
+    () => countEngineStats(panelParams, engineEnabled),
+    [panelParams, engineEnabled],
   );
 
   const catalogStats = useMemo(() => {
-    const known = visibleParams.filter((p) => p.known).length;
+    const known = panelParams.filter((p) => p.known).length;
     return {
       known,
-      unknown: visibleParams.length - known,
-      total: visibleParams.length,
+      unknown: panelParams.length - known,
+      total: panelParams.length,
     };
-  }, [visibleParams]);
+  }, [panelParams]);
 
-  const editableCategories = useMemo(() => {
-    const base = isUnity ? UNITY_EDITABLE : EDITABLE_FOR_APPLY;
-    return resolveEditableCategories(parameters, base);
-  }, [parameters, isUnity]);
+  const editableCategories = useMemo(
+    () => resolveEditableCategories(parameters, EDITABLE_FOR_APPLY),
+    [parameters],
+  );
+
+  const pendingSummary = useMemo(() => {
+    const { files, removals } = buildCustomChanges(
+      filterParamsByPanel(params, panel),
+      parameters,
+      gpu,
+      engineEnabled,
+      editableCategories,
+    );
+    return countPendingChanges(files, removals, params);
+  }, [params, panel, parameters, gpu, engineEnabled, editableCategories]);
+
+  const pendingChangesCount = pendingSummary.total;
 
   const buildChanges = () =>
-    buildCustomChanges(params, parameters, gpu, engineEnabled, editableCategories);
+    buildCustomChanges(
+      filterParamsByPanel(params, panel),
+      parameters,
+      gpu,
+      engineEnabled,
+      editableCategories,
+    );
 
-  const updateParam = (key: string, section: string, file: string, value: string) => {
+  const updateParam = useCallback((key: string, section: string, file: string, value: string) => {
     paramsDirtyRef.current = true;
     setParams((prev) =>
       applyParamDependencies(prev, { key, section, file, value }, gpu),
     );
-  };
+  }, [gpu]);
 
-  const toggleEngineParam = (p: GameParameter, enabled: boolean) => {
+  const toggleEngineParam = useCallback((p: GameParameter, enabled: boolean) => {
     paramsDirtyRef.current = true;
     const id = engineParamId(p);
     setEngineEnabled((prev) => {
@@ -229,6 +407,14 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     if (enabled && !p.value.trim()) {
       updateParam(p.key, p.section, p.file, defaultValueFor(p));
     }
+  }, [updateParam]);
+
+  const discardChanges = () => {
+    paramsDirtyRef.current = false;
+    setParams(parameters);
+    setEngineEnabled(initialEngineEnabledKeys(parameters));
+    setApplyError(undefined);
+    setMessage(undefined);
   };
 
   const applyCustomMutation = useMutation({
@@ -239,9 +425,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
         Object.keys(files).length === 0 &&
         Object.keys(removals).length === 0
       ) {
-        throw new Error(
-          isUnity ? t("errors.noChangesUnity") : t("errors.noChanges"),
-        );
+        throw new Error(t("errors.noChanges"));
       }
       const result = await applyCustom(
         snapshot.configDir,
@@ -331,7 +515,6 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   return {
     game,
     configDir,
-    isUnity,
     runningExeName,
     gameRunning,
     gpu,
@@ -344,20 +527,28 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     search,
     setSearch,
     engineEnabled,
+    panel,
+    setPanel,
+    filterMode,
+    setFilterMode,
     categories,
     filteredParams,
     engineStats,
     catalogStats,
+    pendingChangesCount,
+    pendingChangesBreakdown: pendingSummary.breakdown,
+    pendingConflictKeys: pendingSummary.conflictKeys,
     parametersLoading,
     overrideName,
     setOverrideName,
     updateParam,
     toggleEngineParam,
+    discardChanges,
     applyCustomMutation,
     saveOverrideMutation,
     applyOverrideMutation,
     deleteOverrideMutation,
-    showEngineIniHint: ENGINE_CATEGORIES.has(activeCategory),
+    showEngineIniHint: panel === "advanced" && ENGINE_CATEGORIES.has(activeCategory),
   };
 }
 

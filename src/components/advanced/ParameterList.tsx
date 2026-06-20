@@ -1,11 +1,11 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Search } from "lucide-react";
-import { useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ParameterCard } from "../ParameterCard";
-import { EmptyState } from "../ui/EmptyState";
+import { ParameterRow } from "./ParameterRow";
+import { EmptyState } from "../ds/Feedback";
 import { paramRowKey } from "../../lib/advancedEditorFilters";
-import { filterSelectOptions } from "../../lib/gpuCompat";
+import { getParamSelectOptions } from "../../lib/paramSelectOptions";
 import { getDependencyLabel } from "../../lib/paramDependencies";
 import {
   isEngineEnabled,
@@ -13,7 +13,7 @@ import {
 } from "../../lib/engineParams";
 import type { GpuCapabilities, GameParameter } from "../../lib/types";
 
-const ROW_ESTIMATE_PX = 120;
+const ROW_ESTIMATE_PX = 74;
 
 interface Props {
   filteredParams: GameParameter[];
@@ -21,9 +21,69 @@ interface Props {
   parametersLoading: boolean;
   gpu: GpuCapabilities | undefined;
   engineEnabled: Set<string>;
+  showEngineToggle?: boolean;
+  pendingConflictKeys?: Set<string>;
   onUpdateParam: (key: string, section: string, file: string, value: string) => void;
   onToggleEngineParam: (param: GameParameter, enabled: boolean) => void;
 }
+
+interface ParameterListRowProps {
+  param: GameParameter;
+  gpu: GpuCapabilities | undefined;
+  engineEnabled: Set<string>;
+  showEngineToggle: boolean;
+  pendingConflictKeys?: Set<string>;
+  conflictText: string;
+  onUpdateParam: (key: string, section: string, file: string, value: string) => void;
+  onToggleEngineParam: (param: GameParameter, enabled: boolean) => void;
+}
+
+const ParameterListRow = memo(function ParameterListRow({
+  param,
+  gpu,
+  engineEnabled,
+  showEngineToggle,
+  pendingConflictKeys,
+  conflictText,
+  onUpdateParam,
+  onToggleEngineParam,
+}: ParameterListRowProps) {
+  const toggleable = showEngineToggle && isEngineToggleable(param);
+  const enabled = toggleable ? isEngineEnabled(param, engineEnabled) : true;
+  const selectOptions = useMemo(
+    () => getParamSelectOptions(param, gpu),
+    [param, gpu],
+  );
+  const dependencyLabel = useMemo(
+    () => getDependencyLabel(param.key) ?? undefined,
+    [param.key],
+  );
+  const conflictLabel = pendingConflictKeys?.has(param.key.toLowerCase())
+    ? conflictText
+    : undefined;
+  const handleEngineToggle = useCallback(
+    (on: boolean) => onToggleEngineParam(param, on),
+    [onToggleEngineParam, param],
+  );
+  const handleChange = useCallback(
+    (value: string) => onUpdateParam(param.key, param.section, param.file, value),
+    [onUpdateParam, param.file, param.key, param.section],
+  );
+
+  return (
+    <ParameterRow
+      param={param}
+      editable={param.editable && enabled}
+      engineToggleable={toggleable}
+      engineEnabled={enabled}
+      selectOptions={selectOptions}
+      dependencyLabel={dependencyLabel}
+      conflictLabel={conflictLabel}
+      onEngineToggle={handleEngineToggle}
+      onChange={param.editable && enabled ? handleChange : undefined}
+    />
+  );
+});
 
 export function ParameterList({
   filteredParams,
@@ -31,25 +91,38 @@ export function ParameterList({
   parametersLoading,
   gpu,
   engineEnabled,
+  showEngineToggle = true,
+  pendingConflictKeys,
   onUpdateParam,
   onToggleEngineParam,
 }: Props) {
   const { t } = useTranslation("advanced");
   const parentRef = useRef<HTMLDivElement>(null);
+  const conflictText = t("conflict.sgEngine");
 
   const virtualizer = useVirtualizer({
     count: filteredParams.length,
     getScrollElement: () => parentRef.current,
+    getItemKey: (index) => paramRowKey(filteredParams[index]),
     estimateSize: () => ROW_ESTIMATE_PX,
     overscan: 6,
     measureElement: (el) => el.getBoundingClientRect().height,
   });
 
+  useEffect(() => {
+    if (typeof parentRef.current?.scrollTo === "function") {
+      parentRef.current.scrollTo({ top: 0 });
+    }
+    if (typeof virtualizer.scrollToIndex === "function") {
+      virtualizer.scrollToIndex(0);
+    }
+  }, [filteredParams, search, virtualizer]);
+
   if (parametersLoading) {
     return (
       <div className="flex flex-col items-center gap-3 py-16">
         <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-        <p className="text-sm text-body">{t("loadingParams")}</p>
+        <p className="text-sm text-[var(--color-text-secondary)]">{t("loadingParams")}</p>
       </div>
     );
   }
@@ -70,7 +143,7 @@ export function ParameterList({
   return (
     <div
       ref={parentRef}
-      className="max-h-[min(70vh,900px)] overflow-y-auto"
+      className="max-h-[min(720px,calc(100dvh-16rem))] min-h-[320px] overflow-y-auto rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-bg-soft)]"
       data-testid="parameter-list-scroll"
     >
       <div
@@ -81,30 +154,23 @@ export function ParameterList({
       >
         {virtualizer.getVirtualItems().map((virtualRow) => {
           const param = filteredParams[virtualRow.index];
-          const toggleable = isEngineToggleable(param);
-          const enabled = isEngineEnabled(param, engineEnabled);
           return (
             <div
               key={paramRowKey(param)}
               ref={virtualizer.measureElement}
               data-index={virtualRow.index}
-              className="absolute left-0 top-0 w-full pb-3"
+              className="absolute left-0 top-0 w-full"
               style={{ transform: `translateY(${virtualRow.start}px)` }}
             >
-              <ParameterCard
+              <ParameterListRow
                 param={param}
-                editable={param.editable && enabled}
-                engineToggleable={toggleable}
-                engineEnabled={enabled}
-                selectOptions={filterSelectOptions(param, gpu) ?? undefined}
-                dependencyLabel={getDependencyLabel(param.key) ?? undefined}
-                onEngineToggle={(on) => onToggleEngineParam(param, on)}
-                onChange={
-                  param.editable && enabled
-                    ? (value) =>
-                        onUpdateParam(param.key, param.section, param.file, value)
-                    : undefined
-                }
+                gpu={gpu}
+                engineEnabled={engineEnabled}
+                showEngineToggle={showEngineToggle}
+                pendingConflictKeys={pendingConflictKeys}
+                conflictText={conflictText}
+                onUpdateParam={onUpdateParam}
+                onToggleEngineParam={onToggleEngineParam}
               />
             </div>
           );

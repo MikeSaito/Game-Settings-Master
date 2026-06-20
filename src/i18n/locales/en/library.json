@@ -6,21 +6,20 @@
   },
   "header": {
     "title": "Game library",
-    "subtitle": "Steam · Epic · LocalAppData · manual add"
+    "subtitle": "Steam · Epic · Unreal Engine · manual add"
   },
   "badges": {
+    "total": "{{count}} total",
     "withConfig": "{{count}} with config",
     "withoutConfig": "{{count}} without config",
     "ue": "{{count}} UE",
-    "unity": "{{count}} Unity",
-    "other": "{{count}} other",
     "withCover": "{{count}} with cover"
   },
   "source": {
     "manual": "Manual"
   },
   "dialogs": {
-    "installFolder": "Select the game install folder",
+    "installFolder": "Select Unreal Engine game install folder",
     "configFolder": "Select Saved/Config/Windows folder",
     "coverFile": "Select game cover image",
     "imageFilter": "Image"
@@ -28,8 +27,10 @@
   "card": {
     "engineUnknown": "Engine unknown",
     "probablyUe": "Likely UE",
-    "probablyUnity": "Likely Unity",
+    "configOk": "Config OK",
+    "configMissing": "Config ?",
     "select": "Select",
+    "pickConfig": "Set config",
     "cover": "Cover",
     "resetCover": "Reset",
     "removeProfile": "Remove profile"
@@ -40,18 +41,20 @@
     "addManual": "Add manually"
   },
   "search": {
-    "placeholder": "Search or type a name to add manually…"
+    "placeholder": "Search or type a name to add manually…",
+    "aria": "Search games"
   },
+  "viewMode": "Library view",
+  "view": {
+    "grid": "Grid",
+    "list": "List"
+  },
+  "gamesLabel": "Games",
   "loading": "Scanning Steam, Epic, LocalAppData…",
   "empty": {
     "nothingFound": "Nothing found",
-    "noGames": "No games found",
+    "noGames": "No UE games found",
     "tryAnother": "Try another name or add a game manually.",
-    "scanOrAddPrefix": "Click Scan or Add to point at a UE or Unity install folder."
-  },
-  "sections": {
-    "unityHint": "The editor changes boot.config in the *_Data folder.",
-    "otherTitle": "Other games",
-    "otherHint": "Engine not detected — config editor unavailable. Launch from GSM still works."
+    "scanOrAddPrefix": "Click Scan or Add to point at an Unreal Engine install folder (Shipping.exe)."
   }
 }

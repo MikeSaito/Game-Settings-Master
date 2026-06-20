@@ -8,8 +8,8 @@ Copy-Item -LiteralPath $bindings -Destination $backup -Force
 
 Push-Location (Join-Path $root "src-tauri")
 try {
-    $PSNativeCommandUseErrorActionPreference = $false
-    cargo test export_typescript_bindings -- --nocapture 2>&1 | Out-Null
+    # Use cmd so cargo compile warnings on stderr never become PowerShell errors.
+    cmd /c "cargo test export_typescript_bindings -- --nocapture 1>nul 2>nul"
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 finally {

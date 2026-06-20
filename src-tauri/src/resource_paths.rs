@@ -51,10 +51,6 @@ fn resolve_subdir(name: &str) -> PathBuf {
     compile_time_src_root().join(name)
 }
 
-pub fn presets_dir() -> PathBuf {
-    resolve_subdir("presets")
-}
-
 pub fn games_dir() -> PathBuf {
     resolve_subdir("games")
 }

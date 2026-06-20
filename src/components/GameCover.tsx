@@ -34,7 +34,7 @@ export function GameCover({ game, className, aspect = "header", selected }: Prop
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-lg bg-[var(--color-bg-hover)] ring-1 ring-[var(--color-border)]",
+        "relative overflow-hidden rounded-[var(--radius-control)] bg-[var(--color-surface-hover)] ring-1 ring-[var(--color-border)]",
         aspectClass[aspect],
         selected && "ring-[var(--color-accent)]/50",
         className,
@@ -55,7 +55,7 @@ export function GameCover({ game, className, aspect = "header", selected }: Prop
           }}
         />
       ) : (
-        <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[var(--color-bg-hover)] to-[var(--color-bg-card)]">
+        <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[var(--color-surface-hover)] to-[var(--color-surface)]">
           <span className="text-2xl font-bold text-[var(--color-text-secondary)]">{letter}</span>
         </div>
       )}

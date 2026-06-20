@@ -185,9 +185,15 @@ mod tests {
             .get("/Script/Subnautica2.SN2SettingsLocal")
             .or_else(|| ini.sections.get("/Script/subnautica2.sn2settingslocal"))
             .expect("merged section");
-        assert_eq!(section.entries.get("GammaValue").map(String::as_str), Some("1.0"));
         assert_eq!(
-            section.entries.get("ResolutionScaleFixed").map(String::as_str),
+            section.entries.get("GammaValue").map(String::as_str),
+            Some("1.0")
+        );
+        assert_eq!(
+            section
+                .entries
+                .get("ResolutionScaleFixed")
+                .map(String::as_str),
             Some("0.5")
         );
     }

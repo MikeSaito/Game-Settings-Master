@@ -1,6 +1,6 @@
 {
   "tabs": {
-    "advanced": "Ручной",
+    "advanced": "Редактор",
     "backups": "Бекапы"
   },
   "source": {
@@ -10,15 +10,19 @@
   },
   "badge": {
     "engineUnknown": "Движок ?",
-    "configOk": "Config OK",
+    "configOk": "Config готов",
     "needConfig": "Нужен config"
   },
   "button": {
     "close": "Закрыть",
     "play": "Играть",
-    "open": "Открыть"
+    "open": "Открыть",
+    "copy": "Копировать",
+    "copied": "Скопировано",
+    "failed": "Не скопировано"
   },
   "configLabel": "Config",
+  "noConfigPath": "Путь к config не указан",
   "gameSections": "Разделы игры",
   "launchWarningTitle": "Предупреждение при запуске",
   "launchVia": "Запуск через {{launcher}}…",

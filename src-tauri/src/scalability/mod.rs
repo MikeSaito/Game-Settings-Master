@@ -1,6 +1,5 @@
 use regex::Regex;
 use std::collections::HashMap;
-use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
@@ -79,7 +78,7 @@ pub fn detect_scalability_limits(
         if !path.exists() {
             continue;
         }
-        if let Ok(content) = fs::read_to_string(&path) {
+        if let Ok((content, _)) = crate::ini::encoding::read_text(&path) {
             let parsed = parse_scalability_ini(&content);
             if !parsed.is_empty() {
                 sources.push(path.to_string_lossy().to_string());
@@ -205,7 +204,7 @@ fn read_observed_max_from_gus(path: &Path) -> Result<HashMap<String, u32>, Strin
     if !path.exists() {
         return Ok(HashMap::new());
     }
-    let content = fs::read_to_string(path).map_err(|e| e.to_string())?;
+    let (content, _) = crate::ini::encoding::read_text(path)?;
     let mut observed: HashMap<String, u32> = HashMap::new();
 
     for line in content.lines() {
@@ -320,6 +319,23 @@ r.ViewDistanceScale=1.0
         let config = dir.path();
         let gus = config.join("GameUserSettings.ini");
         std::fs::write(&gus, "[ScalabilityGroups]\nsg.ShadowQuality=6\n").unwrap();
+        let limits = detect_scalability_limits(None, Some(config));
+        assert_eq!(limits.groups.get("sg.ShadowQuality"), Some(&6));
+        assert_eq!(limits.global_max, 6);
+    }
+
+    #[test]
+    fn utf16_gus_custom_level_above_four_is_detected() {
+        let dir = tempfile::tempdir().unwrap();
+        let config = dir.path();
+        let gus = config.join("GameUserSettings.ini");
+        crate::ini::encoding::write_text(
+            &gus,
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=6\r\n",
+            crate::ini::encoding::IniEncoding::Utf16Le,
+        )
+        .unwrap();
+
         let limits = detect_scalability_limits(None, Some(config));
         assert_eq!(limits.groups.get("sg.ShadowQuality"), Some(&6));
         assert_eq!(limits.global_max, 6);

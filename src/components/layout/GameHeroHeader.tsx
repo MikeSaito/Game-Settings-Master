@@ -96,7 +96,7 @@ export function GameHeroHeader({ game, activeTab }: Props) {
       if (!runningExeName) {
         return Promise.reject(new Error(t("errors.noProcessName")));
       }
-      return closeGame(runningExeName).then(() => session);
+      return closeGame(game.id, runningExeName).then(() => session);
     },
     onSuccess: (session) => {
       if (session !== launchSessionRef.current) return;
@@ -208,9 +208,7 @@ export function GameHeroHeader({ game, activeTab }: Props) {
             </h1>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              {game.is_unity ? (
-                <Badge tone="accent">Unity</Badge>
-              ) : game.is_ue ? (
+              {game.is_ue ? (
                 game.engine_family === "ue4" ? (
                   <Badge tone="accent">UE 4</Badge>
                 ) : game.engine_family === "ue5" ? (

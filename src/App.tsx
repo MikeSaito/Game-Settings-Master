@@ -1,18 +1,19 @@
 import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import {
   Navigate,
   Route,
   Routes,
   useLocation,
   useNavigate,
+  useParams,
 } from "react-router-dom";
 import { UpdateGate } from "./components/UpdateGate";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AppShell } from "./components/layout/AppShell";
 import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
-import { scanGames, setBackendLanguage } from "./lib/api";
-import { currentLanguage } from "./i18n";
+import { AppSettingsProvider } from "./hooks/useAppSettings";
+import { scanGames } from "./lib/api";
 import { prefetchGameWorkspace } from "./lib/prefetchGameWorkspace";
 import { isGameTabAvailable, resolveGameTabRoute } from "./lib/gameEngine";
 import {
@@ -22,11 +23,36 @@ import {
   tabFromPathname,
 } from "./lib/routes";
 import { queryClient } from "./lib/queryClient";
-import { AdvancedEditor } from "./pages/AdvancedEditor";
-import { GameLibrary } from "./pages/GameLibrary";
-import { Backups } from "./pages/Backups";
 import { LegacyGameRouteRedirect } from "./lib/legacyGameRouteRedirect";
 import type { GameProfile } from "./lib/types";
+
+const AdvancedEditor = lazy(() =>
+  import("./pages/AdvancedEditor").then((module) => ({
+    default: module.AdvancedEditor,
+  })),
+);
+const GameLibrary = lazy(() =>
+  import("./pages/GameLibrary").then((module) => ({
+    default: module.GameLibrary,
+  })),
+);
+
+function GameEditorPage({ games }: { games: GameProfile[] }) {
+  const { gameId = "" } = useParams();
+  const game = games.find((g) => g.id === decodeURIComponent(gameId)) ?? null;
+  if (!game) return null;
+  return <AdvancedEditor game={game} />;
+}
+
+function BackupsRouteRedirect() {
+  const { gameId = "" } = useParams();
+  return (
+    <Navigate
+      to={`${gameTabPath(decodeURIComponent(gameId), "advanced")}#backups`}
+      replace
+    />
+  );
+}
 
 export function AppContent() {
   const queryClient = useQueryClient();
@@ -35,10 +61,6 @@ export function AppContent() {
   const tab = tabFromPathname(location.pathname);
   const gameRoute = parseGameRoute(location.pathname);
   const previousGameIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    void setBackendLanguage(currentLanguage()).catch(() => {});
-  }, []);
 
   const { data: games = [] } = useQuery({
     queryKey: ["games"],
@@ -57,6 +79,14 @@ export function AppContent() {
   }, [gameRoute, games.length, selectedGame, navigate]);
 
   useEffect(() => {
+    if (
+      selectedGame &&
+      gameRoute &&
+      gameRoute.tab === "backups"
+    ) {
+      navigate(`${gameTabPath(selectedGame.id, "advanced")}#backups`, { replace: true });
+      return;
+    }
     if (
       selectedGame &&
       gameRoute &&
@@ -83,7 +113,6 @@ export function AppContent() {
   const handleSelectGame = (game: GameProfile) => {
     const nextTab = resolveGameTabRoute(game);
     if (!nextTab) {
-      navigate(libraryPath());
       return;
     }
     prefetchGameWorkspace(queryClient, game, nextTab);
@@ -111,39 +140,33 @@ export function AppContent() {
   return (
     <AppShell selectedGame={selectedGame}>
       <ErrorBoundary resetKey={`${tab}:${selectedGame?.id ?? ""}`}>
-        <Routes>
-          <Route path="/" element={<Navigate to={libraryPath()} replace />} />
-          <Route
-            path="/library"
-            element={
-              <GameLibrary
-                selectedGame={selectedGame}
-                onSelectGame={handleSelectGame}
-                onGameUpdated={handleGameUpdated}
-                onGameRemoved={handleGameRemoved}
-              />
-            }
-          />
-          <Route
-            path="/game/:gameId/advanced"
-            element={
-              selectedGame ? <AdvancedEditor game={selectedGame} /> : null
-            }
-          />
-          <Route
-            path="/game/:gameId/backups"
-            element={selectedGame ? <Backups game={selectedGame} /> : null}
-          />
-          <Route
-            path="/game/:gameId/wizard"
-            element={<LegacyGameRouteRedirect games={games} />}
-          />
-          <Route
-            path="/game/:gameId/reshade"
-            element={<LegacyGameRouteRedirect games={games} />}
-          />
-          <Route path="*" element={<Navigate to={libraryPath()} replace />} />
-        </Routes>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<Navigate to={libraryPath()} replace />} />
+            <Route
+              path="/library"
+              element={
+                <GameLibrary
+                  selectedGame={selectedGame}
+                  onSelectGame={handleSelectGame}
+                  onGameUpdated={handleGameUpdated}
+                  onGameRemoved={handleGameRemoved}
+                />
+              }
+            />
+            <Route path="/game/:gameId/advanced" element={<GameEditorPage games={games} />} />
+            <Route path="/game/:gameId/backups" element={<BackupsRouteRedirect />} />
+            <Route
+              path="/game/:gameId/wizard"
+              element={<LegacyGameRouteRedirect games={games} />}
+            />
+            <Route
+              path="/game/:gameId/reshade"
+              element={<LegacyGameRouteRedirect games={games} />}
+            />
+            <Route path="*" element={<Navigate to={libraryPath()} replace />} />
+          </Routes>
+        </Suspense>
       </ErrorBoundary>
     </AppShell>
   );
@@ -153,9 +176,11 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <UpdateGate>
-        <AppWindowFocusProvider>
-          <AppContent />
-        </AppWindowFocusProvider>
+        <AppSettingsProvider>
+          <AppWindowFocusProvider>
+            <AppContent />
+          </AppWindowFocusProvider>
+        </AppSettingsProvider>
       </UpdateGate>
     </QueryClientProvider>
   );

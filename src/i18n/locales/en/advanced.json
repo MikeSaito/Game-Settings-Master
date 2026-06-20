@@ -1,10 +1,12 @@
 {
-  "title": "Manual",
+  "title": "Editor",
   "defaultPresetName": "My preset",
   "category": {
-    "Scalability": "Scalability",
+    "All": "All",
+    "Scalability": "Quality (sg)",
     "Graphics": "Graphics",
     "Display": "Display",
+    "Window": "Display & window",
     "API": "API / DXGI",
     "Jobs": "Threads & GC",
     "Rendering": "Rendering",
@@ -16,24 +18,61 @@
     "World": "World",
     "Media": "Media override",
     "Startup": "Startup",
-    "AuthorCurated": "By author",
     "GameSpecific": "Game",
     "Audio": "Audio",
+    "Performance": "Performance",
     "System": "System",
     "Debug": "Debug",
     "Other": "Other"
   },
   "noGame": {
-    "title": "Manual — select a game",
+    "title": "Editor — select a game",
     "desc": "Open the library and select a game with a config to view and edit its parameters."
   },
   "noConfig": {
     "title": "Config not found",
-    "unity": "Specify the *_Data folder with boot.config on the “Library” tab.",
     "default": "Specify the path to Saved/Config/Windows on the “Library” tab."
   },
   "errorTitle": "Error",
   "gpuHintTitle": "Graphics card",
+  "tabs": {
+    "aria": "Editor mode",
+    "basic": "Basic",
+    "advanced": "Advanced",
+    "backups": "Backups",
+    "basicHint": "GameUserSettings — like the in-game menu",
+    "advancedHint": "Engine.ini and CVars — for experienced users",
+    "backupsHint": "Ini snapshots before apply and rollback",
+    "scalability": "Basic",
+    "engine": "Advanced",
+    "engineBadge": "Expert"
+  },
+  "mode": {
+    "basicTitle": "Basic settings",
+    "advancedTitle": "Advanced settings",
+    "backupsTitle": "Backups",
+    "basicBody": "Settings like in the game — resolution, quality, sg.*. Writes only to GameUserSettings.ini.",
+    "advancedBody": "Fine engine tuning. May create or change Engine.ini / Scalability.ini. For experienced users.",
+    "backupsBody": "Automatic ini snapshots in `.uesm-backups`. Restore or reset to a clean config.",
+    "basicSafe": "GameUserSettings.ini only",
+    "advancedFiles": "Engine.ini / Scalability.ini"
+  },
+  "engineWarning": {
+    "title": "Advanced users only",
+    "body": "Engine.ini CVars may conflict with in-game settings and sg.*, and break stability or performance.",
+    "backupHint": "Create a backup before applying (Backups tab).",
+    "acknowledge": "Got it",
+    "ackHint": "Check “Got it” to dismiss this warning.",
+    "inline": "Engine.ini: advanced CVars may conflict with in-game settings."
+  },
+  "filter": {
+    "recommended": "Recommended",
+    "full": "Full catalog",
+    "ini_only": "My ini only",
+    "allInIni": "All in ini"
+  },
+  "paramsForEngine_one": "{{count}} parameter for UE {{version}}",
+  "paramsForEngine_other": "{{count}} parameters for UE {{version}}",
   "searchPlaceholder": "Search by key, name, description…",
   "paramsCount_one": "{{count}} parameter",
   "paramsCount_other": "{{count}} parameters",
@@ -45,8 +84,10 @@
     "title": "Engine.ini parameters",
     "before": "Toggle ",
     "onOff": "On/Off",
-    "after": " is whether the line exists in the file: on — the key will be written after “Apply”; off — the line is removed. Currently in Engine.ini: {{on}} of {{total}}."
+    "after": " is whether the line exists in the file: on — the key will be written after “Apply”; off — the line is removed. Currently in Engine.ini: {{on}} of {{total}}.",
+    "short": "{{on}} of {{total}} enabled."
   },
+  "categoryNav": "Parameter categories",
   "loadingParams": "Loading parameters…",
   "emptyFiltered": {
     "titleSearch": "Nothing found",
@@ -57,27 +98,85 @@
   "applyAndSave": "Apply and save",
   "presetNameLabel": "Preset name",
   "apply": "Apply",
+  "applyBasic": "Apply to GameUserSettings",
+  "applyAdvanced": "Apply (Engine / Scalability)",
+  "discard": "Discard",
   "savePreset": "Save preset",
   "savedPresets": "Saved presets",
+  "changesCount_one": "{{count}} change",
+  "changesCount_other": "{{count}} changes",
+  "changeBreakdown": {
+    "sg_one": "{{count}} sg",
+    "sg_other": "{{count}} sg",
+    "display_one": "{{count}} display",
+    "display_other": "{{count}} display",
+    "engine_one": "{{count}} engine",
+    "engine_other": "{{count}} engine"
+  },
+  "gameRunningTitle": "Game is running",
+  "gameRunningInline": "Applying changes is disabled while the game is running.",
   "errors": {
-    "noChanges": "No changes — enable Engine.ini parameters or change values.",
-    "noChangesUnity": "No changes — change boot.config values."
+    "noChanges": "No changes — enable Engine.ini parameters or change values."
   },
   "applied": "Applied {{count}} edits · backup {{backupId}}. Restart the game.",
   "presetSaved": "Preset “{{name}}” saved.",
   "presetApplied": "Preset applied · backup {{backupId}}.",
   "qualityDefault": "Default",
+  "qualityLevel": {
+    "0": "Low",
+    "1": "Medium",
+    "2": "High",
+    "3": "Epic",
+    "4": "Cinematic",
+    "custom": "Custom @{{value}}"
+  },
+  "fullscreenMode": {
+    "0": "Fullscreen",
+    "1": "Borderless",
+    "2": "Windowed"
+  },
+  "dlssMode": {
+    "Off": "Off",
+    "Performance": "Performance",
+    "Balanced": "Balanced",
+    "Quality": "Quality",
+    "UltraQuality": "Ultra quality",
+    "DLAA": "DLAA"
+  },
+  "upscalingMethod": {
+    "U_None": "No upscaling",
+    "U_DLSS": "DLSS",
+    "U_FSR": "FSR",
+    "U_TSR": "TSR"
+  },
+  "antiAliasingType": {
+    "AAM_None": "No AA",
+    "AAM_FXAA": "FXAA",
+    "AAM_TemporalAA": "TAA",
+    "AAM_TSR": "TSR",
+    "AAM_DLAA": "DLAA"
+  },
+  "boolValue": {
+    "true": "True",
+    "false": "False",
+    "on": "On",
+    "off": "Off"
+  },
   "reset": {
     "recommended": "recommend.",
     "default": "default"
   },
+  "resetTo": "↺ {{label}}: {{value}}",
   "currentOption": "{{value}} (current)",
   "inIni": "In ini",
   "notInIni": "Not in ini",
-  "undocumented": "Undocumented",
   "service": "Service",
+  "conflict": {
+    "sgEngine": "sg/r conflict"
+  },
   "inPractice": "In practice: ",
   "recommendedValues": "Recommended values: ",
+  "tierHintLabel": "UE preset tier values",
   "inGameMenu": "Look in the game menu: ",
   "engineToggle": {
     "off": "Off — the line is not in Engine.ini. Enable it and press “Apply” to add it.",

@@ -11,7 +11,6 @@ import { paramValuesEqual } from "./paramValueEqual";
 
 function sectionKeyFor(p: GameParameter): string {
   if (p.file === "UserConfigSelections") return p.section;
-  if (p.file === "boot.config") return "";
   return p.section.startsWith("[") ? p.section : `[${p.section}]`;
 }
 
@@ -64,16 +63,15 @@ export function buildCustomChanges(
   );
 
   for (const p of reconciled) {
-    if (!isParamVisible(p, gpu)) continue;
-    if (!shouldIncludeInApply(p, engineEnabled)) continue;
-    if (!editableCategories.has(p.category)) continue;
-
     const baseline = baselineByCatalogId.get(catalogParamId(p));
     const value =
       p.value.trim() || (isEngineToggleable(p) ? defaultValueFor(p) : "");
     if (!value) continue;
 
     if (baseline && paramValuesEqual(value, baseline.value)) continue;
+    if (!isParamVisible(p, gpu) && !baseline) continue;
+    if (!shouldIncludeInApply(p, engineEnabled)) continue;
+    if (!editableCategories.has(p.category)) continue;
 
     setIniValue(files, p.file, sectionKeyFor(p), p.key, value);
   }

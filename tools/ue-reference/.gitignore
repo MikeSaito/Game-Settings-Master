@@ -1,0 +1,3 @@
+# Local Epic snapshots — never commit full Base*.ini from engine tree
+UE_*/
+!fixtures/

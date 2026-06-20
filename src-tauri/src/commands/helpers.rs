@@ -1,10 +1,12 @@
 use crate::app_error::AppError;
 use crate::discovery::{find_game_by_id, normalize_install_dir, platform_hints_for_game};
-use crate::fs_util::{ensure_config_writable, is_safe_exe_basename};
+use crate::fs_util::{
+    ensure_config_writable, is_safe_exe_basename, is_safe_ini_key_name, is_safe_ini_section_name,
+    is_safe_ini_value,
+};
 use crate::ini::paths::{resolve_config_dir_from_path, validate_config_dir};
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
 use crate::models::{CustomChanges, GameProfile};
-use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 pub(crate) fn resolve_ue_config_path(
@@ -22,7 +24,8 @@ pub(crate) fn validate_optional_exe_name(exe_name: Option<&str>) -> Result<(), S
             return Err(AppError::validation(crate::i18n::t(
                 &format!("Недопустимое имя процесса: {exe}"),
                 &format!("Invalid process name: {exe}"),
-            )).to_invoke_string());
+            ))
+            .to_invoke_string());
         }
     }
     Ok(())
@@ -51,7 +54,8 @@ pub(crate) fn resolve_write_exe_name(
                     return Err(AppError::validation(crate::i18n::t(
                         &format!("Недопустимое имя процесса в профиле игры: {exe}"),
                         &format!("Invalid process name in game profile: {exe}"),
-                    )).to_invoke_string());
+                    ))
+                    .to_invoke_string());
                 }
                 return Ok(Some(exe.to_string()));
             }
@@ -60,7 +64,53 @@ pub(crate) fn resolve_write_exe_name(
     Ok(None)
 }
 
-pub(crate) fn validate_install_dir_for_game(game_id: &str, install_dir: &str) -> Result<(), String> {
+pub(crate) fn resolve_trusted_close_exe_name(
+    game_id: &str,
+    exe_name: Option<&str>,
+) -> Result<String, String> {
+    crate::profiles::ensure_known_game_id(game_id)?;
+    validate_optional_exe_name(exe_name)?;
+    let trusted = find_profile_by_id(game_id)?.ok_or_else(|| {
+        AppError::game_not_found(crate::i18n::t(
+            &format!("Игра {game_id} не найдена"),
+            &format!("Game {game_id} not found"),
+        ))
+        .to_invoke_string()
+    })?;
+    let trusted_exe = trusted
+        .exe_name
+        .as_deref()
+        .filter(|v| !v.trim().is_empty())
+        .ok_or_else(|| {
+            AppError::validation(crate::i18n::t(
+                "Для этой игры неизвестно имя процесса",
+                "Process name is unknown for this game",
+            ))
+            .to_invoke_string()
+        })?;
+    if !is_safe_exe_basename(trusted_exe) {
+        return Err(AppError::validation(crate::i18n::t(
+            &format!("Недопустимое имя процесса в профиле игры: {trusted_exe}"),
+            &format!("Invalid process name in game profile: {trusted_exe}"),
+        ))
+        .to_invoke_string());
+    }
+    if let Some(provided) = exe_name.filter(|v| !v.trim().is_empty()) {
+        if !provided.eq_ignore_ascii_case(trusted_exe) {
+            return Err(AppError::validation(crate::i18n::t(
+                "Имя процесса не соответствует доверенному профилю игры",
+                "Process name does not match the trusted game profile",
+            ))
+            .to_invoke_string());
+        }
+    }
+    Ok(trusted_exe.to_string())
+}
+
+pub(crate) fn validate_install_dir_for_game(
+    game_id: &str,
+    install_dir: &str,
+) -> Result<(), String> {
     let trimmed = install_dir.trim();
     if trimmed.is_empty() {
         return Ok(());
@@ -77,7 +127,8 @@ pub(crate) fn validate_install_dir_for_game(game_id: &str, install_dir: &str) ->
         return Err(AppError::invalid_path(crate::i18n::t(
             "Папка установки не существует",
             "Install folder does not exist",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     let provided = path
         .canonicalize()
@@ -94,7 +145,8 @@ pub(crate) fn validate_install_dir_for_game(game_id: &str, install_dir: &str) ->
         return Err(AppError::validation(crate::i18n::t(
             "install_dir не соответствует доверенному профилю game_id",
             "install_dir does not match the trusted game_id profile",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     Ok(())
 }
@@ -108,23 +160,15 @@ pub(crate) fn validate_config_dir_for_game(game_id: &str, config_dir: &str) -> R
         .to_invoke_string()
     })?;
     let provided = validate_config_dir(config_dir)?;
-    if trusted.is_unity {
-        if !crate::unity::is_unity_config_dir(&provided) {
-            return Err(AppError::invalid_path(crate::i18n::t(
-                "Для Unity указан недопустимый config_dir",
-                "Invalid config_dir specified for Unity",
-            )).to_invoke_string());
-        }
-        return Ok(());
-    }
-
     let hints = platform_hints_for_game(Some(game_id), Some(&trusted.engine_family));
     let provided_reconciled = reconcile_config_dir(&provided, &hints);
-    let expected = if let Some(saved) = trusted.config_dir.as_deref().filter(|s| !s.trim().is_empty())
+    let expected = if let Some(saved) = trusted
+        .config_dir
+        .as_deref()
+        .filter(|s| !s.trim().is_empty())
     {
         reconcile_config_dir(&validate_config_dir(saved)?, &hints)
-    } else if let Some(from_install) =
-        resolve_config_dir_from_path(Path::new(&trusted.install_dir))
+    } else if let Some(from_install) = resolve_config_dir_from_path(Path::new(&trusted.install_dir))
     {
         reconcile_config_dir(&from_install, &hints)
     } else {
@@ -139,7 +183,8 @@ pub(crate) fn validate_config_dir_for_game(game_id: &str, config_dir: &str) -> R
         return Err(AppError::validation(crate::i18n::t(
             "config_dir не соответствует пути конфигурации для install_dir игры",
             "config_dir does not match the config path for the game's install_dir",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     Ok(())
 }
@@ -161,7 +206,7 @@ pub(crate) const MAX_CUSTOM_CHANGE_FILES: usize = 16;
 
 pub(crate) fn validate_custom_changes_payload(
     changes: &CustomChanges,
-    config_path: &Path,
+    _config_path: &Path,
 ) -> Result<(), String> {
     let file_count = changes.files.len() + changes.removals.len();
     if file_count > MAX_CUSTOM_CHANGE_FILES {
@@ -169,12 +214,12 @@ pub(crate) fn validate_custom_changes_payload(
             &format!(
                 "Слишком много файлов в custom apply ({file_count} > {MAX_CUSTOM_CHANGE_FILES})"
             ),
-            &format!(
-                "Too many files in custom apply ({file_count} > {MAX_CUSTOM_CHANGE_FILES})"
-            ),
-        )).to_invoke_string());
+            &format!("Too many files in custom apply ({file_count} > {MAX_CUSTOM_CHANGE_FILES})"),
+        ))
+        .to_invoke_string());
     }
-    let raw = serde_json::to_string(changes).map_err(|e| AppError::validation(e.to_string()).to_invoke_string())?;
+    let raw = serde_json::to_string(changes)
+        .map_err(|e| AppError::validation(e.to_string()).to_invoke_string())?;
     if raw.len() > MAX_CUSTOM_CHANGES_JSON_BYTES {
         return Err(AppError::validation(crate::i18n::t(
             &format!(
@@ -187,43 +232,82 @@ pub(crate) fn validate_custom_changes_payload(
                 raw.len() / 1024,
                 MAX_CUSTOM_CHANGES_JSON_BYTES / 1024
             ),
-        )).to_invoke_string());
-    }
-    if crate::unity::is_unity_config_dir(config_path) {
-        for name in changes.files.keys().chain(changes.removals.keys()) {
-            if name != "boot.config" {
-                return Err(AppError::validation(crate::i18n::t(
-                    &format!("Unity custom apply поддерживает только boot.config, не {name}"),
-                    &format!("Unity custom apply only supports boot.config, not {name}"),
-                )).to_invoke_string());
-            }
-        }
-        return Ok(());
+        ))
+        .to_invoke_string());
     }
     for name in changes.files.keys().chain(changes.removals.keys()) {
         if !crate::fs_util::is_allowed_config_ini_filename(name) {
             return Err(AppError::validation(crate::i18n::t(
                 &format!("Недопустимое имя ini-файла: {name}"),
                 &format!("Invalid ini file name: {name}"),
-            )).to_invoke_string());
+            ))
+            .to_invoke_string());
+        }
+    }
+    for (file, sections) in &changes.files {
+        for (section, entries) in sections {
+            if !is_safe_ini_section_name(section) {
+                return Err(AppError::validation(crate::i18n::t(
+                    &format!("Недопустимая INI-секция в {file}: {section}"),
+                    &format!("Invalid INI section in {file}: {section}"),
+                ))
+                .to_invoke_string());
+            }
+            for (key, value) in entries {
+                if !is_safe_ini_key_name(key) {
+                    return Err(AppError::validation(crate::i18n::t(
+                        &format!("Недопустимый INI-ключ в {file}: {key}"),
+                        &format!("Invalid INI key in {file}: {key}"),
+                    ))
+                    .to_invoke_string());
+                }
+                if !is_safe_ini_value(value) {
+                    return Err(AppError::validation(crate::i18n::t(
+                        &format!("Недопустимое INI-значение для {key}"),
+                        &format!("Invalid INI value for {key}"),
+                    ))
+                    .to_invoke_string());
+                }
+            }
+        }
+    }
+    for (file, sections) in &changes.removals {
+        for (section, keys) in sections {
+            if !is_safe_ini_section_name(section) {
+                return Err(AppError::validation(crate::i18n::t(
+                    &format!("Недопустимая INI-секция в removals {file}: {section}"),
+                    &format!("Invalid INI section in removals {file}: {section}"),
+                ))
+                .to_invoke_string());
+            }
+            for key in keys {
+                if !is_safe_ini_key_name(key) {
+                    return Err(AppError::validation(crate::i18n::t(
+                        &format!("Недопустимый INI-ключ в removals {file}: {key}"),
+                        &format!("Invalid INI key in removals {file}: {key}"),
+                    ))
+                    .to_invoke_string());
+                }
+            }
         }
     }
     Ok(())
 }
 
-pub(crate) fn guard_config_dir_for_write(game_id: Option<&str>, config_dir: &str) -> Result<(), String> {
-    let path = validate_config_dir(config_dir)?;
+pub(crate) fn guard_config_dir_for_write(
+    game_id: Option<&str>,
+    config_dir: &str,
+) -> Result<(), String> {
+    let _path = validate_config_dir(config_dir)?;
     if let Some(gid) = game_id {
         validate_config_dir_for_game(gid, config_dir)?;
-        return Ok(());
-    }
-    if crate::unity::is_unity_config_dir(&path) {
         return Ok(());
     }
     Err(AppError::validation(crate::i18n::t(
         "Для записи в конфиг Unreal Engine укажите game_id — без него путь не проверяется",
         "Specify game_id to write to Unreal Engine config — without it the path is not validated",
-    )).to_invoke_string())
+    ))
+    .to_invoke_string())
 }
 
 pub(crate) fn ensure_all_targets_writable(
@@ -236,39 +320,6 @@ pub(crate) fn ensure_all_targets_writable(
         ensure_config_writable(&target, exe_name)?;
     }
     Ok(())
-}
-
-pub(crate) fn resolve_engine_from_config_dir(path: &Path, requested_engine_family: Option<&str>) -> Option<String> {
-    if crate::unity::is_unity_config_dir(path) {
-        return Some("unity".to_string());
-    }
-    requested_engine_family.map(ToString::to_string)
-}
-
-pub(crate) fn extract_boot_config_changes(
-    files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
-) -> Result<HashMap<String, String>, String> {
-    let Some(sections) = files.get("boot.config") else {
-        return Err(AppError::validation(crate::i18n::t(
-            "Нет изменений boot.config",
-            "No boot.config changes",
-        )).to_invoke_string());
-    };
-    let mut changes = HashMap::new();
-    for keys in sections.values() {
-        for (key, value) in keys {
-            if !key.is_empty() && !value.trim().is_empty() {
-                changes.insert(key.clone(), value.trim().to_string());
-            }
-        }
-    }
-    if changes.is_empty() {
-        return Err(AppError::validation(crate::i18n::t(
-            "Нет изменений boot.config",
-            "No boot.config changes",
-        )).to_invoke_string());
-    }
-    Ok(changes)
 }
 
 #[cfg(test)]
@@ -286,14 +337,6 @@ mod ipc_tests {
         fs::write(config.join("GameUserSettings.ini"), b"[x]").unwrap();
         let path = config.to_string_lossy();
         assert!(guard_config_dir_for_write(None, path.as_ref()).is_err());
-    }
-
-    #[test]
-    fn guard_without_game_id_allows_unity_boot_config() {
-        let dir = TempDir::new().unwrap();
-        fs::write(dir.path().join("boot.config"), b"test=1").unwrap();
-        let path = dir.path().to_string_lossy();
-        assert!(guard_config_dir_for_write(None, path.as_ref()).is_ok());
     }
 
     #[test]
@@ -318,6 +361,23 @@ mod ipc_tests {
         files.insert("GameUserSettings.ini".to_string(), section);
         let changes = CustomChanges {
             files,
+            removals: HashMap::new(),
+        };
+        assert!(validate_custom_changes_payload(&changes, dir.path()).is_err());
+    }
+
+    #[test]
+    fn validate_custom_changes_rejects_ini_injection() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("GameUserSettings.ini"), b"[x]").unwrap();
+        let changes = CustomChanges {
+            files: HashMap::from([(
+                "Engine.ini".to_string(),
+                HashMap::from([(
+                    "SystemSettings]\n[Injected".to_string(),
+                    HashMap::from([("r.Safe".to_string(), "1".to_string())]),
+                )]),
+            )]),
             removals: HashMap::new(),
         };
         assert!(validate_custom_changes_payload(&changes, dir.path()).is_err());

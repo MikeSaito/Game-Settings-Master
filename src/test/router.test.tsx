@@ -1,9 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { useEffect } from "react";
 import { MemoryRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { AppWindowFocusProvider } from "../context/AppWindowFocusProvider";
+import { EditorModeBar } from "../components/advanced/EditorModeBar";
 import { GameLibrary } from "../pages/GameLibrary";
 import { libraryPath, parseGameRoute, parseLegacyGameRoute } from "../lib/routes";
 import { LegacyGameRouteRedirect } from "../lib/legacyGameRouteRedirect";
@@ -137,4 +139,27 @@ describe("router integration", () => {
       expect(paths).toContain("/library");
     });
   });
+
+  it("renders backups tab in editor mode bar", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AppWindowFocusProvider>
+          <MemoryRouter initialEntries={[`/game/${testGame.id}/advanced`]}>
+            <EditorModeBar
+              gameId={testGame.id}
+              panel="basic"
+              onPanelChange={() => {}}
+              engineStats={{ total: 0, on: 0, off: 0 }}
+            />
+          </MemoryRouter>
+        </AppWindowFocusProvider>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByRole("tab", { name: /backups|бекапы/i })).toBeInTheDocument();
+  });
+
 });

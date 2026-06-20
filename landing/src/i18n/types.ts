@@ -7,6 +7,44 @@ export interface FeatureStrings {
   reverse?: boolean;
 }
 
+export interface StatStrings {
+  value: string;
+  label: string;
+}
+
+export interface BasicAdvancedColumnStrings {
+  label: string;
+  title: string;
+  text: string;
+  bullets: string[];
+}
+
+export interface BasicAdvancedStrings {
+  eyebrow: string;
+  title: string;
+  text: string;
+  basic: BasicAdvancedColumnStrings;
+  advanced: BasicAdvancedColumnStrings;
+}
+
+export interface StepStrings {
+  step: string;
+  title: string;
+  text: string;
+}
+
+export interface HighlightStrings {
+  eyebrow: string;
+  title: string;
+  text: string;
+  bullets: string[];
+}
+
+export interface FaqStrings {
+  question: string;
+  answer: string;
+}
+
 export interface LocaleStrings {
   lang: "ru" | "en";
   htmlLang: string;
@@ -19,6 +57,9 @@ export interface LocaleStrings {
   };
   nav: {
     features: string;
+    howItWorks: string;
+    catalog: string;
+    faq: string;
     download: string;
     aria: string;
   };
@@ -29,7 +70,21 @@ export interface LocaleStrings {
     subtitle: string;
   };
   engineTags: string[];
+  stats: StatStrings[];
+  basicAdvanced: BasicAdvancedStrings;
   features: FeatureStrings[];
+  howItWorks: {
+    eyebrow: string;
+    title: string;
+    steps: StepStrings[];
+  };
+  catalogHighlight: HighlightStrings;
+  gpu: HighlightStrings;
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: FaqStrings[];
+  };
   download: {
     title: string;
     subtitle: string;

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { usePollingEnabled } from "./useBackgroundSafeEnabled";
 import { isGameRunning } from "../lib/api";
-import { Alert } from "../components/ui/Alert";
+import { Alert } from "../components/ds/Feedback";
 
 export function useGameRunning(exeName: string | null | undefined): boolean {
   const windowFocused = usePollingEnabled(!!exeName);

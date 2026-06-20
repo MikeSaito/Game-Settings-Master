@@ -120,10 +120,6 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
 
     let resolved = path.canonicalize().unwrap_or_else(|_| path.clone());
 
-    if crate::unity::is_unity_config_dir(&resolved) {
-        return Ok(resolved);
-    }
-
     let gus = resolved.join("GameUserSettings.ini");
     if !ue_path_has_saved_segment(&resolved) && !gus.exists() {
         return Err(crate::i18n::t(
@@ -134,14 +130,8 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
 
     if !gus.exists() {
         return Err(crate::i18n::t(
-            &format!(
-                "GameUserSettings.ini не найден в {}",
-                resolved.display()
-            ),
-            &format!(
-                "GameUserSettings.ini not found in {}",
-                resolved.display()
-            ),
+            &format!("GameUserSettings.ini не найден в {}", resolved.display()),
+            &format!("GameUserSettings.ini not found in {}", resolved.display()),
         ));
     }
 
@@ -149,9 +139,8 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
 }
 
 fn ue_path_has_saved_segment(path: &Path) -> bool {
-    path.components().any(|c| {
-        matches!(c, Component::Normal(s) if s.eq_ignore_ascii_case("Saved"))
-    })
+    path.components()
+        .any(|c| matches!(c, Component::Normal(s) if s.eq_ignore_ascii_case("Saved")))
 }
 
 #[cfg(test)]

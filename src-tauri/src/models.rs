@@ -12,10 +12,6 @@ pub struct GameProfile {
     pub exe_name: Option<String>,
     pub is_ue: bool,
     #[serde(default)]
-    pub is_unity: bool,
-    #[serde(default)]
-    pub possible_unity: bool,
-    #[serde(default)]
     pub possible_ue: bool,
     #[serde(default)]
     pub cover_url: Option<String>,
@@ -111,6 +107,15 @@ pub struct GameParameter {
     /// Author-recommended value (shown as hint/button).
     #[serde(default)]
     pub recommended: Option<String>,
+    /// Catalog flag for Advanced Editor «Recommended» filter.
+    #[serde(default)]
+    pub catalog_recommended: bool,
+    /// UE scalability preset tier breakdown (sg.*Quality only).
+    #[serde(default)]
+    pub tier_hint: Option<String>,
+    /// Description tier: human | semi | auto (from catalog builder).
+    #[serde(default)]
+    pub description_quality: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]

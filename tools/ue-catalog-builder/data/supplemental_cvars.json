@@ -1,0 +1,6492 @@
+[
+  {
+    "key": "r.ShadowQuality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.MaxResolution",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.RadiusThreshold",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.DistanceScale",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.CSM.MaxCascades",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.CSM.TransitionScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.PreShadowResolutionFactor",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MotionBlurQuality",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MotionBlur.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MotionBlur.Amount",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.BloomQuality",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.BloomIntensity",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DepthOfFieldQuality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.AmbientOcclusionLevels",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.AmbientOcclusionRadiusScale",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SSAOQuality",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SSR.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SSR.MaxRoughness",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ScreenSpaceReflectionQuality",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.TranslucencyLightingVolumeDim",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SceneColorFringeQuality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.LensFlareQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SeparateTranslucency",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DynamicGlobalIlluminationMethod",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ReflectionMethod",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing.Shadows",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing.Reflections",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing.AO",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Nanite",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Nanite.MaxPixelsPerEdge",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.DiffuseIndirect.Allow",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.Reflections.Allow",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.Reflections.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.ScreenProbeGather.ScreenTraces",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.VolumetricFog",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.VolumetricCloud",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Atmosphere",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DistanceFieldShadowing",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DFShadowQuality",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.LightFunctionQuality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SkyQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.FogDensity",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.FogHeightFalloff",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MaterialQualityLevel",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DetailMode",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ViewDistanceScale",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SkeletalMeshLODBias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.StaticMeshLODDistanceScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ParticleLODBias",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MaxAnisotropy",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.PoolSize",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.MaxEffectiveScreenSize",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.Boost",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.LimitPoolSizeToVRAM",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.TextureStreaming",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MipMapLODBias",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.StreamableRenderAssetMinLOD",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.AntiAliasingMethod",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.TemporalAA.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.TemporalAA.Upsampling",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.AntiAliasing",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.AutoExposure",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.MotionBlur",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.Bloom",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.AmbientOcclusion",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.LensFlare",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DefaultFeature.DepthOfField",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tonemapper.Sharpen",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tonemapper.GrainQuantization",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.EyeAdaptationQuality",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcessAAQuality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DisableDistortion",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.AllowOcclusionQueries",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.EarlyZPass",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.EarlyZPassOnlyMaterialMasking",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.BasePassVelocity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.VelocityOutputPass",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.GBufferFormat",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.CustomDepth",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.CustomDepthTemporalAAJitter",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SceneCaptureDepthPrepass",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.WireframeCullThreshold",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.AllowStaticLighting",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ForwardShading",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.VertexFoggingForOpaque",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SeparateTranslucencyPass",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.TranslucentSortPolicy",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MaxQualityMode",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.HeterogeneousVolumes",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.VirtualShadowMaps",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.Virtual.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.HairStrands",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Strands.Hair.MaxLength",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SubsurfaceScattering",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ClearCoatNormal",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.GlobalIllumination.Denoiser",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.GlobalIllumination.Quality",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.IndirectLightingCache",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.LightShaftQuality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.LightShaftOcclusion",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ContactShadows",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ScreenSpaceShadows",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.MobileHDR",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mobile.AllowDitheredLODTransition",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mobile.AllowSoftwareOcclusion",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.D3D12.UseAllowTearing",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.D3D12.ExecuteContextInParallel",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Vulkan.UseRealUBs",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RHICmdBypass",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.OneFrameThreadLag",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.FinishCurrentFrame",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.AsyncCompute",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SceneDepthHZBAsyncCompute",
+    "default": "2",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog.HZBAsyncCompute",
+    "default": "3",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.SkyAtmosphereAsyncCompute",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.ViewDistanceQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.AntiAliasingQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.ShadowQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.PostProcessQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.TextureQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.EffectsQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.FoliageQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.ShadingQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.GlobalIlluminationQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.ReflectionQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.LandscapeQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "sg.CloudsQuality",
+    "default": "3",
+    "section": "ScalabilityGroups",
+    "file": "GameUserSettings.ini",
+    "category": "Scalability",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Shadow.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.CSM.MaxCascades",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.CSM.TransitionScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Virtual.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Virtual.ResolutionLodBiasDirectional",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Virtual.NonNanite.IncludeInCoarsePages",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.DiffuseIndirect.Allow",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflections.Allow",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflections.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.ScreenProbeGather.ScreenTraces",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.HardwareRayTracing",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.SceneLightingUpdateSpeed",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.FinalGatherQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Lumen.MaxTraceDistance",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.AsyncCompute",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Nanite.AllowTessellation",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Nanite.ImpostorDistanceScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.UseFixedPoolSize",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.HLODStrategy",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.MinMipForSplitRequest",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.DefragDynamicBounds",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.FullyLoadUsedTextures",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.AAQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.MotionBlurQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.BloomQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.DepthOfFieldQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.LensFlareQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.EyeAdaptationQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.PostProcess.SceneColorFringeQuality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflection.Environment",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflection.CaptureResolution",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflection.MaxRoughness",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflection.ScreenSpace",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Reflection.Method",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing.Translucency",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing.SkyLight",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.RayTracing.GlobalIllumination",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mobile.HDR",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mobile.SupportsGen4TAA",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mobile.MaxMobileCSMs",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog.Density",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog.HeightFalloff",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog.StartDistance",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog.CutoffDistance",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Fog.InscatteringColor",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Atmosphere",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.AtmosphereAsyncCompute",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.LightSampleCountScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Hair.Strands",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Strands.SkyLighting",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Strands.DeepShadow",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Strands.Visibility",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.SingleLayer",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.WaterInfo",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.WaveAmplitude",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.WaveFrequency",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.LOD0ScreenSize",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.LODDistributionScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.ComponentScreenSizeToUseSubSections",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.DitheredLOD",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Wind",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.GrassDensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.GrassCullDistanceScale",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Particle.LODBias",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Particle.Lights",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Particle.GPUSimulation",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Audio.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Audio.MaxChannels",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Audio.DisableMasterEQ",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Texture.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Texture.MaxAnisotropy",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Texture.MipMapLODBias",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Streaming.MipBias",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Bloom.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Bloom.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Bloom.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Bloom.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.LensFlares.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.LensFlares.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.LensFlares.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.LensFlares.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ScreenSpaceReflections.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ScreenSpaceReflections.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ScreenSpaceReflections.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ScreenSpaceReflections.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AmbientOcclusion.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AmbientOcclusion.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AmbientOcclusion.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AmbientOcclusion.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.MotionBlur.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.MotionBlur.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.MotionBlur.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.MotionBlur.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.DepthOfField.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.DepthOfField.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.DepthOfField.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.DepthOfField.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AntiAliasing.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AntiAliasing.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AntiAliasing.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.AntiAliasing.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Tonemapper.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Tonemapper.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Tonemapper.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Tonemapper.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ColorGrading.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ColorGrading.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ColorGrading.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ColorGrading.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Vignette.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Vignette.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Vignette.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Vignette.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ChromaticAberration.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ChromaticAberration.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ChromaticAberration.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.ChromaticAberration.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Grain.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Grain.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Grain.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.Grain.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.SceneFringe.Quality",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.SceneFringe.Intensity",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.SceneFringe.Enable",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "fx.SceneFringe.Max",
+    "default": "1",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Effects",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.Streaming",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.MaxAnisotropy",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.MipMapLODBias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.PoolSize",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.Virtual",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.VT",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "t.AdaptiveVirtualTexture",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Textures",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Render.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Scene.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.World.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Level.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Mesh.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Skeletal.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Static.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Landscape.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Foliage.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Grass.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Tree.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Water.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Ocean.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Cloud.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Volumetric.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Light.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Directional.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Point.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Spot.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sky.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Sun.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Moon.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Max",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Min",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Threshold",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Distance",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Resolution",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Size",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Star.Count",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Decal.Quality",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Decal.Scale",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Decal.Bias",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Decal.Intensity",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  },
+  {
+    "key": "r.Decal.Enable",
+    "default": "0",
+    "section": "SystemSettings",
+    "file": "Engine.ini",
+    "category": "Rendering",
+    "versions": [
+      "4.27",
+      "5.4"
+    ],
+    "source": "supplemental"
+  }
+]

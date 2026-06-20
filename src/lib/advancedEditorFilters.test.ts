@@ -2,8 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   buildCategoryList,
   filterParamsByCategoryAndSearch,
+  normalizeParameterCategory,
   paramRowKey,
 } from "./advancedEditorFilters";
+import {
+  filterParamsByPanel,
+  filterParamsByRecommendedMode,
+} from "./editorPanels";
 import type { GameParameter } from "./types";
 
 function param(
@@ -29,6 +34,8 @@ function param(
     step: null,
     options: null,
     recommended: null,
+    catalog_recommended: false,
+    tier_hint: null,
     ...overrides,
   };
 }
@@ -61,8 +68,44 @@ describe("buildCategoryList", () => {
       param({ key: "a", category: "Other" }),
       param({ key: "b", category: "Scalability" }),
     ]);
-    expect(list[0].cat).toBe("Scalability");
+    expect(list[0].cat).toBe("All");
+    expect(list[1].cat).toBe("Scalability");
     expect(list.some((c) => c.cat === "Other")).toBe(true);
+  });
+});
+
+describe("normalizeParameterCategory", () => {
+  it("moves game-specific frame generation into rendering", () => {
+    const normalized = normalizeParameterCategory(
+      param({
+        key: "UpscalingFrameGeneration",
+        category: "Subnautica2",
+        section: "/Script/Subnautica2.SN2SettingsLocal",
+      }),
+    );
+
+    expect(normalized.category).toBe("Rendering");
+  });
+
+  it("moves legacy author-curated category into game", () => {
+    const normalized = normalizeParameterCategory(
+      param({ key: "GammaValue", category: "AuthorCurated" }),
+    );
+
+    expect(normalized.category).toBe("GameSpecific");
+  });
+});
+
+describe("panel + recommended integration", () => {
+  it("basic panel recommended filter keeps sg keys", () => {
+    const items = [
+      param({ key: "sg.ShadowQuality", category: "Scalability" }),
+      param({ key: "r.Fog", category: "Rendering", file: "Engine.ini", known: false, present_in_ini: true }),
+    ];
+    const panelItems = filterParamsByPanel(items, "basic");
+    const filtered = filterParamsByRecommendedMode(panelItems, true, "basic", "");
+    expect(filtered.some((p) => p.key === "sg.ShadowQuality")).toBe(true);
+    expect(filtered.some((p) => p.key === "r.Fog")).toBe(false);
   });
 });
 

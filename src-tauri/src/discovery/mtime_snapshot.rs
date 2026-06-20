@@ -25,6 +25,7 @@ pub fn discovery_mtime_changed(stored: &DiscoveryMtimeSnapshot) -> bool {
 }
 
 /// Compare stored vs current Steam library mtimes (unit-test helper).
+#[cfg(test)]
 pub fn should_invalidate_steam_cache(
     stored: &[(PathBuf, SystemTime)],
     current: &[(PathBuf, SystemTime)],

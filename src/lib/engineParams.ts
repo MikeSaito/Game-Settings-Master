@@ -55,7 +55,7 @@ export function shouldIncludeInApply(
     if (!isEngineToggleable(p)) return false;
     return isEngineEnabled(p, engineEnabled);
   }
-  return p.known && p.editable;
+  return p.editable && p.value_type !== "opaque";
 }
 
 /**

@@ -7,6 +7,10 @@ describe("resolveGameTabRoute", () => {
     expect(resolveGameTabRoute(testGame)).toBe("advanced");
   });
 
+  it("returns null when game is not UE", () => {
+    expect(resolveGameTabRoute({ ...testGame, is_ue: false })).toBeNull();
+  });
+
   it("returns null when config_dir is missing", () => {
     expect(resolveGameTabRoute({ ...testGame, config_dir: null })).toBeNull();
   });

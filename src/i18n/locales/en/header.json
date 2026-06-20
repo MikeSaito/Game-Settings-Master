@@ -1,6 +1,6 @@
 {
   "tabs": {
-    "advanced": "Manual",
+    "advanced": "Editor",
     "backups": "Backups"
   },
   "source": {
@@ -16,9 +16,13 @@
   "button": {
     "close": "Close",
     "play": "Play",
-    "open": "Open"
+    "open": "Open",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Copy failed"
   },
   "configLabel": "Config",
+  "noConfigPath": "Config path is not set",
   "gameSections": "Game sections",
   "launchWarningTitle": "Launch warning",
   "launchVia": "Launching via {{launcher}}…",

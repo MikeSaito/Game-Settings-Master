@@ -2,7 +2,6 @@ mod app_error;
 mod backup;
 #[cfg(test)]
 mod bindings_export;
-mod resource_paths;
 mod catalog;
 mod commands;
 mod covers;
@@ -17,8 +16,8 @@ mod models;
 mod presets;
 mod process_util;
 mod profiles;
+mod resource_paths;
 mod scalability;
-mod unity;
 
 use commands::{
     add_manual_game, apply_custom_cmd, apply_game_override, close_game_cmd, delete_game_override,
@@ -37,7 +36,6 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             if let Ok(resource_dir) = app.path().resource_dir() {

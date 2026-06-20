@@ -33,8 +33,8 @@ export function setAppBackgroundMode(background: boolean): Promise<void> {
   return invoke("set_app_background_mode_cmd", { background });
 }
 
-export function closeGame(exeName: string): Promise<void> {
-  return invoke("close_game_cmd", { exeName });
+export function closeGame(gameId: string, exeName?: string): Promise<void> {
+  return invoke("close_game_cmd", { gameId, exeName: exeName ?? null });
 }
 
 export function scanGames(): Promise<GameProfile[]> {
@@ -58,12 +58,14 @@ export function getGameParameters(
   gameId?: string,
   installDir?: string,
   engineFamily?: string,
+  engineVersion?: string | null,
 ): Promise<GameParameter[]> {
   return invoke("get_game_parameters_cmd", {
     configDir,
     gameId: gameId ?? null,
     installDir: installDir ?? null,
     engineFamily: engineFamily ?? null,
+    engineVersion: engineVersion ?? null,
   });
 }
 

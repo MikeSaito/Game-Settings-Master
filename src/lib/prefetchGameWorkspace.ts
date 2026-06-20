@@ -1,4 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
+import { currentLanguage } from "../i18n";
 import { getGameParameters, listBackups } from "./api";
 import type { AppTab, GameProfile } from "./types";
 
@@ -8,16 +9,29 @@ export function prefetchGameWorkspace(
   game: GameProfile,
   tab: AppTab,
 ): void {
-  const { config_dir: configDir, engine_family: engineFamily, id, install_dir: installDir } =
-    game;
+  const {
+    config_dir: configDir,
+    engine_family: engineFamily,
+    engine_version: engineVersion,
+    id,
+    install_dir: installDir,
+  } = game;
 
   if (!configDir) return;
 
   switch (tab) {
     case "advanced":
       void queryClient.prefetchQuery({
-        queryKey: ["parameters", configDir, id, engineFamily],
-        queryFn: () => getGameParameters(configDir, id, installDir, engineFamily),
+        queryKey: [
+          "parameters",
+          configDir,
+          id,
+          engineFamily,
+          engineVersion,
+          currentLanguage(),
+        ],
+        queryFn: () =>
+          getGameParameters(configDir, id, installDir, engineFamily, engineVersion),
         staleTime: 5 * 60_000,
       });
       break;

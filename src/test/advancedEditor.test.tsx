@@ -18,6 +18,7 @@ vi.mock("@tanstack/react-virtual", () => ({
           start: index * ROW_ESTIMATE_PX,
         })),
       measureElement: () => {},
+      scrollToIndex: () => {},
     };
   },
 }));
@@ -69,5 +70,36 @@ describe("AdvancedEditor integration", () => {
     expect(scrollEls.length).toBeGreaterThan(0);
     const param0Els = await screen.findAllByText("Parameter 0");
     expect(param0Els.length).toBeGreaterThan(0);
+  });
+
+  it("virtualizes 400+ parameter rows for full catalog", async () => {
+    const many = Array.from({ length: 420 }, (_, i) => ({
+      ...testParameters[0],
+      key: `r.TestParam${i}`,
+      title: `Parameter ${i}`,
+    }));
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AppWindowFocusProvider>
+          <ParameterList
+            filteredParams={many}
+            search=""
+            parametersLoading={false}
+            gpu={undefined}
+            engineEnabled={new Set()}
+            onUpdateParam={() => {}}
+            onToggleEngineParam={() => {}}
+          />
+        </AppWindowFocusProvider>
+      </QueryClientProvider>,
+    );
+    const virtualList = await screen.findByTestId("parameter-list-virtual");
+    expect(virtualList).toHaveAttribute("data-virtual-count", "420");
+    const renderedRows = within(virtualList).queryAllByTestId("parameter-row");
+    expect(renderedRows.length).toBeGreaterThan(0);
+    expect(renderedRows.length).toBeLessThan(420);
   });
 });

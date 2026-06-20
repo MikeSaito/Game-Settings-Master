@@ -4,17 +4,17 @@
 
 **Game settings in focus**
 
-Read and tune Unreal Engine and Unity game configs — with parameter descriptions, GPU-aware options, and backups.
+Read and tune Unreal Engine game configs — with parameter descriptions, GPU-aware options, and backups.
 
-`UE 4` · `UE 5` · `Unity`
+`UE 4` · `UE 5`
 
 ## Features
 
 **01 — Game library**  
-Steam and Epic scan, manual add. The app finds your config folder automatically.
+Steam and Epic scan, manual add for UE games. The app finds your config folder automatically.
 
 **02 — Parameter editor**  
-Main game tab: interactive sliders, toggles and dropdowns for key UE4/UE5 and Unity parameters — with descriptions, categories and dependencies.
+Advanced Editor with two zones: **Basic** (GameUserSettings.ini: official sg.*, display/audio/window — like the in-game menu) and **Advanced** (Engine.ini/Game.ini/Scalability.ini r.* — engine modding with a warning). Recommended filter, quality labels, and sg.* tier tooltips.
 
 **03 — GPU-aware filters**  
 DLSS, FSR, ray tracing and Frame Generation — safe clamp for your GPU. No pointless options on weak hardware.
@@ -23,7 +23,7 @@ DLSS, FSR, ray tracing and Frame Generation — safe clamp for your GPU. No poin
 Snapshot before every apply. Roll back to the previous state in one click — no fear of breaking your config.
 
 **05 — Parameter metadata catalog**  
-Bundled descriptions for the editor (`src-tauri/catalog/`) — not ready-made presets, but a reference of keys, sections and hints for the Advanced Editor.
+Knows **113** human-curated keys (RU+EN), **~233** tier A/B overlays on the reference index, and **~563** stub reference rows until expanded. The editor injects curated GUS/Engine and recommended reference keys even when they are missing from the player's ini.
 
 ## Download
 
@@ -51,19 +51,45 @@ npm ci
 powershell -File scripts/install-githooks.ps1
 ```
 
-`install-githooks.ps1` (optional) enables pre-commit: `npm test` + `bindings.ts` sync check.
+### Parameter catalog (UE)
 
-### Parameter catalog (UE / Unity)
+The app ships two layers:
 
-Source of truth — `src-tauri/catalog/` (`ue4.json`, `engine.json`, `display.json`, `scalability.json`, `unity.json`, `key_hints.json`). Edit JSON directly; there is no separate VPS server.
+| Layer | Files | Purpose |
+|-------|-------|---------|
+| **Curated (human)** | `engine.json`, `scalability.json`, `ue4.json`, `display.json`, … | **113** keys with full RU+EN titles/descriptions |
+| **Tier overlays** | `tier_a_descriptions.json`, `tier_b_descriptions.json` → merged into reference | **~233** keys with human text on top of Epic defaults |
+| **Reference index** | `ue_reference_index.json` | **726** merged engine keys (UE 4.27–5.8); **~563** remain stub until expanded |
+| **Source registries** | `sg_registry_merged.json`, `gus_registry_merged.json` | Auto-generated from Epic `Scalability.cpp` / `GameUserSettings.h` |
 
-After changing IPC DTOs in Rust (`src-tauri/src/models.rs` and related types):
+**Lookup priority:** curated JSON → ini row → reference index (version-filtered) → key hints → auto-guess. Curated always wins on key collision.
+
+**Editor injection:** bundled curated GUS (`sg.*`, display) + Engine/Scalability entries, then `catalog_recommended` reference keys for the detected UE version (cap 200 reference-only rows; tier A/B text ranked above stubs).
+
+Rebuild reference index after updating UE snapshots:
+
+```powershell
+# First-time / full catalog build — see docs/epic-clone-setup.md
+.\scripts\fetch-ue-reference.ps1 -AutoTags
+
+python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
+npm run catalog:build
+npm run catalog:test
+.\scripts\validate-catalog-stats.ps1
+```
+
+Without an Epic clone the app ships fixture snapshots (UE 4.27 + 5.4, **548+ keys**). Full fetch from 10 UE versions yields **726 merged engine keys**, source-extracted `sg.*`, and standard `UGameUserSettings` fields — see [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) and [`docs/parameter-sources.md`](docs/parameter-sources.md). Counts in `src-tauri/catalog/generated/merge_stats.json`.
+
+Advanced Editor filters reference keys by detected `engine_version` (UE 4.27–5.8). Keys in your ini are always listed.
+
+See `tools/ue-reference/README.md`. Curated entries always win on key collision.
+
+After changing IPC DTOs in Rust:
 
 ```powershell
 npm run types:gen
 ```
-
-Commit `src/lib/bindings.ts` (CI: `scripts/verify-types-sync.ps1`).
 
 ---
 

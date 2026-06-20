@@ -2,10 +2,8 @@ use crate::discovery::config_index::scan_local_appdata_configs;
 use crate::discovery::dedupe_paths;
 use crate::discovery::known_games::load_known_games;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
-use crate::discovery::unity_detect::{detect_unity_engine, UnityDetectResult};
 use crate::ini::paths::resolve_config_dir;
 use crate::models::GameProfile;
-use crate::unity::resolve_unity_config_dir;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
@@ -148,42 +146,33 @@ fn parse_steam_manifest(
         return None;
     }
 
-    let unity = detect_unity_engine(&install_path);
-    let is_unity = unity != UnityDetectResult::NotUnity;
     let ue = detect_unreal_engine(&install_path);
-    let is_ue = !is_unity && ue != UeDetectResult::NotUe;
+    if ue == UeDetectResult::NotUe {
+        return None;
+    }
 
     let exe_name = find_executables(&install_path)
         .first()
         .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()));
 
-    let config_dir = if is_unity {
-        resolve_unity_config_dir(
-            &install_path,
-            exe_name.as_deref(),
-            Some(&name),
-            Some(&app_id),
+    let config_dir = resolve_config_dir(
+        &install_path,
+        exe_name.as_deref(),
+        Some(&name),
+        Some(&app_id),
+    )
+    .or_else(|| {
+        let index = scan_local_appdata_configs();
+        crate::discovery::config_index::match_config_from_index(
+            &index,
+            &crate::discovery::config_index::build_match_candidates(
+                &install_path,
+                exe_name.as_deref(),
+                Some(&name),
+                known.get(&app_id).map(|k| k.local_app_folder.as_str()),
+            ),
         )
-    } else {
-        resolve_config_dir(
-            &install_path,
-            exe_name.as_deref(),
-            Some(&name),
-            Some(&app_id),
-        )
-        .or_else(|| {
-            let index = scan_local_appdata_configs();
-            crate::discovery::config_index::match_config_from_index(
-                &index,
-                &crate::discovery::config_index::build_match_candidates(
-                    &install_path,
-                    exe_name.as_deref(),
-                    Some(&name),
-                    known.get(&app_id).map(|k| k.local_app_folder.as_str()),
-                ),
-            )
-        })
-    }
+    })
     .map(|p| p.to_string_lossy().to_string());
 
     let profile = GameProfile {
@@ -193,18 +182,12 @@ fn parse_steam_manifest(
         install_dir: install_path.to_string_lossy().to_string(),
         config_dir,
         exe_name,
-        is_ue,
-        is_unity,
-        possible_unity: unity == UnityDetectResult::Probable,
+        is_ue: true,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: Some(crate::covers::steam_header_url(&app_id)),
         custom_cover: None,
         build_id,
-        engine_family: if is_unity {
-            "unity".to_string()
-        } else {
-            "unknown".to_string()
-        },
+        engine_family: "unknown".to_string(),
         engine_version: None,
     };
     Some(profile)

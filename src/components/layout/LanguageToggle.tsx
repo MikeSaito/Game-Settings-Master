@@ -18,17 +18,17 @@ export function LanguageToggle() {
   };
 
   return (
-    <div className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-card)] p-0.5">
+    <div className="flex items-center gap-1 rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-0.5">
       {SUPPORTED_LANGUAGES.map((lang) => (
         <button
           key={lang}
           type="button"
           onClick={() => change(lang)}
           className={cn(
-            "flex-1 rounded-md px-2 py-1 text-xs font-semibold uppercase transition",
+            "flex-1 rounded-[7px] px-2 py-1 text-xs font-semibold uppercase transition",
             lang === active
-              ? "bg-[var(--color-bg-active)] text-[var(--color-text)] ring-1 ring-[var(--color-accent)]/35"
-              : "text-muted hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]",
+              ? "bg-[var(--color-surface-raised)] text-[var(--color-text)]"
+              : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)]",
           )}
         >
           {lang}

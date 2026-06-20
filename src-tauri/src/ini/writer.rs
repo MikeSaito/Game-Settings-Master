@@ -59,13 +59,14 @@ pub fn merge_ini(
             .find(|k| k.eq_ignore_ascii_case(section_name))
             .cloned()
             .unwrap_or_else(|| section_name.clone());
-        let section = result
-            .sections
-            .entry(target_name)
-            .or_insert_with(|| crate::models::IniSection {
-                entries: IndexMap::new(),
-                preamble: Vec::new(),
-            });
+        let section =
+            result
+                .sections
+                .entry(target_name)
+                .or_insert_with(|| crate::models::IniSection {
+                    entries: IndexMap::new(),
+                    preamble: Vec::new(),
+                });
         for (key, value) in entries {
             section.entries.insert(key.clone(), value.clone());
         }
@@ -203,7 +204,10 @@ mod tests {
             .expect("section");
         assert!(!section.entries.contains_key("GammaValue"));
         assert_eq!(
-            section.entries.get("ResolutionScaleMax").map(String::as_str),
+            section
+                .entries
+                .get("ResolutionScaleMax")
+                .map(String::as_str),
             Some("0.9")
         );
     }

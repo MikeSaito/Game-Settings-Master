@@ -64,14 +64,15 @@ impl From<AppError> for String {
         match err.code {
             // Frontend strips the marker; message must stay byte-identical to legacy helpers.
             AppErrorCode::GameRunning => err.message,
-            AppErrorCode::GameNotFound | AppErrorCode::InvalidPath | AppErrorCode::PresetNotFound => {
-                err.message
-            }
+            AppErrorCode::GameNotFound
+            | AppErrorCode::InvalidPath
+            | AppErrorCode::PresetNotFound => err.message,
             AppErrorCode::IoError | AppErrorCode::Validation | AppErrorCode::Other => err.message,
         }
     }
 }
 
+#[cfg(test)]
 pub fn is_running_game_error(err: &str) -> bool {
     err.starts_with(RUNNING_GAME_ERROR_MARKER)
 }

@@ -5,6 +5,52 @@ use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+fn validate_ini_payload(
+    file_name: &str,
+    sections: &HashMap<String, HashMap<String, String>>,
+    removals: &HashMap<String, Vec<String>>,
+) -> Result<(), String> {
+    for (section, entries) in sections {
+        if !crate::fs_util::is_safe_ini_section_name(section) {
+            return Err(crate::i18n::t(
+                &format!("Недопустимая INI-секция в {file_name}: {section}"),
+                &format!("Invalid INI section in {file_name}: {section}"),
+            ));
+        }
+        for (key, value) in entries {
+            if !crate::fs_util::is_safe_ini_key_name(key) {
+                return Err(crate::i18n::t(
+                    &format!("Недопустимый INI-ключ в {file_name}: {key}"),
+                    &format!("Invalid INI key in {file_name}: {key}"),
+                ));
+            }
+            if !crate::fs_util::is_safe_ini_value(value) {
+                return Err(crate::i18n::t(
+                    &format!("Недопустимое INI-значение для {key}"),
+                    &format!("Invalid INI value for {key}"),
+                ));
+            }
+        }
+    }
+    for (section, keys) in removals {
+        if !crate::fs_util::is_safe_ini_section_name(section) {
+            return Err(crate::i18n::t(
+                &format!("Недопустимая INI-секция в removals {file_name}: {section}"),
+                &format!("Invalid INI section in removals {file_name}: {section}"),
+            ));
+        }
+        for key in keys {
+            if !crate::fs_util::is_safe_ini_key_name(key) {
+                return Err(crate::i18n::t(
+                    &format!("Недопустимый INI-ключ в removals {file_name}: {key}"),
+                    &format!("Invalid INI key in removals {file_name}: {key}"),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
 pub fn apply_changes_to_dir(
     config_dir: &Path,
     files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
@@ -29,7 +75,7 @@ pub fn apply_changes_to_dir(
                 &format!("Invalid configuration file name: {file_name}"),
             ));
         }
-        let file_path = config_dir.join(&file_name);
+        let file_path = crate::fs_util::safe_child_path(config_dir, &file_name)?;
         let existing = if file_path.exists() {
             read_ini_file(&file_path)?
         } else {
@@ -47,9 +93,13 @@ pub fn apply_changes_to_dir(
             .get(&file_name)
             .map(|sections| normalize_removals(sections))
             .unwrap_or_default();
+        validate_ini_payload(
+            &file_name,
+            files.get(&file_name).unwrap_or(&HashMap::new()),
+            &file_removals,
+        )?;
 
-        let expanded_updates =
-            crate::ini::expand_mirror_key_updates(&existing, &updates);
+        let expanded_updates = crate::ini::expand_mirror_key_updates(&existing, &updates);
 
         let mut merged = merge_ini(&existing, &expanded_updates);
         remove_ini_keys(&mut merged, &file_removals);
@@ -109,10 +159,10 @@ fn compute_removal_diff(
 ) -> Vec<ConfigDiffEntry> {
     let mut diff = Vec::new();
     for (section, keys) in removals {
-        let before_section = crate::ini::parser::find_section_key(before, section)
-            .and_then(|key| before.get(key));
-        let after_section = crate::ini::parser::find_section_key(after, section)
-            .and_then(|key| after.get(key));
+        let before_section =
+            crate::ini::parser::find_section_key(before, section).and_then(|key| before.get(key));
+        let after_section =
+            crate::ini::parser::find_section_key(after, section).and_then(|key| after.get(key));
         for key in keys {
             let old_value = before_section.and_then(|s| s.get(key)).cloned();
             let still_present = after_section.and_then(|s| s.get(key)).is_some();
@@ -256,12 +306,7 @@ fn merge_section_updates(
 }
 
 fn normalize_section(section: &str) -> String {
-    let trimmed = section.trim();
-    if trimmed.starts_with('[') && trimmed.ends_with(']') {
-        trimmed[1..trimmed.len() - 1].to_string()
-    } else {
-        trimmed.to_string()
-    }
+    crate::fs_util::normalize_ini_section_name(section)
 }
 
 fn compute_diff(
@@ -272,8 +317,8 @@ fn compute_diff(
 ) -> Vec<ConfigDiffEntry> {
     let mut diff = Vec::new();
     for (section, entries) in updates {
-        let before_section = crate::ini::parser::find_section_key(before, section)
-            .and_then(|key| before.get(key));
+        let before_section =
+            crate::ini::parser::find_section_key(before, section).and_then(|key| before.get(key));
         for (key, new_value) in entries {
             let old_value = before_section.and_then(|s| s.get(key)).cloned();
             let unchanged = old_value
@@ -397,14 +442,176 @@ mod tests {
     }
 
     #[test]
+    fn custom_apply_writes_sg_to_game_user_settings_scalability_groups() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\nsg.ShadowQuality=1\r\nsg.TextureQuality=2\r\n",
+        )
+        .unwrap();
+
+        let mut scalability = HashMap::new();
+        scalability.insert("sg.ShadowQuality".to_string(), "3".to_string());
+        let mut sections = HashMap::new();
+        sections.insert("ScalabilityGroups".to_string(), scalability);
+        let changes = crate::models::CustomChanges {
+            files: HashMap::from([("GameUserSettings.ini".to_string(), sections)]),
+            ..Default::default()
+        };
+
+        let (changed, diff) = apply_custom_to_dir(dir.path(), &changes, 1920, 1080).unwrap();
+        assert_eq!(changed, vec!["GameUserSettings.ini".to_string()]);
+        assert!(diff.iter().any(|d| {
+            d.file == "GameUserSettings.ini"
+                && d.section == "ScalabilityGroups"
+                && d.key == "sg.ShadowQuality"
+                && d.new_value == "3"
+        }));
+
+        let gus = fs::read_to_string(dir.path().join("GameUserSettings.ini")).unwrap();
+        assert!(gus.contains("sg.ShadowQuality=3"), "got: {gus}");
+        assert!(
+            gus.contains("sg.TextureQuality=2"),
+            "unrelated sg key must be preserved: {gus}"
+        );
+    }
+
+    #[test]
+    fn custom_apply_writes_game_user_settings_bool_to_script_section() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[/Script/Engine.GameUserSettings]\r\nbUseVSync=False\r\nResolutionSizeX=1280\r\nResolutionSizeY=720\r\n",
+        )
+        .unwrap();
+
+        let mut gus_values = HashMap::new();
+        gus_values.insert("bUseVSync".to_string(), "True".to_string());
+        let mut sections = HashMap::new();
+        sections.insert("/Script/Engine.GameUserSettings".to_string(), gus_values);
+        let changes = crate::models::CustomChanges {
+            files: HashMap::from([("GameUserSettings.ini".to_string(), sections)]),
+            ..Default::default()
+        };
+
+        let (_changed, diff) = apply_custom_to_dir(dir.path(), &changes, 2560, 1440).unwrap();
+        assert!(diff.iter().any(|d| {
+            d.file == "GameUserSettings.ini"
+                && d.section == "/Script/Engine.GameUserSettings"
+                && d.key == "bUseVSync"
+                && d.old_value.as_deref() == Some("False")
+                && d.new_value == "True"
+        }));
+
+        let gus = fs::read_to_string(dir.path().join("GameUserSettings.ini")).unwrap();
+        assert!(
+            gus.contains("[/Script/Engine.GameUserSettings]"),
+            "got: {gus}"
+        );
+        assert!(gus.contains("bUseVSync=True"), "got: {gus}");
+    }
+
+    #[test]
+    fn custom_apply_writes_engine_cvar_to_engine_system_settings() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\n",
+        )
+        .unwrap();
+        fs::write(
+            dir.path().join("Engine.ini"),
+            "[SystemSettings]\r\nr.ViewDistanceScale=1.0\r\n",
+        )
+        .unwrap();
+
+        let mut system = HashMap::new();
+        system.insert("r.Tonemapper.Sharpen".to_string(), "1.25".to_string());
+        let changes = crate::models::CustomChanges {
+            files: HashMap::from([(
+                "Engine.ini".to_string(),
+                HashMap::from([("SystemSettings".to_string(), system)]),
+            )]),
+            ..Default::default()
+        };
+
+        apply_custom_to_dir(dir.path(), &changes, 1920, 1080).unwrap();
+
+        let engine = fs::read_to_string(dir.path().join("Engine.ini")).unwrap();
+        assert!(engine.contains("[SystemSettings]"), "got: {engine}");
+        assert!(
+            engine.contains("r.Tonemapper.Sharpen=1.25"),
+            "got: {engine}"
+        );
+        assert!(
+            engine.contains("r.ViewDistanceScale=1.0"),
+            "unrelated engine key must be preserved: {engine}"
+        );
+    }
+
+    #[test]
+    fn custom_apply_writes_scalability_cvar_to_scalability_system_settings() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\r\n",
+        )
+        .unwrap();
+        fs::write(
+            dir.path().join("Scalability.ini"),
+            "[SystemSettings]\r\nr.ShadowQuality=2\r\n",
+        )
+        .unwrap();
+
+        let changes = crate::models::CustomChanges {
+            files: HashMap::from([(
+                "Scalability.ini".to_string(),
+                HashMap::from([(
+                    "SystemSettings".to_string(),
+                    HashMap::from([("r.Tonemapper.Sharpen".to_string(), "0.75".to_string())]),
+                )]),
+            )]),
+            ..Default::default()
+        };
+
+        apply_custom_to_dir(dir.path(), &changes, 1920, 1080).unwrap();
+
+        let scalability = fs::read_to_string(dir.path().join("Scalability.ini")).unwrap();
+        assert!(
+            scalability.contains("r.Tonemapper.Sharpen=0.75"),
+            "got: {scalability}"
+        );
+        assert!(
+            scalability.contains("r.ShadowQuality=2"),
+            "unrelated scalability key must be preserved: {scalability}"
+        );
+    }
+
+    #[test]
     fn apply_changes_rejects_traversal_filename() {
         let dir = tempfile::tempdir().unwrap();
         fs::write(dir.path().join("GameUserSettings.ini"), "[Settings]\n").unwrap();
         let mut files = HashMap::new();
         files.insert("../evil.ini".to_string(), HashMap::new());
-        let err = apply_changes_to_dir(dir.path(), &files, &HashMap::new(), 1920, 1080)
-            .unwrap_err();
+        let err =
+            apply_changes_to_dir(dir.path(), &files, &HashMap::new(), 1920, 1080).unwrap_err();
         assert!(err.contains("Недопустимое имя"));
+    }
+
+    #[test]
+    fn apply_changes_rejects_ini_value_injection() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(dir.path().join("GameUserSettings.ini"), "[Settings]\n").unwrap();
+        let files = HashMap::from([(
+            "Engine.ini".to_string(),
+            HashMap::from([(
+                "SystemSettings".to_string(),
+                HashMap::from([("r.Safe".to_string(), "1\nInjected=True".to_string())]),
+            )]),
+        )]);
+        let err =
+            apply_changes_to_dir(dir.path(), &files, &HashMap::new(), 1920, 1080).unwrap_err();
+        assert!(err.contains("Недопустимое"));
     }
 
     #[test]
@@ -424,14 +631,8 @@ mod tests {
         upper.insert("DLSSMode".to_string(), "Quality".to_string());
 
         let mut gus_sections = HashMap::new();
-        gus_sections.insert(
-            "/script/subnautica2.sn2settingslocal".to_string(),
-            lower,
-        );
-        gus_sections.insert(
-            "/Script/Subnautica2.S2GameUserSettings".to_string(),
-            upper,
-        );
+        gus_sections.insert("/script/subnautica2.sn2settingslocal".to_string(), lower);
+        gus_sections.insert("/Script/Subnautica2.S2GameUserSettings".to_string(), upper);
 
         let mut files = HashMap::new();
         files.insert("GameUserSettings.ini".to_string(), gus_sections);
@@ -456,7 +657,9 @@ mod tests {
             "DLSSMode not updated: {content}"
         );
         assert_eq!(
-            content.matches("[/Script/subnautica2.sn2settingslocal]").count()
+            content
+                .matches("[/Script/subnautica2.sn2settingslocal]")
+                .count()
                 + content
                     .matches("[/Script/Subnautica2.SN2SettingsLocal]")
                     .count(),

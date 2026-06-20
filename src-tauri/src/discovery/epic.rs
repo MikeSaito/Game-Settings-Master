@@ -1,11 +1,9 @@
 use crate::discovery::config_index::scan_local_appdata_configs;
 use crate::discovery::merge_game_profile;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
-use crate::discovery::unity_detect::{detect_unity_engine, UnityDetectResult};
 use crate::ini::paths::resolve_config_dir;
 use crate::launch::validate_epic_app_name;
 use crate::models::GameProfile;
-use crate::unity::resolve_unity_config_dir;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -136,10 +134,10 @@ fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
         return None;
     }
 
-    let unity = detect_unity_engine(&install_path);
-    let is_unity = unity != UnityDetectResult::NotUnity;
     let ue = detect_unreal_engine(&install_path);
-    let is_ue = !is_unity && ue != UeDetectResult::NotUe;
+    if ue == UeDetectResult::NotUe {
+        return None;
+    }
 
     let exe_name = json
         .get("LaunchExecutable")
@@ -151,33 +149,24 @@ fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
                 .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
         });
 
-    let config_dir = if is_unity {
-        resolve_unity_config_dir(
-            &install_path,
-            exe_name.as_deref(),
-            Some(&display_name),
-            None,
+    let config_dir = resolve_config_dir(
+        &install_path,
+        exe_name.as_deref(),
+        Some(&display_name),
+        None,
+    )
+    .or_else(|| {
+        let index = scan_local_appdata_configs();
+        crate::discovery::config_index::match_config_from_index(
+            &index,
+            &crate::discovery::config_index::build_match_candidates(
+                &install_path,
+                exe_name.as_deref(),
+                Some(&display_name),
+                None,
+            ),
         )
-    } else {
-        resolve_config_dir(
-            &install_path,
-            exe_name.as_deref(),
-            Some(&display_name),
-            None,
-        )
-        .or_else(|| {
-            let index = scan_local_appdata_configs();
-            crate::discovery::config_index::match_config_from_index(
-                &index,
-                &crate::discovery::config_index::build_match_candidates(
-                    &install_path,
-                    exe_name.as_deref(),
-                    Some(&display_name),
-                    None,
-                ),
-            )
-        })
-    }
+    })
     .map(|p| p.to_string_lossy().to_string());
 
     let profile = GameProfile {
@@ -187,18 +176,12 @@ fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
         install_dir: install_path.to_string_lossy().to_string(),
         config_dir,
         exe_name,
-        is_ue,
-        is_unity,
-        possible_unity: unity == UnityDetectResult::Probable,
+        is_ue: true,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: None,
         custom_cover: None,
         build_id,
-        engine_family: if is_unity {
-            "unity".to_string()
-        } else {
-            "unknown".to_string()
-        },
+        engine_family: "unknown".to_string(),
         engine_version: None,
     };
     Some(profile)
@@ -219,10 +202,7 @@ mod tests {
     #[test]
     fn skips_manifest_with_invalid_app_name() {
         let install = tempfile::tempdir().unwrap();
-        let loc = install
-            .path()
-            .to_string_lossy()
-            .replace('\\', "\\\\");
+        let loc = install.path().to_string_lossy().replace('\\', "\\\\");
         let file = write_manifest(&format!(
             r#"{{"InstallLocation":"{loc}","DisplayName":"Test","AppName":"bad name"}}"#
         ));
@@ -234,7 +214,8 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("huge.item");
         let mut file = fs::File::create(&path).unwrap();
-        file.write_all(&[b'{'; MAX_EPIC_MANIFEST_BYTES as usize + 1]).unwrap();
+        file.write_all(&[b'{'; MAX_EPIC_MANIFEST_BYTES as usize + 1])
+            .unwrap();
         assert!(parse_epic_manifest(&path).is_none());
     }
 }

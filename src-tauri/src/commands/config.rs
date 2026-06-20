@@ -1,7 +1,7 @@
 use super::helpers::{
-    extract_boot_config_changes, find_profile_by_id, guard_config_dir_for_write,
-    normalize_path_cmp, resolve_ue_config_path, resolve_write_exe_name,
-    validate_config_dir_for_game, validate_custom_changes_payload, validate_install_dir_for_game,
+    find_profile_by_id, guard_config_dir_for_write, normalize_path_cmp, resolve_ue_config_path,
+    resolve_write_exe_name, validate_config_dir_for_game, validate_custom_changes_payload,
+    validate_install_dir_for_game,
 };
 use crate::app_error::AppError;
 use crate::catalog::get_game_parameters;
@@ -31,51 +31,25 @@ pub fn get_game_config(
         validate_config_dir_for_game(gid, &config_dir)?;
     }
     let path = validate_config_dir(&config_dir)?;
-
-    let path = if crate::unity::is_unity_config_dir(&path) {
-        path
-    } else {
-        resolve_ue_config_path(path, game_id.as_deref(), engine_family.as_deref())
-    };
+    let path = resolve_ue_config_path(path, game_id.as_deref(), engine_family.as_deref());
 
     let mut files = HashMap::new();
-
-    if crate::unity::is_unity_config_dir(&path) {
-        let boot_path = crate::unity::boot_config_path(&path);
-        if boot_path.exists() {
-            let content = std::fs::read_to_string(&boot_path).map_err(|e| {
-                AppError::io(crate::i18n::t(
-                    &format!("Не удалось прочитать boot.config: {e}"),
-                    &format!("Failed to read boot.config: {e}"),
-                ))
-                .to_invoke_string()
-            })?;
-            let map = crate::unity::parse_boot_config(&content);
+    let ini_files = [
+        "GameUserSettings.ini",
+        "Engine.ini",
+        "Game.ini",
+        "Scalability.ini",
+    ];
+    for file in ini_files {
+        let file_path = path.join(file);
+        if file_path.exists() {
+            let ini = read_ini_file(&file_path)?;
             files.insert(
-                "boot.config".to_string(),
+                file.to_string(),
                 IniFileData {
-                    sections: HashMap::from([(String::new(), map)]),
+                    sections: ini_to_data(&ini),
                 },
             );
-        }
-    } else {
-        let ini_files = [
-            "GameUserSettings.ini",
-            "Engine.ini",
-            "Game.ini",
-            "Scalability.ini",
-        ];
-        for file in ini_files {
-            let file_path = path.join(file);
-            if file_path.exists() {
-                let ini = read_ini_file(&file_path)?;
-                files.insert(
-                    file.to_string(),
-                    IniFileData {
-                        sections: ini_to_data(&ini),
-                    },
-                );
-            }
         }
     }
 
@@ -91,6 +65,7 @@ pub fn get_game_parameters_cmd(
     game_id: Option<String>,
     install_dir: Option<String>,
     engine_family: Option<String>,
+    engine_version: Option<String>,
 ) -> Result<Vec<GameParameter>, String> {
     if let Some(gid) = game_id.as_deref() {
         validate_config_dir_for_game(gid, &config_dir)?;
@@ -107,6 +82,7 @@ pub fn get_game_parameters_cmd(
         game_id.as_deref(),
         install.as_deref(),
         engine_family.as_deref(),
+        engine_version.as_deref(),
     )
 }
 
@@ -143,19 +119,6 @@ pub fn apply_custom_cmd(
     let path = validate_config_dir(&config_dir)?;
     validate_custom_changes_payload(&changes, &path)?;
     ensure_config_writable(&path, resolved_exe.as_deref())?;
-
-    if crate::unity::is_unity_config_dir(&path) {
-        let boot_changes = extract_boot_config_changes(&changes.files)?;
-        let backup_id = crate::unity::backup_unity_config(&path)?;
-        ensure_config_writable(&path, resolved_exe.as_deref())?;
-        let (changed_files, diff) = crate::unity::apply_boot_config(&path, &boot_changes)?;
-        return Ok(ApplyResult {
-            backup_id,
-            changed_files,
-            diff,
-            effective_config_dir: Some(path.to_string_lossy().to_string()),
-        });
-    }
 
     let hints = platform_hints_for_game(game_id.as_deref(), engine_family.as_deref());
     let path = reconcile_config_dir(&path, &hints);
@@ -209,8 +172,7 @@ pub fn apply_game_override(
 ) -> Result<ApplyResult, String> {
     crate::profiles::validate_override_bounds(&override_def)?;
     crate::profiles::ensure_known_game_id(&override_def.game_id)?;
-    let resolved_exe =
-        resolve_write_exe_name(exe_name.as_deref(), Some(&override_def.game_id))?;
+    let resolved_exe = resolve_write_exe_name(exe_name.as_deref(), Some(&override_def.game_id))?;
     guard_config_dir_for_write(Some(&override_def.game_id), &config_dir)?;
     let path = validate_config_dir(&config_dir)?;
     let path_key = normalize_path_cmp(&path.to_string_lossy());
@@ -259,10 +221,7 @@ pub fn apply_game_override(
         ))
         .to_invoke_string()
     })?;
-    let hints = platform_hints_for_game(
-        Some(&override_def.game_id),
-        Some(&trusted.engine_family),
-    );
+    let hints = platform_hints_for_game(Some(&override_def.game_id), Some(&trusted.engine_family));
     let path = reconcile_config_dir(&path, &hints);
     let targets = apply_target_dirs(&path, &hints);
     for target in &targets {

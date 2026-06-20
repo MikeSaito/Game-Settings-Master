@@ -1,5 +1,5 @@
-use crate::ini::platform::{pick_platform_config_dir, PlatformHints};
 use crate::discovery::config_index::normalize_key;
+use crate::ini::platform::{pick_platform_config_dir, PlatformHints};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -16,12 +16,6 @@ pub struct KnownGameEntry {
     pub config_platform: Option<String>,
     #[serde(default)]
     pub engine_family: Option<String>,
-    /// `%USERPROFILE%/AppData/LocalLow/{Company}/{Product}`
-    #[serde(default)]
-    pub local_low_folder: Option<String>,
-    /// Subfolder in install_dir, e.g. `GameName_Data`
-    #[serde(default)]
-    pub unity_data_subdir: Option<String>,
     /// Epic catalog names (CatalogItemId / AppName) for matching against known.json.
     #[serde(default)]
     pub epic_app_names: Vec<String>,

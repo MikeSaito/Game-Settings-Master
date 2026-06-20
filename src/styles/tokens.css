@@ -1,0 +1,69 @@
+@theme {
+  --font-sans: "IBM Plex Sans", "Geist", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "Geist Mono", "Cascadia Mono", ui-monospace, monospace;
+
+  --color-bg: #0f0e0c;
+  --color-bg-soft: #171611;
+  --color-surface: #211f19;
+  --color-surface-raised: #2a271f;
+  --color-surface-hover: #343025;
+  --color-border: #5c5548;
+  --color-border-strong: #6d6454;
+  --color-text: #faf6ec;
+  --color-text-secondary: #ddd5c5;
+  --color-text-muted: #aea695;
+  --color-text-faint: #857c6d;
+  --color-accent: #d99a2b;
+  --color-accent-hover: #efb347;
+  --color-accent-soft: rgba(217, 154, 43, 0.14);
+  --color-accent-ring: rgba(217, 154, 43, 0.32);
+  --color-success: #76c893;
+  --color-success-soft: rgba(118, 200, 147, 0.12);
+  --color-warning: #f1c15f;
+  --color-warning-soft: rgba(241, 193, 95, 0.13);
+  --color-error: #ff7d73;
+  --color-error-soft: rgba(255, 125, 115, 0.13);
+  --color-danger: #f06767;
+  --color-danger-soft: rgba(240, 103, 103, 0.13);
+}
+
+:root {
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --shadow-panel: 0 18px 60px rgba(0, 0, 0, 0.24);
+  --shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --focus-ring: 0 0 0 3px var(--color-accent-ring);
+  --app-font-scale: 1;
+  --scrollbar-thumb: var(--color-border-strong);
+  --scrollbar-thumb-hover: var(--color-text-faint);
+}
+
+[data-theme="light"] {
+  --color-bg: #f5f2ea;
+  --color-bg-soft: #ece7dc;
+  --color-surface: #ffffff;
+  --color-surface-raised: #faf8f4;
+  --color-surface-hover: #eee8dc;
+  --color-border: #c9c0b0;
+  --color-border-strong: #9c907e;
+  --color-text: #1a1814;
+  --color-text-secondary: #3e382f;
+  --color-text-muted: #5c564c;
+  --color-text-faint: #7c7366;
+  --color-accent: #b87a14;
+  --color-accent-hover: #8f5f0f;
+  --color-accent-soft: rgba(184, 122, 20, 0.14);
+  --color-accent-ring: rgba(184, 122, 20, 0.28);
+  --color-success: #246b43;
+  --color-success-soft: rgba(36, 107, 67, 0.12);
+  --color-warning: #805514;
+  --color-warning-soft: rgba(128, 85, 20, 0.14);
+  --color-error: #a33a33;
+  --color-error-soft: rgba(163, 58, 51, 0.12);
+  --color-danger: #a33a33;
+  --color-danger-soft: rgba(163, 58, 51, 0.12);
+  --shadow-panel: 0 18px 60px rgba(51, 40, 22, 0.16);
+  --shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.88) inset;
+  --scrollbar-thumb: #b4aa99;
+  --scrollbar-thumb-hover: #8f8370;
+}

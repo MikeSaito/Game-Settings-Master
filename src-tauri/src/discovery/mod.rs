@@ -6,7 +6,6 @@ mod registry;
 mod steam;
 mod ue_detect;
 mod ue_version;
-mod unity_detect;
 
 use crate::covers::merge_saved_cover;
 use crate::ini::paths::resolve_config_dir;
@@ -28,9 +27,8 @@ pub use registry::{
     invalidate_game_scan_cache,
 };
 pub use steam::scan_steam_games;
-pub use ue_detect::{detect_unreal_engine, find_executables, is_non_game_install, UeDetectResult};
+pub use ue_detect::{detect_unreal_engine, is_non_game_install, UeDetectResult};
 pub use ue_version::enrich_engine_version;
-pub use unity_detect::{detect_unity_engine, find_unity_data_dir, UnityDetectResult};
 
 fn source_priority(source: &str) -> u8 {
     match source {
@@ -68,12 +66,8 @@ pub fn merge_game_profile(target: &mut GameProfile, other: &GameProfile) {
     }
     merge_saved_cover(target, other);
     target.is_ue = target.is_ue || other.is_ue;
-    target.is_unity = target.is_unity || other.is_unity;
     if !target.possible_ue {
         target.possible_ue = other.possible_ue;
-    }
-    if !target.possible_unity {
-        target.possible_unity = other.possible_unity;
     }
     if target.engine_family == "unknown" && other.engine_family != "unknown" {
         target.engine_family = other.engine_family.clone();
@@ -125,14 +119,16 @@ pub fn dedupe_games(games: Vec<GameProfile>) -> Vec<GameProfile> {
 
 pub fn scan_all_games() -> Vec<GameProfile> {
     let mut games: HashMap<String, GameProfile> = HashMap::new();
+    let steam_handle = std::thread::spawn(scan_steam_games);
+    let epic_handle = std::thread::spawn(scan_epic_games);
 
-    for game in scan_steam_games() {
+    for game in steam_handle.join().unwrap_or_default() {
         games
             .entry(game.id.clone())
             .and_modify(|existing| merge_game_profile(existing, &game))
             .or_insert(game);
     }
-    for game in scan_epic_games() {
+    for game in epic_handle.join().unwrap_or_default() {
         games
             .entry(game.id.clone())
             .and_modify(|existing| merge_game_profile(existing, &game))
@@ -186,24 +182,16 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
         ));
     }
 
-    let unity = detect_unity_engine(&path);
-    let is_unity = unity != UnityDetectResult::NotUnity;
     let ue = detect_unreal_engine(&path);
-    let is_ue = !is_unity && ue != UeDetectResult::NotUe;
-
-    if !is_unity && !is_ue {
+    if ue == UeDetectResult::NotUe {
         return Err(crate::i18n::t(
-            "Папка не похожа на Unreal Engine или Unity (нет Shipping.exe, *_Data и т.д.)",
-            "Folder does not look like Unreal Engine or Unity (no Shipping.exe, *_Data, etc.)",
+            "Папка не похожа на Unreal Engine (нет Shipping.exe и т.д.)",
+            "Folder does not look like Unreal Engine (no Shipping.exe, etc.)",
         ));
     }
 
-    let config_dir = if is_unity {
-        crate::unity::resolve_unity_config_dir(&path, None, Some(display_name), None)
-    } else {
-        resolve_config_dir(&path, None, Some(display_name), None)
-    }
-    .map(|p| p.to_string_lossy().to_string());
+    let config_dir = resolve_config_dir(&path, None, Some(display_name), None)
+        .map(|p| p.to_string_lossy().to_string());
 
     Ok(GameProfile {
         id: format!("manual-{}", Uuid::new_v4()),
@@ -212,32 +200,25 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
         install_dir: install_dir.to_string(),
         config_dir,
         exe_name: None,
-        is_ue,
-        is_unity,
-        possible_unity: unity == UnityDetectResult::Probable,
+        is_ue: true,
         possible_ue: ue == UeDetectResult::Probable,
         cover_url: None,
         custom_cover: None,
         build_id: None,
-        engine_family: if is_unity {
-            "unity".to_string()
-        } else {
-            "unknown".to_string()
-        },
+        engine_family: "unknown".to_string(),
         engine_version: None,
     })
 }
 
 pub fn enrich_engine_flags(profile: &mut GameProfile) {
     let install = std::path::PathBuf::from(&profile.install_dir);
-    let resolved_app_id = crate::discovery::known_app_id_for_game(&profile.id)
-        .or_else(|| {
-            profile
-                .id
-                .strip_prefix("steam-")
-                .or_else(|| profile.id.strip_prefix("epic-"))
-                .map(str::to_string)
-        });
+    let resolved_app_id = crate::discovery::known_app_id_for_game(&profile.id).or_else(|| {
+        profile
+            .id
+            .strip_prefix("steam-")
+            .or_else(|| profile.id.strip_prefix("epic-"))
+            .map(str::to_string)
+    });
     let known = load_known_games();
     if let Some(app_id) = resolved_app_id.as_deref() {
         if let Some(entry) = known.get(app_id) {
@@ -252,17 +233,6 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
         }
     }
 
-    let unity = detect_unity_engine(&install);
-    profile.is_unity = unity != UnityDetectResult::NotUnity;
-    profile.possible_unity = unity == UnityDetectResult::Probable;
-
-    if profile.is_unity {
-        profile.is_ue = false;
-        profile.possible_ue = false;
-        profile.engine_family = "unity".to_string();
-        return;
-    }
-
     let ue = detect_unreal_engine(&install);
     if !profile.is_ue {
         profile.is_ue = ue != UeDetectResult::NotUe;
@@ -274,31 +244,21 @@ pub fn enrich_engine_flags(profile: &mut GameProfile) {
 
 pub fn enrich_config_dir(profile: &mut GameProfile) {
     let install = std::path::PathBuf::from(&profile.install_dir);
-    let resolved_app_id = crate::discovery::known_app_id_for_game(&profile.id)
-        .or_else(|| {
-            profile
-                .id
-                .strip_prefix("steam-")
-                .or_else(|| profile.id.strip_prefix("epic-"))
-                .map(str::to_string)
-        });
+    let resolved_app_id = crate::discovery::known_app_id_for_game(&profile.id).or_else(|| {
+        profile
+            .id
+            .strip_prefix("steam-")
+            .or_else(|| profile.id.strip_prefix("epic-"))
+            .map(str::to_string)
+    });
 
     if profile.config_dir.is_none() {
-        profile.config_dir = if profile.is_unity {
-            crate::unity::resolve_unity_config_dir(
-                &install,
-                profile.exe_name.as_deref(),
-                Some(&profile.name),
-                resolved_app_id.as_deref(),
-            )
-        } else {
-            resolve_config_dir(
-                &install,
-                profile.exe_name.as_deref(),
-                Some(&profile.name),
-                resolved_app_id.as_deref(),
-            )
-        }
+        profile.config_dir = resolve_config_dir(
+            &install,
+            profile.exe_name.as_deref(),
+            Some(&profile.name),
+            resolved_app_id.as_deref(),
+        )
         .map(|p| p.to_string_lossy().to_string());
     }
 
@@ -306,9 +266,6 @@ pub fn enrich_config_dir(profile: &mut GameProfile) {
 }
 
 fn reconcile_profile_config_dir(profile: &mut GameProfile) {
-    if profile.is_unity {
-        return;
-    }
     let Some(ref config_dir) = profile.config_dir else {
         return;
     };
@@ -334,8 +291,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: true,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: if source == "steam" {
                 Some("https://example.com/cover.jpg".to_string())

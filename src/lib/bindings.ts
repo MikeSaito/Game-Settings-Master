@@ -79,6 +79,12 @@ export type GameParameter = {
 	options?: ParameterOption[] | null,
 	/**  Author-recommended value (shown as hint/button). */
 	recommended?: string | null,
+	/**  Catalog flag for Advanced Editor «Recommended» filter. */
+	catalog_recommended?: boolean,
+	/**  UE scalability preset tier breakdown (sg.*Quality only). */
+	tier_hint?: string | null,
+	/**  Description tier: human | semi | auto (from catalog builder). */
+	description_quality?: string | null,
 };
 
 export type GameProfile = {
@@ -89,8 +95,6 @@ export type GameProfile = {
 	config_dir: string | null,
 	exe_name: string | null,
 	is_ue: boolean,
-	is_unity?: boolean,
-	possible_unity?: boolean,
 	possible_ue?: boolean,
 	cover_url?: string | null,
 	custom_cover?: string | null,

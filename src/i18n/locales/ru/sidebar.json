@@ -1,11 +1,13 @@
 {
   "tabs": {
-    "library": { "label": "Библиотека", "desc": "Игры и config" }
+    "library": { "label": "Библиотека", "desc": "Игры и config" },
+    "settings": { "label": "Настройки", "desc": "Интерфейс" }
   },
+  "game": "Текущая игра",
   "activeGame": "Активная игра",
   "pickGame": "Выберите игру в библиотеке",
   "badge": {
-    "configOk": "Config OK",
+    "configOk": "Config готов",
     "needConfig": "Нужен config"
   }
 }

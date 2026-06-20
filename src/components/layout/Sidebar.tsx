@@ -35,7 +35,7 @@ export function Sidebar({ active, selectedGame }: Props) {
             <div className="truncate text-sm font-semibold text-[var(--color-text)]">
               Game Settings Master
             </div>
-            <div className="mt-0.5 text-xs text-muted">UE · Unity</div>
+            <div className="mt-0.5 text-xs text-muted">UE 4 · UE 5</div>
           </div>
         </div>
       </div>

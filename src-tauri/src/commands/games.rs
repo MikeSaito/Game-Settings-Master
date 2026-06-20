@@ -8,9 +8,7 @@ use crate::discovery::{
 };
 use crate::ini::paths::{resolve_config_dir_from_path, validate_config_dir};
 use crate::models::GameProfile;
-use crate::profiles::{
-    load_saved_profiles, remove_profile, resolve_trusted_profile, save_profile,
-};
+use crate::profiles::{load_saved_profiles, remove_profile, resolve_trusted_profile, save_profile};
 use std::path::PathBuf;
 
 #[tauri::command]
@@ -31,10 +29,7 @@ pub fn scan_games() -> Result<Vec<GameProfile>, String> {
 
         let detect = detect_unreal_engine(&install);
 
-        if saved_game.source != "manual"
-            && detect == UeDetectResult::NotUe
-            && !saved_game.is_unity
-        {
+        if saved_game.source != "manual" && detect == UeDetectResult::NotUe {
             continue;
         }
 
@@ -59,9 +54,7 @@ pub fn scan_games() -> Result<Vec<GameProfile>, String> {
     for game in &mut games {
         enrich_engine_flags(game);
         enrich_config_dir(game);
-        if !game.is_unity {
-            enrich_engine_version(game);
-        }
+        enrich_engine_version(game);
         enrich_cover(game);
     }
 
@@ -86,7 +79,8 @@ pub fn add_manual_game(name: String, install_dir: String) -> Result<GameProfile,
         return Err(AppError::invalid_path(crate::i18n::t(
             "Недопустимый путь установки",
             "Invalid install path",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     let mut profile = profile_from_manual_path(&name, install_trimmed)?;
     enrich_config_dir(&mut profile);
@@ -103,14 +97,16 @@ pub fn resolve_config_from_path(install_dir: String) -> Result<Option<String>, S
         return Err(AppError::invalid_path(crate::i18n::t(
             "Недопустимый путь установки",
             "Invalid install path",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     let path = PathBuf::from(trimmed);
     if !path.exists() {
         return Err(AppError::invalid_path(crate::i18n::t(
             "Папка установки не существует",
             "Install folder does not exist",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     Ok(resolve_config_dir_from_path(&path).map(|p| p.to_string_lossy().to_string()))
 }
@@ -124,12 +120,11 @@ pub fn update_game_profile_config_dir(
     let mut saved = load_saved_profiles()?;
 
     if let Some(game) = saved.iter().find(|g| g.id == game_id) {
-        if !game.is_unity {
-            let hints = crate::discovery::platform_hints_for_game(Some(game_id), Some(&game.engine_family));
-            canonical = crate::ini::platform::reconcile_config_dir(&path, &hints)
-                .to_string_lossy()
-                .to_string();
-        }
+        let hints =
+            crate::discovery::platform_hints_for_game(Some(game_id), Some(&game.engine_family));
+        canonical = crate::ini::platform::reconcile_config_dir(&path, &hints)
+            .to_string_lossy()
+            .to_string();
     }
 
     if let Some(game) = saved.iter_mut().find(|g| g.id == game_id) {
@@ -152,10 +147,10 @@ pub fn update_game_profile_config_dir(
         return Ok(game.clone());
     }
 
-    Err(AppError::game_not_found(crate::i18n::t(
-        "Игра не найдена",
-        "Game not found",
-    )).to_invoke_string())
+    Err(
+        AppError::game_not_found(crate::i18n::t("Игра не найдена", "Game not found"))
+            .to_invoke_string(),
+    )
 }
 
 #[tauri::command]
@@ -189,7 +184,8 @@ pub fn remove_game_profile(id: String) -> Result<(), String> {
         return Err(AppError::validation(crate::i18n::t(
             "Недопустимый идентификатор игры",
             "Invalid game identifier",
-        )).to_invoke_string());
+        ))
+        .to_invoke_string());
     }
     crate::profiles::ensure_known_game_id(id)?;
     remove_profile(id)?;
@@ -226,9 +222,7 @@ pub fn import_game_cover_cmd(game_id: String, image_path: String) -> Result<Game
     for game in &mut games {
         enrich_engine_flags(game);
         enrich_config_dir(game);
-        if !game.is_unity {
-            enrich_engine_version(game);
-        }
+        enrich_engine_version(game);
         enrich_cover(game);
     }
 

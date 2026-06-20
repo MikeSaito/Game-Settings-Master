@@ -275,7 +275,10 @@ mod tests {
         ];
         let gpu = GpuCapabilities::from_gpu_name(&pick_primary_gpu(&names));
         assert_eq!(gpu.vendor, GpuVendor::Nvidia);
-        assert!(gpu.supports_dlss, "RTX должна включать DLSS, а не встройка AMD");
+        assert!(
+            gpu.supports_dlss,
+            "RTX должна включать DLSS, а не встройка AMD"
+        );
     }
 
     #[test]

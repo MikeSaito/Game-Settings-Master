@@ -54,13 +54,12 @@ pub fn write_file_bytes(path: &Path, bytes: &[u8]) -> Result<(), String> {
 
 pub fn write_file_bytes_opts(path: &Path, bytes: &[u8], atomic: bool) -> Result<(), String> {
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent)
-            .map_err(|e| {
-                crate::i18n::t(
-                    &format!("Не удалось создать каталог {}: {e}", parent.display()),
-                    &format!("Failed to create directory {}: {e}", parent.display()),
-                )
-            })?;
+        fs::create_dir_all(parent).map_err(|e| {
+            crate::i18n::t(
+                &format!("Не удалось создать каталог {}: {e}", parent.display()),
+                &format!("Failed to create directory {}: {e}", parent.display()),
+            )
+        })?;
     }
 
     if atomic {
@@ -78,23 +77,18 @@ pub fn write_file_bytes_opts(path: &Path, bytes: &[u8], atomic: bool) -> Result<
 }
 
 fn write_file_bytes_atomic(path: &Path, bytes: &[u8]) -> Result<(), String> {
-    let parent = path
-        .parent()
-        .ok_or_else(|| {
-            crate::i18n::t(
-                &format!("Не удалось определить каталог для {}", path.display()),
-                &format!("Failed to determine directory for {}", path.display()),
-            )
-        })?;
-    let file_name = path
-        .file_name()
-        .and_then(|s| s.to_str())
-        .ok_or_else(|| {
-            crate::i18n::t(
-                &format!("Некорректное имя файла: {}", path.display()),
-                &format!("Invalid file name: {}", path.display()),
-            )
-        })?;
+    let parent = path.parent().ok_or_else(|| {
+        crate::i18n::t(
+            &format!("Не удалось определить каталог для {}", path.display()),
+            &format!("Failed to determine directory for {}", path.display()),
+        )
+    })?;
+    let file_name = path.file_name().and_then(|s| s.to_str()).ok_or_else(|| {
+        crate::i18n::t(
+            &format!("Некорректное имя файла: {}", path.display()),
+            &format!("Invalid file name: {}", path.display()),
+        )
+    })?;
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_nanos())
@@ -135,8 +129,7 @@ pub fn is_safe_manifest_relative_path(rel: &str) -> bool {
     if path.is_absolute() {
         return false;
     }
-    path.components()
-        .all(|c| matches!(c, Component::Normal(_)))
+    path.components().all(|c| matches!(c, Component::Normal(_)))
 }
 
 /// Flat INI filename inside a pack directory (`preset.ini` only).
@@ -158,10 +151,40 @@ pub fn is_allowed_config_ini_filename(name: &str) -> bool {
     is_safe_pack_ini_filename(name) && ALLOWED_CONFIG_INI_FILES.contains(&name)
 }
 
+pub fn normalize_ini_section_name(section: &str) -> String {
+    let trimmed = section.trim();
+    if trimmed.starts_with('[') && trimmed.ends_with(']') && trimmed.len() >= 2 {
+        trimmed[1..trimmed.len() - 1].trim().to_string()
+    } else {
+        trimmed.to_string()
+    }
+}
+
+pub fn is_safe_ini_section_name(section: &str) -> bool {
+    let section = normalize_ini_section_name(section);
+    !section.is_empty()
+        && section.len() <= 256
+        && !section
+            .chars()
+            .any(|c| c == '\0' || c == '\r' || c == '\n' || c == '[' || c == ']')
+}
+
+pub fn is_safe_ini_key_name(key: &str) -> bool {
+    let key = key.trim();
+    !key.is_empty()
+        && key.len() <= 256
+        && !key
+            .chars()
+            .any(|c| c.is_control() || matches!(c, '=' | '[' | ']'))
+}
+
+pub fn is_safe_ini_value(value: &str) -> bool {
+    value.len() <= 8192 && !value.chars().any(|c| c == '\0' || c == '\r' || c == '\n')
+}
+
 /// Flat filename allowed when restoring from a backup snapshot.
 pub fn is_allowed_restore_filename(name: &str) -> bool {
-    if is_allowed_config_ini_filename(name) || name == "UserConfigSelections" || name == "boot.config"
-    {
+    if is_allowed_config_ini_filename(name) || name == "UserConfigSelections" {
         return true;
     }
     if name == "prefs" {
@@ -171,11 +194,6 @@ pub fn is_allowed_restore_filename(name: &str) -> bool {
         return is_safe_pack_ini_filename(name);
     }
     false
-}
-
-/// Pack / preset id from IPC or catalog — no path separators or traversal.
-pub fn is_safe_pack_id(id: &str) -> bool {
-    is_safe_backup_id(id)
 }
 
 /// Backup folder id from list/restore — no path separators or traversal.
@@ -201,32 +219,6 @@ pub fn is_safe_exe_basename(name: &str) -> bool {
     })
 }
 
-pub fn resolve_file_within_root(root: &Path, rel: &str) -> Option<PathBuf> {
-    if !is_safe_pack_ini_filename(rel) {
-        return None;
-    }
-    let path = root.join(rel);
-    if !path.is_file() {
-        return None;
-    }
-    path_within_root(root, &path).then_some(path)
-}
-
-pub fn resolve_pack_file_within_root(
-    pack_root: &Path,
-    rel_dir: &str,
-    rel_file: &str,
-) -> Option<PathBuf> {
-    if !is_safe_manifest_relative_path(rel_dir) || !is_safe_pack_ini_filename(rel_file) {
-        return None;
-    }
-    let path = pack_root.join(rel_dir).join(rel_file);
-    if !path.is_file() {
-        return None;
-    }
-    path_within_root(pack_root, &path).then_some(path)
-}
-
 pub fn path_within_root(root: &Path, path: &Path) -> bool {
     let Ok(root_canon) = root.canonicalize() else {
         return false;
@@ -237,41 +229,69 @@ pub fn path_within_root(root: &Path, path: &Path) -> bool {
     path_canon.starts_with(&root_canon)
 }
 
-/// Rejects paths outside `root` even when the target file does not exist yet.
-pub fn ensure_path_within_root(root: &Path, path: &Path) -> Result<(), String> {
-    if path.exists() {
-        if path_within_root(root, path) {
-            return Ok(());
-        }
-        return Err(crate::i18n::t(
-            &format!("Недопустимый путь: {}", path.display()),
-            &format!("Invalid path: {}", path.display()),
-        ));
-    }
-    let rel = path.strip_prefix(root).map_err(|_| {
+pub fn ensure_safe_child_file(root: &Path, path: &Path) -> Result<(), String> {
+    let root_canon = root.canonicalize().map_err(|e| {
         crate::i18n::t(
-            &format!("Недопустимый путь: {}", path.display()),
-            &format!("Invalid path: {}", path.display()),
+            &format!("Некорректный корневой путь {}: {e}", root.display()),
+            &format!("Invalid root path {}: {e}", root.display()),
         )
     })?;
-    if rel
-        .components()
-        .any(|c| !matches!(c, Component::Normal(_)))
-    {
+    let parent = path.parent().ok_or_else(|| {
+        crate::i18n::t(
+            &format!("Не удалось определить каталог для {}", path.display()),
+            &format!("Failed to determine directory for {}", path.display()),
+        )
+    })?;
+    let parent_canon = parent.canonicalize().map_err(|e| {
+        crate::i18n::t(
+            &format!("Некорректный каталог {}: {e}", parent.display()),
+            &format!("Invalid directory {}: {e}", parent.display()),
+        )
+    })?;
+    if !parent_canon.starts_with(&root_canon) {
         return Err(crate::i18n::t(
-            &format!("Недопустимый путь: {}", path.display()),
-            &format!("Invalid path: {}", path.display()),
+            &format!("Путь выходит за пределы config root: {}", path.display()),
+            &format!("Path escapes config root: {}", path.display()),
         ));
     }
-    if let Some(parent) = path.parent() {
-        if parent.exists() && !path_within_root(root, parent) {
+    if path.exists() {
+        let meta = fs::symlink_metadata(path)
+            .map_err(|e| format_io_error("проверить", "check", path, e))?;
+        if meta.file_type().is_symlink() {
             return Err(crate::i18n::t(
-                &format!("Недопустимый путь: {}", path.display()),
-                &format!("Invalid path: {}", path.display()),
+                &format!(
+                    "Символические ссылки в config не поддерживаются: {}",
+                    path.display()
+                ),
+                &format!("Symlinks in config are not supported: {}", path.display()),
+            ));
+        }
+        let path_canon = path.canonicalize().map_err(|e| {
+            crate::i18n::t(
+                &format!("Некорректный путь {}: {e}", path.display()),
+                &format!("Invalid path {}: {e}", path.display()),
+            )
+        })?;
+        if !path_canon.starts_with(&root_canon) {
+            return Err(crate::i18n::t(
+                &format!("Путь выходит за пределы config root: {}", path.display()),
+                &format!("Path escapes config root: {}", path.display()),
             ));
         }
     }
     Ok(())
+}
+
+pub fn safe_child_path(root: &Path, file_name: &str) -> Result<PathBuf, String> {
+    if !is_allowed_config_ini_filename(file_name) {
+        return Err(crate::i18n::t(
+            &format!("Недопустимое имя ini-файла: {file_name}"),
+            &format!("Invalid ini file name: {file_name}"),
+        ));
+    }
+    let path = root.join(file_name);
+    ensure_safe_child_file(root, &path)?;
+    Ok(path)
 }
 
 pub fn clear_readonly(path: &Path) {
@@ -433,6 +453,23 @@ pub fn is_exe_running(exe_name: &str) -> bool {
 }
 
 #[cfg(windows)]
+pub fn is_exe_running_uncached(exe_name: &str) -> bool {
+    let filter = normalize_exe_filter(exe_name);
+    invalidate_running_cache(&filter);
+    let result = process_snapshot_contains(&filter);
+    if let Ok(mut guard) = RUNNING_CACHE.lock() {
+        guard.insert(
+            filter,
+            RunningCacheEntry {
+                result,
+                at: Instant::now(),
+            },
+        );
+    }
+    result
+}
+
+#[cfg(windows)]
 fn find_pids_by_exe_basename(filter: &str) -> Vec<u32> {
     use windows_sys::Win32::Foundation::{CloseHandle, INVALID_HANDLE_VALUE};
     use windows_sys::Win32::System::Diagnostics::ToolHelp::{
@@ -497,6 +534,11 @@ fn terminate_process_pid(pid: u32) -> Result<(), u32> {
 
 #[cfg(not(windows))]
 pub fn is_exe_running(_exe_name: &str) -> bool {
+    false
+}
+
+#[cfg(not(windows))]
+pub fn is_exe_running_uncached(_exe_name: &str) -> bool {
     false
 }
 
@@ -574,7 +616,7 @@ pub fn clear_config_readonly(config_dir: &Path) {
 
 pub fn ensure_config_writable(config_dir: &Path, exe_name: Option<&str>) -> Result<(), String> {
     if let Some(exe) = exe_name {
-        if is_exe_running(exe) {
+        if is_exe_running_uncached(exe) {
             return Err(crate::app_error::running_game_ini_blocked(exe));
         }
     }
@@ -638,7 +680,6 @@ mod tests {
 
     #[test]
     fn rejects_traversal_in_pack_ini_path() {
-        let dir = TempDir::new().unwrap();
         let secret = TempDir::new().unwrap();
         std::fs::write(secret.path().join("secret.ini"), "secret").unwrap();
 
@@ -648,25 +689,6 @@ mod tests {
             std::path::MAIN_SEPARATOR
         );
         assert!(!is_safe_pack_ini_filename(&rel));
-        assert!(resolve_file_within_root(dir.path(), &rel).is_none());
-    }
-
-    #[test]
-    fn resolve_pack_file_stays_within_root() {
-        let dir = TempDir::new().unwrap();
-        let presets = dir.path().join("presets");
-        std::fs::create_dir_all(&presets).unwrap();
-        std::fs::write(presets.join("test.ini"), "Techniques=\n").unwrap();
-
-        let path = resolve_pack_file_within_root(dir.path(), "presets", "test.ini").unwrap();
-        assert!(path.is_file());
-
-        assert!(resolve_pack_file_within_root(
-            dir.path(),
-            "..",
-            "test.ini"
-        )
-        .is_none());
     }
 
     #[test]
@@ -677,6 +699,16 @@ mod tests {
     }
 
     #[test]
+    fn ini_payload_validation_rejects_injection_fragments() {
+        assert!(is_safe_ini_section_name("[SystemSettings]"));
+        assert!(is_safe_ini_key_name("r.ViewDistanceScale"));
+        assert!(is_safe_ini_value("(A=1,B=2)"));
+        assert!(!is_safe_ini_section_name("System]\n[Injected"));
+        assert!(!is_safe_ini_key_name("r.Safe=evil"));
+        assert!(!is_safe_ini_value("1\nInjected=True"));
+    }
+
+    #[test]
     fn safe_backup_id_rejects_traversal() {
         assert!(is_safe_backup_id("20250611_120000"));
         assert!(!is_safe_backup_id("../evil"));
@@ -684,14 +716,7 @@ mod tests {
     }
 
     #[test]
-    fn safe_pack_id_matches_backup_id_rules() {
-        assert!(is_safe_pack_id("subnautica2-reshade"));
-        assert!(!is_safe_pack_id("../packs"));
-    }
-
-    #[test]
-    fn allowed_restore_filename_covers_engines() {
-        assert!(is_allowed_restore_filename("boot.config"));
+    fn allowed_restore_filename_covers_ue_files() {
         assert!(is_allowed_restore_filename("DeviceProfiles.ini"));
         assert!(is_allowed_restore_filename("UserConfigSelections"));
         assert!(is_allowed_restore_filename("prefs"));
@@ -715,24 +740,6 @@ mod tests {
         assert!(!is_safe_exe_basename(r"C:\Game.exe"));
         assert!(!is_safe_exe_basename("../evil.exe"));
         assert!(!is_safe_exe_basename("bad|name.exe"));
-    }
-
-    #[test]
-    fn ensure_path_within_root_allows_new_file_under_root() {
-        let dir = TempDir::new().unwrap();
-        let media = dir.path().join("media");
-        std::fs::create_dir_all(&media).unwrap();
-        let dst = media.join("Tracks").join("test.xml");
-        ensure_path_within_root(&media, &dst).expect("new nested path");
-    }
-
-    #[test]
-    fn ensure_path_within_root_rejects_escape() {
-        let dir = TempDir::new().unwrap();
-        let media = dir.path().join("media");
-        std::fs::create_dir_all(&media).unwrap();
-        let dst = dir.path().join("outside.xml");
-        assert!(ensure_path_within_root(&media, &dst).is_err());
     }
 
     #[test]

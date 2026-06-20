@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildCustomChanges } from "./buildCustomChanges";
-import type { GameParameter } from "./types";
+import type { GameParameter, GpuCapabilities } from "./types";
 
 function param(
   overrides: Partial<GameParameter> & Pick<GameParameter, "key" | "value">,
@@ -25,6 +25,8 @@ function param(
     step: null,
     options: null,
     recommended: null,
+    catalog_recommended: false,
+    tier_hint: null,
     ...overrides,
   };
 }
@@ -68,5 +70,67 @@ describe("buildCustomChanges", () => {
       new Set(["Scalability"]),
     );
     expect(Object.keys(files)).toHaveLength(0);
+  });
+
+  it("includes editable unknown GameUserSettings parameters", () => {
+    const baseline = [
+      param({
+        key: "DLSSMode",
+        value: "Off",
+        category: "GameSpecific",
+        known: false,
+      }),
+    ];
+    const edited = [
+      param({
+        key: "DLSSMode",
+        value: "Quality",
+        category: "GameSpecific",
+        known: false,
+      }),
+    ];
+
+    const { files } = buildCustomChanges(
+      edited,
+      baseline,
+      undefined,
+      new Set(),
+      new Set(["GameSpecific"]),
+    );
+
+    const section = Object.values(files["GameUserSettings.ini"] ?? {})[0];
+    expect(section?.DLSSMode).toBe("Quality");
+  });
+
+  it("writes hidden GPU dependency changes produced by reconciliation", () => {
+    const noFrameGenerationGpu: GpuCapabilities = {
+      name: "RTX 3060",
+      vendor: "nvidia",
+      supports_dlss: true,
+      supports_dlss_fg: false,
+      supports_ray_tracing: true,
+    };
+    const baseline = [
+      param({ key: "UpscalingMethod", value: "U_DLSS", category: "GameSpecific" }),
+      param({ key: "DLSSMode", value: "Quality", category: "GameSpecific" }),
+      param({ key: "UpscalingFrameGeneration", value: "1", category: "GameSpecific" }),
+    ];
+    const edited = [
+      param({ key: "UpscalingMethod", value: "U_FSR", category: "GameSpecific" }),
+      param({ key: "DLSSMode", value: "Quality", category: "GameSpecific" }),
+      param({ key: "UpscalingFrameGeneration", value: "1", category: "GameSpecific" }),
+    ];
+
+    const { files } = buildCustomChanges(
+      edited,
+      baseline,
+      noFrameGenerationGpu,
+      new Set(),
+      new Set(["GameSpecific"]),
+    );
+
+    const section = Object.values(files["GameUserSettings.ini"] ?? {})[0];
+    expect(section?.UpscalingMethod).toBe("U_FSR");
+    expect(section?.UpscalingFrameGeneration).toBe("0");
   });
 });

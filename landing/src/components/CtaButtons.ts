@@ -23,6 +23,6 @@ export function createCtaButtons(
   download.textContent = t.download.button;
   download.addEventListener("click", () => openDownloadModal(t));
 
-  wrap.append(github, download);
+  wrap.append(download, github);
   return wrap;
 }

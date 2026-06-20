@@ -2,7 +2,7 @@ import { Download, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppUpdater } from "../hooks/useAppUpdater";
-import { Button } from "./ui/Button";
+import { Button } from "./ds/Button";
 
 interface Props {
   children: ReactNode;
@@ -17,8 +17,6 @@ export function UpdateGate({ children }: Props) {
     progress,
     retry,
     installUpdate,
-    canBypassOnError,
-    continueWithoutUpdate,
   } = useAppUpdater();
 
   if (status === "ready") {
@@ -37,7 +35,7 @@ export function UpdateGate({ children }: Props) {
           <h1 className="text-xl font-semibold text-[var(--color-text)]">
             Game Settings Master
           </h1>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-[var(--color-text-muted)]">
             {status === "checking" && t("checking")}
             {status === "required" && t("required", { version: update?.version })}
             {status === "downloading" && t("downloading")}
@@ -71,7 +69,7 @@ export function UpdateGate({ children }: Props) {
               />
             </div>
             {progressPercent != null && (
-              <p className="text-xs text-muted">{progressPercent}%</p>
+              <p className="text-xs text-[var(--color-text-muted)]">{progressPercent}%</p>
             )}
           </div>
         )}
@@ -91,11 +89,6 @@ export function UpdateGate({ children }: Props) {
             >
               {t("retry")}
             </Button>
-            {canBypassOnError && (
-              <Button variant="ghost" onClick={continueWithoutUpdate} className="w-full">
-                {t("continueOffline")}
-              </Button>
-            )}
           </div>
         )}
       </div>

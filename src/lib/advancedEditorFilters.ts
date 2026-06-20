@@ -5,10 +5,27 @@ import {
 } from "./engineParams";
 import type { GameParameter } from "./types";
 
+export const ALL_CATEGORY = "All";
+
+const GAME_RENDERING_KEY_MARKERS = [
+  "dlss",
+  "xess",
+  "fsr",
+  "tsr",
+  "raytracing",
+  "ray_tracing",
+  "lumen",
+  "nanite",
+  "upscal",
+  "framegeneration",
+  "frame_generation",
+];
+
 export const CATEGORY_ORDER = [
   "Scalability",
   "Graphics",
   "Display",
+  "Window",
   "API",
   "Jobs",
   "Rendering",
@@ -22,10 +39,26 @@ export const CATEGORY_ORDER = [
   "Startup",
   "GameSpecific",
   "Audio",
+  "Performance",
   "System",
   "Debug",
   "Other",
 ] as const;
+
+export function normalizeParameterCategory(param: GameParameter): GameParameter {
+  const key = param.key.toLowerCase();
+  if (GAME_RENDERING_KEY_MARKERS.some((marker) => key.includes(marker))) {
+    return param.category === "Rendering" ? param : { ...param, category: "Rendering" };
+  }
+  if (param.category === "AuthorCurated") {
+    return { ...param, category: "GameSpecific" };
+  }
+  return param;
+}
+
+export function normalizeParameterCategories(params: GameParameter[]): GameParameter[] {
+  return params.map(normalizeParameterCategory);
+}
 
 export function buildCategoryList(
   visibleParams: GameParameter[],
@@ -40,7 +73,10 @@ export function buildCategoryList(
       ordered.push(c as (typeof CATEGORY_ORDER)[number]);
     }
   }
-  return ordered.map((cat) => ({ cat, count: counts.get(cat) ?? 0 }));
+  return [
+    { cat: ALL_CATEGORY, count: visibleParams.length },
+    ...ordered.map((cat) => ({ cat, count: counts.get(cat) ?? 0 })),
+  ];
 }
 
 export function filterParamsByCategoryAndSearch(
@@ -51,7 +87,7 @@ export function filterParamsByCategoryAndSearch(
 ): GameParameter[] {
   const q = search.trim().toLowerCase();
   const list = visibleParams.filter((p) => {
-    if (p.category !== activeCategory) return false;
+    if (activeCategory !== ALL_CATEGORY && p.category !== activeCategory) return false;
     if (!q) return true;
     return (
       p.key.toLowerCase().includes(q) ||

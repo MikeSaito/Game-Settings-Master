@@ -6,15 +6,13 @@ import {
   ShieldCheck,
   Trash2,
 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert } from "../components/ui/Alert";
-import { Badge } from "../components/ui/Badge";
-import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
-import { EmptyState } from "../components/ui/EmptyState";
-import { PageHeader } from "../components/ui/PageHeader";
-import { SectionHeader } from "../components/ui/SectionHeader";
+import { Badge } from "../components/ds/Badge";
+import { Button } from "../components/ds/Button";
+import { Alert, EmptyState } from "../components/ds/Feedback";
+import { Panel } from "../components/ds/Panel";
 import { formatInvokeError } from "../lib/errors";
 import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
 import { useRunningExeName } from "../hooks/useRunningExeName";
@@ -24,6 +22,7 @@ import type { BackupInfo, GameProfile } from "../lib/types";
 
 interface Props {
   game: GameProfile | null;
+  embedded?: boolean;
 }
 
 function formatBackupDate(id: string): string {
@@ -33,7 +32,7 @@ function formatBackupDate(id: string): string {
   return `${d}.${mo}.${y} · ${h}:${mi}:${s}`;
 }
 
-export function Backups({ game }: Props) {
+export function Backups({ game, embedded = false }: Props) {
   const { t } = useTranslation("backups");
   const queryClient = useQueryClient();
   const [successMessage, setSuccessMessage] = useState<string>();
@@ -163,11 +162,25 @@ export function Backups({ game }: Props) {
   }
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        title={t("header.title")}
-        meta={<Badge tone="default">{t("header.backupsCount", { count: backups.length })}</Badge>}
-      />
+    <div className={embedded ? "space-y-6" : "space-y-8"}>
+      {!embedded && (
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
+              {t("header.title")}
+            </h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Badge tone="neutral">{t("header.backupsCount", { count: backups.length })}</Badge>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {embedded && (
+        <div className="flex flex-wrap gap-2">
+          <Badge tone="neutral">{t("header.backupsCount", { count: backups.length })}</Badge>
+        </div>
+      )}
 
       <Alert tone="info" title={t("howItWorks.title")}>
         {t("howItWorks.body")}
@@ -176,13 +189,13 @@ export function Backups({ game }: Props) {
       <GameRunningAlert exeName={runningExeName} gameName={game.name} />
 
       {restoreError && (
-        <Alert tone="error" title={t("restore.errorTitle")}>
+        <Alert tone="danger" title={t("restore.errorTitle")}>
           {restoreError}
         </Alert>
       )}
 
       {resetError && (
-        <Alert tone="error" title={t("reset.errorTitle")}>
+        <Alert tone="danger" title={t("reset.errorTitle")}>
           {resetError}
         </Alert>
       )}
@@ -194,12 +207,12 @@ export function Backups({ game }: Props) {
       )}
 
       <section>
-        <SectionHeader
+        <SectionTitle
           title={t("reset.sectionTitle")}
           description={t("reset.sectionDesc")}
         />
         {resetConfirm ? (
-          <Card padding="md" className="border-[#5a3030] bg-[#2a1818]">
+          <Panel padding="md" className="border-[var(--color-danger)]/45 bg-[var(--color-danger-soft)]">
             <p className="text-sm text-[var(--color-text-secondary)]">
               {t("reset.confirmBody")}
             </p>
@@ -217,7 +230,7 @@ export function Backups({ game }: Props) {
                 {t("reset.cancel")}
               </Button>
             </div>
-          </Card>
+          </Panel>
         ) : (
           <Button
             variant="danger"
@@ -231,23 +244,23 @@ export function Backups({ game }: Props) {
       </section>
 
       <section>
-        <SectionHeader
+        <SectionTitle
           title={t("list.title")}
           description={t("list.desc")}
           hint={
-            <Button variant="ghost" className="!px-2 !py-1 text-xs" onClick={() => refetch()}>
+            <Button variant="ghost" size="sm" onClick={() => refetch()}>
               {t("list.refresh")}
             </Button>
           }
         />
 
         {backupsLoading ? (
-          <Card padding="md">
+          <Panel padding="md">
             <div className="flex flex-col items-center gap-3 py-6">
               <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-              <p className="text-sm text-muted">{t("list.loading")}</p>
+              <p className="text-sm text-[var(--color-text-muted)]">{t("list.loading")}</p>
             </div>
-          </Card>
+          </Panel>
         ) : backups.length === 0 ? (
           <EmptyState
             icon={History}
@@ -285,18 +298,18 @@ function BackupRow({
 }) {
   const { t } = useTranslation("backups");
   return (
-    <Card padding="sm" className="!p-0">
+    <Panel padding="none">
       <div className="flex items-center justify-between gap-4 px-4 py-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-[var(--color-text)]">
               {formatBackupDate(backup.id)}
             </span>
-            <span className="font-mono text-xs text-muted">{backup.id}</span>
+            <span className="font-mono text-xs text-[var(--color-text-muted)]">{backup.id}</span>
           </div>
           <div className="mt-1 flex flex-wrap gap-1.5">
             {backup.files.map((file) => (
-              <Badge key={file} tone="default">
+              <Badge key={file} tone="neutral">
                 {file}
               </Badge>
             ))}
@@ -313,6 +326,30 @@ function BackupRow({
           {t("restore.button")}
         </Button>
       </div>
-    </Card>
+    </Panel>
+  );
+}
+
+function SectionTitle({
+  title,
+  description,
+  hint,
+}: {
+  title: string;
+  description?: ReactNode;
+  hint?: ReactNode;
+}) {
+  return (
+    <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+      <div className="min-w-0">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">
+          {title}
+        </h3>
+        {description && (
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">{description}</p>
+        )}
+      </div>
+      {hint && <div className="text-sm text-[var(--color-text-muted)]">{hint}</div>}
+    </div>
   );
 }

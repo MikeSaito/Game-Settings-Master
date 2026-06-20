@@ -6,21 +6,20 @@
   },
   "header": {
     "title": "Библиотека игр",
-    "subtitle": "Steam · Epic · LocalAppData · ручное добавление"
+    "subtitle": "Steam · Epic · Unreal Engine · ручное добавление"
   },
   "badges": {
+    "total": "{{count}} всего",
     "withConfig": "{{count}} с config",
     "withoutConfig": "{{count}} без config",
     "ue": "{{count}} UE",
-    "unity": "{{count}} Unity",
-    "other": "{{count}} прочие",
     "withCover": "{{count}} с обложкой"
   },
   "source": {
     "manual": "Вручную"
   },
   "dialogs": {
-    "installFolder": "Выберите папку установки игры",
+    "installFolder": "Выберите папку установки Unreal Engine игры",
     "configFolder": "Выберите папку Saved/Config/Windows",
     "coverFile": "Выберите обложку игры",
     "imageFilter": "Изображение"
@@ -28,8 +27,10 @@
   "card": {
     "engineUnknown": "Движок не определён",
     "probablyUe": "Вероятно UE",
-    "probablyUnity": "Вероятно Unity",
+    "configOk": "Config готов",
+    "configMissing": "Config ?",
     "select": "Выбрать",
+    "pickConfig": "Указать config",
     "cover": "Обложка",
     "resetCover": "Сброс",
     "removeProfile": "Удалить профиль"
@@ -40,18 +41,20 @@
     "addManual": "Добавить вручную"
   },
   "search": {
-    "placeholder": "Поиск или название для ручного добавления…"
+    "placeholder": "Поиск или название для ручного добавления…",
+    "aria": "Поиск игр"
   },
+  "viewMode": "Вид библиотеки",
+  "view": {
+    "grid": "Плитка",
+    "list": "Список"
+  },
+  "gamesLabel": "Игры",
   "loading": "Сканирование Steam, Epic, LocalAppData…",
   "empty": {
     "nothingFound": "Ничего не найдено",
-    "noGames": "Игры не найдены",
+    "noGames": "UE-игры не найдены",
     "tryAnother": "Попробуйте другое название или добавьте игру вручную.",
-    "scanOrAddPrefix": "Нажмите «Сканировать» или «Добавить», чтобы указать папку установки UE или Unity."
-  },
-  "sections": {
-    "unityHint": "Редактор меняет boot.config в папке *_Data.",
-    "otherTitle": "Другие игры",
-    "otherHint": "Движок не определён — редактор конфигов недоступен. Запуск из GSM по-прежнему доступен."
+    "scanOrAddPrefix": "Нажмите «Сканировать» или «Добавить», чтобы указать папку установки Unreal Engine (Shipping.exe)."
   }
 }

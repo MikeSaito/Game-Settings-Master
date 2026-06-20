@@ -61,9 +61,7 @@ pub fn cached_scan_all_games() -> Arc<Vec<GameProfile>> {
     });
 
     if let Some((games, scanned_at, mtime_snapshot)) = snapshot {
-        if scanned_at.elapsed() < GAME_SCAN_CACHE_TTL
-            && !discovery_mtime_changed(&mtime_snapshot)
-        {
+        if scanned_at.elapsed() < GAME_SCAN_CACHE_TTL && !discovery_mtime_changed(&mtime_snapshot) {
             return games;
         }
     }
@@ -91,8 +89,7 @@ pub(crate) fn is_cache_valid() -> bool {
     });
     match snapshot {
         Some((scanned_at, mtime_snapshot)) => {
-            scanned_at.elapsed() < GAME_SCAN_CACHE_TTL
-                && !discovery_mtime_changed(&mtime_snapshot)
+            scanned_at.elapsed() < GAME_SCAN_CACHE_TTL && !discovery_mtime_changed(&mtime_snapshot)
         }
         None => false,
     }
@@ -128,8 +125,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: true,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: None,
             custom_cover: None,
@@ -151,7 +146,11 @@ mod tests {
 
         let _ = cached_scan_all_games();
         assert!(is_cache_valid());
-        assert_eq!(scan_call_count(), after_first, "second call should reuse cache");
+        assert_eq!(
+            scan_call_count(),
+            after_first,
+            "second call should reuse cache"
+        );
     }
 
     #[test]
@@ -208,7 +207,11 @@ mod tests {
         let found = find_game_by_id(&game_id).expect("lookup");
         assert!(found.is_some());
         assert_eq!(found.unwrap().id, game_id);
-        assert_eq!(scan_call_count(), 0, "saved profile should not trigger scan");
+        assert_eq!(
+            scan_call_count(),
+            0,
+            "saved profile should not trigger scan"
+        );
 
         remove_profile(&game_id).expect("cleanup");
         let _ = std::fs::remove_dir_all(install);

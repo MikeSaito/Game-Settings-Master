@@ -1,6 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Alert } from "./ui/Alert";
+import { Alert } from "./ds/Feedback";
 
 interface Props {
   backupId?: string;

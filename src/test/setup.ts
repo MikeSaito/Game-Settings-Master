@@ -1,7 +1,12 @@
 import "@testing-library/jest-dom/vitest";
+import { cleanup } from "@testing-library/react";
 import React from "react";
-import { vi } from "vitest";
+import { afterEach, vi } from "vitest";
 import { mockInvoke } from "./mockTauri";
+
+afterEach(() => {
+  cleanup();
+});
 
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: mockInvoke,
@@ -19,6 +24,7 @@ vi.mock("@tanstack/react-virtual", () => ({
           start: index * ROW_ESTIMATE_PX,
         })),
       measureElement: () => {},
+      scrollToIndex: () => {},
     };
   },
 }));

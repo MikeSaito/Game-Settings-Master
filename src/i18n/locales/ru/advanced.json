@@ -1,39 +1,80 @@
 {
-  "title": "Ручной",
+  "title": "Редактор",
   "defaultPresetName": "Мой пресет",
   "category": {
-    "Scalability": "Масштаб",
+    "All": "Все",
+    "Scalability": "Качество (sg)",
     "Graphics": "Графика",
     "Display": "Экран",
+    "Window": "Экран и окно",
     "API": "API / DXGI",
     "Jobs": "Потоки и GC",
     "Rendering": "Рендер",
     "Shadows": "Тени",
     "Textures": "Текстуры",
-    "PostProcess": "Пост",
+    "PostProcess": "Постобработка",
     "Mirrors": "Зеркала",
     "LOD": "LOD",
     "World": "Мир",
-    "Media": "Media-override",
+    "Media": "Медиа",
     "Startup": "Запуск",
-    "AuthorCurated": "От автора",
     "GameSpecific": "Игра",
     "Audio": "Аудио",
+    "Performance": "Производительность",
     "System": "Система",
     "Debug": "Отладка",
     "Other": "Прочее"
   },
   "noGame": {
-    "title": "Ручной — выберите игру",
+    "title": "Редактор — выберите игру",
     "desc": "Откройте библиотеку и выберите игру с config для просмотра и редактирования параметров."
   },
   "noConfig": {
     "title": "Config не найден",
-    "unity": "Укажите папку *_Data с boot.config на вкладке «Библиотека».",
     "default": "Укажите путь к Saved/Config/Windows на вкладке «Библиотека»."
   },
   "errorTitle": "Ошибка",
   "gpuHintTitle": "Видеокарта",
+  "tabs": {
+    "aria": "Режим редактора",
+    "basic": "Базовое",
+    "advanced": "Расширенное",
+    "backups": "Бекапы",
+    "basicHint": "GameUserSettings — как в меню игры",
+    "advancedHint": "Engine.ini и CVars — для опытных",
+    "backupsHint": "Снимки ini перед apply и откат",
+    "scalability": "Базовое",
+    "engine": "Расширенное",
+    "engineBadge": "Эксперт"
+  },
+  "mode": {
+    "basicTitle": "Базовые настройки",
+    "advancedTitle": "Расширенные настройки",
+    "backupsTitle": "Бекапы",
+    "basicBody": "Настройки как в игре — разрешение, качество, sg.*. Пишутся только в GameUserSettings.ini.",
+    "advancedBody": "Тонкая настройка движка. Может создать или изменить Engine.ini / Scalability.ini. Для опытных пользователей.",
+    "backupsBody": "Автоснимки ini в `.uesm-backups`. Восстановление и сброс к чистому config.",
+    "basicSafe": "Только GameUserSettings.ini",
+    "advancedFiles": "Engine.ini / Scalability.ini"
+  },
+  "engineWarning": {
+    "title": "Режим для опытных пользователей",
+    "body": "CVars в Engine.ini могут конфликтовать с меню игры и sg.*, сломать стабильность или FPS.",
+    "backupHint": "Перед apply сделайте backup (вкладка «Бэкапы»).",
+    "acknowledge": "Понял",
+    "ackHint": "Отметьте «Понял», чтобы скрыть предупреждение.",
+    "inline": "Engine.ini: экспертные CVars могут конфликтовать с настройками игры."
+  },
+  "filter": {
+    "recommended": "Рекомендуемые",
+    "full": "Полный каталог",
+    "ini_only": "Только в моих ini",
+    "allInIni": "Все из ini"
+  },
+  "paramsForEngine_one": "{{count}} параметр для UE {{version}}",
+  "paramsForEngine_few": "{{count}} параметра для UE {{version}}",
+  "paramsForEngine_many": "{{count}} параметров для UE {{version}}",
+  "paramsForEngine_other": "{{count}} параметра для UE {{version}}",
   "searchPlaceholder": "Поиск по ключу, названию, описанию…",
   "paramsCount_one": "{{count}} параметр",
   "paramsCount_few": "{{count}} параметра",
@@ -51,8 +92,10 @@
     "title": "Параметры Engine.ini",
     "before": "Тоггл ",
     "onOff": "Вкл/Выкл",
-    "after": " — это наличие строки в файле: включено — ключ будет записан после «Применить»; выключено — строка удалится. Сейчас в Engine.ini: {{on}} из {{total}}."
+    "after": " — это наличие строки в файле: включено — ключ будет записан после «Применить»; выключено — строка удалится. Сейчас в Engine.ini: {{on}} из {{total}}.",
+    "short": "Включено {{on}} из {{total}}."
   },
+  "categoryNav": "Категории параметров",
   "loadingParams": "Загрузка параметров…",
   "emptyFiltered": {
     "titleSearch": "Ничего не найдено",
@@ -63,27 +106,93 @@
   "applyAndSave": "Применить и сохранить",
   "presetNameLabel": "Имя пресета",
   "apply": "Применить",
+  "applyBasic": "Применить в GameUserSettings",
+  "applyAdvanced": "Применить (Engine / Scalability)",
+  "discard": "Сбросить",
   "savePreset": "Сохранить пресет",
   "savedPresets": "Сохранённые пресеты",
+  "changesCount_one": "{{count}} изменение",
+  "changesCount_few": "{{count}} изменения",
+  "changesCount_many": "{{count}} изменений",
+  "changesCount_other": "{{count}} изменения",
+  "changeBreakdown": {
+    "sg_one": "{{count}} sg",
+    "sg_few": "{{count}} sg",
+    "sg_many": "{{count}} sg",
+    "sg_other": "{{count}} sg",
+    "display_one": "{{count}} экран",
+    "display_few": "{{count}} экран",
+    "display_many": "{{count}} экран",
+    "display_other": "{{count}} экран",
+    "engine_one": "{{count}} Engine",
+    "engine_few": "{{count}} Engine",
+    "engine_many": "{{count}} Engine",
+    "engine_other": "{{count}} Engine"
+  },
+  "gameRunningTitle": "Игра запущена",
+  "gameRunningInline": "Применение отключено, пока игра запущена.",
   "errors": {
-    "noChanges": "Нет изменений — включите параметры Engine.ini или измените значения.",
-    "noChangesUnity": "Нет изменений — измените значения boot.config."
+    "noChanges": "Нет изменений — включите параметры Engine.ini или измените значения."
   },
   "applied": "Применено {{count}} правок · backup {{backupId}}. Перезапустите игру.",
   "presetSaved": "Пресет «{{name}}» сохранён.",
   "presetApplied": "Пресет применён · backup {{backupId}}.",
   "qualityDefault": "По умолчанию",
+  "qualityLevel": {
+    "0": "Низкое",
+    "1": "Среднее",
+    "2": "Высокое",
+    "3": "Эпик",
+    "4": "Кинематограф",
+    "custom": "Своё @{{value}}"
+  },
+  "fullscreenMode": {
+    "0": "Полный экран",
+    "1": "Без рамки",
+    "2": "Оконный"
+  },
+  "dlssMode": {
+    "Off": "Выкл",
+    "Performance": "Производительность",
+    "Balanced": "Баланс",
+    "Quality": "Качество",
+    "UltraQuality": "Ультра",
+    "DLAA": "DLAA"
+  },
+  "upscalingMethod": {
+    "U_None": "Без upscaling",
+    "U_DLSS": "DLSS",
+    "U_FSR": "FSR",
+    "U_TSR": "TSR"
+  },
+  "antiAliasingType": {
+    "AAM_None": "Без AA",
+    "AAM_FXAA": "FXAA",
+    "AAM_TemporalAA": "TAA",
+    "AAM_TSR": "TSR",
+    "AAM_DLAA": "DLAA"
+  },
+  "boolValue": {
+    "true": "Да",
+    "false": "Нет",
+    "on": "Вкл",
+    "off": "Выкл"
+  },
   "reset": {
     "recommended": "рекоменд.",
     "default": "по умолч."
   },
+  "resetTo": "↺ {{label}}: {{value}}",
   "currentOption": "{{value}} (текущее)",
   "inIni": "В ini",
   "notInIni": "Нет в ini",
-  "undocumented": "Без описания",
   "service": "Служебный",
+  "conflict": {
+    "sgEngine": "конфликт sg/r"
+  },
   "inPractice": "На практике: ",
   "recommendedValues": "Рекомендуемые значения: ",
+  "tierHintLabel": "Значения по пресетам UE",
   "inGameMenu": "В меню игры ищите: ",
   "engineToggle": {
     "off": "Выкл — строки нет в Engine.ini. Включите и нажмите «Применить», чтобы добавить.",

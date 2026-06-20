@@ -275,8 +275,6 @@ mod tests {
             config_dir: None,
             exe_name: None,
             is_ue: false,
-            is_unity: false,
-            possible_unity: false,
             possible_ue: false,
             cover_url: None,
             custom_cover: None,

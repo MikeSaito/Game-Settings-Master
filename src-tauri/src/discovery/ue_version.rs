@@ -3,7 +3,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
-use super::known_games::load_known_games;
+use super::known_games::{known_app_id_for_game, load_known_games};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -42,20 +42,23 @@ pub fn detect_engine_version(
     config_dir: Option<&Path>,
     game_id: Option<&str>,
 ) -> UeVersionInfo {
-    if let Some(gid) = game_id {
-        if let Some(family) = known_engine_family(gid) {
-            return UeVersionInfo {
-                family,
-                version: None,
-            };
-        }
-    }
+    let known_family = game_id.and_then(known_engine_family);
 
-    if let Some(info) = parse_build_version_file(install_dir) {
+    if let Some(mut info) = parse_build_version_file(install_dir) {
+        if info.family == UeEngineFamily::Unknown {
+            if let Some(family) = known_family {
+                info.family = family;
+            }
+        }
         return info;
     }
 
-    if let Some(info) = parse_engine_ini_version(install_dir) {
+    if let Some(mut info) = parse_engine_ini_version(install_dir) {
+        if info.family == UeEngineFamily::Unknown {
+            if let Some(family) = known_family {
+                info.family = family;
+            }
+        }
         return info;
     }
 
@@ -80,7 +83,12 @@ pub fn detect_engine_version(
         score_ue5 += 2;
     }
 
-    let family = resolve_family_score(score_ue4, score_ue5);
+    let mut family = resolve_family_score(score_ue4, score_ue5);
+    if family == UeEngineFamily::Unknown {
+        if let Some(known) = known_family {
+            family = known;
+        }
+    }
 
     UeVersionInfo {
         family,
@@ -103,11 +111,14 @@ fn resolve_family_score(score_ue4: i32, score_ue5: i32) -> UeEngineFamily {
 }
 
 fn known_engine_family(game_id: &str) -> Option<UeEngineFamily> {
-    let app_id = game_id
-        .strip_prefix("steam-")
-        .or_else(|| game_id.strip_prefix("epic-"))?;
+    let app_id = known_app_id_for_game(game_id).or_else(|| {
+        game_id
+            .strip_prefix("steam-")
+            .or_else(|| game_id.strip_prefix("epic-"))
+            .map(str::to_string)
+    })?;
     let known = load_known_games();
-    let entry = known.get(app_id)?;
+    let entry = known.get(app_id.as_str())?;
     entry
         .engine_family
         .as_deref()
@@ -359,6 +370,29 @@ mod tests {
         let info = detect_engine_version(dir.path(), None, None);
         assert_eq!(info.family, UeEngineFamily::Ue5);
         assert_eq!(info.version.as_deref(), Some("5.4.2"));
+    }
+
+    #[test]
+    fn known_game_still_parses_build_version() {
+        let dir = TempDir::new().unwrap();
+        let build = dir.path().join("Engine/Build");
+        fs::create_dir_all(&build).unwrap();
+        fs::write(
+            build.join("Build.version"),
+            r#"{"MajorVersion":5,"MinorVersion":1,"PatchVersion":0}"#,
+        )
+        .unwrap();
+        let info = detect_engine_version(dir.path(), None, Some("steam-1962700"));
+        assert_eq!(info.family, UeEngineFamily::Ue5);
+        assert_eq!(info.version.as_deref(), Some("5.1"));
+    }
+
+    #[test]
+    fn epic_known_game_uses_family_fallback() {
+        let dir = TempDir::new().unwrap();
+        let info = detect_engine_version(dir.path(), None, Some("epic-Subnautica2"));
+        assert_eq!(info.family, UeEngineFamily::Ue5);
+        assert_eq!(info.version, None);
     }
 
     #[test]

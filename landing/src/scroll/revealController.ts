@@ -1,31 +1,27 @@
-function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * t;
-}
+let revealObserver: IntersectionObserver | null = null;
 
-let lastProgress = -1;
+export function initStaggeredReveal(): void {
+  const items = Array.from(document.querySelectorAll<HTMLElement>(".reveal-stagger"));
+  items.forEach((item, index) => {
+    item.style.setProperty("--reveal-index", String(index % 5));
+  });
 
-export function applyReveal(progress: number): void {
-  // Пропускаем микро-изменения — меньше лишних перерисовок
-  if (Math.abs(progress - lastProgress) < 0.004) return;
-  lastProgress = progress;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    items.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
 
-  const root = document.documentElement;
-  const scale = lerp(1.07, 1, progress);
+  revealObserver?.disconnect();
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        revealObserver?.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+  );
 
-  root.style.setProperty("--reveal", String(progress));
-  root.style.setProperty("--scene-scale", String(scale));
-
-  const coarse = document.getElementById("layer-coarse");
-  const medium = document.getElementById("layer-medium");
-  const fine = document.getElementById("layer-fine");
-
-  if (coarse) coarse.setAttribute("opacity", String(lerp(1, 0.15, progress)));
-  if (medium) medium.setAttribute("opacity", String(lerp(0.12, 0.75, progress)));
-  if (fine) fine.setAttribute("opacity", String(lerp(0, 1, progress)));
-}
-
-export function mountScene(svgMarkup: string): void {
-  const root = document.getElementById("scene-root");
-  if (!root) return;
-  root.innerHTML = svgMarkup;
+  items.forEach((item) => revealObserver?.observe(item));
 }

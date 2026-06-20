@@ -1,7 +1,7 @@
 import type { AppTab, GameProfile, GameTabRoute } from "./types";
 
 export function supportsIniPresets(game: GameProfile): boolean {
-  return !!(game.config_dir && (game.is_ue || game.is_unity));
+  return !!(game.config_dir && game.is_ue);
 }
 
 export function isGameTabAvailable(game: GameProfile, tab: AppTab): boolean {

@@ -8,13 +8,12 @@ pub fn get_gpu_info_cmd() -> Result<GpuCapabilities, String> {
 
 #[tauri::command]
 pub fn get_desktop_resolution_cmd() -> Result<crate::display::ScreenResolution, String> {
-    crate::display::primary_resolution()
-        .ok_or_else(|| {
-            crate::i18n::t(
-                "Не удалось определить разрешение экрана",
-                "Failed to determine screen resolution",
-            )
-        })
+    crate::display::primary_resolution().ok_or_else(|| {
+        crate::i18n::t(
+            "Не удалось определить разрешение экрана",
+            "Failed to determine screen resolution",
+        )
+    })
 }
 
 #[tauri::command]
@@ -39,19 +38,7 @@ pub fn set_language_cmd(lang: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn close_game_cmd(exe_name: String) -> Result<(), String> {
-    let trimmed = exe_name.trim();
-    if trimmed.is_empty() {
-        return Err(crate::i18n::t(
-            "Имя процесса не указано.",
-            "Process name is not specified.",
-        ));
-    }
-    if !is_safe_exe_basename(trimmed) {
-        return Err(crate::i18n::t(
-            &format!("Недопустимое имя процесса: {trimmed}"),
-            &format!("Invalid process name: {trimmed}"),
-        ));
-    }
-    kill_exe(trimmed)
+pub fn close_game_cmd(game_id: String, exe_name: Option<String>) -> Result<(), String> {
+    let exe = super::helpers::resolve_trusted_close_exe_name(&game_id, exe_name.as_deref())?;
+    kill_exe(&exe)
 }

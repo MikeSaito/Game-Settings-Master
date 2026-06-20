@@ -51,13 +51,12 @@ fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
             bytes
         };
         Ok((
-            String::from_utf8(bytes.to_vec())
-                .map_err(|e| {
-                    crate::i18n::t(
-                        &format!("Файл не в UTF-8/UTF-16: {e}"),
-                        &format!("File is not UTF-8/UTF-16: {e}"),
-                    )
-                })?,
+            String::from_utf8(bytes.to_vec()).map_err(|e| {
+                crate::i18n::t(
+                    &format!("Файл не в UTF-8/UTF-16: {e}"),
+                    &format!("File is not UTF-8/UTF-16: {e}"),
+                )
+            })?,
             IniEncoding::Utf8,
         ))
     }

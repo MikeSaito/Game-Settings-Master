@@ -10,8 +10,10 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: "btn-primary",
-  secondary: "btn-secondary",
+  primary:
+    "border border-[var(--color-accent-hover)] bg-[var(--color-accent)] text-[#17130b] shadow-[var(--shadow-subtle)] hover:bg-[var(--color-accent-hover)]",
+  secondary:
+    "border border-[var(--color-border-strong)] bg-[var(--color-surface-raised)] text-[var(--color-text-secondary)] shadow-[var(--shadow-subtle)] hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]",
   ghost: "text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)]",
   danger:
     "border border-[#5a3030] bg-[#2e1a1a] text-[#f0a0a0] hover:bg-[#3a2020]",

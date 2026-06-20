@@ -15,6 +15,24 @@ export interface UpdateProgress {
 }
 
 const isDev = import.meta.env.DEV;
+const UPDATE_CHECK_TIMEOUT_MS = 15_000;
+const UPDATE_INSTALL_TIMEOUT_MS = 5 * 60_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const handle = window.setTimeout(() => reject(new Error(message)), ms);
+    promise.then(
+      (value) => {
+        window.clearTimeout(handle);
+        resolve(value);
+      },
+      (err) => {
+        window.clearTimeout(handle);
+        reject(err);
+      },
+    );
+  });
+}
 
 export function useAppUpdater() {
   const [status, setStatus] = useState<UpdaterStatus>(isDev ? "ready" : "checking");
@@ -34,7 +52,11 @@ export function useAppUpdater() {
     setProgress(null);
 
     try {
-      const found = await check();
+      const found = await withTimeout(
+        check(),
+        UPDATE_CHECK_TIMEOUT_MS,
+        "Update check timed out",
+      );
       if (found) {
         setUpdate(found);
         setStatus("required");
@@ -60,24 +82,28 @@ export function useAppUpdater() {
     setProgress(null);
 
     try {
-      await update.downloadAndInstall((event) => {
-        switch (event.event) {
-          case "Started":
-            setProgress({
-              downloaded: 0,
-              total: event.data.contentLength ?? 0,
-            });
-            break;
-          case "Progress":
-            setProgress((prev) => ({
-              downloaded: (prev?.downloaded ?? 0) + event.data.chunkLength,
-              total: prev?.total ?? 0,
-            }));
-            break;
-          case "Finished":
-            break;
-        }
-      });
+      await withTimeout(
+        update.downloadAndInstall((event) => {
+          switch (event.event) {
+            case "Started":
+              setProgress({
+                downloaded: 0,
+                total: event.data.contentLength ?? 0,
+              });
+              break;
+            case "Progress":
+              setProgress((prev) => ({
+                downloaded: (prev?.downloaded ?? 0) + event.data.chunkLength,
+                total: prev?.total ?? 0,
+              }));
+              break;
+            case "Finished":
+              break;
+          }
+        }),
+        UPDATE_INSTALL_TIMEOUT_MS,
+        "Update download timed out",
+      );
       await relaunch();
     } catch (err) {
       setError(formatUpdaterError(err));
@@ -100,7 +126,7 @@ export function useAppUpdater() {
     error,
     progress,
     retry,
-    canBypassOnError: status === "error" && retryCount > 0,
+    canBypassOnError: status === "error" && (!update || retryCount > 0),
     continueWithoutUpdate,
     installUpdate,
   };

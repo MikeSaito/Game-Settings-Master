@@ -25,6 +25,8 @@ function gusParam(key: string, value: string): GameParameter {
     step: null,
     options: null,
     recommended: null,
+    catalog_recommended: false,
+    tier_hint: null,
   };
 }
 

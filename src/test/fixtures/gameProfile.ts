@@ -8,8 +8,6 @@ const baseGame: GameProfile = {
   config_dir: "C:\\Games\\Test\\Saved\\Config\\Windows",
   exe_name: "TestGame.exe",
   is_ue: true,
-  is_unity: false,
-  possible_unity: false,
   possible_ue: true,
   cover_url: null,
   custom_cover: null,
