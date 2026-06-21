@@ -399,30 +399,17 @@ summary:focus-visible {
 .mock-window__chrome {
   display: flex;
   align-items: center;
-  gap: 0.44rem;
   height: 44px;
   padding-inline: 1rem;
   border-bottom: 1px solid var(--color-border);
-  background: rgba(250, 248, 244, 0.82);
+  background: var(--color-surface-raised);
   color: var(--color-text-muted);
   font-family: var(--font-mono);
   font-size: 0.72rem;
 }
 
-.mock-window__chrome span {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--color-border-strong);
-}
-
-.mock-window__chrome span:first-child {
-  background: var(--color-accent);
-}
-
 .mock-window__chrome b {
-  margin-left: 0.5rem;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .mock-window__body {

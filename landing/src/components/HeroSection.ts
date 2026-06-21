@@ -15,7 +15,6 @@ export function createHeroSection(t: LocaleStrings): HTMLElement {
     </div>
     <div class="mock-window hero__mock" aria-hidden="true">
       <div class="mock-window__chrome">
-        <span></span><span></span><span></span>
         <b>Advanced Editor</b>
       </div>
       <div class="mock-window__body">
