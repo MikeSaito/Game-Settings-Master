@@ -29,7 +29,7 @@ DLSS, FSR, трассировка лучей и генерация кадров 
 
 Windows · бесплатно · без подписи издателя
 
-* [Скачать установщик](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2_x64-setup.exe)
+* [Скачать установщик](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2-a_x64-setup.exe)
 * [GitHub](https://github.com/MikeSaito/Game-Settings-Master)
 * [Сайт](https://mikesaito.github.io/Game-Settings-Master/)
 
@@ -94,4 +94,4 @@ npm run types:gen
 
 ---
 
-Game Settings Master v1.0.2
+Game Settings Master v1.0.2-a

@@ -10,8 +10,8 @@ import {
 import { setAppBackgroundMode } from "../lib/api";
 import { isTauriRuntime } from "../lib/tauriRuntime";
 
-const HIDE_DELAY_MS = 400;
-const SHOW_DELAY_MS = 120;
+const BACKGROUND_DELAY_MS = 400;
+const FOREGROUND_DELAY_MS = 120;
 
 const AppWindowFocusContext = createContext(true);
 
@@ -19,22 +19,15 @@ export function useAppWindowFocused(): boolean {
   return useContext(AppWindowFocusContext);
 }
 
-/** OS focus + background window hiding (WebView2 does not compete with fullscreen game). */
+/** OS focus tracking + background process priority (IPC throttling while unfocused). */
 export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   const inTauri = isTauriRuntime();
-  const backgroundHideEnabled = inTauri && !import.meta.env.DEV;
+  const backgroundModeEnabled = inTauri && !import.meta.env.DEV;
   const [tauriFocused, setTauriFocused] = useState(true);
   const [docVisible, setDocVisible] = useState(
     () => typeof document !== "undefined" && document.visibilityState === "visible",
   );
-  const hideTimer = useRef<number | undefined>(undefined);
-  const showTimer = useRef<number | undefined>(undefined);
-  const hiddenRef = useRef(false);
   const focusedRef = useRef(true);
-  const hasBeenFocusedRef = useRef(false);
-  const startupGraceUntilRef = useRef(
-    typeof performance !== "undefined" ? performance.now() + 2000 : 0,
-  );
   const focused = inTauri ? tauriFocused && docVisible : docVisible;
 
   focusedRef.current = focused;
@@ -47,11 +40,9 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
 
     void window.isFocused().then((isFocused) => {
       setTauriFocused(isFocused);
-      if (isFocused) hasBeenFocusedRef.current = true;
     });
     void window.onFocusChanged(({ payload }) => {
       setTauriFocused(payload);
-      if (payload) hasBeenFocusedRef.current = true;
     }).then((fn) => {
       unlisten = fn;
     });
@@ -68,35 +59,15 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!backgroundHideEnabled) return;
+    if (!backgroundModeEnabled) return;
 
-    window.clearTimeout(hideTimer.current);
-    window.clearTimeout(showTimer.current);
+    const delay = focused ? FOREGROUND_DELAY_MS : BACKGROUND_DELAY_MS;
+    const timer = window.setTimeout(() => {
+      void setAppBackgroundMode(!focusedRef.current);
+    }, delay);
 
-    if (focused) {
-      if (!hiddenRef.current) return;
-
-      showTimer.current = window.setTimeout(() => {
-        if (!focusedRef.current || !hiddenRef.current) return;
-        hiddenRef.current = false;
-        void setAppBackgroundMode(false);
-      }, SHOW_DELAY_MS);
-
-      return () => window.clearTimeout(showTimer.current);
-    }
-
-    hideTimer.current = window.setTimeout(() => {
-      if (focusedRef.current) return;
-      if (!hasBeenFocusedRef.current) return;
-      if (typeof performance !== "undefined" && performance.now() < startupGraceUntilRef.current) {
-        return;
-      }
-      hiddenRef.current = true;
-      void setAppBackgroundMode(true);
-    }, HIDE_DELAY_MS);
-
-    return () => window.clearTimeout(hideTimer.current);
-  }, [focused, backgroundHideEnabled]);
+    return () => window.clearTimeout(timer);
+  }, [focused, backgroundModeEnabled]);
 
   return (
     <AppWindowFocusContext.Provider value={focused}>

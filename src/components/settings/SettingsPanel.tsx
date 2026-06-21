@@ -16,7 +16,7 @@ interface Props {
   scoped?: boolean;
 }
 
-const APP_VERSION = "1.0.2";
+const APP_VERSION = "1.0.2-a";
 const FONT_SCALES: Array<{ value: FontScale; labelKey: string }> = [
   { value: 0.875, labelKey: "fontScale.small" },
   { value: 1, labelKey: "fontScale.normal" },
