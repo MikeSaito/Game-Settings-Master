@@ -22,7 +22,11 @@ BUILDER_GENERATED_DIR = Path(__file__).resolve().parent / "generated"
 OUTPUT_INDEX = CATALOG_DIR / "ue_reference_index.json"
 OUTPUT_STATS = GENERATED_DIR / "merge_stats.json"
 
-VERSIONS = ["4.27", "5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8"]
+BUILDER_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BUILDER_DIR))
+from ue_versions import load_ue_versions
+
+VERSIONS = load_ue_versions()
 SCHEMA_VERSION = 2
 CURATED_FILES = [
     "engine.json",
@@ -745,16 +749,27 @@ def load_tier_b() -> dict[str, dict[str, Any]]:
 
 
 def load_tier_a() -> dict[str, dict[str, Any]]:
-    path = Path(__file__).parent / "data" / "tier_a_descriptions.json"
-    if not path.exists():
-        return {}
-    data = json.loads(path.read_text(encoding="utf-8"))
+    base = Path(__file__).parent / "data"
+    tier_files = (
+        "tier_a_descriptions.json",
+        "tier_a_expansion_v1.json",
+        "tier_a_expansion_v2.json",
+        "tier_a_expansion_v3.json",
+        "tier_a_expansion_v4.json",
+        "tier_a_expansion_v5.json",
+        "tier_a_expansion_v6.json",
+    )
     out: dict[str, dict[str, Any]] = {}
-    for key, overlay in data.items():
-        cleaned: dict[str, Any] = {}
-        for field, val in overlay.items():
-            cleaned[field] = normalize_display_text(val) if isinstance(val, str) else val
-        out[key.lower()] = cleaned
+    for name in tier_files:
+        path = base / name
+        if not path.exists():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for key, overlay in data.items():
+            cleaned: dict[str, Any] = {}
+            for field, val in overlay.items():
+                cleaned[field] = normalize_display_text(val) if isinstance(val, str) else val
+            out[key.lower()] = cleaned
     return out
 
 

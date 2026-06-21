@@ -128,7 +128,9 @@ if ($AutoTags -or $Versions.Count -eq 0) {
     if (-not $useGit) {
         Write-SetupHint "AutoTags requires a git clone at EngineRoot (see $setupDoc)."
     }
-    $Versions = @("4.27", "5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8")
+    $versionsFile = Join-Path $root "tools\ue-catalog-builder\ue_versions.json"
+    $versionsJson = Get-Content -LiteralPath $versionsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    $Versions = @($versionsJson.versions)
 }
 
 $tags = @()

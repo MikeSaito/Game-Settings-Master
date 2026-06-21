@@ -15,12 +15,15 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 REF_ROOT = ROOT / "tools" / "ue-reference"
 OUT_DIR = Path(__file__).resolve().parent / "generated"
+BUILDER_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BUILDER_DIR))
+from ue_versions import load_ue_versions
 DEFAULT_ENGINE_ROOTS = [
     Path("D:/UnrealEngine"),
     Path("C:/UnrealEngine"),
     Path.home() / "UnrealEngine",
 ]
-VERSIONS = ["4.27", "5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8"]
+VERSIONS = load_ue_versions()
 
 SG_TEXT_RE = re.compile(r'TEXT\("(?P<key>sg\.[A-Za-z0-9_.]+)"\)')
 NUM_LEVELS_RE = re.compile(

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-20T22:04:53.818105+00:00",
+  "generated_at": "2026-06-21T11:23:03.798739+00:00",
   "sources": [
     "UE_4.27",
     "UE_5.0",
@@ -19,9 +19,9 @@
   "curated_keys_loaded": 113,
   "sg_registry_count": 12,
   "gus_registry_count": 39,
-  "tier_a_overlays": 83,
+  "tier_a_overlays": 746,
   "tier_b_overlays": 150,
-  "tier_b_effective": 550,
+  "tier_b_effective": 150,
   "ini_comment_keys": 8,
   "scalability_tiers": 352,
   "deprecated_count": 20,
@@ -62,9 +62,7 @@
     "5.8": 706
   },
   "description_quality_counts": {
-    "semi": 114,
-    "human": 449,
-    "auto": 163
+    "human": 726
   },
   "bare_stub_descriptions": 0
 }
