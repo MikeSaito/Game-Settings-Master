@@ -1,0 +1,33 @@
+{
+  "tabs": {
+    "advanced": "Редактор",
+    "backups": "Бэкапы"
+  },
+  "source": {
+    "steam": "Steam",
+    "epic": "Epic",
+    "manual": "Вручную"
+  },
+  "badge": {
+    "engineUnknown": "Движок ?",
+    "configOk": "Конфиг готов",
+    "needConfig": "Нужен конфиг"
+  },
+  "button": {
+    "close": "Закрыть",
+    "play": "Играть",
+    "open": "Открыть",
+    "copy": "Копировать",
+    "copied": "Скопировано",
+    "failed": "Не скопировано"
+  },
+  "configLabel": "Конфиг",
+  "noConfigPath": "Путь к конфигу не указан",
+  "gameSections": "Разделы игры",
+  "launchWarningTitle": "Предупреждение при запуске",
+  "launchVia": "Запуск через {{launcher}}…",
+  "gameClosed": "Игра закрыта.",
+  "errors": {
+    "noProcessName": "Имя процесса игры не определено"
+  }
+}

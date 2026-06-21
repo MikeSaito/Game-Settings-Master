@@ -1,0 +1,22 @@
+{
+  "toggleOn": "Вкл",
+  "toggleOff": "Выкл",
+  "workspaceUser": "Пользовательский",
+  "workspaceApplied": "Настроен",
+  "errorBoundaryTitle": "Что-то пошло не так на этом экране",
+  "errorBoundaryBody": "Произошла ошибка интерфейса. Остальная часть приложения продолжает работать — вернитесь в библиотеку или попробуйте снова.",
+  "errorBoundaryRetry": "Попробовать снова",
+  "paramReadOnly": "Служебный параметр — только для чтения. Игра сама обновляет это значение; ручное изменение может сломать настройки.",
+  "paramDisabled": "Параметр выключен (тоггл «Выкл»). Включите и нажмите «Применить», чтобы редактировать.",
+  "gpuNoRtx": "без RTX",
+  "gpuDlssFg": "DLSS + генерация кадров",
+  "gpuDlss": "DLSS",
+  "gpuFsrTsr": "FSR / TSR",
+  "workspaceAppliedPrefix": "Применён: {{label}}",
+  "paramSentinel": "−1 · автоматически (по умолчанию движка)",
+  "gpuFilterAmd": "Видеокарта {{name}}: DLSS недоступен — редактор скроет DLSS и предложит FSR 3.",
+  "gpuFilterIntel": "Видеокарта {{name}}: DLSS недоступен — редактор скроет DLSS и предложит FSR или TSR.",
+  "gpuFilterNvidiaNoDlss": "Видеокарта {{name}}: DLSS недоступен — GTX не поддерживает Tensor Cores.",
+  "gpuFilterNvidiaNoFg": "Видеокарта {{name}}: Frame Generation недоступен — DLSS FG будет скрыт.",
+  "gpuFilterNvidiaDlssOnly": "Видеокарта {{name}}: DLSS доступен. Frame Generation (DLSS 3) — только на RTX 40-й серии и новее."
+}

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Rust tests
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Verify TypeScript bindings in sync
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File scripts/verify-types-sync.ps1
+
+      - name: Rust release compile check
+        working-directory: src-tauri
+        run: cargo build --release
+
+      - name: Frontend build
+        run: npm run build
+
+      - name: Frontend unit tests
+        run: npm test
+
+      - name: Landing build
+        run: npm ci --prefix landing && npm run build --prefix landing

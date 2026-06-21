@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200" fill="none">
+  <rect x="28" y="20" width="224" height="160" rx="14" fill="#151511" stroke="#343128"/>
+  <rect x="42" y="36" width="92" height="22" rx="8" fill="rgba(217,154,43,0.14)" stroke="#4a4436"/>
+  <rect x="146" y="36" width="92" height="22" rx="8" fill="#1a1915" stroke="#4a4436"/>
+  <text x="64" y="51" fill="#efb347" font-family="IBM Plex Mono, monospace" font-size="8">Basic</text>
+  <text x="166" y="51" fill="#918a7d" font-family="IBM Plex Mono, monospace" font-size="8">Advanced</text>
+  <text x="44" y="78" fill="#cbc4b4" font-family="IBM Plex Mono, monospace" font-size="9">sg.TextureQuality</text>
+  <rect x="44" y="86" width="160" height="7" rx="3.5" fill="#29261e"/>
+  <rect x="44" y="86" width="116" height="7" rx="3.5" fill="#d99a2b"/>
+  <circle cx="160" cy="89.5" r="8" fill="#1a1915" stroke="#efb347" stroke-width="2"/>
+  <text x="44" y="118" fill="#cbc4b4" font-family="IBM Plex Mono, monospace" font-size="9">r.Nanite.MaxPixelsPerEdge</text>
+  <rect x="44" y="126" width="160" height="7" rx="3.5" fill="#29261e"/>
+  <rect x="44" y="126" width="74" height="7" rx="3.5" fill="#f1c15f" opacity="0.82"/>
+  <rect x="44" y="148" width="72" height="18" rx="7" fill="rgba(241,193,95,0.13)" stroke="#4a4436"/>
+  <text x="54" y="161" fill="#f1c15f" font-family="IBM Plex Mono, monospace" font-size="8">backup</text>
+</svg>

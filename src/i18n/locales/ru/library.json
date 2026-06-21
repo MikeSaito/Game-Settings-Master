@@ -1,0 +1,60 @@
+{
+  "alerts": {
+    "errorTitle": "Ошибка",
+    "coversTitle": "Обложки",
+    "coversBody": "Steam-игры подтягивают картинку автоматически. Для Epic и ручных профилей нажмите «Обложка» на карточке игры."
+  },
+  "header": {
+    "title": "Библиотека игр",
+    "subtitle": "Steam · Epic · Unreal Engine · ручное добавление"
+  },
+  "badges": {
+    "total": "{{count}} всего",
+    "withConfig": "{{count}} с конфигом",
+    "withoutConfig": "{{count}} без конфига",
+    "ue": "{{count}} UE",
+    "withCover": "{{count}} с обложкой"
+  },
+  "source": {
+    "manual": "Вручную"
+  },
+  "dialogs": {
+    "installFolder": "Выберите папку установки Unreal Engine игры",
+    "configFolder": "Выберите папку Saved/Config/Windows",
+    "coverFile": "Выберите обложку игры",
+    "imageFilter": "Изображение"
+  },
+  "card": {
+    "engineUnknown": "Движок не определён",
+    "probablyUe": "Вероятно UE",
+    "configOk": "Конфиг готов",
+    "configMissing": "Конфиг ?",
+    "select": "Выбрать",
+    "pickConfig": "Указать конфиг",
+    "cover": "Обложка",
+    "resetCover": "Сброс",
+    "removeProfile": "Удалить профиль"
+  },
+  "actions": {
+    "scan": "Сканировать",
+    "add": "Добавить",
+    "addManual": "Добавить вручную"
+  },
+  "search": {
+    "placeholder": "Поиск или название для ручного добавления…",
+    "aria": "Поиск игр"
+  },
+  "viewMode": "Вид библиотеки",
+  "view": {
+    "grid": "Плитка",
+    "list": "Список"
+  },
+  "gamesLabel": "Игры",
+  "loading": "Сканирование Steam, Epic и локальных профилей…",
+  "empty": {
+    "nothingFound": "Ничего не найдено",
+    "noGames": "UE-игры не найдены",
+    "tryAnother": "Попробуйте другое название или добавьте игру вручную.",
+    "scanOrAddPrefix": "Нажмите «Сканировать» или «Добавить», чтобы указать папку установки Unreal Engine (исполняемый файл Shipping)."
+  }
+}

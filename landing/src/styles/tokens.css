@@ -1,0 +1,97 @@
+:root {
+  --font-sans: "IBM Plex Sans", "Geist", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "Geist Mono", "Cascadia Mono", ui-monospace, monospace;
+
+  --color-bg: #f5f2ea;
+  --color-bg-soft: #ece7dc;
+  --color-bg-depth: #ded5c3;
+  --color-paper: #fbf7ee;
+  --color-surface: #ffffff;
+  --color-surface-raised: #faf8f4;
+  --color-surface-hover: #eee8dc;
+  --color-border: #c9c0b0;
+  --color-border-strong: #9c907e;
+  --color-text: #1a1814;
+  --color-text-secondary: #3e382f;
+  --color-text-muted: #5c564c;
+  --color-text-faint: #7c7366;
+  --color-accent: #b87a14;
+  --color-accent-hover: #8f5f0f;
+  --color-accent-soft: rgba(184, 122, 20, 0.14);
+  --color-accent-ring: rgba(184, 122, 20, 0.28);
+  --color-accent-glow: rgba(184, 122, 20, 0.28);
+  --color-glow-amber: rgba(184, 122, 20, 0.22);
+  --color-grid-line: rgba(88, 75, 54, 0.1);
+  --color-success: #246b43;
+  --color-success-soft: rgba(36, 107, 67, 0.12);
+  --color-warning: #805514;
+  --color-warning-soft: rgba(128, 85, 20, 0.14);
+
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --max-content: 1200px;
+  --page-pad: clamp(1rem, 4vw, 2rem);
+  --section-gap: clamp(4rem, 10vh, 7rem);
+  --shadow-panel: 0 18px 60px rgba(51, 40, 22, 0.16);
+  --shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.86) inset;
+  --shadow-card: 0 18px 48px rgba(82, 66, 35, 0.14);
+  --shadow-float: 0 30px 90px rgba(84, 65, 29, 0.2);
+  --focus-ring: 0 0 0 3px var(--color-accent-ring);
+  --gradient-page:
+    radial-gradient(circle at 16% 8%, rgba(184, 122, 20, 0.16), transparent 30rem),
+    radial-gradient(circle at 78% 2%, rgba(218, 169, 82, 0.18), transparent 34rem),
+    radial-gradient(circle at 50% 110%, rgba(44, 39, 31, 0.12), transparent 42rem),
+    linear-gradient(180deg, #fbf7ee 0%, #f5f2ea 38%, #ece7dc 100%);
+  --gradient-hero:
+    radial-gradient(circle at 74% 34%, rgba(184, 122, 20, 0.3), transparent 22rem),
+    radial-gradient(circle at 88% 6%, rgba(245, 211, 139, 0.55), transparent 28rem),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.88), transparent 24rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(236, 231, 220, 0.2));
+  --gradient-card:
+    radial-gradient(circle at top right, rgba(184, 122, 20, 0.1), transparent 16rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(250, 248, 244, 0.9));
+}
+
+[data-theme="dark"] {
+  --color-bg: #11110f;
+  --color-bg-soft: #151511;
+  --color-bg-depth: #0c0c0a;
+  --color-paper: #171611;
+  --color-surface: #1a1915;
+  --color-surface-raised: #211f19;
+  --color-surface-hover: #29261e;
+  --color-border: #343128;
+  --color-border-strong: #4a4436;
+  --color-text: #f3efe4;
+  --color-text-secondary: #cbc4b4;
+  --color-text-muted: #918a7d;
+  --color-text-faint: #6d665c;
+  --color-accent: #d99a2b;
+  --color-accent-hover: #efb347;
+  --color-accent-soft: rgba(217, 154, 43, 0.14);
+  --color-accent-ring: rgba(217, 154, 43, 0.32);
+  --color-accent-glow: rgba(217, 154, 43, 0.36);
+  --color-glow-amber: rgba(217, 154, 43, 0.28);
+  --color-grid-line: rgba(245, 237, 220, 0.08);
+  --color-success: #76c893;
+  --color-success-soft: rgba(118, 200, 147, 0.12);
+  --color-warning: #f1c15f;
+  --color-warning-soft: rgba(241, 193, 95, 0.13);
+  --shadow-panel: 0 18px 60px rgba(0, 0, 0, 0.24);
+  --shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-card: 0 20px 54px rgba(0, 0, 0, 0.28);
+  --shadow-float: 0 28px 86px rgba(0, 0, 0, 0.36);
+  --gradient-page:
+    radial-gradient(circle at 72% 22%, rgba(217, 154, 43, 0.22), transparent 34rem),
+    radial-gradient(circle at 18% 18%, rgba(239, 179, 71, 0.11), transparent 28rem),
+    linear-gradient(180deg, #151511 0%, #11110f 58%, #11110f 100%);
+  --gradient-hero:
+    radial-gradient(circle at 72% 22%, rgba(217, 154, 43, 0.22), transparent 34rem),
+    radial-gradient(circle at 18% 18%, rgba(239, 179, 71, 0.11), transparent 28rem),
+    linear-gradient(180deg, rgba(21, 21, 17, 0.9), rgba(17, 17, 15, 0.68));
+  --gradient-card:
+    linear-gradient(145deg, rgba(33, 31, 25, 0.96), rgba(26, 25, 21, 0.88)),
+    radial-gradient(circle at top right, rgba(217, 154, 43, 0.14), transparent 18rem);
+}

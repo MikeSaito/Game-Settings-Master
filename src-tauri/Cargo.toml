@@ -1,0 +1,52 @@
+[package]
+name = "ue-settings-master"
+version = "1.0.1"
+description = "UE Settings Master — мастер настроек для игр Unreal Engine"
+authors = ["Mike"]
+edition = "2021"
+
+[lib]
+name = "ue_settings_master_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = { version = "2.0.0-rc.25", features = ["derive"] }
+specta-serde = "0.0.12"
+specta-typescript = "0.0.12"
+tauri-specta = { version = "2.0.0-rc.25", features = ["derive", "typescript"] }
+chrono = { version = "0.4", features = ["serde"] }
+walkdir = "2"
+regex = "1"
+dirs = "6"
+indexmap = { version = "2", features = ["serde"] }
+uuid = { version = "1", features = ["v4"] }
+open = "5"
+tauri-plugin-process = "2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Gdi",
+  "Win32_System_Diagnostics_ToolHelp",
+  "Win32_System_Threading",
+  "Win32_UI_WindowsAndMessaging",
+] }
+winreg = "0.55"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

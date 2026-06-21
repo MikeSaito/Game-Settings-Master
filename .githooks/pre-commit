@@ -1,0 +1,4 @@
+#!/bin/sh
+# Git hook entry — runs PowerShell checks (npm test + bindings sync).
+root="$(git rev-parse --show-toplevel)"
+exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$root/.githooks/pre-commit.ps1"

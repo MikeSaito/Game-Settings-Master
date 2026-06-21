@@ -1,0 +1,67 @@
+name: Deploy landing (GitHub Pages)
+
+# Source: GitHub Actions (Settings → Pages)
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "landing/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Read app version
+        id: app_version
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read package.json version" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: landing/package-lock.json
+
+      - name: Install & build landing
+        working-directory: landing
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          VITE_GITHUB_REPO: ${{ github.repository }}
+          VITE_APP_VERSION: ${{ steps.app_version.outputs.version }}
+        run: |
+          npm ci
+          npm run build
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: landing/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

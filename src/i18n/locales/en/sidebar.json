@@ -1,0 +1,13 @@
+{
+  "tabs": {
+    "library": { "label": "Library", "desc": "Games and config" },
+    "settings": { "label": "Settings", "desc": "Interface" }
+  },
+  "game": "Current game",
+  "activeGame": "Active game",
+  "pickGame": "Select a game in the library",
+  "badge": {
+    "configOk": "Config OK",
+    "needConfig": "Config required"
+  }
+}

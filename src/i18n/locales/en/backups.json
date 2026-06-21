@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Backups",
+    "backupsCount_one": "{{count}} backup",
+    "backupsCount_other": "{{count}} backups"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "body": "Before every preset application or manual edit, a snapshot of the ini files is created in the `.uesm-backups` folder next to the configs."
+  },
+  "restore": {
+    "success": "Backup {{date}} restored: {{files}}. Restart the game.",
+    "errorTitle": "Restore error",
+    "button": "Restore"
+  },
+  "reset": {
+    "noFiles": "Override files are already absent — only GameUserSettings.ini remains. A backup was created just in case.",
+    "success": "Reset completed: removed {{files}}. GameUserSettings.ini kept. Backup {{backupId}}. Restart the game.",
+    "errorTitle": "Reset error",
+    "sectionTitle": "Reset to user defaults",
+    "sectionDesc": "Removes Engine.ini, Game.ini, Scalability.ini and Input.ini. GameUserSettings.ini is left untouched.",
+    "confirmBody": "A backup is created before reset. The game must be closed. Continue?",
+    "confirmYes": "Yes, reset",
+    "cancel": "Cancel",
+    "button": "Reset (keep only GameUserSettings.ini)"
+  },
+  "successTitle": "Done",
+  "empty": {
+    "selectGame": "Select a game",
+    "selectGameDesc": "Open the library and select a game with config — the list of ini backups will appear here."
+  },
+  "configMissing": {
+    "title": "Config not found — {{name}}",
+    "body": "Specify the Saved/Config/Windows folder in the library or launch the game once."
+  },
+  "list": {
+    "title": "Backup list",
+    "desc": "Newest on top.",
+    "refresh": "Refresh",
+    "loading": "Loading list…",
+    "emptyTitle": "No backups yet",
+    "emptyDesc": "Apply a preset or save manual edits — the first copy will appear automatically."
+  },
+  "banner": {
+    "title": "Backup created",
+    "fallback": "Backup {{backupId}}. Roll back in the \"Backups\" tab."
+  }
+}

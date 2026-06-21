@@ -1,0 +1,50 @@
+{
+  "header": {
+    "title": "Бэкапы",
+    "backupsCount_one": "{{count}} копия",
+    "backupsCount_few": "{{count}} копии",
+    "backupsCount_many": "{{count}} копий",
+    "backupsCount_other": "{{count}} копий"
+  },
+  "howItWorks": {
+    "title": "Как это работает",
+    "body": "Перед каждым применением пресета или ручных правок создаётся снимок ini-файлов в папке `.uesm-backups` рядом с конфигами."
+  },
+  "restore": {
+    "success": "Восстановлена резервная копия {{date}}: {{files}}. Перезапустите игру.",
+    "errorTitle": "Ошибка восстановления",
+    "button": "Восстановить"
+  },
+  "reset": {
+    "noFiles": "Переопределяющие файлы уже отсутствуют — остался только GameUserSettings.ini. Резервная копия создана на всякий случай.",
+    "success": "Сброс выполнен: удалены {{files}}. GameUserSettings.ini сохранён. Резервная копия {{backupId}}. Перезапустите игру.",
+    "errorTitle": "Ошибка сброса",
+    "sectionTitle": "Сброс до пользовательских",
+    "sectionDesc": "Удаляет Engine.ini, Game.ini, Scalability.ini и Input.ini. GameUserSettings.ini не трогается.",
+    "confirmBody": "Перед сбросом создаётся резервная копия. Игра должна быть закрыта. Продолжить?",
+    "confirmYes": "Да, сбросить",
+    "cancel": "Отмена",
+    "button": "Сброс (только GameUserSettings.ini)"
+  },
+  "successTitle": "Готово",
+  "empty": {
+    "selectGame": "Выберите игру",
+    "selectGameDesc": "Откройте библиотеку и выберите игру с конфигом — здесь появится список резервных копий ini."
+  },
+  "configMissing": {
+    "title": "Конфиг не найден — {{name}}",
+    "body": "Укажите папку Saved/Config/Windows в библиотеке или запустите игру один раз."
+  },
+  "list": {
+    "title": "Список резервных копий",
+    "desc": "Новые сверху.",
+    "refresh": "Обновить",
+    "loading": "Загрузка списка…",
+    "emptyTitle": "Пока нет бэкапов",
+    "emptyDesc": "Примените пресет или сохраните ручные правки — первая копия появится автоматически."
+  },
+  "banner": {
+    "title": "Резервная копия создана",
+    "fallback": "Резервная копия {{backupId}}. Откат — во вкладке «Бэкапы»."
+  }
+}

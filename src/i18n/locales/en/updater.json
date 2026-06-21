@@ -1,0 +1,10 @@
+{
+  "checking": "Checking for updates…",
+  "downloading": "Downloading and installing update…",
+  "installFailed": "Could not install the update. Check your internet and try again.",
+  "checkFailed": "Could not check for updates. Check your internet and try again.",
+  "required": "A new version {{version}} is available. You must update to continue.",
+  "updateTo": "Update to {{version}}",
+  "retry": "Retry",
+  "continueOffline": "Continue without updating (offline)"
+}

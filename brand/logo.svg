@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="88" y1="48" x2="424" y2="464">
+      <stop offset="0%" stop-color="#1a1915"/>
+      <stop offset="100%" stop-color="#11110f"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="128" y1="150" x2="386" y2="356">
+      <stop offset="0%" stop-color="#efb347"/>
+      <stop offset="100%" stop-color="#d99a2b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(308 216) rotate(100) scale(176)">
+      <stop stop-color="#efb347" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#d99a2b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="48" y="48" width="416" height="416" rx="88" stroke="#343128" stroke-width="8"/>
+  <circle cx="256" cy="256" r="156" fill="url(#glow)"/>
+  <path d="M146 256c0-60.751 49.249-110 110-110 42.349 0 79.103 23.936 97.489 58.995" stroke="url(#amber)" stroke-width="34" stroke-linecap="round"/>
+  <path d="M366 256c0 60.751-49.249 110-110 110-42.349 0-79.103-23.936-97.489-58.995" stroke="#4a4436" stroke-width="34" stroke-linecap="round"/>
+  <rect x="140" y="238" width="232" height="36" rx="18" fill="#11110f" stroke="#4a4436" stroke-width="10"/>
+  <rect x="164" y="249" width="106" height="14" rx="7" fill="#efb347"/>
+  <circle cx="318" cy="256" r="46" fill="url(#amber)" stroke="#f3efe4" stroke-opacity="0.82" stroke-width="10"/>
+  <circle cx="318" cy="256" r="13" fill="#11110f" opacity="0.88"/>
+</svg>
