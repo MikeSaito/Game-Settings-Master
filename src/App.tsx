@@ -24,6 +24,7 @@ import {
   tabFromPathname,
 } from "./lib/routes";
 import { queryClient } from "./lib/queryClient";
+import { writeStoredPanel } from "./lib/editorPanels";
 import { LegacyGameRouteRedirect } from "./lib/legacyGameRouteRedirect";
 import type { GameProfile } from "./lib/types";
 
@@ -47,12 +48,11 @@ function GameEditorPage({ games }: { games: GameProfile[] }) {
 
 function BackupsRouteRedirect() {
   const { gameId = "" } = useParams();
-  return (
-    <Navigate
-      to={`${gameTabPath(decodeURIComponent(gameId), "advanced")}#backups`}
-      replace
-    />
-  );
+  const id = decodeURIComponent(gameId);
+  useEffect(() => {
+    writeStoredPanel(id, "backups");
+  }, [id]);
+  return <Navigate to={gameTabPath(id, "advanced")} replace />;
 }
 
 export function AppContent() {
@@ -98,7 +98,8 @@ export function AppContent() {
       gameRoute &&
       gameRoute.tab === "backups"
     ) {
-      navigate(`${gameTabPath(selectedGame.id, "advanced")}#backups`, { replace: true });
+      writeStoredPanel(selectedGame.id, "backups");
+      navigate(gameTabPath(selectedGame.id, "advanced"), { replace: true });
       return;
     }
     if (

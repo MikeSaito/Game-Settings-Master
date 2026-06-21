@@ -209,17 +209,17 @@ export function writeStoredRecommendedOnly(
   );
 }
 
-export function panelFromHash(): EditorPanel | null {
-  if (typeof window === "undefined") return null;
-  return normalizePanel(window.location.hash.replace(/^#/, "").toLowerCase());
+export function panelFromHash(hash = ""): EditorPanel | null {
+  const raw =
+    hash ||
+    (typeof window !== "undefined" ? window.location.hash : "");
+  return normalizePanel(raw.replace(/^#/, "").toLowerCase());
 }
 
-export function syncPanelToHash(panel: EditorPanel): void {
-  if (typeof window === "undefined") return;
-  const next =
-    panel === "advanced" ? "#advanced" : panel === "backups" ? "#backups" : "#basic";
-  if (window.location.hash !== next) {
-    window.history.replaceState(null, "", `${window.location.pathname}${next}`);
-  }
+/** Hash fragment for the editor panel (React Router `location.hash` form). */
+export function panelToHash(panel: EditorPanel): string {
+  if (panel === "advanced") return "#advanced";
+  if (panel === "backups") return "#backups";
+  return "#basic";
 }
 

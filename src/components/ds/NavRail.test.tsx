@@ -36,7 +36,27 @@ describe("NavRail", () => {
       </MemoryRouter>,
     );
 
-    await user.click(screen.getByRole("button", { name: /library|библиотека/i }));
+    await user.click(screen.getByRole("link", { name: /library|библиотека/i }));
+
+    await waitFor(() => {
+      expect(paths).toContain("/library");
+    });
+  });
+
+  it("navigates to library after legacy replaceState hash desync", async () => {
+    const user = userEvent.setup();
+    const paths: string[] = [];
+
+    render(
+      <MemoryRouter initialEntries={[`/game/${testGame.id}/advanced`]}>
+        <LocationProbe onPath={(path) => paths.push(path)} />
+        <NavRail active="advanced" selectedGame={testGame} onSettingsClick={vi.fn()} />
+      </MemoryRouter>,
+    );
+
+    window.history.replaceState(null, "", `/game/${testGame.id}/advanced#basic`);
+
+    await user.click(screen.getByRole("link", { name: /library|библиотека/i }));
 
     await waitFor(() => {
       expect(paths).toContain("/library");

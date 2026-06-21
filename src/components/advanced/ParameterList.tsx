@@ -30,9 +30,9 @@ interface Props {
 interface ParameterListRowProps {
   param: GameParameter;
   gpu: GpuCapabilities | undefined;
-  engineEnabled: Set<string>;
-  showEngineToggle: boolean;
-  pendingConflictKeys?: Set<string>;
+  enabled: boolean;
+  toggleable: boolean;
+  hasConflict: boolean;
   conflictText: string;
   onUpdateParam: (key: string, section: string, file: string, value: string) => void;
   onToggleEngineParam: (param: GameParameter, enabled: boolean) => void;
@@ -41,15 +41,13 @@ interface ParameterListRowProps {
 const ParameterListRow = memo(function ParameterListRow({
   param,
   gpu,
-  engineEnabled,
-  showEngineToggle,
-  pendingConflictKeys,
+  enabled,
+  toggleable,
+  hasConflict,
   conflictText,
   onUpdateParam,
   onToggleEngineParam,
 }: ParameterListRowProps) {
-  const toggleable = showEngineToggle && isEngineToggleable(param);
-  const enabled = toggleable ? isEngineEnabled(param, engineEnabled) : true;
   const selectOptions = useMemo(
     () => getParamSelectOptions(param, gpu),
     [param, gpu],
@@ -58,9 +56,7 @@ const ParameterListRow = memo(function ParameterListRow({
     () => getDependencyLabel(param.key) ?? undefined,
     [param.key],
   );
-  const conflictLabel = pendingConflictKeys?.has(param.key.toLowerCase())
-    ? conflictText
-    : undefined;
+  const conflictLabel = hasConflict ? conflictText : undefined;
   const handleEngineToggle = useCallback(
     (on: boolean) => onToggleEngineParam(param, on),
     [onToggleEngineParam, param],
@@ -162,6 +158,9 @@ export function ParameterList({
       >
         {virtualizer.getVirtualItems().map((virtualRow) => {
           const param = filteredParams[virtualRow.index];
+          const toggleable = showEngineToggle && isEngineToggleable(param);
+          const enabled = toggleable ? isEngineEnabled(param, engineEnabled) : true;
+          const hasConflict = pendingConflictKeys?.has(param.key.toLowerCase()) ?? false;
           return (
             <div
               key={paramRowKey(param)}
@@ -173,9 +172,9 @@ export function ParameterList({
               <ParameterListRow
                 param={param}
                 gpu={gpu}
-                engineEnabled={engineEnabled}
-                showEngineToggle={showEngineToggle}
-                pendingConflictKeys={pendingConflictKeys}
+                enabled={enabled}
+                toggleable={toggleable}
+                hasConflict={hasConflict}
                 conflictText={conflictText}
                 onUpdateParam={onUpdateParam}
                 onToggleEngineParam={onToggleEngineParam}

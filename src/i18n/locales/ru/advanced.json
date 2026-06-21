@@ -125,11 +125,15 @@
     "filtering": "фильтрация",
     "anti": "сглаживание",
     "aliasing": "сглаживание",
+    "aa": "AA",
     "temporal": "временное",
+    "taa": "TAA",
     "upscale": "апскейлинг",
     "upscaling": "апскейлинг",
+    "upsampling": "апскейлинг",
     "generation": "генерация",
     "frame": "кадр",
+    "fps": "FPS",
     "rate": "частота",
     "limit": "лимит",
     "fullscreen": "полный экран",
@@ -158,9 +162,23 @@
     "sharpen": "резкость",
     "sharpness": "резкость",
     "distancefield": "поле дистанции",
+    "distancefields": "поля дистанции",
     "nanite": "Nanite",
     "lumen": "Lumen",
+    "raytracing": "трассировка лучей",
+    "raytraced": "с трассировкой лучей",
+    "pathtracing": "path tracing",
     "virtual": "виртуальный",
+    "vsm": "VSM",
+    "gi": "GI",
+    "dlss": "DLSS",
+    "fsr": "FSR",
+    "tsr": "TSR",
+    "ssr": "SSR",
+    "ssao": "SSAO",
+    "rhi": "RHI",
+    "hdr": "HDR",
+    "hmd": "HMD",
     "cache": "кэш",
     "pool": "пул",
     "size": "размер",
@@ -272,7 +290,12 @@
   "notInIni": "Нет в ini",
   "service": "Служебный",
   "conflict": {
-    "sgEngine": "конфликт sg/r"
+    "sgEngine": "конфликт sg/r",
+    "bannerTitle": "Пересечение sg.* и r.*",
+    "bannerBody_one": "{{count}} параметр: пресет качества в GameUserSettings.ini перекрывается ручным override в Engine/Scalability.ini.",
+    "bannerBody_few": "{{count}} параметра: пресеты sg.* перекрываются ручными r.* в ini.",
+    "bannerBody_many": "{{count}} параметров: пресеты sg.* перекрываются ручными r.* в ini.",
+    "bannerBody_other": "{{count}} параметра: пресеты sg.* перекрываются ручными r.* в ini."
   },
   "inPractice": "На практике: ",
   "recommendedValues": "Рекомендуемые значения: ",
@@ -303,5 +326,13 @@
   "preset": {
     "maxQuality": "Максимальное качество",
     "recommended": "Рекомендуемый"
+  },
+  "presets": {
+    "export": "Экспорт",
+    "import": "Импорт",
+    "delete": "Удалить",
+    "importInvalid": "Не удалось прочитать файл пресета (.uesm-preset.json).",
+    "imported": "Пресет «{{name}}» импортирован.",
+    "empty": "Нет сохранённых пресетов — сохраните текущие правки или импортируйте JSON."
   }
 }

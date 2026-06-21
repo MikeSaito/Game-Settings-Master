@@ -79,34 +79,72 @@ export function buildCategoryList(
   ];
 }
 
+const searchTextCache = new WeakMap<GameParameter, string>();
+
+export function parameterSearchText(param: GameParameter): string {
+  const cached = searchTextCache.get(param);
+  if (cached) return cached;
+  const text = [
+    param.key,
+    param.title,
+    param.description,
+    param.value_hint ?? "",
+    param.category,
+    param.file,
+  ]
+    .join("\n")
+    .toLowerCase();
+  searchTextCache.set(param, text);
+  return text;
+}
+
+export function filterParamsByCategory(
+  visibleParams: GameParameter[],
+  activeCategory: string,
+): GameParameter[] {
+  if (activeCategory === ALL_CATEGORY) return visibleParams;
+  return visibleParams.filter((p) => p.category === activeCategory);
+}
+
+export function filterParamsBySearch(
+  visibleParams: GameParameter[],
+  search: string,
+): GameParameter[] {
+  const q = search.trim().toLowerCase();
+  if (!q) return visibleParams;
+  return visibleParams.filter((p) => parameterSearchText(p).includes(q));
+}
+
+export function shouldSortByEngineEnabled(activeCategory: string): boolean {
+  return ENGINE_CATEGORIES.has(activeCategory);
+}
+
+export function sortParamsForEngineCategory(
+  visibleParams: GameParameter[],
+  activeCategory: string,
+  engineEnabled: Set<string>,
+): GameParameter[] {
+  if (!shouldSortByEngineEnabled(activeCategory)) {
+    return visibleParams;
+  }
+
+  return [...visibleParams].sort((a, b) => {
+    const aOn = isEngineEnabled(a, engineEnabled) ? 0 : 1;
+    const bOn = isEngineEnabled(b, engineEnabled) ? 0 : 1;
+    if (aOn !== bOn) return aOn - bOn;
+    return a.title.localeCompare(b.title, "ru");
+  });
+}
+
 export function filterParamsByCategoryAndSearch(
   visibleParams: GameParameter[],
   activeCategory: string,
   search: string,
   engineEnabled: Set<string>,
 ): GameParameter[] {
-  const q = search.trim().toLowerCase();
-  const list = visibleParams.filter((p) => {
-    if (activeCategory !== ALL_CATEGORY && p.category !== activeCategory) return false;
-    if (!q) return true;
-    return (
-      p.key.toLowerCase().includes(q) ||
-      p.title.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q) ||
-      (p.value_hint?.toLowerCase().includes(q) ?? false)
-    );
-  });
-
-  if (!ENGINE_CATEGORIES.has(activeCategory)) {
-    return list;
-  }
-
-  return [...list].sort((a, b) => {
-    const aOn = isEngineEnabled(a, engineEnabled) ? 0 : 1;
-    const bOn = isEngineEnabled(b, engineEnabled) ? 0 : 1;
-    if (aOn !== bOn) return aOn - bOn;
-    return a.title.localeCompare(b.title, "ru");
-  });
+  const categoryFiltered = filterParamsByCategory(visibleParams, activeCategory);
+  const searched = filterParamsBySearch(categoryFiltered, search);
+  return sortParamsForEngineCategory(searched, activeCategory, engineEnabled);
 }
 
 export function countEngineStats(

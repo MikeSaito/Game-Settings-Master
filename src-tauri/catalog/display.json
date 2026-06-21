@@ -174,23 +174,23 @@
     "file": "GameUserSettings.ini",
     "section": "/Script/Engine.GameUserSettings",
     "value_type": "bool",
-    "value_hint": "True ? enabled, False ? disabled",
-    "value_hint_en": "True ? enabled, False ? disabled"
+    "value_hint": "True - вкл, False - выкл",
+    "value_hint_en": "True - enabled, False - disabled"
   },
   {
     "key": "bUseDesiredScreenHeight",
     "category": "Display",
     "title": "b Use Desired Screen Height",
     "title_en": "b Use Desired Screen Height",
-    "description": "??????????? ???? UGameUserSettings ?? GameUserSettings.ini.",
+    "description": "Служебное поле UGameUserSettings в GameUserSettings.ini.",
     "description_en": "Standard UGameUserSettings field saved in GameUserSettings.ini.",
     "impact": "Change only when the game already uses this field or you understand its effect.",
     "impact_en": "Change only when the game already uses this field or you understand its effect.",
     "file": "GameUserSettings.ini",
     "section": "/Script/Engine.GameUserSettings",
     "value_type": "bool",
-    "value_hint": "True ? enabled, False ? disabled",
-    "value_hint_en": "True ? enabled, False ? disabled"
+    "value_hint": "True - вкл, False - выкл",
+    "value_hint_en": "True - enabled, False - disabled"
   },
   {
     "key": "bUseHDRDisplayCalibration",
@@ -204,8 +204,8 @@
     "file": "GameUserSettings.ini",
     "section": "/Script/Engine.GameUserSettings",
     "value_type": "bool",
-    "value_hint": "True ? enabled, False ? disabled",
-    "value_hint_en": "True ? enabled, False ? disabled"
+    "value_hint": "True - вкл, False - выкл",
+    "value_hint_en": "True - enabled, False - disabled"
   },
   {
     "key": "bUseHDRDisplayOutput",
@@ -219,15 +219,15 @@
     "file": "GameUserSettings.ini",
     "section": "/Script/Engine.GameUserSettings",
     "value_type": "bool",
-    "value_hint": "True ? enabled, False ? disabled",
-    "value_hint_en": "True ? enabled, False ? disabled"
+    "value_hint": "True - вкл, False - выкл",
+    "value_hint_en": "True - enabled, False - disabled"
   },
   {
     "key": "DesiredScreenHeight",
     "category": "Display",
     "title": "Desired Screen Height",
     "title_en": "Desired Screen Height",
-    "description": "??????????? ???? UGameUserSettings ?? GameUserSettings.ini.",
+    "description": "Желаемая высота экрана, которую Unreal Engine хранит для расчёта разрешения.",
     "description_en": "Standard UGameUserSettings field saved in GameUserSettings.ini.",
     "impact": "Change only when the game already uses this field or you understand its effect.",
     "impact_en": "Change only when the game already uses this field or you understand its effect.",
@@ -242,7 +242,7 @@
     "category": "Display",
     "title": "Desired Screen Width",
     "title_en": "Desired Screen Width",
-    "description": "??????????? ???? UGameUserSettings ?? GameUserSettings.ini.",
+    "description": "Желаемая ширина экрана, которую Unreal Engine хранит для расчёта разрешения.",
     "description_en": "Standard UGameUserSettings field saved in GameUserSettings.ini.",
     "impact": "Change only when the game already uses this field or you understand its effect.",
     "impact_en": "Change only when the game already uses this field or you understand its effect.",
@@ -257,7 +257,7 @@
     "category": "Display",
     "title": "Display ID",
     "title_en": "Display ID",
-    "description": "??????????? ???? UGameUserSettings ?? GameUserSettings.ini.",
+    "description": "Идентификатор монитора, выбранного игрой для вывода изображения. Обычно служебное поле.",
     "description_en": "Standard UGameUserSettings field saved in GameUserSettings.ini.",
     "impact": "Change only when the game already uses this field or you understand its effect.",
     "impact_en": "Change only when the game already uses this field or you understand its effect.",
@@ -270,7 +270,7 @@
     "category": "Display",
     "title": "Display Index",
     "title_en": "Display Index",
-    "description": "??????????? ???? UGameUserSettings ?? GameUserSettings.ini.",
+    "description": "Номер монитора, выбранного игрой для вывода изображения. Обычно меняется через меню игры.",
     "description_en": "Standard UGameUserSettings field saved in GameUserSettings.ini.",
     "impact": "Change only when the game already uses this field or you understand its effect.",
     "impact_en": "Change only when the game already uses this field or you understand its effect.",
@@ -283,7 +283,7 @@
     "category": "Display",
     "title": "Dynamic Resolution Frame Target",
     "title_en": "Dynamic Resolution Frame Target",
-    "description": "??????????? ???? UGameUserSettings ?? GameUserSettings.ini.",
+    "description": "Целевой FPS для динамического разрешения: игра может снижать рендер-разрешение, чтобы удержать эту частоту кадров.",
     "description_en": "Standard UGameUserSettings field saved in GameUserSettings.ini.",
     "impact": "Change only when the game already uses this field or you understand its effect.",
     "impact_en": "Change only when the game already uses this field or you understand its effect.",
@@ -533,7 +533,7 @@
   {
     "key": "Version",
     "category": "Display",
-    "title": "?????? GameUserSettings",
+    "title": "Версия GameUserSettings",
     "title_en": "Version",
     "description": "UGameUserSettings schema version stored by Unreal Engine; normally informational.",
     "description_en": "UGameUserSettings schema version stored by Unreal Engine; normally informational.",
@@ -555,6 +555,32 @@
     "file": "GameUserSettings.ini",
     "section": "/Script/Engine.GameUserSettings",
     "value_type": "array"
+  },
+  {
+    "key": "WindowPosX",
+    "category": "Window",
+    "title": "Позиция окна X",
+    "title_en": "Window position X",
+    "description": "Горизонтальная координата окна в GameUserSettings.ini. Устарело с UE 5.6.",
+    "description_en": "Horizontal window coordinate in GameUserSettings.ini. Deprecated since UE 5.6.",
+    "impact": "Не влияет на FPS.",
+    "impact_en": "No FPS impact.",
+    "file": "GameUserSettings.ini",
+    "section": "/Script/Engine.GameUserSettings",
+    "value_type": "int"
+  },
+  {
+    "key": "WindowPosY",
+    "category": "Window",
+    "title": "Позиция окна Y",
+    "title_en": "Window position Y",
+    "description": "Вертикальная координата окна в GameUserSettings.ini. Устарело с UE 5.6.",
+    "description_en": "Vertical window coordinate in GameUserSettings.ini. Deprecated since UE 5.6.",
+    "impact": "Не влияет на FPS.",
+    "impact_en": "No FPS impact.",
+    "file": "GameUserSettings.ini",
+    "section": "/Script/Engine.GameUserSettings",
+    "value_type": "int"
   },
   {
     "key": "WindowPosX_DEPRECATED",

@@ -35,11 +35,15 @@ const TOKEN_KEYS = [
   "filtering",
   "anti",
   "aliasing",
+  "aa",
   "temporal",
+  "taa",
   "upscale",
   "upscaling",
+  "upsampling",
   "generation",
   "frame",
+  "fps",
   "rate",
   "limit",
   "fullscreen",
@@ -68,9 +72,23 @@ const TOKEN_KEYS = [
   "sharpen",
   "sharpness",
   "distancefield",
+  "distancefields",
   "nanite",
   "lumen",
+  "raytracing",
+  "raytraced",
+  "pathtracing",
   "virtual",
+  "vsm",
+  "gi",
+  "dlss",
+  "fsr",
+  "tsr",
+  "ssr",
+  "ssao",
+  "rhi",
+  "hdr",
+  "hmd",
   "shadow",
   "cache",
   "pool",
@@ -85,16 +103,24 @@ const TOKEN_KEYS = [
 ] as const;
 
 function splitIdentifierPart(part: string): string[] {
-  const normalized = part.replace(/_/g, " ").trim();
+  const normalized = part.replace(/[_-]/g, " ").trim();
   if (!normalized) return [];
-  return normalized
-    .split(/(?=[A-Z][a-z])|[.\s]+/)
-    .map((piece) => piece.trim())
-    .filter(Boolean);
+  return normalized.split(/[.\s]+/).flatMap((piece) =>
+    Array.from(
+      piece.matchAll(/[A-Z]+(?=[A-Z][a-z]|\d|$)|[A-Z]?[a-z]+|\d+/g),
+      (match) => match[0],
+    ),
+  );
 }
 
 function humanizeToken(token: string, t: TFunction<"advanced">): string {
   const lower = token.toLowerCase();
+  const canonical: Record<string, string> = {
+    nanite: "Nanite",
+    lumen: "Lumen",
+    metahuman: "MetaHuman",
+  };
+  if (canonical[lower]) return canonical[lower];
   const key = `humanize.${lower}` as const;
   const translated = t(key, { defaultValue: "" });
   if (translated) return translated;

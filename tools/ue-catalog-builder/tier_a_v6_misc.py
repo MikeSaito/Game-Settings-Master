@@ -1174,6 +1174,22 @@ MISC: dict[str, dict] = {
         "Очень сильно влияет на FPS.", "Very strong FPS impact.",
         max="4", value_hint="0–4", value_hint_en="0–4",
     ),
+    "WindowPosX": E(
+        "Позиция окна X", "Window position X",
+        "Горизонтальная координата окна игры в GameUserSettings.ini (пиксели). Сохраняется между запусками. Устарело с UE 5.6 — используйте LastUserConfirmedResolutionSize.",
+        "Horizontal game window coordinate in GameUserSettings.ini (pixels). Persisted between launches. Deprecated since UE 5.6 — use LastUserConfirmedResolutionSize.",
+        "Не влияет на FPS.", "No FPS impact.",
+        min="-8192", max="8192", value_hint="по умолчанию ОС", value_hint_en="OS default",
+        category="Window", value_type="int",
+    ),
+    "WindowPosY": E(
+        "Позиция окна Y", "Window position Y",
+        "Вертикальная координата окна игры в GameUserSettings.ini (пиксели). Сохраняется между запусками. Устарело с UE 5.6.",
+        "Vertical game window coordinate in GameUserSettings.ini (pixels). Persisted between launches. Deprecated since UE 5.6.",
+        "Не влияет на FPS.", "No FPS impact.",
+        min="-8192", max="8192", value_hint="по умолчанию ОС", value_hint_en="OS default",
+        category="Window", value_type="int",
+    ),
     "r.RenderTargetPoolMin": E(
         "Render target pool min", "Render target pool minimum",
         "Минимальный размер пула render targets (MB). Ниже — меньше VRAM резерв, риск stall при spike. Выше — запас, больше VRAM.",

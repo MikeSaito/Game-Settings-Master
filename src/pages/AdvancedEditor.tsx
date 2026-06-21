@@ -4,6 +4,7 @@ import { EditorApplyBar } from "../components/advanced/EditorApplyBar";
 import { EditorModeBar } from "../components/advanced/EditorModeBar";
 import { EditorSidebar } from "../components/advanced/EditorSidebar";
 import { ParameterList } from "../components/advanced/ParameterList";
+import { SavedPresetsPanel } from "../components/advanced/SavedPresetsPanel";
 import { Alert, EmptyState } from "../components/ds/Feedback";
 import { Badge } from "../components/ds/Badge";
 import { useAdvancedEditorState } from "../hooks/useAdvancedEditorState";
@@ -107,6 +108,12 @@ export function AdvancedEditor({ game }: Props) {
               )}
             </div>
 
+            {state.conflictCount > 0 && (
+              <Alert tone="warning" icon={AlertTriangle} className="mb-3" title={t("conflict.bannerTitle")}>
+                {t("conflict.bannerBody", { count: state.conflictCount })}
+              </Alert>
+            )}
+
             {state.gameRunning && (
               <Alert tone="warning" icon={AlertTriangle} className="mb-3" title={t("gameRunningTitle")}>
                 {t("gameRunningInline")}
@@ -137,6 +144,7 @@ export function AdvancedEditor({ game }: Props) {
             />
 
             <EditorApplyBar state={state} />
+            <SavedPresetsPanel state={state} />
           </section>
         </div>
       )}

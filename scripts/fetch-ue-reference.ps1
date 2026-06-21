@@ -86,6 +86,65 @@ function Copy-BaseIni([string]$configDir, [string]$outDir) {
     Copy-Item -LiteralPath (Join-Path $configDir "BaseScalability.ini") -Destination (Join-Path $outDir "BaseScalability.ini") -Force
 }
 
+function Get-RequiredArchivePaths {
+    return @(
+        "Engine/Config/BaseEngine.ini",
+        "Engine/Config/BaseScalability.ini"
+    )
+}
+
+function Get-OptionalSourcePaths {
+    return @(
+        "Engine/Source/Runtime/Engine/Private/Scalability.cpp",
+        "Engine/Source/Runtime/Engine/Private/GameUserSettings.cpp",
+        "Engine/Source/Runtime/Engine/Classes/GameFramework/GameUserSettings.h",
+        "Engine/Source/Runtime/Engine/Public/GameFramework/GameUserSettings.h"
+    )
+}
+
+function Test-GitPath([string]$gitDir, [string]$rev, [string]$path) {
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "SilentlyContinue"
+    try {
+        & git -C $gitDir cat-file -e "${rev}:${path}" 2>$null | Out-Null
+        return $LASTEXITCODE -eq 0
+    } finally {
+        $ErrorActionPreference = $prev
+    }
+}
+
+function Export-TagSnapshot([string]$gitDir, [string]$tag, [string]$outDir) {
+    New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+    $temp = Join-Path $env:TEMP ("gsm-ue-archive-" + [guid]::NewGuid().ToString())
+    New-Item -ItemType Directory -Force -Path $temp | Out-Null
+    try {
+        $paths = @(Get-RequiredArchivePaths)
+        foreach ($optional in Get-OptionalSourcePaths) {
+            if (Test-GitPath $gitDir $tag $optional) {
+                $paths += $optional
+            }
+        }
+        $tarPath = Join-Path $temp "snapshot.tar"
+        Write-Host "Archiving $tag ($($paths.Count) paths) ..."
+        & git -C $gitDir archive --output=$tarPath $tag @paths
+        if ($LASTEXITCODE -ne 0) {
+            Write-SetupHint "git archive $tag failed. Try: git fetch --tags in $gitDir"
+        }
+        & tar -xf $tarPath -C $temp
+        if ($LASTEXITCODE -ne 0) {
+            Write-SetupHint "tar extract failed for $tag"
+        }
+        $cfg = Join-Path $temp "Engine\Config"
+        if (-not (Test-Path (Join-Path $cfg "BaseEngine.ini"))) {
+            Write-SetupHint "BaseEngine.ini missing in archive for $tag"
+        }
+        Copy-BaseIni $cfg $outDir
+        Copy-SourceFiles $temp $outDir
+    } finally {
+        Remove-Item -LiteralPath $temp -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
 function Copy-SourceFiles([string]$engineRoot, [string]$outDir) {
     $sourceOut = Join-Path $outDir "source"
     New-Item -ItemType Directory -Force -Path $sourceOut | Out-Null
@@ -159,12 +218,6 @@ foreach ($ver in $Versions) {
     else { Write-Host "  UE $ver -> (no tag)" }
 }
 
-$worktreeRoot = $null
-if ($useGit) {
-    $worktreeRoot = Join-Path $env:TEMP "gsm-ue-reference-worktrees-$([guid]::NewGuid().ToString())"
-    New-Item -ItemType Directory -Force -Path $worktreeRoot | Out-Null
-}
-
 $copied = 0
 foreach ($ver in $Versions) {
     $out = Join-Path $destRoot "UE_$ver"
@@ -174,39 +227,15 @@ foreach ($ver in $Versions) {
             Write-Warning "No git tag for UE $ver - skipping"
             continue
         }
-        $worktree = Join-Path $worktreeRoot "UE_$ver"
-        try {
-            Write-Host "Creating temporary worktree for $tag ..."
-            $prevEap = $ErrorActionPreference
-            $ErrorActionPreference = "Continue"
-            git -C $gitDir worktree add --detach --quiet $worktree $tag 2>&1 | Out-Null
-            $ErrorActionPreference = $prevEap
-            if ($LASTEXITCODE -ne 0) {
-                Write-SetupHint "git worktree add $tag failed. Try: git fetch --tags in $gitDir"
-            }
-            $cfg = Resolve-EngineConfigDir $worktree
-            if (-not $cfg) {
-                Write-SetupHint "Config missing after checkout $tag"
-            }
-            Copy-BaseIni $cfg $out
-            Copy-SourceFiles $worktree $out
-            Write-Host "Copied UE_$ver from tag $tag"
-            $copied++
-        } finally {
-            if (Test-Path -LiteralPath $worktree) {
-                git -C $gitDir worktree remove --force $worktree 2>$null | Out-Null
-            }
-        }
+        Export-TagSnapshot $gitDir $tag $out
+        Write-Host "Copied UE_$ver from tag $tag"
+        $copied++
     } else {
         Copy-BaseIni $configDir $out
         Copy-SourceFiles $EngineRoot $out
         Write-Host "Copied UE_$ver (single tree, no git)"
         $copied++
     }
-}
-
-if ($worktreeRoot -and (Test-Path -LiteralPath $worktreeRoot)) {
-    Remove-Item -LiteralPath $worktreeRoot -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 if ($copied -eq 0) {

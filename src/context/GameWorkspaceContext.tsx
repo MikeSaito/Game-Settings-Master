@@ -111,11 +111,11 @@ export function useGameWorkspace() {
 }
 
 export function useWorkspacePreset(label: string, mode: PresetMode, enabled = true) {
-  const ctx = useContext(GameWorkspaceContext);
+  const setWorkspacePreset = useContext(GameWorkspaceContext)?.setWorkspacePreset;
 
   useEffect(() => {
-    if (!enabled || !ctx) return;
-    ctx.setWorkspacePreset({ label, mode });
-    return () => ctx.setWorkspacePreset(null);
-  }, [label, mode, enabled, ctx]);
+    if (!enabled || !setWorkspacePreset) return;
+    setWorkspacePreset({ label, mode });
+    return () => setWorkspacePreset(null);
+  }, [label, mode, enabled, setWorkspacePreset]);
 }

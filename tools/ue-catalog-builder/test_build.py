@@ -13,6 +13,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import (  # noqa: E402
     apply_gus_registry,
     apply_sg_registry,
+    apply_tier_overlay,
+    humanize_key,
+    load_display_overrides,
     merge_entries,
     MergedEntry,
     parse_engine_ini,
@@ -151,6 +154,33 @@ class ParserTests(unittest.TestCase):
             self.assertEqual(vsync.file, "GameUserSettings.ini")
             self.assertEqual(vsync.section, "/Script/Engine.GameUserSettings")
 
+    def test_humanize_key_splits_camelcase_and_acronyms(self) -> None:
+        self.assertEqual(
+            humanize_key("r.Lumen.FinalGatherQuality"),
+            "Lumen · Final · Gather · Quality",
+        )
+        self.assertEqual(
+            humanize_key("r.TemporalAA.Upsampling"),
+            "Temporal · AA · Upsampling",
+        )
+        self.assertEqual(
+            humanize_key("r.Shadow.Virtual.Enable"),
+            "Shadow · Virtual · Enable",
+        )
+
+    def test_display_overrides_have_top_priority(self) -> None:
+        overrides = load_display_overrides()
+        self.assertIn("r.screenpercentage", overrides)
+        row = {
+            "key": "r.ScreenPercentage",
+            "title": "Screen · Percentage",
+            "description": "auto",
+            "category_guess": "Rendering",
+        }
+        apply_tier_overlay(row, overrides)
+        self.assertEqual(row["title"], "Масштаб внутреннего разрешения")
+        self.assertEqual(row["category_guess"], "Display")
+
 
 class MergeStatsTests(unittest.TestCase):
     def test_curated_scalability_covers_sg_registry(self) -> None:
@@ -174,6 +204,17 @@ class MergeStatsTests(unittest.TestCase):
         curated_keys = {item["key"] for item in curated}
         missing = [item["key"] for item in registry["keys"] if item["key"] not in curated_keys]
         self.assertEqual(missing, [])
+
+    def test_display_catalog_has_no_corrupted_question_marks(self) -> None:
+        curated_path = ROOT / "src-tauri" / "catalog" / "display.json"
+        data = json.loads(curated_path.read_text(encoding="utf-8"))
+        offenders = []
+        for item in data:
+            for field in ("title", "description", "impact", "value_hint"):
+                value = str(item.get(field) or "")
+                if "???" in value or "? enabled" in value or "? disabled" in value:
+                    offenders.append((item.get("key"), field, value))
+        self.assertEqual(offenders, [])
 
     def test_generated_index_meets_minimum(self) -> None:
         index_path = ROOT / "src-tauri" / "catalog" / "ue_reference_index.json"

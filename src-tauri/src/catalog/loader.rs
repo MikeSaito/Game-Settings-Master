@@ -1298,29 +1298,42 @@ fn unknown_ue_parameter(
 }
 
 fn split_identifier_part(part: &str) -> Vec<String> {
-    let normalized = part.replace('_', " ");
+    let normalized = part.replace(['_', '-'], " ");
     if normalized.trim().is_empty() {
         return Vec::new();
     }
+    normalized
+        .split(|c: char| c == '.' || c.is_whitespace())
+        .flat_map(split_identifier_segment)
+        .collect()
+}
+
+fn split_identifier_segment(segment: &str) -> Vec<String> {
+    let chars: Vec<char> = segment.chars().collect();
+    if chars.is_empty() {
+        return Vec::new();
+    }
+
     let mut tokens = Vec::new();
-    let mut current = String::new();
-    for ch in normalized.chars() {
-        if ch.is_whitespace() || ch == '.' {
-            if !current.is_empty() {
-                tokens.push(current.clone());
-                current.clear();
-            }
-            continue;
+    let mut start = 0;
+    for i in 1..chars.len() {
+        let prev = chars[i - 1];
+        let current = chars[i];
+        let next = chars.get(i + 1).copied();
+        let boundary = (current.is_ascii_uppercase()
+            && (prev.is_ascii_lowercase() || prev.is_ascii_digit()))
+            || (current.is_ascii_uppercase()
+                && prev.is_ascii_uppercase()
+                && next.is_some_and(|c| c.is_ascii_lowercase()))
+            || (current.is_ascii_digit() && !prev.is_ascii_digit())
+            || (!current.is_ascii_digit() && prev.is_ascii_digit());
+
+        if boundary {
+            tokens.push(chars[start..i].iter().collect());
+            start = i;
         }
-        if ch.is_uppercase() && !current.is_empty() {
-            tokens.push(current.clone());
-            current.clear();
-        }
-        current.push(ch);
     }
-    if !current.is_empty() {
-        tokens.push(current);
-    }
+    tokens.push(chars[start..].iter().collect());
     tokens
 }
 
@@ -1353,11 +1366,14 @@ fn humanize_token(token: &str) -> String {
         "anisotropy" => crate::i18n::t("анизотропия", "anisotropy"),
         "filter" | "filtering" => crate::i18n::t("фильтрация", "filtering"),
         "anti" => crate::i18n::t("сглаживание", "anti"),
+        "aa" => crate::i18n::t("AA", "AA"),
         "aliasing" => crate::i18n::t("сглаживание", "aliasing"),
+        "taa" => crate::i18n::t("TAA", "TAA"),
         "temporal" => crate::i18n::t("временное", "temporal"),
-        "upscale" | "upscaling" => crate::i18n::t("апскейлинг", "upscaling"),
+        "upscale" | "upscaling" | "upsampling" => crate::i18n::t("апскейлинг", "upscaling"),
         "generation" => crate::i18n::t("генерация", "generation"),
         "frame" => crate::i18n::t("кадр", "frame"),
+        "fps" => crate::i18n::t("FPS", "FPS"),
         "rate" => crate::i18n::t("частота", "rate"),
         "limit" => crate::i18n::t("лимит", "limit"),
         "fullscreen" => crate::i18n::t("полный экран", "fullscreen"),
@@ -1383,9 +1399,23 @@ fn humanize_token(token: &str) -> String {
         "gamma" => crate::i18n::t("гамма", "gamma"),
         "sharpen" | "sharpness" => crate::i18n::t("резкость", "sharpness"),
         "distancefield" => crate::i18n::t("поле дистанции", "distance field"),
+        "distancefields" => crate::i18n::t("поля дистанции", "distance fields"),
         "nanite" => crate::i18n::t("Nanite", "Nanite"),
         "lumen" => crate::i18n::t("Lumen", "Lumen"),
+        "raytracing" => crate::i18n::t("трассировка лучей", "ray tracing"),
+        "raytraced" => crate::i18n::t("с трассировкой лучей", "ray traced"),
+        "pathtracing" => crate::i18n::t("path tracing", "path tracing"),
         "virtual" => crate::i18n::t("виртуальный", "virtual"),
+        "vsm" => crate::i18n::t("VSM", "VSM"),
+        "gi" => crate::i18n::t("GI", "GI"),
+        "dlss" => crate::i18n::t("DLSS", "DLSS"),
+        "fsr" => crate::i18n::t("FSR", "FSR"),
+        "tsr" => crate::i18n::t("TSR", "TSR"),
+        "ssr" => crate::i18n::t("SSR", "SSR"),
+        "ssao" => crate::i18n::t("SSAO", "SSAO"),
+        "rhi" => crate::i18n::t("RHI", "RHI"),
+        "hdr" => crate::i18n::t("HDR", "HDR"),
+        "hmd" => crate::i18n::t("HMD", "HMD"),
         "cache" => crate::i18n::t("кэш", "cache"),
         "pool" => crate::i18n::t("пул", "pool"),
         "size" => crate::i18n::t("размер", "size"),

@@ -16,7 +16,7 @@ export {
   readStoredPanel,
   readStoredRecommendedOnly,
   recommendedStorageKey,
-  syncPanelToHash,
+  panelToHash,
   writeStoredFilterMode,
   writeStoredPanel,
   writeStoredRecommendedOnly,

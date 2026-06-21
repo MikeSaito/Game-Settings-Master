@@ -40,12 +40,14 @@ From the **Game Settings Master** repo root:
 # or explicit path:
 .\scripts\fetch-ue-reference.ps1 -EngineRoot "D:\UnrealEngine" -AutoTags
 
+python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
 ```
 
-`-AutoTags` checks out release tags per version (4.27, 5.0 … 5.8) and copies Base ini files into `tools/ue-reference/UE_*`.
+`-AutoTags` resolves release tags per version (4.27, 5.0 … 5.8) and extracts **BaseEngine.ini**, **BaseScalability.ini**, and registry source files via `git archive` (fast; no full worktree checkout).
 
 **Expected catalog size:** ~725 merged unique CVars across 10 UE versions (BaseEngine.ini + BaseScalability.ini). Not 1000+ — most engine defaults live in tier sections and dedupe on merge.
 
@@ -91,10 +93,14 @@ git lfs pull
 
 ```powershell
 .\scripts\fetch-ue-reference.ps1 -AutoTags
+python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
 ```
+
+`-AutoTags` — release-теги и `git archive` (быстро, без полного worktree).
 
 ### Частые ошибки
 

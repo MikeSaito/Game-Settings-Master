@@ -1,4 +1,32 @@
 {
+  "WindowPosX": {
+    "title": "Позиция окна X",
+    "title_en": "Window position X",
+    "description": "Горизонтальная координата окна игры в GameUserSettings.ini (пиксели). Сохраняется между запусками. Устарело с UE 5.6 — используйте LastUserConfirmedResolutionSize.",
+    "description_en": "Horizontal game window coordinate in GameUserSettings.ini (pixels). Persisted between launches. Deprecated since UE 5.6 — use LastUserConfirmedResolutionSize.",
+    "impact": "Не влияет на FPS.",
+    "impact_en": "No FPS impact.",
+    "min": "-8192",
+    "max": "8192",
+    "value_hint": "по умолчанию ОС",
+    "value_hint_en": "OS default",
+    "category": "Window",
+    "value_type": "int"
+  },
+  "WindowPosY": {
+    "title": "Позиция окна Y",
+    "title_en": "Window position Y",
+    "description": "Вертикальная координата окна игры в GameUserSettings.ini (пиксели). Сохраняется между запусками. Устарело с UE 5.6.",
+    "description_en": "Vertical game window coordinate in GameUserSettings.ini (pixels). Persisted between launches. Deprecated since UE 5.6.",
+    "impact": "Не влияет на FPS.",
+    "impact_en": "No FPS impact.",
+    "min": "-8192",
+    "max": "8192",
+    "value_hint": "по умолчанию ОС",
+    "value_hint_en": "OS default",
+    "category": "Window",
+    "value_type": "int"
+  },
   "r.AOQuality": {
     "title": "Качество AO (глоб.)",
     "title_en": "Global AO quality",

@@ -71,6 +71,7 @@ HUMANIZE_ACRONYMS = frozenset(
         "cpu",
         "dlss",
         "dof",
+        "fps",
         "fsr",
         "fxaa",
         "gi",
@@ -84,15 +85,26 @@ HUMANIZE_ACRONYMS = frozenset(
         "rhi",
         "ssao",
         "ssr",
+        "taa",
         "tsr",
         "ue",
         "ui",
         "vr",
+        "vsm",
         "vsr",
         "vsync",
         "vram",
     }
 )
+
+HUMANIZE_CANONICAL_TOKENS = {
+    "nanite": "Nanite",
+    "lumen": "Lumen",
+    "metahuman": "MetaHuman",
+    "pathtracing": "Path Tracing",
+    "raytracing": "Ray Tracing",
+    "raytraced": "Ray Traced",
+}
 
 DESCRIPTION_OVERLAY_FIELDS = frozenset(
     {"description", "description_en", "impact", "impact_en"}
@@ -352,12 +364,33 @@ def guess_category(key: str, section: str) -> str:
     return "Other"
 
 
+def split_identifier_part(part: str) -> list[str]:
+    normalized = part.replace("_", " ").replace("-", " ").strip()
+    if not normalized:
+        return []
+    pieces: list[str] = []
+    for raw in re.split(r"[.\s]+", normalized):
+        if not raw:
+            continue
+        pieces.extend(
+            p
+            for p in re.findall(
+                r"[A-Z]+(?=[A-Z][a-z]|\d|$)|[A-Z]?[a-z]+|\d+",
+                raw,
+            )
+            if p
+        )
+    return pieces
+
+
 def humanize_token(token: str) -> str:
     if not token:
         return token
     lower = token.lower()
+    if lower in HUMANIZE_CANONICAL_TOKENS:
+        return HUMANIZE_CANONICAL_TOKENS[lower]
     if lower in HUMANIZE_ACRONYMS:
-        return token.upper()
+        return lower.upper()
     if token.isupper() and len(token) > 1:
         return token
     return token[:1].upper() + token[1:]
@@ -369,7 +402,11 @@ def humanize_key(key: str) -> str:
         if stripped.lower().startswith(prefix):
             stripped = stripped[len(prefix) :]
             break
-    parts = stripped.replace("_", " ").split(".")
+    parts = [
+        token
+        for part in stripped.split(".")
+        for token in split_identifier_part(part)
+    ]
     return " · ".join(humanize_token(p) for p in parts if p)
 
 
@@ -748,6 +785,21 @@ def load_tier_b() -> dict[str, dict[str, Any]]:
     return filtered
 
 
+def load_display_overrides() -> dict[str, dict[str, Any]]:
+    path = Path(__file__).parent / "data" / "display_overrides.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    out: dict[str, dict[str, Any]] = {}
+    for key, overlay in data.items():
+        cleaned: dict[str, Any] = {}
+        for field, val in overlay.items():
+            cleaned[field] = normalize_display_text(val) if isinstance(val, str) else val
+        if cleaned:
+            out[key.lower()] = cleaned
+    return out
+
+
 def load_tier_a() -> dict[str, dict[str, Any]]:
     base = Path(__file__).parent / "data"
     tier_files = (
@@ -946,8 +998,6 @@ def apply_gus_registry(merged: dict[str, MergedEntry], all_versions: list[str], 
             continue
         count += 1
         id_key = key.lower()
-        if id_key in curated_keys:
-            continue
         if id_key in merged:
             existing = merged[id_key]
             existing.file = "GameUserSettings.ini"
@@ -1021,6 +1071,7 @@ def build_index() -> dict[str, Any]:
 
     tier_a = load_tier_a()
     tier_b_static = load_tier_b()
+    display_overrides = load_display_overrides()
     curated_keys = load_curated_keys()
     ini_comments = load_ini_comments_all_versions()
 
@@ -1083,6 +1134,7 @@ def build_index() -> dict[str, Any]:
         had_b = m.key.lower() in tier_b
         apply_tier_overlay(row, tier_a)
         apply_tier_overlay(row, tier_b)
+        apply_tier_overlay(row, display_overrides)
         if is_stub_description(row.get("description")):
             row["description"] = desc_ru
         if is_stub_description(row.get("description_en")):
@@ -1126,6 +1178,7 @@ def build_index() -> dict[str, Any]:
         "gus_registry_count": gus_registry_count,
         "tier_a_overlays": len(tier_a),
         "tier_b_overlays": len(tier_b_static),
+        "display_overrides": len(display_overrides),
         "tier_b_effective": len(tier_b),
         "ini_comment_keys": len(ini_comments),
         "scalability_tiers": len(all_tiers),

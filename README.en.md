@@ -29,7 +29,7 @@ Knows **113** human-curated keys (RU+EN), **~233** tier A/B overlays on the refe
 
 Windows · free · unsigned build
 
-* [Download installer](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.1_x64-setup.exe)
+* [Download installer](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2_x64-setup.exe)
 * [GitHub](https://github.com/MikeSaito/Game-Settings-Master)
 * [Website](https://mikesaito.github.io/Game-Settings-Master/)
 
@@ -93,4 +93,4 @@ npm run types:gen
 
 ---
 
-Game Settings Master v1.0.1
+Game Settings Master v1.0.2

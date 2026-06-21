@@ -67,7 +67,7 @@
       "default": "GetDefaultResolution().Y"
     },
     {
-      "key": "WindowPosX_DEPRECATED",
+      "key": "WindowPosX",
       "cpp_type": "int32",
       "value_type": "int",
       "category": "Window",
@@ -78,7 +78,7 @@
       "default": "GetDefaultWindowPosition().X"
     },
     {
-      "key": "WindowPosY_DEPRECATED",
+      "key": "WindowPosY",
       "cpp_type": "int32",
       "value_type": "int",
       "category": "Window",
@@ -87,16 +87,6 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "GetDefaultWindowPosition().Y"
-    },
-    {
-      "key": "WindowPositions",
-      "cpp_type": "TArray<FIntPoint>",
-      "value_type": "array",
-      "category": "Window",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config"
     },
     {
       "key": "FullscreenMode",
@@ -129,49 +119,6 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "CVar->GetValueOnGameThread()"
-    },
-    {
-      "key": "DisplayID",
-      "cpp_type": "FString",
-      "value_type": "string",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config"
-    },
-    {
-      "key": "DisplayIndex",
-      "cpp_type": "int32",
-      "value_type": "int",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "-1"
-    },
-    {
-      "key": "LastUserConfirmedDisplayID",
-      "cpp_type": "FString",
-      "value_type": "string",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "DisplayID"
-    },
-    {
-      "key": "LastUserConfirmedDisplayIndex",
-      "cpp_type": "int32",
-      "value_type": "int",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "DisplayIndex"
     },
     {
       "key": "Version",
@@ -208,17 +155,6 @@
       "cpp_type": "float",
       "value_type": "float",
       "category": "Performance",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "0.0"
-    },
-    {
-      "key": "DynamicResolutionFrameTarget",
-      "cpp_type": "float",
-      "value_type": "float",
-      "category": "Display",
       "file": "GameUserSettings.ini",
       "section": "/Script/Engine.GameUserSettings",
       "source": "GameUserSettings.h",
@@ -366,16 +302,6 @@
       "default": "FPlatformMisc::UseHDRByDefault()"
     },
     {
-      "key": "bUseHDRDisplayCalibration",
-      "cpp_type": "bool",
-      "value_type": "bool",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config"
-    },
-    {
       "key": "HDRDisplayOutputNits",
       "cpp_type": "int32",
       "value_type": "int",
@@ -385,42 +311,9 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "1000"
-    },
-    {
-      "key": "HDRPaperWhiteNits",
-      "cpp_type": "float",
-      "value_type": "float",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "203."
-    },
-    {
-      "key": "HDRUILuminanceNits",
-      "cpp_type": "float",
-      "value_type": "float",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "203."
-    },
-    {
-      "key": "bIsHDRUILuminanceSeparate",
-      "cpp_type": "bool",
-      "value_type": "bool",
-      "category": "Display",
-      "file": "GameUserSettings.ini",
-      "section": "/Script/Engine.GameUserSettings",
-      "source": "GameUserSettings.h",
-      "config_scope": "config",
-      "default": "False"
     }
   ],
   "source": "GameUserSettings.h",
-  "source_path": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-  "defaults_source_path": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Private\\GameUserSettings.cpp"
+  "source_path": "D:\\app\\tools\\ue-reference\\UE_5.5\\source\\GameUserSettings.h",
+  "defaults_source_path": "D:\\app\\tools\\ue-reference\\UE_5.5\\source\\GameUserSettings.cpp"
 }

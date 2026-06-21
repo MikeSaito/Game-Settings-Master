@@ -421,6 +421,6 @@
     }
   ],
   "source": "GameUserSettings.h",
-  "source_path": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-  "defaults_source_path": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Private\\GameUserSettings.cpp"
+  "source_path": "D:\\app\\tools\\ue-reference\\UE_5.8\\source\\GameUserSettings.h",
+  "defaults_source_path": "D:\\app\\tools\\ue-reference\\UE_5.8\\source\\GameUserSettings.cpp"
 }

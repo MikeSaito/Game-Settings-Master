@@ -1,5 +1,6 @@
 use crate::fs_util::{is_exe_running, is_safe_exe_basename, kill_exe};
 use crate::gpu::{detect_gpu, GpuCapabilities};
+use tauri::Manager;
 
 #[tauri::command]
 pub fn get_gpu_info_cmd() -> Result<GpuCapabilities, String> {
@@ -28,8 +29,22 @@ pub fn is_game_running_cmd(exe_name: Option<String>) -> bool {
 }
 
 #[tauri::command]
-pub fn set_app_background_mode_cmd(background: bool) {
+pub fn set_app_background_mode_cmd(app: tauri::AppHandle, background: bool) {
     crate::process_util::set_process_background_mode(background);
+
+    if cfg!(debug_assertions) {
+        return;
+    }
+
+    let Some(window) = app.get_webview_window("main") else {
+        return;
+    };
+
+    if background {
+        let _ = window.hide();
+    } else {
+        let _ = window.show();
+    }
 }
 
 #[tauri::command]

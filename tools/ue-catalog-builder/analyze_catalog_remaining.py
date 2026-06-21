@@ -143,7 +143,8 @@ def main() -> None:
     print(f"  sources: {stats.get('sources')}")
     abv = stats.get("applicable_by_version", {})
     for v in stats.get("sources", []):
-        print(f"  {v}: {abv.get(v, '?')} applicable keys")
+        ver = v.replace("UE_", "")
+        print(f"  {ver}: {abv.get(ver, '?')} applicable keys")
 
     print("\n=== OUT OF SCOPE (needs Epic clone / new UE tag) ===")
     print("  fixtures ~726 keys from BaseEngine.ini + BaseScalability.ini (4.27–5.8)")

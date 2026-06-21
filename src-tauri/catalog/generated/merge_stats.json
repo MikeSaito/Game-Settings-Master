@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21T11:23:03.798739+00:00",
+  "generated_at": "2026-06-21T15:57:55.815993+00:00",
   "sources": [
     "UE_4.27",
     "UE_5.0",
@@ -13,25 +13,26 @@
     "UE_5.8"
   ],
   "schema_version": 2,
-  "total_reference_entries": 726,
+  "total_reference_entries": 767,
   "reference_only_keys": 663,
-  "curated_collisions": 63,
-  "curated_keys_loaded": 113,
+  "curated_collisions": 104,
+  "curated_keys_loaded": 115,
   "sg_registry_count": 12,
-  "gus_registry_count": 39,
-  "tier_a_overlays": 746,
+  "gus_registry_count": 41,
+  "tier_a_overlays": 748,
   "tier_b_overlays": 150,
+  "display_overrides": 17,
   "tier_b_effective": 150,
   "ini_comment_keys": 8,
   "scalability_tiers": 352,
-  "deprecated_count": 20,
+  "deprecated_count": 22,
   "introduced_by_version": {
-    "4.27": 595,
-    "5.0": 34,
+    "4.27": 621,
+    "5.8": 38,
+    "5.0": 36,
     "5.3": 6,
-    "5.8": 29,
-    "5.4": 26,
-    "5.6": 10,
+    "5.4": 27,
+    "5.6": 13,
     "5.5": 8,
     "5.7": 6,
     "5.2": 2,
@@ -50,19 +51,19 @@
     "5.8": 637
   },
   "applicable_by_version": {
-    "4.27": 595,
-    "5.0": 628,
-    "5.1": 635,
-    "5.2": 634,
-    "5.3": 637,
-    "5.4": 661,
-    "5.5": 668,
-    "5.6": 676,
-    "5.7": 678,
-    "5.8": 706
+    "4.27": 621,
+    "5.0": 656,
+    "5.1": 663,
+    "5.2": 662,
+    "5.3": 665,
+    "5.4": 690,
+    "5.5": 697,
+    "5.6": 706,
+    "5.7": 708,
+    "5.8": 745
   },
   "description_quality_counts": {
-    "human": 726
+    "human": 767
   },
   "bare_stub_descriptions": 0
 }

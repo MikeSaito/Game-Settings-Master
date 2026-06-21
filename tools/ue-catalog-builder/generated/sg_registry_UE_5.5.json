@@ -15,7 +15,7 @@
     "sg.ViewDistanceQuality"
   ],
   "source": "Scalability.cpp",
-  "source_path": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Private\\Scalability.cpp",
+  "source_path": "D:\\app\\tools\\ue-reference\\UE_5.5\\source\\Scalability.cpp",
   "metadata": {
     "num_levels": {
       "sg.ViewDistanceQuality": 5,

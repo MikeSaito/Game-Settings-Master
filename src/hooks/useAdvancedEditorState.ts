@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 import { currentLanguage } from "../i18n";
 import { useAppWindowFocused } from "../context/AppWindowFocusProvider";
 import { useWorkspacePreset } from "../context/GameWorkspaceContext";
@@ -22,8 +23,11 @@ import {
   buildCategoryList,
   ALL_CATEGORY,
   countEngineStats,
-  filterParamsByCategoryAndSearch,
+  filterParamsByCategory,
   normalizeParameterCategories,
+  filterParamsBySearch,
+  shouldSortByEngineEnabled,
+  sortParamsForEngineCategory,
 } from "../lib/advancedEditorFilters";
 import {
   type EditorPanel,
@@ -34,13 +38,16 @@ import {
   panelFromHash,
   readStoredFilterMode,
   readStoredPanel,
-  syncPanelToHash,
   writeStoredFilterMode,
   writeStoredPanel,
 } from "../lib/editorPanels";
 import { isParamVisible } from "../lib/gpuCompat";
 import { applyParamDependencies } from "../lib/paramDependencies";
 import { buildCustomChanges } from "../lib/buildCustomChanges";
+import {
+  collectPendingKeys,
+  detectSgEngineConflicts,
+} from "../lib/sgEngineConflicts";
 import {
   defaultValueFor,
   ENGINE_CATEGORIES,
@@ -49,7 +56,7 @@ import {
   resolveEditableCategories,
 } from "../lib/engineParams";
 import { formatInvokeError } from "../lib/errors";
-import type { GameParameter, GameProfile } from "../lib/types";
+import type { GameOverride, GameParameter, GameProfile } from "../lib/types";
 
 const EDITABLE_FOR_APPLY = new Set([
   "Scalability",
@@ -65,10 +72,11 @@ const EDITABLE_FOR_APPLY = new Set([
   "Other",
 ]);
 
+const EMPTY_ENGINE_ENABLED = new Set<string>();
+
 function countPendingChanges(
   files: Record<string, Record<string, Record<string, string>>>,
   removals: Record<string, Record<string, string[]>>,
-  allParams: GameParameter[],
 ) {
   const breakdown = { sg: 0, display: 0, engine: 0 };
   const pendingKeys = new Set<string>();
@@ -102,32 +110,15 @@ function countPendingChanges(
   }
 
   const lowerKeys = [...pendingKeys].map((key) => key.toLowerCase());
-  const hasSgShadow = lowerKeys.includes("sg.shadowquality");
-  const shadowRKeys = lowerKeys.filter((key) => key.startsWith("r.shadow"));
-  const conflictKeys = new Set<string>();
-  if (hasSgShadow && shadowRKeys.length > 0) {
-    conflictKeys.add("sg.shadowquality");
-    for (const key of shadowRKeys) conflictKeys.add(key);
-  }
-  if (!hasSgShadow && shadowRKeys.length > 0) {
-    const activeSgShadow = allParams.some(
-      (param) =>
-        param.key.toLowerCase() === "sg.shadowquality" &&
-        param.file === "GameUserSettings.ini" &&
-        param.present_in_ini &&
-        param.value.trim() !== "",
-    );
-    if (activeSgShadow) {
-      for (const key of shadowRKeys) conflictKeys.add(key);
-    }
-  }
 
-  return { total, breakdown, conflictKeys };
+  return { total, breakdown, pendingKeys: lowerKeys };
 }
 
 export function useAdvancedEditorState(game: GameProfile | null) {
   const { t } = useTranslation("advanced");
   const { settings } = useAppSettings();
+  const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const configDir = game?.config_dir ?? "";
   const runningExeName = useRunningExeName(game);
@@ -149,6 +140,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   const [activeCategory, setActiveCategory] = useState<string>(ALL_CATEGORY);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const deferredSearch = useDeferredValue(debouncedSearch);
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
   const [panel, setPanelState] = useState<EditorPanel>("basic");
   const [filterMode, setFilterModeState] = useState<EditorFilterMode>("recommended");
@@ -160,35 +152,29 @@ export function useAdvancedEditorState(game: GameProfile | null) {
 
   useEffect(() => {
     if (!game?.id) return;
-    const fromHash = panelFromHash();
+    const fromHash = panelFromHash(location.hash);
     const stored = readStoredPanel(game.id);
     const nextPanel = fromHash ?? stored ?? settings.defaultEditorPanel;
     setPanelState(nextPanel);
+    if (fromHash) writeStoredPanel(game.id, nextPanel);
     const storedFilter = readStoredFilterMode(game.id, nextPanel);
     setFilterModeState(storedFilter ?? defaultFilterMode(nextPanel));
-  }, [game?.id, settings.defaultEditorPanel]);
 
-  useEffect(() => {
-    const onHashChange = () => {
-      const fromHash = panelFromHash();
-      if (!fromHash) return;
-      setPanelState(fromHash);
-      if (game?.id) {
-        writeStoredPanel(game.id, fromHash);
-        const storedFilter = readStoredFilterMode(game.id, fromHash);
-        setFilterModeState(storedFilter ?? defaultFilterMode(fromHash));
-      }
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, [game?.id]);
+    if (location.hash) {
+      navigate(
+        { pathname: location.pathname, search: location.search, hash: "" },
+        { replace: true },
+      );
+    }
+    // Panel state lives in sessionStorage — do not mirror it to URL hash (breaks library nav).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- init once per game open
+  }, [game?.id, settings.defaultEditorPanel]);
 
   const setPanel = useCallback(
     (next: EditorPanel) => {
       setPanelState(next);
       if (game?.id) {
         writeStoredPanel(game.id, next);
-        syncPanelToHash(next);
         const storedFilter = readStoredFilterMode(game.id, next);
         setFilterModeState(storedFilter ?? defaultFilterMode(next));
       } else {
@@ -330,8 +316,8 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   );
 
   const modeFilteredParams = useMemo(
-    () => filterParamsByMode(panelParams, filterMode, panel, debouncedSearch),
-    [panelParams, filterMode, panel, debouncedSearch],
+    () => filterParamsByMode(panelParams, filterMode, panel, deferredSearch),
+    [panelParams, filterMode, panel, deferredSearch],
   );
 
   const categories = useMemo(
@@ -345,15 +331,21 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     }
   }, [categories, activeCategory, panel]);
 
+  const categoryFilteredParams = useMemo(
+    () => filterParamsByCategory(modeFilteredParams, activeCategory),
+    [modeFilteredParams, activeCategory],
+  );
+
+  const searchedParams = useMemo(
+    () => filterParamsBySearch(categoryFilteredParams, deferredSearch),
+    [categoryFilteredParams, deferredSearch],
+  );
+
+  const engineSortEnabled = shouldSortByEngineEnabled(activeCategory);
+  const engineSortSet = engineSortEnabled ? engineEnabled : EMPTY_ENGINE_ENABLED;
   const filteredParams = useMemo(
-    () =>
-      filterParamsByCategoryAndSearch(
-        modeFilteredParams,
-        activeCategory,
-        debouncedSearch,
-        engineEnabled,
-      ),
-    [modeFilteredParams, activeCategory, debouncedSearch, engineEnabled],
+    () => sortParamsForEngineCategory(searchedParams, activeCategory, engineSortSet),
+    [searchedParams, activeCategory, engineSortSet],
   );
 
   const engineStats = useMemo(
@@ -383,7 +375,10 @@ export function useAdvancedEditorState(game: GameProfile | null) {
       engineEnabled,
       editableCategories,
     );
-    return countPendingChanges(files, removals, params);
+    const summary = countPendingChanges(files, removals);
+    const pendingKeySet = collectPendingKeys(files, removals);
+    const conflictKeys = detectSgEngineConflicts(params, pendingKeySet, engineEnabled);
+    return { ...summary, conflictKeys };
   }, [params, panel, parameters, gpu, engineEnabled, editableCategories]);
 
   const pendingChangesCount = pendingSummary.total;
@@ -521,6 +516,16 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
 
+  const importOverrideMutation = useMutation({
+    mutationFn: (override: GameOverride) => saveGameOverride(override),
+    onSuccess: (_result, override) => {
+      if (activeGameIdRef.current !== override.game_id) return;
+      queryClient.invalidateQueries({ queryKey: ["overrides", override.game_id] });
+      setMessage(t("presets.imported", { name: override.name }));
+    },
+    onError: (err) => setApplyError(formatInvokeError(err)),
+  });
+
   return {
     game,
     configDir,
@@ -531,6 +536,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     overrides,
     message,
     applyError,
+    setApplyError,
     activeCategory,
     setActiveCategory,
     search,
@@ -547,6 +553,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     pendingChangesCount,
     pendingChangesBreakdown: pendingSummary.breakdown,
     pendingConflictKeys: pendingSummary.conflictKeys,
+    conflictCount: pendingSummary.conflictKeys.size,
     parametersLoading,
     overrideName,
     setOverrideName,
@@ -557,6 +564,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     saveOverrideMutation,
     applyOverrideMutation,
     deleteOverrideMutation,
+    importOverrideMutation,
     showEngineIniHint: panel === "advanced" && ENGINE_CATEGORIES.has(activeCategory),
   };
 }

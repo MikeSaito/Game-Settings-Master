@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   buildCategoryList,
   filterParamsByCategoryAndSearch,
+  filterParamsBySearch,
   normalizeParameterCategory,
   paramRowKey,
+  sortParamsForEngineCategory,
 } from "./advancedEditorFilters";
 import {
   filterParamsByPanel,
@@ -59,6 +61,42 @@ describe("filterParamsByCategoryAndSearch", () => {
     const filtered = filterParamsByCategoryAndSearch(items, "Scalability", "shadow", new Set());
     expect(filtered).toHaveLength(1);
     expect(filtered[0].key).toBe("sg.ShadowQuality");
+  });
+
+  it("searches key, title, description, and value hints through cached text", () => {
+    const items = [
+      param({
+        key: "r.ScreenPercentage",
+        category: "Display",
+        title: "Internal resolution scale",
+        description: "Controls render resolution.",
+        value_hint: "100 - native",
+      }),
+      param({
+        key: "r.Fog",
+        category: "Rendering",
+        title: "Fog",
+        description: "Atmospheric haze.",
+      }),
+    ];
+
+    expect(filterParamsBySearch(items, "native")[0].key).toBe("r.ScreenPercentage");
+    expect(filterParamsBySearch(items, "haze")[0].key).toBe("r.Fog");
+    expect(filterParamsBySearch(items, "screenpercentage")[0].key).toBe("r.ScreenPercentage");
+  });
+
+  it("sorts disabled engine parameters last only for engine categories", () => {
+    const items = [
+      param({ key: "r.Fog", category: "Rendering", file: "Engine.ini", title: "Fog" }),
+      param({ key: "r.Bloom", category: "Rendering", file: "Engine.ini", title: "Bloom" }),
+    ];
+    const enabled = new Set(["Engine.ini::r.Fog"]);
+
+    expect(sortParamsForEngineCategory(items, "Display", enabled)).toBe(items);
+    expect(sortParamsForEngineCategory(items, "Rendering", enabled).map((p) => p.key)).toEqual([
+      "r.Fog",
+      "r.Bloom",
+    ]);
   });
 });
 

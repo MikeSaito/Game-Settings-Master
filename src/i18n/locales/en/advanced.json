@@ -117,11 +117,15 @@
     "filtering": "filtering",
     "anti": "anti",
     "aliasing": "aliasing",
+    "aa": "AA",
     "temporal": "temporal",
+    "taa": "TAA",
     "upscale": "upscaling",
     "upscaling": "upscaling",
+    "upsampling": "upscaling",
     "generation": "generation",
     "frame": "frame",
+    "fps": "FPS",
     "rate": "rate",
     "limit": "limit",
     "fullscreen": "fullscreen",
@@ -150,9 +154,23 @@
     "sharpen": "sharpness",
     "sharpness": "sharpness",
     "distancefield": "distance field",
+    "distancefields": "distance fields",
     "nanite": "Nanite",
     "lumen": "Lumen",
+    "raytracing": "ray tracing",
+    "raytraced": "ray traced",
+    "pathtracing": "path tracing",
     "virtual": "virtual",
+    "vsm": "VSM",
+    "gi": "GI",
+    "dlss": "DLSS",
+    "fsr": "FSR",
+    "tsr": "TSR",
+    "ssr": "SSR",
+    "ssao": "SSAO",
+    "rhi": "RHI",
+    "hdr": "HDR",
+    "hmd": "HMD",
     "cache": "cache",
     "pool": "pool",
     "size": "size",
@@ -256,7 +274,10 @@
   "notInIni": "Not in ini",
   "service": "Service",
   "conflict": {
-    "sgEngine": "sg/r conflict"
+    "sgEngine": "sg/r conflict",
+    "bannerTitle": "sg.* and r.* overlap",
+    "bannerBody_one": "{{count}} parameter: a GUS quality preset overlaps a manual Engine/Scalability.ini override.",
+    "bannerBody_other": "{{count}} parameters: sg.* presets overlap manual r.* overrides in ini."
   },
   "inPractice": "In practice: ",
   "recommendedValues": "Recommended values: ",
@@ -285,5 +306,13 @@
   "preset": {
     "maxQuality": "Maximum quality",
     "recommended": "Recommended"
+  },
+  "presets": {
+    "export": "Export",
+    "import": "Import",
+    "delete": "Delete",
+    "importInvalid": "Could not read preset file (.uesm-preset.json).",
+    "imported": "Preset “{{name}}” imported.",
+    "empty": "No saved presets yet — save current edits or import a JSON file."
   }
 }

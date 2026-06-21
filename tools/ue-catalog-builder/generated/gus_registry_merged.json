@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-20T20:00:35.720243+00:00",
+  "generated_at": "2026-06-21T14:11:33.082836+00:00",
   "source": "GameUserSettings.h",
   "versions_scanned": [
     "4.27",
@@ -14,16 +14,16 @@
     "5.8"
   ],
   "sources": {
-    "4.27": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.0": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.1": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.2": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.3": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.4": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.5": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.6": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.7": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h",
-    "5.8": "D:\\UnrealEngine\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameUserSettings.h"
+    "4.27": "D:\\app\\tools\\ue-reference\\UE_4.27\\source\\GameUserSettings.h",
+    "5.0": "D:\\app\\tools\\ue-reference\\UE_5.0\\source\\GameUserSettings.h",
+    "5.1": "D:\\app\\tools\\ue-reference\\UE_5.1\\source\\GameUserSettings.h",
+    "5.2": "D:\\app\\tools\\ue-reference\\UE_5.2\\source\\GameUserSettings.h",
+    "5.3": "D:\\app\\tools\\ue-reference\\UE_5.3\\source\\GameUserSettings.h",
+    "5.4": "D:\\app\\tools\\ue-reference\\UE_5.4\\source\\GameUserSettings.h",
+    "5.5": "D:\\app\\tools\\ue-reference\\UE_5.5\\source\\GameUserSettings.h",
+    "5.6": "D:\\app\\tools\\ue-reference\\UE_5.6\\source\\GameUserSettings.h",
+    "5.7": "D:\\app\\tools\\ue-reference\\UE_5.7\\source\\GameUserSettings.h",
+    "5.8": "D:\\app\\tools\\ue-reference\\UE_5.8\\source\\GameUserSettings.h"
   },
   "keys": [
     {
@@ -61,30 +61,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "False",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "False",
-        "5.0": "False",
-        "5.1": "False",
-        "5.2": "False",
-        "5.3": "False",
-        "5.4": "False",
-        "5.5": "False",
-        "5.6": "False",
-        "5.7": "False",
         "5.8": "False"
       }
     },
@@ -159,18 +141,9 @@
       "section": "/Script/Engine.GameUserSettings",
       "source": "GameUserSettings.h",
       "config_scope": "config",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {}
@@ -320,18 +293,9 @@
       "section": "/Script/Engine.GameUserSettings",
       "source": "GameUserSettings.h",
       "config_scope": "config",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {}
@@ -346,30 +310,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "-1",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "-1",
-        "5.0": "-1",
-        "5.1": "-1",
-        "5.2": "-1",
-        "5.3": "-1",
-        "5.4": "-1",
-        "5.5": "-1",
-        "5.6": "-1",
-        "5.7": "-1",
         "5.8": "-1"
       }
     },
@@ -383,30 +329,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "0.0",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "0.0",
-        "5.0": "0.0",
-        "5.1": "0.0",
-        "5.2": "0.0",
-        "5.3": "0.0",
-        "5.4": "0.0",
-        "5.5": "0.0",
-        "5.6": "0.0",
-        "5.7": "0.0",
         "5.8": "0.0"
       }
     },
@@ -531,30 +459,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "203.",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "203.",
-        "5.0": "203.",
-        "5.1": "203.",
-        "5.2": "203.",
-        "5.3": "203.",
-        "5.4": "203.",
-        "5.5": "203.",
-        "5.6": "203.",
-        "5.7": "203.",
         "5.8": "203."
       }
     },
@@ -568,30 +478,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "203.",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "203.",
-        "5.0": "203.",
-        "5.1": "203.",
-        "5.2": "203.",
-        "5.3": "203.",
-        "5.4": "203.",
-        "5.5": "203.",
-        "5.6": "203.",
-        "5.7": "203.",
         "5.8": "203."
       }
     },
@@ -964,30 +856,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "DisplayID",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "DisplayID",
-        "5.0": "DisplayID",
-        "5.1": "DisplayID",
-        "5.2": "DisplayID",
-        "5.3": "DisplayID",
-        "5.4": "DisplayID",
-        "5.5": "DisplayID",
-        "5.6": "DisplayID",
-        "5.7": "DisplayID",
         "5.8": "DisplayID"
       }
     },
@@ -1001,30 +875,12 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "DisplayIndex",
-      "introduced_in": "4.27",
+      "introduced_in": "5.8",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "DisplayIndex",
-        "5.0": "DisplayIndex",
-        "5.1": "DisplayIndex",
-        "5.2": "DisplayIndex",
-        "5.3": "DisplayIndex",
-        "5.4": "DisplayIndex",
-        "5.5": "DisplayIndex",
-        "5.6": "DisplayIndex",
-        "5.7": "DisplayIndex",
         "5.8": "DisplayIndex"
       }
     },
@@ -1247,8 +1103,27 @@
       "section": "/Script/Engine.GameUserSettings",
       "source": "GameUserSettings.h",
       "config_scope": "config",
-      "introduced_in": "4.27",
+      "introduced_in": "5.6",
       "removed_in": null,
+      "versions_present": [
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "defaults_by_version": {}
+    },
+    {
+      "key": "WindowPosX",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Window",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultWindowPosition().X",
+      "introduced_in": "4.27",
+      "removed_in": "5.6",
       "versions_present": [
         "4.27",
         "5.0",
@@ -1256,12 +1131,17 @@
         "5.2",
         "5.3",
         "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
-        "5.8"
+        "5.5"
       ],
-      "defaults_by_version": {}
+      "defaults_by_version": {
+        "4.27": "GetDefaultWindowPosition().X",
+        "5.0": "GetDefaultWindowPosition().X",
+        "5.1": "GetDefaultWindowPosition().X",
+        "5.2": "GetDefaultWindowPosition().X",
+        "5.3": "GetDefaultWindowPosition().X",
+        "5.4": "GetDefaultWindowPosition().X",
+        "5.5": "GetDefaultWindowPosition().X"
+      }
     },
     {
       "key": "WindowPosX_DEPRECATED",
@@ -1273,8 +1153,31 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "GetDefaultWindowPosition().X",
-      "introduced_in": "4.27",
+      "introduced_in": "5.6",
       "removed_in": null,
+      "versions_present": [
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "defaults_by_version": {
+        "5.6": "GetDefaultWindowPosition().X",
+        "5.7": "GetDefaultWindowPosition().X",
+        "5.8": "GetDefaultWindowPosition().X"
+      }
+    },
+    {
+      "key": "WindowPosY",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Window",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultWindowPosition().Y",
+      "introduced_in": "4.27",
+      "removed_in": "5.6",
       "versions_present": [
         "4.27",
         "5.0",
@@ -1282,22 +1185,16 @@
         "5.2",
         "5.3",
         "5.4",
-        "5.5",
-        "5.6",
-        "5.7",
-        "5.8"
+        "5.5"
       ],
       "defaults_by_version": {
-        "4.27": "GetDefaultWindowPosition().X",
-        "5.0": "GetDefaultWindowPosition().X",
-        "5.1": "GetDefaultWindowPosition().X",
-        "5.2": "GetDefaultWindowPosition().X",
-        "5.3": "GetDefaultWindowPosition().X",
-        "5.4": "GetDefaultWindowPosition().X",
-        "5.5": "GetDefaultWindowPosition().X",
-        "5.6": "GetDefaultWindowPosition().X",
-        "5.7": "GetDefaultWindowPosition().X",
-        "5.8": "GetDefaultWindowPosition().X"
+        "4.27": "GetDefaultWindowPosition().Y",
+        "5.0": "GetDefaultWindowPosition().Y",
+        "5.1": "GetDefaultWindowPosition().Y",
+        "5.2": "GetDefaultWindowPosition().Y",
+        "5.3": "GetDefaultWindowPosition().Y",
+        "5.4": "GetDefaultWindowPosition().Y",
+        "5.5": "GetDefaultWindowPosition().Y"
       }
     },
     {
@@ -1310,28 +1207,14 @@
       "source": "GameUserSettings.h",
       "config_scope": "config",
       "default": "GetDefaultWindowPosition().Y",
-      "introduced_in": "4.27",
+      "introduced_in": "5.6",
       "removed_in": null,
       "versions_present": [
-        "4.27",
-        "5.0",
-        "5.1",
-        "5.2",
-        "5.3",
-        "5.4",
-        "5.5",
         "5.6",
         "5.7",
         "5.8"
       ],
       "defaults_by_version": {
-        "4.27": "GetDefaultWindowPosition().Y",
-        "5.0": "GetDefaultWindowPosition().Y",
-        "5.1": "GetDefaultWindowPosition().Y",
-        "5.2": "GetDefaultWindowPosition().Y",
-        "5.3": "GetDefaultWindowPosition().Y",
-        "5.4": "GetDefaultWindowPosition().Y",
-        "5.5": "GetDefaultWindowPosition().Y",
         "5.6": "GetDefaultWindowPosition().Y",
         "5.7": "GetDefaultWindowPosition().Y",
         "5.8": "GetDefaultWindowPosition().Y"
