@@ -79,7 +79,7 @@ describe("library navigation from editor", () => {
 
     await user.click(screen.getByRole("link", { name: /library|библиотека/i }));
 
-    await waitFor(() => expect(paths.at(-1)).toBe(libraryPath()));
+    await waitFor(() => expect(paths[paths.length - 1]).toBe(libraryPath()));
     expect(await screen.findByRole("heading", { name: /game library|библиотека/i })).toBeInTheDocument();
   });
 
@@ -105,6 +105,6 @@ describe("library navigation from editor", () => {
 
     await user.click(screen.getByRole("link", { name: /library|библиотека/i }));
 
-    await waitFor(() => expect(paths.at(-1)).toBe(libraryPath()));
+    await waitFor(() => expect(paths[paths.length - 1]).toBe(libraryPath()));
   });
 });

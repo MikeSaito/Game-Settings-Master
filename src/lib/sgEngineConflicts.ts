@@ -1,4 +1,4 @@
-import { engineParamId, isEngineEnabled, isEngineToggleable } from "./engineParams";
+import { isEngineEnabled, isEngineToggleable } from "./engineParams";
 import type { GameParameter } from "./types";
 
 const ENGINE_INI_FILES = new Set(["Engine.ini", "Scalability.ini", "Game.ini"]);
