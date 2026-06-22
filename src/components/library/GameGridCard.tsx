@@ -1,9 +1,9 @@
 import { FolderOpen, FolderSearch, ImagePlus, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { supportsIniPresets } from "../../lib/gameEngine";
-import type { GameProfile } from "../../lib/types";
-import { cn } from "../../lib/cn";
-import { GameCover } from "../GameCover";
+import { supportsIniPresets } from "@/lib/game";
+import type { GameProfile } from "@/lib/core";
+import { cn } from "@/lib/core";
+import { GameCover } from "@/components/game/GameCover";
 import { Badge } from "../ds/Badge";
 import { Button } from "../ds/Button";
 import type { LibraryViewMode } from "./LibraryToolbar";

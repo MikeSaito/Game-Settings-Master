@@ -10,20 +10,20 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "../../lib/api";
-import { exeNameForRunningCheck } from "../../lib/gameRunning";
-import { formatInvokeError } from "../../lib/errors";
-import { useBackgroundSafeEnabled } from "../../hooks/useBackgroundSafeEnabled";
-import { useGameRunning } from "../../hooks/useGameRunning";
+import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "@/lib/api";
+import { exeNameForRunningCheck } from "@/lib/game";
+import { formatInvokeError } from "@/lib/core";
+import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { useGameRunning } from "@/hooks/game/useGameRunning";
 import {
   gameCoverFallbackLetter,
   resolveGameHeroCoverCandidates,
-} from "../../lib/gameCover";
-import { resolveGameTabRoute, supportsIniPresets } from "../../lib/gameEngine";
-import { gameTabPath } from "../../lib/routes";
-import { gpuSummaryLabel } from "../../lib/gpuCompat";
-import type { AppTab, GameProfile, GameTabRoute } from "../../lib/types";
-import { cn } from "../../lib/cn";
+} from "@/lib/game";
+import { resolveGameTabRoute, supportsIniPresets } from "@/lib/game";
+import { gameTabPath } from "@/lib/routing";
+import { gpuSummaryLabel } from "@/lib/gpu";
+import type { AppTab, GameProfile, GameTabRoute } from "@/lib/core";
+import { cn } from "@/lib/core";
 import { Alert } from "../ui/Alert";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";

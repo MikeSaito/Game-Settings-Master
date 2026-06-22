@@ -1,8 +1,8 @@
 import { Download, Trash2, Upload, Zap } from "lucide-react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { AdvancedEditorState } from "../../hooks/useAdvancedEditorState";
-import type { GameOverride } from "../../lib/types";
+import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
+import type { GameOverride } from "@/lib/core";
 import { Button } from "../ds/Button";
 
 interface Props {

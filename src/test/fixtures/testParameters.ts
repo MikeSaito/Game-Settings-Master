@@ -1,4 +1,4 @@
-import type { GameParameter } from "../../lib/types";
+import type { GameParameter } from "@/lib/core";
 
 export const testParameters: GameParameter[] = Array.from({ length: 50 }, (_, i) => ({
   key: `r.TestCvar${i}`,

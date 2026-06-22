@@ -13,12 +13,12 @@ import { Badge } from "../components/ds/Badge";
 import { Button } from "../components/ds/Button";
 import { Alert, EmptyState } from "../components/ds/Feedback";
 import { Panel } from "../components/ds/Panel";
-import { formatInvokeError } from "../lib/errors";
-import { GameRunningAlert, useGameRunning } from "../hooks/useGameRunning";
-import { useRunningExeName } from "../hooks/useRunningExeName";
-import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
-import { listBackups, resetConfigToUser, restoreBackup } from "../lib/api";
-import type { BackupInfo, GameProfile } from "../lib/types";
+import { formatInvokeError } from "@/lib/core";
+import { GameRunningAlert, useGameRunning } from "@/hooks/game/useGameRunning";
+import { useRunningExeName } from "@/hooks/game/useRunningExeName";
+import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { listBackups, resetConfigToUser, restoreBackup } from "@/lib/api";
+import type { BackupInfo, GameProfile } from "@/lib/core";
 
 interface Props {
   game: GameProfile | null;

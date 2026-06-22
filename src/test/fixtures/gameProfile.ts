@@ -1,4 +1,4 @@
-import type { GameProfile } from "../../lib/types";
+import type { GameProfile } from "@/lib/core";
 
 const baseGame: GameProfile = {
   id: "test-game",

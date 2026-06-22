@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { engineWarningAckKey } from "../../lib/advancedEditorPanels";
+import { engineWarningAckKey } from "@/lib/routing";
 import { Alert } from "../ui/Alert";
 import { Toggle } from "../ui/Toggle";
 

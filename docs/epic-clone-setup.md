@@ -40,8 +40,8 @@ From the **Game Settings Master** repo root:
 # or explicit path:
 .\scripts\fetch-ue-reference.ps1 -EngineRoot "D:\UnrealEngine" -AutoTags
 
-python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
+python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
@@ -93,8 +93,8 @@ git lfs pull
 
 ```powershell
 .\scripts\fetch-ue-reference.ps1 -AutoTags
-python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
+python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 .\scripts\validate-catalog-stats.ps1

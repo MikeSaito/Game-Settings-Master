@@ -10,10 +10,10 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
-import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
-import { getGameConfig } from "../lib/api";
-import { formatPresetLabel, getLastPreset } from "../lib/lastPreset";
-import type { AppTab, GameProfile } from "../lib/types";
+import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { getGameConfig } from "@/lib/api";
+import { formatPresetLabel, getLastPreset } from "@/lib/editor";
+import type { AppTab, GameProfile } from "@/lib/core";
 
 const OVERRIDE_INI = ["Engine.ini", "Game.ini", "Scalability.ini", "Input.ini"];
 

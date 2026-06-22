@@ -4,7 +4,7 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 
 const fieldBase =
   "w-full rounded-[var(--radius-control)] border border-[var(--color-border-strong)] bg-[var(--color-bg-soft)] text-[var(--color-text)] shadow-[var(--shadow-subtle)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)]";

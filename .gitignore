@@ -66,6 +66,10 @@ src-tauri/presets/reshade/bin/ReShade64.json
 src-tauri/presets/reshade/shaders/Shaders/
 src-tauri/presets/reshade/shaders/Textures/
 
+# ─── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+
 # ─── Прочее ─────────────────────────────────────────────────────────────────
 *.orig
 *.bak

@@ -14,7 +14,7 @@ const handlers = vi.hoisted(() => ({
   reset: vi.fn(),
 }));
 
-vi.mock("../../hooks/useAppSettings", () => ({
+vi.mock("@/hooks/app/useAppSettings", () => ({
   useAppSettings: () => ({
     settings: {
       theme: "dark",

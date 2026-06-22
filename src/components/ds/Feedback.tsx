@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from "react";
 import { Info, Search } from "lucide-react";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 import { Button } from "./Button";
 
 type Tone = "info" | "success" | "warning" | "danger";

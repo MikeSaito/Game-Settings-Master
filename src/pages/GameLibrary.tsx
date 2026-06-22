@@ -7,7 +7,7 @@ import { LibraryToolbar, type LibraryViewMode } from "../components/library/Libr
 import { Alert, EmptyState, Skeleton } from "../components/ds/Feedback";
 import { Badge } from "../components/ds/Badge";
 import { Button } from "../components/ds/Button";
-import { useBackgroundSafeEnabled } from "../hooks/useBackgroundSafeEnabled";
+import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import {
   addManualGame,
   importGameCover,
@@ -15,10 +15,10 @@ import {
   removeGameProfile,
   scanGames,
   setGameConfigDir,
-} from "../lib/api";
-import { formatInvokeError } from "../lib/errors";
-import { openPathDialog } from "../lib/tauriDialog";
-import type { GameProfile } from "../lib/types";
+} from "@/lib/api";
+import { formatInvokeError } from "@/lib/core";
+import { openPathDialog } from "@/lib/api";
+import type { GameProfile } from "@/lib/core";
 
 interface Props {
   selectedGame: GameProfile | null;

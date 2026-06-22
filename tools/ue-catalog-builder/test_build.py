@@ -22,8 +22,8 @@ from build import (  # noqa: E402
     parse_ini,
     parse_scalability_ini,
 )
-from extract_gus_from_header import extract_from_files as extract_gus_from_files  # noqa: E402
-from extract_sg_from_cpp import extract_from_file as extract_sg_from_file  # noqa: E402
+from extract.gus_from_header import extract_from_files as extract_gus_from_files  # noqa: E402
+from extract.sg_from_cpp import extract_from_file as extract_sg_from_file  # noqa: E402
 
 
 class ParserTests(unittest.TestCase):

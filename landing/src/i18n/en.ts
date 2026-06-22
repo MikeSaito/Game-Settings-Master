@@ -37,7 +37,6 @@ export const en: LocaleStrings = {
     { value: "725", label: "catalog CVars" },
     { value: "10", label: "UE versions 4.27–5.8" },
     { value: "UE 4/5", label: "version-aware hints" },
-    { value: "Free", label: "Windows build" },
   ],
   basicAdvanced: {
     eyebrow: "Two modes",

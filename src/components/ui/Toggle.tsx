@@ -1,5 +1,5 @@
 import i18n from "../../i18n";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 
 interface Props {
   checked: boolean;

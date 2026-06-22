@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 
 export interface SegmentOption<T extends string> {
   value: T;

@@ -1,9 +1,9 @@
 import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { EditorPanel } from "../../lib/editorPanels";
-import { engineWarningAckKey } from "../../lib/editorPanels";
-import { cn } from "../../lib/cn";
+import type { EditorPanel } from "@/lib/routing";
+import { engineWarningAckKey } from "@/lib/routing";
+import { cn } from "@/lib/core";
 import { SegmentControl } from "../ds/SegmentControl";
 
 const PANELS: EditorPanel[] = ["basic", "advanced", "backups"];

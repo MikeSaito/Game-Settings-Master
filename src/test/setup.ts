@@ -29,7 +29,7 @@ vi.mock("@tanstack/react-virtual", () => ({
   },
 }));
 
-vi.mock("../components/UpdateGate", () => ({
+vi.mock("@/components/app/UpdateGate", () => ({
   UpdateGate: ({ children }: { children: React.ReactNode }) =>
     React.createElement(React.Fragment, null, children),
 }));

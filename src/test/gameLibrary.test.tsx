@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AppWindowFocusProvider } from "../context/AppWindowFocusProvider";
 import { GameLibrary } from "../pages/GameLibrary";
 import { testGame } from "./fixtures/gameProfile";
-import type { GameProfile } from "../lib/types";
+import type { GameProfile } from "@/lib/core";
 import "../i18n";
 
 function renderGameLibrary({

@@ -1,11 +1,11 @@
 import { Monitor } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { supportsIniPresets } from "../../lib/gameEngine";
-import { libraryPath } from "../../lib/routes";
-import type { AppTab, GameProfile } from "../../lib/types";
-import { cn } from "../../lib/cn";
-import { GameCover } from "../GameCover";
+import { supportsIniPresets } from "@/lib/game";
+import { libraryPath } from "@/lib/routing";
+import type { AppTab, GameProfile } from "@/lib/core";
+import { cn } from "@/lib/core";
+import { GameCover } from "@/components/game/GameCover";
 import { Badge } from "../ui/Badge";
 import { LanguageToggle } from "./LanguageToggle";
 

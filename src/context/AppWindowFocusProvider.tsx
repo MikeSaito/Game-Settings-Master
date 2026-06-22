@@ -7,8 +7,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { setAppBackgroundMode } from "../lib/api";
-import { isTauriRuntime } from "../lib/tauriRuntime";
+import { setAppBackgroundMode } from "@/lib/api";
+import { isTauriRuntime } from "@/lib/api";
 
 const BACKGROUND_DELAY_MS = 400;
 const FOREGROUND_DELAY_MS = 120;

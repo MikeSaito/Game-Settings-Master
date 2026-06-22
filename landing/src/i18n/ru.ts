@@ -37,7 +37,6 @@ export const ru: LocaleStrings = {
     { value: "725", label: "переменных в каталоге" },
     { value: "10", label: "версий UE 4.27–5.8" },
     { value: "UE 4/5", label: "подсказки с учётом версии" },
-    { value: "0 ₽", label: "сборка для Windows" },
   ],
   basicAdvanced: {
     eyebrow: "Два режима",

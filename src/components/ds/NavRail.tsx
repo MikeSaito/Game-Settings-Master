@@ -2,9 +2,9 @@ import type { MouseEvent, RefObject } from "react";
 import { Library, Settings, SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-import { gameTabPath, libraryPath } from "../../lib/routes";
-import type { AppTab, GameProfile } from "../../lib/types";
-import { cn } from "../../lib/cn";
+import { gameTabPath, libraryPath } from "@/lib/routing";
+import type { AppTab, GameProfile } from "@/lib/core";
+import { cn } from "@/lib/core";
 
 interface Props {
   active: AppTab;

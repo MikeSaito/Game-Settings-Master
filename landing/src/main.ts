@@ -1,16 +1,16 @@
 import "./styles/landing.css";
 import { getLocale } from "./i18n";
-import { createSiteHeader } from "./components/SiteHeader";
-import { createHeroSection } from "./components/HeroSection";
-import { createFeatureSection } from "./components/FeatureSection";
-import { createDownloadSection } from "./components/DownloadSection";
-import { createSiteFooter } from "./components/SiteFooter";
-import { createStatsBar } from "./components/StatsBar";
-import { createBasicAdvancedSection } from "./components/BasicAdvancedSection";
-import { createHowItWorksSection } from "./components/HowItWorksSection";
-import { createCatalogHighlightSection } from "./components/CatalogHighlightSection";
-import { createGpuSection } from "./components/GpuSection";
-import { createFaqSection } from "./components/FaqSection";
+import { createSiteHeader } from "./components/layout/SiteHeader";
+import { createSiteFooter } from "./components/layout/SiteFooter";
+import { createHeroSection } from "./components/sections/HeroSection";
+import { createFeatureSection } from "./components/sections/FeatureSection";
+import { createDownloadSection } from "./components/sections/DownloadSection";
+import { createStatsBar } from "./components/sections/StatsBar";
+import { createBasicAdvancedSection } from "./components/sections/BasicAdvancedSection";
+import { createHowItWorksSection } from "./components/sections/HowItWorksSection";
+import { createCatalogHighlightSection } from "./components/sections/CatalogHighlightSection";
+import { createGpuSection } from "./components/sections/GpuSection";
+import { createFaqSection } from "./components/sections/FaqSection";
 import { initStaggeredReveal } from "./scroll/revealController";
 
 function init(): void {

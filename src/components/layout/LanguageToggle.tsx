@@ -1,4 +1,4 @@
-import { useAppSettings } from "../../hooks/useAppSettings";
+import { useAppSettings } from "@/hooks/app/useAppSettings";
 import { LanguageSelect } from "../settings/LanguageSelect";
 
 export function LanguageToggle() {

@@ -4,7 +4,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { SectionHeader } from "../ui/SectionHeader";
-import type { AdvancedEditorState } from "../../hooks/useAdvancedEditorState";
+import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 
 interface Props {
   state: AdvancedEditorState;

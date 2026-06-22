@@ -4,14 +4,14 @@ import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ParameterRow } from "./ParameterRow";
 import { EmptyState } from "../ds/Feedback";
-import { paramRowKey } from "../../lib/advancedEditorFilters";
-import { getParamSelectOptions } from "../../lib/paramSelectOptions";
-import { getDependencyLabel } from "../../lib/paramDependencies";
+import { paramRowKey } from "@/lib/editor";
+import { getParamSelectOptions } from "@/lib/editor";
+import { getDependencyLabel } from "@/lib/editor";
 import {
   isEngineEnabled,
   isEngineToggleable,
-} from "../../lib/engineParams";
-import type { GpuCapabilities, GameParameter } from "../../lib/types";
+} from "@/lib/editor";
+import type { GpuCapabilities, GameParameter } from "@/lib/core";
 
 const ROW_ESTIMATE_PX = 74;
 

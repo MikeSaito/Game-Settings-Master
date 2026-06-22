@@ -23,7 +23,7 @@ OUTPUT_INDEX = CATALOG_DIR / "ue_reference_index.json"
 OUTPUT_STATS = GENERATED_DIR / "merge_stats.json"
 
 BUILDER_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(BUILDER_DIR))
+sys.path.insert(0, str(BUILDER_DIR / "shared"))
 from ue_versions import load_ue_versions
 
 VERSIONS = load_ue_versions()

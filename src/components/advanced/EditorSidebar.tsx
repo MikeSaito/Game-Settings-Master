@@ -1,11 +1,11 @@
 import { Search } from "lucide-react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import type { EditorFilterMode } from "../../lib/editorPanels";
+import type { EditorFilterMode } from "@/lib/routing";
 import { Input } from "../ds/Field";
 import { Panel } from "../ds/Panel";
 import { SegmentControl } from "../ds/SegmentControl";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 
 interface CategoryItem {
   cat: string;

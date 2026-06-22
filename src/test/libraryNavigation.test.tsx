@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from "vitest";
 import { AppShell } from "../components/layout/AppShell";
 import { AppWindowFocusProvider } from "../context/AppWindowFocusProvider";
 import { GameLibrary } from "../pages/GameLibrary";
-import { libraryPath, gameTabPath } from "../lib/routes";
+import { libraryPath, gameTabPath } from "@/lib/routing";
 import { testGame } from "./fixtures/gameProfile";
 import "../i18n";
 
-vi.mock("../lib/api", () => ({
+vi.mock("@/lib/api", () => ({
   scanGames: vi.fn(() => Promise.resolve([testGame])),
   setBackendLanguage: vi.fn(() => Promise.resolve()),
   getGpuInfo: vi.fn(() => Promise.resolve(null)),
@@ -19,6 +19,8 @@ vi.mock("../lib/api", () => ({
   launchGame: vi.fn(),
   closeGame: vi.fn(),
   openConfigFolder: vi.fn(),
+  setAppBackgroundMode: vi.fn(() => Promise.resolve()),
+  isTauriRuntime: () => false,
 }));
 
 function LocationProbe({ onPath }: { onPath: (path: string) => void }) {

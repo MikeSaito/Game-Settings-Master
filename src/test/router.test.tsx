@@ -6,8 +6,8 @@ import { describe, expect, it } from "vitest";
 import { AppWindowFocusProvider } from "../context/AppWindowFocusProvider";
 import { EditorModeBar } from "../components/advanced/EditorModeBar";
 import { GameLibrary } from "../pages/GameLibrary";
-import { libraryPath, parseGameRoute, parseLegacyGameRoute } from "../lib/routes";
-import { LegacyGameRouteRedirect } from "../lib/legacyGameRouteRedirect";
+import { libraryPath, parseGameRoute, parseLegacyGameRoute } from "@/lib/routing";
+import { LegacyGameRouteRedirect } from "@/lib/routing";
 import { testGame } from "./fixtures/gameProfile";
 import "../i18n";
 

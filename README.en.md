@@ -46,10 +46,50 @@ After the first run, Windows usually stops asking.
 
 ## Developer setup
 
+### Requirements
+
+| Tool | Purpose |
+|------|---------|
+| **Node.js** 20+ | Frontend, Tauri CLI, tests |
+| **Rust** (stable) + **MSVC Build Tools** | Tauri backend (Windows) |
+| **Python** 3.10+ | UE catalog build (`tools/ue-catalog-builder/`) |
+
+### Quick start
+
 ```powershell
 npm ci
 powershell -File scripts/install-githooks.ps1
+
+npm run tauri dev    # desktop app (Vite + Tauri)
+npm test             # Vitest
+npm run build        # production frontend
 ```
+
+Landing separately: `npm run landing:dev` / `npm run landing:build`.
+
+After changing IPC DTOs in Rust:
+
+```powershell
+npm run types:gen
+```
+
+### Repository layout
+
+```
+src/                    React SPA (@/ alias → src/)
+  lib/                  api, core, routing, editor, game, gpu, settings
+  components/           feature UI (advanced, library, layout, app, …)
+  hooks/                app, game, editor
+  pages/                router screens
+src-tauri/src/          Rust: commands, ini, discovery, catalog
+  core/                 models, errors, paths
+landing/src/            marketing site (GitHub Pages)
+tools/ue-catalog-builder/   Python ue_reference_index.json pipeline
+tools/ue-reference/     local Epic ini snapshots (not fully in git)
+docs/                   ARCHITECTURE.md, epic-clone-setup, parameter-sources
+```
+
+Full module map, import conventions, and where to add new code — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ### Parameter catalog (UE)
 
@@ -72,8 +112,8 @@ Rebuild reference index after updating UE snapshots:
 # First-time / full catalog build — see docs/epic-clone-setup.md
 .\scripts\fetch-ue-reference.ps1 -AutoTags
 
-python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
+python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
@@ -83,13 +123,26 @@ Without an Epic clone the app ships fixture snapshots (UE 4.27 + 5.4, **548+ key
 
 Advanced Editor filters reference keys by detected `engine_version` (UE 4.27–5.8). Keys in your ini are always listed.
 
-See `tools/ue-reference/README.md`. Curated entries always win on key collision.
+See [`tools/ue-reference/README.md`](tools/ue-reference/README.md), [`docs/parameter-sources.md`](docs/parameter-sources.md).
 
-After changing IPC DTOs in Rust:
+### Pre-PR checks
 
 ```powershell
-npm run types:gen
+npm test
+npm run build
+cd src-tauri; cargo test
+python tools/ue-catalog-builder/test_build.py
+npm run landing:build
 ```
+
+## Documentation
+
+| File | Contents |
+|------|----------|
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Code layout, imports, module boundaries |
+| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Epic UE clone and full catalog rebuild |
+| [`docs/parameter-sources.md`](docs/parameter-sources.md) | Where parameter descriptions come from |
+| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python catalog pipeline |
 
 ---
 

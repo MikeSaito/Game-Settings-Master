@@ -1,10 +1,10 @@
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { AdvancedPanel } from "../../lib/advancedEditorPanels";
+import type { AdvancedPanel } from "@/lib/routing";
 import { Alert } from "../ui/Alert";
 import { Input } from "../ui/Input";
 import { Toggle } from "../ui/Toggle";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 
 interface CategoryItem {
   cat: string;

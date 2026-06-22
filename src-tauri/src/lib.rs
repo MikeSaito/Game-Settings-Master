@@ -1,4 +1,4 @@
-mod app_error;
+mod core;
 mod backup;
 #[cfg(test)]
 mod bindings_export;
@@ -12,12 +12,11 @@ mod gpu;
 mod i18n;
 mod ini;
 mod launch;
-mod models;
 mod presets;
-mod process_util;
 mod profiles;
-mod resource_paths;
 mod scalability;
+
+pub use core::{app_error, models, process_util, resource_paths};
 
 use commands::{
     add_manual_game, apply_custom_cmd, apply_game_override, close_game_cmd, delete_game_override,
@@ -39,7 +38,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             if let Ok(resource_dir) = app.path().resource_dir() {
-                resource_paths::init_resource_root(resource_dir);
+                core::resource_paths::init_resource_root(resource_dir);
             }
             i18n::init_from_disk();
             Ok(())

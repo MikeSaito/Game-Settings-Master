@@ -7,9 +7,9 @@ import { ParameterList } from "../components/advanced/ParameterList";
 import { SavedPresetsPanel } from "../components/advanced/SavedPresetsPanel";
 import { Alert, EmptyState } from "../components/ds/Feedback";
 import { Badge } from "../components/ds/Badge";
-import { useAdvancedEditorState } from "../hooks/useAdvancedEditorState";
-import { gpuFilterHint } from "../lib/gpuCompat";
-import type { GameProfile } from "../lib/types";
+import { useAdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
+import { gpuFilterHint } from "@/lib/gpu";
+import type { GameProfile } from "@/lib/core";
 import { Backups } from "./Backups";
 
 interface Props {

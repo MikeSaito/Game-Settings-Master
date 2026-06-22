@@ -46,10 +46,50 @@ Windows · бесплатно · без подписи издателя
 
 ## Разработка
 
+### Требования
+
+| Инструмент | Зачем |
+|------------|--------|
+| **Node.js** 20+ | Frontend, Tauri CLI, тесты |
+| **Rust** (stable) + **MSVC Build Tools** | Tauri backend (Windows) |
+| **Python** 3.10+ | Сборка каталога UE (`tools/ue-catalog-builder/`) |
+
+### Быстрый старт
+
 ```powershell
 npm ci
 powershell -File scripts/install-githooks.ps1
+
+npm run tauri dev    # desktop-приложение (Vite + Tauri)
+npm test             # Vitest
+npm run build        # production frontend
 ```
+
+Лендинг отдельно: `npm run landing:dev` / `npm run landing:build`.
+
+После изменения IPC DTO в Rust:
+
+```powershell
+npm run types:gen
+```
+
+### Структура репозитория
+
+```
+src/                    React SPA (alias @/ → src/)
+  lib/                  api, core, routing, editor, game, gpu, settings
+  components/           UI по фичам (advanced, library, layout, app, …)
+  hooks/                app, game, editor
+  pages/                экраны роутера
+src-tauri/src/          Rust: commands, ini, discovery, catalog
+  core/                 models, errors, paths
+landing/src/            маркетинговый сайт (GitHub Pages)
+tools/ue-catalog-builder/   Python-сборка ue_reference_index.json
+tools/ue-reference/     локальные снимки ini Epic (не в git целиком)
+docs/                   ARCHITECTURE.md, epic-clone-setup, parameter-sources
+```
+
+Подробная карта модулей, соглашения об импортах и «куда класть новый код» — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ### Каталог параметров (UE)
 
@@ -73,8 +113,8 @@ powershell -File scripts/install-githooks.ps1
 .\scripts\fetch-ue-reference.ps1 -AutoTags
 # или: -EngineRoot "D:\UnrealEngine" -AutoTags
 
-python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
+python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
@@ -84,13 +124,26 @@ npm run catalog:test
 
 Расширенный редактор фильтрует справочные ключи по обнаруженной `engine_version` (UE 4.27–5.8). Ключи из ваших ini всегда в списке.
 
-Подробнее: `tools/ue-reference/README.md`. Ручные записи всегда побеждают при коллизии ключей.
+Подробнее: [`tools/ue-reference/README.md`](tools/ue-reference/README.md), [`docs/parameter-sources.md`](docs/parameter-sources.md).
 
-После изменения IPC DTO в Rust:
+### Проверка перед PR
 
 ```powershell
-npm run types:gen
+npm test
+npm run build
+cd src-tauri; cargo test
+python tools/ue-catalog-builder/test_build.py
+npm run landing:build
 ```
+
+## Документация
+
+| Файл | Содержание |
+|------|------------|
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Структура кода, импорты, границы модулей |
+| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Клон Epic UE и полная пересборка каталога |
+| [`docs/parameter-sources.md`](docs/parameter-sources.md) | Откуда берутся описания параметров |
+| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python pipeline каталога |
 
 ---
 

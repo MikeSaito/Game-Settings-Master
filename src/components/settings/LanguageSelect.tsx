@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { SettingsLanguage } from "../../lib/appSettings";
+import type { SettingsLanguage } from "@/lib/settings";
 import { SUPPORTED_LANGUAGES } from "../../i18n";
 import { Select } from "../ds/Field";
 

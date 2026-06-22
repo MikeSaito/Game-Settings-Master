@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ParameterRow } from "./ParameterRow";
-import type { GameParameter } from "../../lib/types";
+import type { GameParameter } from "@/lib/core";
 import "../../i18n";
 
 function baseParam(overrides: Partial<GameParameter>): GameParameter {

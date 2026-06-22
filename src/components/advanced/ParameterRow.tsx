@@ -2,16 +2,16 @@ import { memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import { ENGINE_INI } from "../../lib/engineParams";
-import { cn } from "../../lib/cn";
-import type { GameParameter } from "../../lib/types";
+import { ENGINE_INI } from "@/lib/editor";
+import { cn } from "@/lib/core";
+import type { GameParameter } from "@/lib/core";
 import {
   clampParamValue,
   formatParamDisplayValue,
   isUeSentinelValue,
   readOnlyReason,
-} from "../../lib/paramValue";
-import { humanizeCvarKey } from "../../lib/cvarHumanize";
+} from "@/lib/editor";
+import { humanizeCvarKey } from "@/lib/editor";
 import { Badge } from "../ds/Badge";
 import { Button } from "../ds/Button";
 import { Select } from "../ds/Field";

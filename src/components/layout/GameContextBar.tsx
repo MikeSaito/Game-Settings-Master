@@ -2,17 +2,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Copy, Cpu, ExternalLink, FolderOpen, Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useBackgroundSafeEnabled } from "../../hooks/useBackgroundSafeEnabled";
-import { useGameRunning } from "../../hooks/useGameRunning";
-import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "../../lib/api";
-import { formatInvokeError } from "../../lib/errors";
-import { exeNameForRunningCheck } from "../../lib/gameRunning";
-import { supportsIniPresets } from "../../lib/gameEngine";
-import { gpuSummaryLabel } from "../../lib/gpuCompat";
-import type { GameProfile } from "../../lib/types";
+import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { useGameRunning } from "@/hooks/game/useGameRunning";
+import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "@/lib/api";
+import { formatInvokeError } from "@/lib/core";
+import { exeNameForRunningCheck } from "@/lib/game";
+import { supportsIniPresets } from "@/lib/game";
+import { gpuSummaryLabel } from "@/lib/gpu";
+import type { GameProfile } from "@/lib/core";
 import { Badge } from "../ds/Badge";
 import { Button } from "../ds/Button";
-import { GameCover } from "../GameCover";
+import { GameCover } from "@/components/game/GameCover";
 interface Props {
   game: GameProfile;
 }

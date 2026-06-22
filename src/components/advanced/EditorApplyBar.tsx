@@ -1,6 +1,6 @@
 import { Save, Trash2, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { AdvancedEditorState } from "../../hooks/useAdvancedEditorState";
+import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 import { Button } from "../ds/Button";
 import { Input } from "../ds/Field";
 

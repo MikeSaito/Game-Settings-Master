@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import type { AdvancedPanel } from "../../lib/advancedEditorPanels";
+import type { AdvancedPanel } from "@/lib/routing";
 import { Badge } from "../ui/Badge";
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/core";
 
 interface Props {
   panel: AdvancedPanel;

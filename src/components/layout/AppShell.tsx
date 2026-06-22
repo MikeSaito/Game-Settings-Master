@@ -1,8 +1,8 @@
 import { useRef, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { GameWorkspaceProvider } from "../../context/GameWorkspaceContext";
-import { tabFromPathname } from "../../lib/routes";
-import type { GameProfile } from "../../lib/types";
+import { tabFromPathname } from "@/lib/routing";
+import type { GameProfile } from "@/lib/core";
 import { NavRail } from "../ds/NavRail";
 import { SettingsPanel } from "../settings/SettingsPanel";
 import { GameContextBar } from "./GameContextBar";

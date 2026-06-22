@@ -41,8 +41,8 @@ The script checks out each release tag, copies `Engine/Config/BaseEngine.ini` + 
 ## Rebuild catalog
 
 ```powershell
-python tools/ue-catalog-builder/extract_sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract_gus_from_header.py --all-versions
+python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
+python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
 npm run catalog:build
 npm run catalog:test
 ```

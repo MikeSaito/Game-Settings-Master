@@ -1,8 +1,8 @@
 import { Monitor, Moon, Settings, Sun, X } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSettings } from "../../hooks/useAppSettings";
-import type { FontScale, ThemeMode } from "../../lib/appSettings";
+import { useAppSettings } from "@/hooks/app/useAppSettings";
+import type { FontScale, ThemeMode } from "@/lib/settings";
 import { Button } from "../ds/Button";
 import { LanguageSelect } from "./LanguageSelect";
 import { SegmentControl } from "../ds/SegmentControl";

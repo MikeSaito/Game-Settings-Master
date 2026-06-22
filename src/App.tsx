@@ -8,25 +8,25 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { UpdateGate } from "./components/UpdateGate";
-import { ErrorBoundary } from "./components/ErrorBoundary";
+import { UpdateGate } from "@/components/app/UpdateGate";
+import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { AppShell } from "./components/layout/AppShell";
 import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
-import { AppSettingsProvider } from "./hooks/useAppSettings";
-import { useBackgroundSafeEnabled } from "./hooks/useBackgroundSafeEnabled";
-import { scanGames } from "./lib/api";
-import { prefetchGameWorkspace } from "./lib/prefetchGameWorkspace";
-import { isGameTabAvailable, resolveGameTabRoute } from "./lib/gameEngine";
+import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
+import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { scanGames } from "@/lib/api";
+import { prefetchGameWorkspace } from "@/lib/game";
+import { isGameTabAvailable, resolveGameTabRoute } from "@/lib/game";
 import {
   gameTabPath,
   libraryPath,
   parseGameRoute,
   tabFromPathname,
-} from "./lib/routes";
-import { queryClient } from "./lib/queryClient";
-import { writeStoredPanel } from "./lib/editorPanels";
-import { LegacyGameRouteRedirect } from "./lib/legacyGameRouteRedirect";
-import type { GameProfile } from "./lib/types";
+} from "@/lib/routing";
+import { queryClient } from "@/lib/core";
+import { writeStoredPanel } from "@/lib/routing";
+import { LegacyGameRouteRedirect } from "@/lib/routing";
+import type { GameProfile } from "@/lib/core";
 
 const AdvancedEditor = lazy(() =>
   import("./pages/AdvancedEditor").then((module) => ({
