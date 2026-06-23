@@ -86,6 +86,12 @@ profiles/      сохранённые профили игр
 commands/      Tauri IPC handlers
 discovery/     Steam/Epic scan, UE detect
 ini/           parse / write / patch ini
+presets/       apply custom changes to config dirs
+  apply_dir.rs      merge + patch single config directory
+  apply_targets.rs  multi-target apply with rollback
+  diff.rs           ConfigDiffEntry computation
+  resolve.rs        section resolution, screen size
+  validate.rs       ini payload safety checks
 catalog/       загрузка каталога и сборка параметров редактора
   loader.rs           get_game_parameters (оркестрация)
   loader_tests.rs     интеграционные тесты загрузчика
