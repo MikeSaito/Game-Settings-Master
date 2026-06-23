@@ -82,18 +82,87 @@
 ```
 core/          app_error, models, process_util, resource_paths
 i18n/          RU/EN строки backend
-profiles/      сохранённые профили игр
+profiles/      сохранённые профили игр (games.json, overrides.json)
+  storage.rs        app_data_dir, profiles_path, write_json_atomic
+  trust.rs          validate_profile_paths, resolve_trusted_profile
+  persist.rs        load/save/remove profiles, prune_stale_saved_profiles
+  overrides.rs      load/save/delete overrides, validate_override_payload
+  profiles_tests.rs IPC security + validation tests
+backup/        снимки ini перед apply/reset
+  paths.rs          backup_store_dir, OVERRIDE_INI_FILES
+  snapshot.rs       backup_config_dir, backup_all_targets, list_backups
+  restore.rs        restore_backup, rollback_apply_snapshot
+  reset.rs          reset_config_all_targets
+  backup_tests.rs   restore/reset safety tests
 commands/      Tauri IPC handlers
+  helpers/          IPC validation, trusted paths, custom apply guards
+    guard.rs          guard_config_dir_for_write, guard_write_context
+    trust.rs          validate_install_dir_for_game
+    exe.rs            resolve_write_exe_name
+    custom_changes.rs validate_custom_changes_payload
+    ipc_tests.rs      guard + payload injection tests
+  games/            scan, profile CRUD, covers, config dir
+    scan.rs             scan_games
+    profile.rs          save/remove game profile
+    manual.rs           add_manual_game
+    config_dir.rs       set_game_config_dir
+    covers.rs           import/remove cover, open folder
+    games_tests.rs      IPC guard tests for profile CRUD
+  config/           read ini, apply custom, overrides
 discovery/     Steam/Epic scan, UE detect
+  scan_all.rs       orchestrate steam + epic + manual scan
+  dedupe.rs         merge profiles by install_dir / app_id
+  manual.rs         add_manual_game_profile
+  enrich.rs         post-scan profile enrichment
+  discovery_tests.rs dedupe + manual validation tests
+  known_games.rs    curated game_id → config hints
+  mtime_snapshot.rs library folder mtime for cache invalidation
+  registry/         cached scan_all + find_game_by_id
+    cache.rs          GAME_SCAN_CACHE_TTL, cached_scan_all_games
+    lookup.rs         find_game_by_id
+  steam/            Steam library scan
+    paths.rs          libraryfolders, common app paths
+    manifest.rs       appmanifest_*.acf parse
+    signal.rs         mtime collection for cache
+  epic/             Epic Games Store scan
+    paths.rs          manifests, launcher data
+    manifest.rs       *.item parse, app name validation
+    signal.rs         manifest mtime signals
+  config_index/     LocalAppData Saved/Config index
+    scan.rs           scan_local_appdata_configs
+    matcher.rs        match_config_from_index
+    types.rs          ConfigIndexEntry
+  ue_detect/        is this install a UE game?
+    markers.rs        content.paks, Engine folder heuristics
+    executables.rs    *-Win64-Shipping.exe detection
+    non_game.rs       Fab plugin, engine-only installs
+  ue_version/       engine_family + semver from build files
+    parse.rs          Build.version, ProjectVersion
+    heuristics.rs     IOStore, WindowsNoEditor fallbacks
+    types.rs          UeSemver
 ini/           parse / write / patch ini
+  patch/            line-by-line patch preserving preamble
+    sections.rs     scan_sections, line_key
+    text.rs         patch_ini_text
+    mirror.rs       expand_mirror_key_updates
+    patch_tests.rs  preamble + mirror integration tests
+  writer/           merge + serialize ini files
+    merge.rs          merge_ini, remove_ini_keys
+    serialize.rs      write_ini_file_with_encoding_hint
+    writer_tests.rs   merge + UTF-16 inheritance tests
 fs_util/       file I/O, path safety, process checks
   io.rs             read/write bytes, BOM, Windows shared access
   path_safety.rs    ini filename/key validation, safe_child_path
-  process.rs        is_exe_running, kill_exe (Windows)
+  process/          is_exe_running, kill_exe (Windows)
+    cache.rs          running-process TTL cache
+    snapshot.rs       Toolhelp32 process enumeration
+    kill.rs           TerminateProcess + permission errors
   config.rs         ensure_config_writable probe
+  fs_util_tests.rs  I/O + path safety unit tests
 presets/       apply custom changes to config dirs
   apply_dir.rs      merge + patch single config directory
   apply_targets.rs  multi-target apply with rollback
+  apply_tests.rs    integration tests for apply pipeline
   diff.rs           ConfigDiffEntry computation
   resolve.rs        section resolution, screen size
   validate.rs       ini payload safety checks
@@ -106,7 +175,12 @@ catalog/       загрузка каталога и сборка парамет�
   types.rs            ParameterCatalogEntry, ReferenceEntry, CatalogIndex
   version.rs          UeSemver, reference_applies_to_version
   localize.rs         pick_localized, pick_title, description quality
-  parameter_build.rs  entry/hint/reference → Parameter
+  parameter_build/    entry/hint/reference → Parameter
+    defaults.rs       catalog_default_value, derive_catalog_recommended
+    catalog.rs        entry_to_parameter
+    hint.rs           hint_to_parameter
+    reference.rs      reference_to_parameter
+    tiers.rs          attach_scalability_tier_hints
   injection.rs        inject_catalog_and_reference_parameters
   humanize/           CVar titles, ranges, categories, hidden keys
     cvar_title.rs     humanize_cvar_key
@@ -115,6 +189,20 @@ catalog/       загрузка каталога и сборка парамет�
     hidden_keys.rs    is_hidden_ue_manual_key, UE5-only keys
     value_text.rs     is_opaque_struct_value, truncate_preview
   scalability_tiers.rs
+scalability/   sg.* quality limits from ini + GUS
+  constants.rs      QUALITY_INDEX_GROUPS, is_scalability_quality_index
+  parse.rs          DefaultScalability.ini, GUS observed max
+  detect.rs         detect_scalability_limits
+  scalability_tests.rs preset limits + GUS parsing tests
+launch/        Steam/Epic URI launch
+  steam.rs          steam://rungameid, manifest lookup
+  epic.rs           validate_epic_app_name, com.epicgames.launcher
+  launch_tests.rs   steam id + epic app name validation
+gpu/           DLSS/RT capability from adapter name
+  nvidia.rs         RTX series detection
+  priority.rs       discrete vs integrated GPU pick
+  enumerate.rs      Windows registry adapter list
+  gpu_tests.rs      DLSS/FG capability + GPU priority tests
 ```
 
 Внутренний код импортирует `crate::core::models`. `lib.rs` по-прежнему re-export'ит `models` и др. для совместимости.

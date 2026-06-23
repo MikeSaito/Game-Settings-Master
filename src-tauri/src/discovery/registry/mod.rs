@@ -3,7 +3,6 @@ mod lookup;
 
 pub use cache::{
     cached_scan_all_games, force_refresh_scan_all_games, invalidate_game_scan_cache,
-    GAME_SCAN_CACHE_TTL,
 };
 pub use lookup::find_game_by_id;
 

@@ -8,7 +8,7 @@ use crate::core::models::GameProfile;
 use std::collections::HashMap;
 use std::fs;
 
-pub use signal::{collect_steam_library_mtimes, steam_library_signal_mtime};
+pub use signal::collect_steam_library_mtimes;
 
 use manifest::parse_steam_manifest;
 use paths::{find_steam_install_paths, parse_library_folders};

@@ -1,142 +1,17 @@
-use super::helpers::{
-    find_profile_by_id, guard_config_dir_for_write, normalize_path_cmp, resolve_ue_config_path,
-    resolve_write_exe_name, validate_config_dir_for_game, validate_custom_changes_payload,
-    validate_install_dir_for_game,
-};
 use crate::app_error::AppError;
-use crate::catalog::get_game_parameters;
+use crate::commands::helpers::{
+    find_profile_by_id, guard_config_dir_for_write, normalize_path_cmp, resolve_write_exe_name,
+    validate_custom_changes_payload,
+};
+use crate::core::models::{ApplyResult, CustomChanges, GameOverride};
 use crate::discovery::{cached_scan_all_games, platform_hints_for_game};
 use crate::fs_util::ensure_config_writable;
 use crate::ini::paths::validate_config_dir;
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
-use crate::ini::{parser::ini_to_data, read_ini_file};
-use crate::core::models::{
-    ApplyResult, CustomChanges, GameConfig, GameOverride, GameParameter, IniFileData,
-};
 use crate::presets::{apply_custom_to_targets, resolve_apply_resolution};
 use crate::profiles::{
     delete_override, get_overrides_for_game, load_saved_profiles, save_override,
 };
-use crate::scalability::detect_scalability_limits;
-use std::collections::HashMap;
-use std::path::PathBuf;
-
-#[tauri::command]
-pub fn get_game_config(
-    config_dir: String,
-    game_id: Option<String>,
-    engine_family: Option<String>,
-) -> Result<GameConfig, String> {
-    if let Some(gid) = game_id.as_deref() {
-        validate_config_dir_for_game(gid, &config_dir)?;
-    }
-    let path = validate_config_dir(&config_dir)?;
-    let path = resolve_ue_config_path(path, game_id.as_deref(), engine_family.as_deref());
-
-    let mut files = HashMap::new();
-    let ini_files = [
-        "GameUserSettings.ini",
-        "Engine.ini",
-        "Game.ini",
-        "Scalability.ini",
-    ];
-    for file in ini_files {
-        let file_path = path.join(file);
-        if file_path.exists() {
-            let ini = read_ini_file(&file_path)?;
-            files.insert(
-                file.to_string(),
-                IniFileData {
-                    sections: ini_to_data(&ini),
-                },
-            );
-        }
-    }
-
-    Ok(GameConfig {
-        config_dir: path.to_string_lossy().to_string(),
-        files,
-    })
-}
-
-#[tauri::command]
-pub fn get_game_parameters_cmd(
-    config_dir: String,
-    game_id: Option<String>,
-    install_dir: Option<String>,
-    engine_family: Option<String>,
-    engine_version: Option<String>,
-) -> Result<Vec<GameParameter>, String> {
-    if let Some(gid) = game_id.as_deref() {
-        validate_config_dir_for_game(gid, &config_dir)?;
-        if let Some(install) = install_dir.as_deref() {
-            validate_install_dir_for_game(gid, install)?;
-        }
-    }
-    let path = validate_config_dir(&config_dir)?;
-    let hints = platform_hints_for_game(game_id.as_deref(), engine_family.as_deref());
-    let path = reconcile_config_dir(&path, &hints);
-    let install = install_dir.map(PathBuf::from);
-    get_game_parameters(
-        &path,
-        game_id.as_deref(),
-        install.as_deref(),
-        engine_family.as_deref(),
-        engine_version.as_deref(),
-    )
-}
-
-#[tauri::command]
-pub fn get_scalability_limits_cmd(
-    config_dir: String,
-    install_dir: Option<String>,
-    game_id: Option<String>,
-) -> Result<crate::scalability::ScalabilityLimits, String> {
-    if let Some(gid) = game_id.as_deref() {
-        validate_config_dir_for_game(gid, &config_dir)?;
-        if let Some(install) = install_dir.as_deref() {
-            validate_install_dir_for_game(gid, install)?;
-        }
-    }
-    let config = validate_config_dir(&config_dir)?;
-    let install = install_dir.map(PathBuf::from);
-    Ok(detect_scalability_limits(
-        install.as_deref(),
-        Some(config.as_path()),
-    ))
-}
-
-#[tauri::command]
-pub fn apply_custom_cmd(
-    config_dir: String,
-    changes: CustomChanges,
-    exe_name: Option<String>,
-    game_id: Option<String>,
-    engine_family: Option<String>,
-) -> Result<ApplyResult, String> {
-    guard_config_dir_for_write(game_id.as_deref(), &config_dir)?;
-    let resolved_exe = resolve_write_exe_name(exe_name.as_deref(), game_id.as_deref())?;
-    let path = validate_config_dir(&config_dir)?;
-    validate_custom_changes_payload(&changes, &path)?;
-    ensure_config_writable(&path, resolved_exe.as_deref())?;
-
-    let hints = platform_hints_for_game(game_id.as_deref(), engine_family.as_deref());
-    let path = reconcile_config_dir(&path, &hints);
-    let targets = apply_target_dirs(&path, &hints);
-    for target in &targets {
-        ensure_config_writable(target, resolved_exe.as_deref())?;
-    }
-    let backup_id = crate::backup::backup_all_targets(&targets)?;
-    let (width, height) = resolve_apply_resolution(&path);
-    let (changed_files, diff) =
-        apply_custom_to_targets(&path, &hints, &changes, width, height, Some(&backup_id))?;
-    Ok(ApplyResult {
-        backup_id,
-        changed_files,
-        diff,
-        effective_config_dir: Some(path.to_string_lossy().to_string()),
-    })
-}
 
 #[tauri::command]
 pub fn save_game_override(override_def: GameOverride) -> Result<(), String> {

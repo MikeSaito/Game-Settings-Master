@@ -23,6 +23,7 @@ pub(crate) fn catalog_build_count() -> usize {
     CATALOG_BUILD_COUNT.load(std::sync::atomic::Ordering::SeqCst)
 }
 
+#[cfg(test)]
 pub fn invalidate_catalog_cache() {
     if let Ok(mut guard) = catalog_cache().lock() {
         guard.clear();

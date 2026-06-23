@@ -4,11 +4,11 @@ mod types;
 
 pub use matcher::{build_match_candidates, match_config_from_index, normalize_key};
 pub use scan::scan_local_appdata_configs;
-pub use types::ConfigIndexEntry;
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::types::ConfigIndexEntry;
     use std::path::PathBuf;
 
     #[test]

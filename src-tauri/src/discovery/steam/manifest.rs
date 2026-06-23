@@ -5,7 +5,7 @@ use crate::ini::paths::resolve_config_dir;
 use crate::core::models::GameProfile;
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 pub(crate) fn parse_steam_manifest(
     manifest_path: &Path,

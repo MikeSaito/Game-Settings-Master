@@ -1,7 +1,8 @@
 //! Generates `src/lib/api/bindings.ts` from Rust DTOs (run via `npm run types:gen`).
 
 use crate::display::ScreenResolution;
-use crate::gpu::{GpuCapabilities, GpuVendor};
+use crate::gpu::GpuCapabilities;
+use crate::gpu::types::GpuVendor;
 use crate::launch::LaunchResult;
 use crate::core::models::{
     ApplyResult, BackupInfo, ConfigDiffEntry, ConfigResetResult, GameConfig, GameOverride,

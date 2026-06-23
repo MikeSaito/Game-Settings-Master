@@ -3,7 +3,7 @@ use crate::catalog::catalog_index::{
     build_catalog_index, catalog_build_count, invalidate_catalog_cache, lookup_entry,
     load_parameter_catalog_for_family,
 };
-use crate::catalog::parameter_build::{entry_to_parameter, reference_to_parameter};
+use crate::catalog::parameter_build::reference_to_parameter;
 use crate::catalog::types::ReferenceEntry;
 use crate::catalog::unknown::unknown_parameter;
 use crate::catalog::version::{parse_ue_semver, reference_applies_to_version};
