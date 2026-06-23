@@ -19,14 +19,15 @@
 - Алиас **`@/`** → `src/` (см. [`tsconfig.json`](../tsconfig.json), [`vite.config.ts`](../vite.config.ts))
 - Пример: `import { getGameParameters } from "@/lib/api"` или `import { cn } from "@/lib/core"`
 - Корневой barrel [`src/lib/index.ts`](../src/lib/index.ts) — `core`, `routing`, `editor`, `game`, `gpu`, `settings`; IPC отдельно из `@/lib/api`
+- [`src/components/ds/index.ts`](../src/components/ds/index.ts) — barrel design system (по желанию)
 
 ### `src/lib/` — доменные модули
 
 | Папка | Что класть |
 |-------|------------|
 | [`api/`](../src/lib/api/) | Tauri `invoke`, bindings, tauri runtime/dialog |
-| [`core/`](../src/lib/core/) | Типы, ошибки, `cn`, queryClient |
-| [`routing/`](../src/lib/routing/) | React Router paths, editor panels, navigation |
+| [`core/`](../src/lib/core/) | Типы, ошибки, `cn`, queryClient, `APP_VERSION` |
+| [`routing/`](../src/lib/routing/) | React Router paths, editor panels, `openGameEditor`, navigation |
 | [`editor/`](../src/lib/editor/) | CVars, фильтры, humanize, зависимости параметров |
 | [`game/`](../src/lib/game/) | GameProfile, covers, prefetch workspace |
 | [`gpu/`](../src/lib/gpu/) | GPU-aware visibility и фильтры |
@@ -34,16 +35,24 @@
 
 В каждой подпапке — `index.ts` (barrel). Тесты `*.test.ts` лежат рядом с кодом.
 
+### Редактор и бэкапы
+
+- Единый URL редактора: `/game/:id/advanced`
+- Активная панель (`basic` | `advanced` | `backups`) — в `sessionStorage` (`gsm-editor-panel:*`)
+- Legacy `/game/:id/backups` → redirect на `/advanced` + panel `backups`
+- UI бэкапов встроен в [`AdvancedEditor`](../src/pages/AdvancedEditor.tsx) (`Backups` с `embedded`)
+- Переход в редактор: [`openGameEditor()`](../src/lib/routing/navigation.ts)
+
 ### `src/components/` — UI по фичам
 
 | Папка | Содержимое |
 |-------|------------|
-| `advanced/` | Расширенный редактор |
+| `advanced/` | EditorModeBar, EditorSidebar, ParameterList, apply bar |
 | `library/` | Сетка игр, тулбар |
-| `layout/` | AppShell, header, sidebar |
+| `layout/` | AppShell, GameContextBar |
 | `settings/` | Панель настроек |
 | `ds/` | Design system (кнопки, поля, панели, Toggle) |
-| `app/` | ErrorBoundary, UpdateGate |
+| `app/` | ErrorBoundary, UpdateGate, RouteLoading |
 | `game/` | GameCover |
 
 Удалён legacy-слой `components/ui/` — новый UI только через `ds/`.
@@ -53,8 +62,8 @@
 | Папка | Хуки |
 |-------|------|
 | `app/` | settings, updater, debounce, background IPC gating |
-| `game/` | running exe, game running poll |
-| `editor/` | `useAdvancedEditorState` |
+| `game/` | `useGameLaunch`, `useGameRunning`, `useRunningExeName` |
+| `editor/` | `useAdvancedEditorState`, `useEditorPanelState`, `useEditorMutations`, `editorStateUtils` |
 
 ### Куда добавлять новый код
 
@@ -77,7 +86,7 @@ ini/           parse / write / patch ini
 catalog/       загрузка и humanize каталога
 ```
 
-`crate::models`, `crate::i18n`, `crate::profiles` — re-export из `lib.rs` для обратной совместимости.
+Внутренний код импортирует `crate::core::models`. `lib.rs` по-прежнему re-export'ит `models` и др. для совместимости.
 
 ## Catalog builder (`tools/ue-catalog-builder/`)
 
@@ -92,6 +101,8 @@ data/              tier overlays, display_overrides
 generated/         промежуточные registry JSON
 ```
 
+Актуальные счётчики: [`merge_stats.json`](../src-tauri/catalog/generated/merge_stats.json).
+
 ```powershell
 npm run catalog:build
 npm run catalog:test
@@ -104,6 +115,8 @@ layout/     SiteHeader, SiteFooter
 sections/   Hero, Stats, FAQ, Download, …
 shared/     CtaButtons, DownloadModal
 ```
+
+URL установщика собирается в [`site.ts`](../landing/src/lib/site.ts) из `VITE_APP_VERSION`.
 
 ## Проверка перед PR
 
@@ -122,3 +135,4 @@ npm run landing:build
 3. **Co-located tests** — тест рядом с модулем, не в отдельном дереве зеркал.
 4. **Без изменения данных каталога** в архитектурных PR — `src-tauri/catalog/*.json` только осознанно.
 5. **`npm run types:gen`** пишет в `src/lib/api/bindings.ts` (не в корень `lib/`).
+6. **`__APP_VERSION__`** — глобал из `package.json` через `vite.config.ts`; тип в [`src/vite-env.d.ts`](../src/vite-env.d.ts).

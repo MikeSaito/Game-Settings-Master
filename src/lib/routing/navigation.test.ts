@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { goToLibrary } from "./navigation";
+import { goToLibrary, openGameEditor } from "./navigation";
 
 describe("goToLibrary", () => {
   it("navigates to /library and clears hash", () => {
@@ -28,5 +28,16 @@ describe("goToLibrary", () => {
     expect(navigate).not.toHaveBeenCalled();
     expect(scrollTo).toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+});
+
+describe("openGameEditor", () => {
+  it("navigates to advanced URL and stores panel", () => {
+    const navigate = vi.fn();
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+    openGameEditor(navigate, "steam:1", "backups");
+    expect(navigate).toHaveBeenCalledWith("/game/steam%3A1/advanced");
+    expect(setItem).toHaveBeenCalledWith("gsm-editor-panel:steam:1", "backups");
+    setItem.mockRestore();
   });
 });

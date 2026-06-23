@@ -12,22 +12,21 @@ import { UpdateGate } from "@/components/app/UpdateGate";
 import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { RouteLoading } from "@/components/app/RouteLoading";
 import { AppShell } from "@/components/layout/AppShell";
-import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
+import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
 import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { scanGames } from "@/lib/api";
-import { prefetchGameWorkspace } from "@/lib/game";
-import { isGameTabAvailable, resolveGameTabRoute } from "@/lib/game";
+import { prefetchGameWorkspace, isGameTabAvailable, resolveGameTabRoute } from "@/lib/game";
 import {
   gameTabPath,
   libraryPath,
+  LegacyGameRouteRedirect,
+  openGameEditor,
   parseGameRoute,
   tabFromPathname,
+  writeStoredPanel,
 } from "@/lib/routing";
-import { queryClient } from "@/lib/core";
-import { writeStoredPanel } from "@/lib/routing";
-import { LegacyGameRouteRedirect } from "@/lib/routing";
-import type { GameProfile } from "@/lib/core";
+import { queryClient, type GameProfile } from "@/lib/core";
 
 const AdvancedEditor = lazy(() =>
   import("@/pages/AdvancedEditor").then((module) => ({
@@ -126,7 +125,7 @@ export function AppContent() {
       return;
     }
     prefetchGameWorkspace(queryClient, game, nextTab);
-    navigate(gameTabPath(game.id, nextTab));
+    openGameEditor(navigate, game.id, nextTab === "backups" ? "backups" : "basic");
   };
 
   const handleGameUpdated = (game: GameProfile) => {
