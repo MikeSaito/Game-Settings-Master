@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_GITHUB_REPO?: string;
   readonly VITE_DOWNLOAD_URL?: string;
   readonly VITE_APP_VERSION?: string;
+  readonly VITE_YANDEX_METRIKA_ID?: string;
 }
 
 interface ImportMeta {

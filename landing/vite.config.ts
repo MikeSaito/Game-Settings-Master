@@ -48,6 +48,62 @@ function enRoutePlugin(): Plugin {
   };
 }
 
+function injectYandexMetrika(): Plugin {
+  const id = process.env.VITE_YANDEX_METRIKA_ID?.trim();
+  if (!id || !/^\d+$/.test(id)) {
+    return { name: "inject-yandex-metrika" };
+  }
+
+  const snippet = `<!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+      (function (m, e, t, r, i, k, a) {
+        m[i] =
+          m[i] ||
+          function () {
+            (m[i].a = m[i].a || []).push(arguments);
+          };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+          if (document.scripts[j].src === r) {
+            return;
+          }
+        }
+        (k = e.createElement(t)),
+          (a = e.getElementsByTagName(t)[0]),
+          (k.async = 1),
+          (k.src = r),
+          a.parentNode.insertBefore(k, a);
+      })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=${id}", "ym");
+
+      ym(${id}, "init", {
+        ssr: true,
+        webvisor: true,
+        clickmap: true,
+        ecommerce: "dataLayer",
+        referrer: document.referrer,
+        url: location.href,
+        accurateTrackBounce: true,
+        trackLinks: true,
+      });
+    </script>
+    <noscript
+      ><div>
+        <img
+          src="https://mc.yandex.ru/watch/${id}"
+          style="position: absolute; left: -9999px"
+          alt=""
+        /></div
+    ></noscript>
+    <!-- /Yandex.Metrika counter -->`;
+
+  return {
+    name: "inject-yandex-metrika",
+    transformIndexHtml(html) {
+      return html.replace("<head>", `<head>\n${snippet}`);
+    },
+  };
+}
+
 function injectSiteMeta(): Plugin {
   return {
     name: "inject-site-meta",
@@ -101,7 +157,7 @@ function emitSeoFiles(): Plugin {
 export default defineConfig({
   base,
   appType: "mpa",
-  plugins: [enRoutePlugin(), injectSiteMeta(), emitSeoFiles()],
+  plugins: [enRoutePlugin(), injectYandexMetrika(), injectSiteMeta(), emitSeoFiles()],
   build: {
     outDir: "dist",
     emptyOutDir: true,

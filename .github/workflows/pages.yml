@@ -48,6 +48,7 @@ jobs:
           VITE_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
           VITE_GITHUB_REPO: ${{ github.repository }}
           VITE_APP_VERSION: ${{ steps.app_version.outputs.version }}
+          VITE_YANDEX_METRIKA_ID: "110097894"
         run: |
           npm ci
           npm run build
