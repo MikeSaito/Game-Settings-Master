@@ -86,6 +86,11 @@ profiles/      сохранённые профили игр
 commands/      Tauri IPC handlers
 discovery/     Steam/Epic scan, UE detect
 ini/           parse / write / patch ini
+fs_util/       file I/O, path safety, process checks
+  io.rs             read/write bytes, BOM, Windows shared access
+  path_safety.rs    ini filename/key validation, safe_child_path
+  process.rs        is_exe_running, kill_exe (Windows)
+  config.rs         ensure_config_writable probe
 presets/       apply custom changes to config dirs
   apply_dir.rs      merge + patch single config directory
   apply_targets.rs  multi-target apply with rollback
