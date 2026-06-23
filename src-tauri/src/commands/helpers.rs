@@ -6,7 +6,7 @@ use crate::fs_util::{
 };
 use crate::ini::paths::{resolve_config_dir_from_path, validate_config_dir};
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
-use crate::models::{CustomChanges, GameProfile};
+use crate::core::models::{CustomChanges, GameProfile};
 use std::path::{Path, PathBuf};
 
 pub(crate) fn resolve_ue_config_path(

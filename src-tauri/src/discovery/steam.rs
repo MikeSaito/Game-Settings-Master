@@ -3,7 +3,7 @@ use crate::discovery::dedupe_paths;
 use crate::discovery::known_games::load_known_games;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
 use crate::ini::paths::resolve_config_dir;
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs;

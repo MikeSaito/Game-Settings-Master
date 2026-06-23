@@ -10,7 +10,7 @@ use crate::fs_util::ensure_config_writable;
 use crate::ini::paths::validate_config_dir;
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
 use crate::ini::{parser::ini_to_data, read_ini_file};
-use crate::models::{
+use crate::core::models::{
     ApplyResult, CustomChanges, GameConfig, GameOverride, GameParameter, IniFileData,
 };
 use crate::presets::{apply_custom_to_targets, resolve_apply_resolution};

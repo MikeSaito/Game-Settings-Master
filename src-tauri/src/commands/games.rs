@@ -7,7 +7,7 @@ use crate::discovery::{
     invalidate_game_scan_cache, is_non_game_install, profile_from_manual_path, UeDetectResult,
 };
 use crate::ini::paths::{resolve_config_dir_from_path, validate_config_dir};
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 use crate::profiles::{load_saved_profiles, remove_profile, resolve_trusted_profile, save_profile};
 use std::path::PathBuf;
 

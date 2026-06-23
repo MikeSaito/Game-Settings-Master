@@ -23,7 +23,7 @@ DLSS, FSR, ray tracing and Frame Generation — safe clamp for your GPU. No poin
 Snapshot before every apply. Roll back to the previous state in one click — no fear of breaking your config.
 
 **05 — Parameter metadata catalog**  
-Knows **113** human-curated keys (RU+EN), **~233** tier A/B overlays on the reference index, and **~563** stub reference rows until expanded. The editor injects curated GUS/Engine and recommended reference keys even when they are missing from the player's ini.
+**115** human-curated keys (RU+EN), tier A/B overlays on the reference index (**767** entries with readable descriptions). The editor injects GUS/Engine and version-applicable reference keys even when they are missing from the player's ini.
 
 ## Download
 
@@ -97,9 +97,9 @@ The app ships two layers:
 
 | Layer | Files | Purpose |
 |-------|-------|---------|
-| **Curated (human)** | `engine.json`, `scalability.json`, `ue4.json`, `display.json`, … | **113** keys with full RU+EN titles/descriptions |
-| **Tier overlays** | `tier_a_descriptions.json`, `tier_b_descriptions.json` → merged into reference | **~233** keys with human text on top of Epic defaults |
-| **Reference index** | `ue_reference_index.json` | **726** merged engine keys (UE 4.27–5.8); **~563** remain stub until expanded |
+| **Curated (human)** | `engine.json`, `scalability.json`, `ue4.json`, `display.json`, … | **115** keys with full RU+EN titles/descriptions |
+| **Tier overlays** | `tier_a_descriptions.json`, `tier_b_descriptions.json` → merged into reference | tier A **748**, tier B **150** overlay texts |
+| **Reference index** | `ue_reference_index.json` | **767** merged engine keys (UE 4.27–5.8), RU+EN descriptions |
 | **Source registries** | `sg_registry_merged.json`, `gus_registry_merged.json` | Auto-generated from Epic `Scalability.cpp` / `GameUserSettings.h` |
 
 **Lookup priority:** curated JSON → ini row → reference index (version-filtered) → key hints → auto-guess. Curated always wins on key collision.
@@ -119,7 +119,7 @@ npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
 ```
 
-Without an Epic clone the app ships fixture snapshots (UE 4.27 + 5.4, **548+ keys**). Full fetch from 10 UE versions yields **726 merged engine keys**, source-extracted `sg.*`, and standard `UGameUserSettings` fields — see [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) and [`docs/parameter-sources.md`](docs/parameter-sources.md). Counts in `src-tauri/catalog/generated/merge_stats.json`.
+Without an Epic clone the app ships fixture snapshots (UE 4.27 + 5.4). Full rebuild from 10 UE versions yields **767** merged engine keys, source-extracted `sg.*`, and standard `UGameUserSettings` fields — see [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) and [`docs/parameter-sources.md`](docs/parameter-sources.md). Current counts: `src-tauri/catalog/generated/merge_stats.json`.
 
 Advanced Editor filters reference keys by detected `engine_version` (UE 4.27–5.8). Keys in your ini are always listed.
 

@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { AdvancedPanel } from "@/lib/routing";
+import type { EditorPanel } from "@/lib/routing";
 import { Alert } from "@/components/ds/Feedback";
 import { Input } from "@/components/ds/Field";
 import { Toggle } from "@/components/ds/Toggle";
@@ -12,7 +12,7 @@ interface CategoryItem {
 }
 
 interface Props {
-  panel: AdvancedPanel;
+  panel: EditorPanel;
   search: string;
   onSearchChange: (value: string) => void;
   categories: CategoryItem[];

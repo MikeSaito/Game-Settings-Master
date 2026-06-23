@@ -1,78 +1,38 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Copy, Cpu, ExternalLink, FolderOpen, Play, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { useGameLaunch } from "@/hooks/game/useGameLaunch";
 import { useGameRunning } from "@/hooks/game/useGameRunning";
-import { closeGame, getGpuInfo, launchGame, openConfigFolder } from "@/lib/api";
-import { formatInvokeError } from "@/lib/core";
-import { exeNameForRunningCheck } from "@/lib/game";
-import { supportsIniPresets } from "@/lib/game";
+import { getGpuInfo, openConfigFolder } from "@/lib/api";
+import { exeNameForRunningCheck, supportsIniPresets } from "@/lib/game";
 import { gpuSummaryLabel } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
-import { Badge } from "../ds/Badge";
-import { Button } from "../ds/Button";
+import { Badge, Button } from "@/components/ds";
 import { GameCover } from "@/components/game/GameCover";
+
 interface Props {
   game: GameProfile;
 }
 
 export function GameContextBar({ game }: Props) {
   const { t } = useTranslation("header");
-  const queryClient = useQueryClient();
   const gpuEnabled = useBackgroundSafeEnabled();
   const [copyStatus, setCopyStatus] = useState<"copied" | "failed" | null>(null);
-  const [launchStatus, setLaunchStatus] = useState<{
-    tone: "success" | "warning" | "danger";
-    text: string;
-  } | null>(null);
-  const sessionRef = useRef(0);
   const configDir = game.config_dir;
-  const runningExeName = exeNameForRunningCheck(game.exe_name, undefined);
+  const runningExeName = exeNameForRunningCheck(game.exe_name, undefined) ?? null;
   const gameRunning = useGameRunning(runningExeName);
+  const { launchStatus, launchMutation, closeMutation, sessionRef } = useGameLaunch(
+    game,
+    runningExeName,
+  );
 
   const { data: gpu } = useQuery({
     queryKey: ["gpu"],
     queryFn: getGpuInfo,
     enabled: gpuEnabled,
     staleTime: 300_000,
-  });
-
-  useEffect(() => {
-    sessionRef.current += 1;
-    setLaunchStatus(null);
-  }, [game.id]);
-
-  const launchMutation = useMutation({
-    mutationFn: (session: number) => launchGame(game).then((result) => ({ result, session })),
-    onSuccess: ({ result, session }) => {
-      if (session !== sessionRef.current) return;
-      setLaunchStatus({
-        tone: result.warning ? "warning" : "success",
-        text: result.warning ?? t("launchVia", { launcher: result.launcher }),
-      });
-      queryClient.invalidateQueries({ queryKey: ["game-running"] });
-    },
-    onError: (err, session) => {
-      if (session !== sessionRef.current) return;
-      setLaunchStatus({ tone: "danger", text: formatInvokeError(err) });
-    },
-  });
-
-  const closeMutation = useMutation({
-    mutationFn: (session: number) => {
-      if (!runningExeName) return Promise.reject(new Error(t("errors.noProcessName")));
-      return closeGame(game.id, runningExeName).then(() => session);
-    },
-    onSuccess: (session) => {
-      if (session !== sessionRef.current) return;
-      setLaunchStatus({ tone: "success", text: t("gameClosed") });
-      queryClient.invalidateQueries({ queryKey: ["game-running"] });
-    },
-    onError: (err, session) => {
-      if (session !== sessionRef.current) return;
-      setLaunchStatus({ tone: "danger", text: formatInvokeError(err) });
-    },
   });
 
   const handleCopyConfig = async () => {
@@ -86,7 +46,8 @@ export function GameContextBar({ game }: Props) {
   };
 
   return (
-    <section className="relative z-40 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-bg-soft)] px-4 py-3 touch-manipulation">      <div className="flex flex-wrap items-center gap-3">
+    <section className="relative z-40 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-bg-soft)] px-4 py-3 touch-manipulation">
+      <div className="flex flex-wrap items-center gap-3">
         <GameCover game={game} aspect="square" className="h-12 w-12 shrink-0 rounded-[var(--radius-control)]" />
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">

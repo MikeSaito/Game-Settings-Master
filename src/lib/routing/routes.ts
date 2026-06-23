@@ -7,7 +7,11 @@ export function libraryPath(): string {
 }
 
 export function gameTabPath(gameId: string, tab: GameTabRoute): string {
-  return `/game/${encodeURIComponent(gameId)}/${tab}`;
+  const id = encodeURIComponent(gameId);
+  if (tab === "backups") {
+    return `/game/${id}/advanced`;
+  }
+  return `/game/${id}/${tab}`;
 }
 
 export function parseGameRoute(pathname: string): {

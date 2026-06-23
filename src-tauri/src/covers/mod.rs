@@ -142,7 +142,7 @@ pub fn remove_custom_cover(game_id: &str) -> Result<(), String> {
     Ok(())
 }
 
-pub fn enrich_cover(profile: &mut crate::models::GameProfile) {
+pub fn enrich_cover(profile: &mut crate::core::models::GameProfile) {
     if profile.custom_cover.is_some() {
         return;
     }
@@ -157,8 +157,8 @@ pub fn enrich_cover(profile: &mut crate::models::GameProfile) {
 }
 
 pub fn merge_saved_cover(
-    existing: &mut crate::models::GameProfile,
-    saved: &crate::models::GameProfile,
+    existing: &mut crate::core::models::GameProfile,
+    saved: &crate::core::models::GameProfile,
 ) {
     if let Some(custom) = &saved.custom_cover {
         if Path::new(custom).exists() {

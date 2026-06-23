@@ -8,7 +8,7 @@
 
 ### Why
 
-Game Settings Master builds `ue_reference_index.json` from Epic’s **BaseEngine.ini** and **BaseScalability.ini** across UE **4.27–5.8**. The repo ships **fixture snapshots** (~548 keys). A local Epic git clone unlocks **1000+** version-aware keys.
+Game Settings Master builds `ue_reference_index.json` from Epic’s **BaseEngine.ini** and **BaseScalability.ini** across UE **4.27–5.8**. The repo ships a **bundled catalog** (**767** reference keys, tier A/B overlays). A local Epic git clone unlocks rebuilding that catalog from live engine sources.
 
 ### Prerequisites
 
@@ -66,7 +66,7 @@ npm run catalog:test
 
 ### Зачем
 
-Каталог `ue_reference_index.json` собирается из **BaseEngine.ini** / **BaseScalability.ini** Epic для UE **4.27–5.8**. В релизе — **fixtures** (~548 ключей). Локальный git-клон Epic даёт **1000+** keys с version filter.
+Каталог `ue_reference_index.json` собирается из **BaseEngine.ini** / **BaseScalability.ini** Epic для UE **4.27–5.8**. В релизе — **bundled catalog** (**767** reference keys, tier A/B overlays). Локальный git-клон Epic нужен для пересборки каталога из исходников движка.
 
 ### Что нужно
 

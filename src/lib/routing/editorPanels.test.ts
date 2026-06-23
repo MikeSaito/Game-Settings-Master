@@ -2,7 +2,6 @@ import { describe, expect, it, beforeEach } from "vitest";
 import {
   filterParamsByPanel,
   filterParamsByMode,
-  filterParamsByRecommendedMode,
   isRecommendedParam,
   panelForParameter,
   panelFromHash,
@@ -133,7 +132,7 @@ describe("isRecommendedParam", () => {
   });
 });
 
-describe("filterParamsByRecommendedMode", () => {
+describe("filterParamsByMode (recommended)", () => {
   it("basic recommended mode keeps sg and GUS display", () => {
     const items = [
       param({ key: "sg.ShadowQuality", file: "GameUserSettings.ini", category: "Scalability" }),
@@ -146,7 +145,7 @@ describe("filterParamsByRecommendedMode", () => {
         known: false,
       }),
     ];
-    const filtered = filterParamsByRecommendedMode(items, true, "basic", "");
+    const filtered = filterParamsByMode(items, "recommended", "basic", "");
     expect(filtered.map((p) => p.key)).toEqual(["sg.ShadowQuality", "bUseVSync"]);
   });
 
@@ -192,7 +191,7 @@ describe("filterParamsByRecommendedMode", () => {
       }),
     ];
     const panel = filterParamsByPanel(items, "advanced");
-    const visible = filterParamsByRecommendedMode(panel, false, "advanced", "");
+    const visible = filterParamsByMode(panel, "full", "advanced", "");
     expect(visible.length).toBeGreaterThanOrEqual(2);
     expect(visible.every((p) => !p.present_in_ini)).toBe(true);
   });

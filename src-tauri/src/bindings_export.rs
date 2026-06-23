@@ -3,7 +3,7 @@
 use crate::display::ScreenResolution;
 use crate::gpu::{GpuCapabilities, GpuVendor};
 use crate::launch::LaunchResult;
-use crate::models::{
+use crate::core::models::{
     ApplyResult, BackupInfo, ConfigDiffEntry, ConfigResetResult, GameConfig, GameOverride,
     GameParameter, GameProfile, IniFileData, ParameterOption,
 };

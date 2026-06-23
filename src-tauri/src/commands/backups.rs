@@ -6,7 +6,7 @@ use crate::backup::{list_backups, restore_backup_all_targets};
 use crate::discovery::platform_hints_for_game;
 use crate::fs_util::ensure_config_writable;
 use crate::ini::paths::validate_config_dir;
-use crate::models::{BackupInfo, ConfigResetResult};
+use crate::core::models::{BackupInfo, ConfigResetResult};
 
 #[tauri::command]
 pub fn list_backups_cmd(

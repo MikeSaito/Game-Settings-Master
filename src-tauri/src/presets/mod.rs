@@ -1,6 +1,6 @@
 use crate::ini::platform::{apply_target_dirs, PlatformHints};
 use crate::ini::{merge_ini, read_ini_file, remove_ini_keys, write_ini_file_with_encoding_hint};
-use crate::models::ConfigDiffEntry;
+use crate::core::models::ConfigDiffEntry;
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -79,7 +79,7 @@ pub fn apply_changes_to_dir(
         let existing = if file_path.exists() {
             read_ini_file(&file_path)?
         } else {
-            crate::models::IniFile {
+            crate::core::models::IniFile {
                 sections: IndexMap::new(),
             }
         };
@@ -182,7 +182,7 @@ fn compute_removal_diff(
 
 pub fn apply_custom_to_dir(
     config_dir: &Path,
-    changes: &crate::models::CustomChanges,
+    changes: &crate::core::models::CustomChanges,
     width: u32,
     height: u32,
 ) -> Result<(Vec<String>, Vec<ConfigDiffEntry>), String> {
@@ -216,7 +216,7 @@ fn append_rollback_error(apply_err: String, rollback_err: Option<String>) -> Str
 pub fn apply_custom_to_targets(
     config_dir: &Path,
     hints: &PlatformHints,
-    changes: &crate::models::CustomChanges,
+    changes: &crate::core::models::CustomChanges,
     width: u32,
     height: u32,
     pre_backup_id: Option<&str>,
@@ -429,7 +429,7 @@ mod tests {
         let mut files = HashMap::new();
         files.insert("Engine.ini".to_string(), engine_sections);
 
-        let changes = crate::models::CustomChanges {
+        let changes = crate::core::models::CustomChanges {
             files,
             ..Default::default()
         };
@@ -454,7 +454,7 @@ mod tests {
         scalability.insert("sg.ShadowQuality".to_string(), "3".to_string());
         let mut sections = HashMap::new();
         sections.insert("ScalabilityGroups".to_string(), scalability);
-        let changes = crate::models::CustomChanges {
+        let changes = crate::core::models::CustomChanges {
             files: HashMap::from([("GameUserSettings.ini".to_string(), sections)]),
             ..Default::default()
         };
@@ -489,7 +489,7 @@ mod tests {
         gus_values.insert("bUseVSync".to_string(), "True".to_string());
         let mut sections = HashMap::new();
         sections.insert("/Script/Engine.GameUserSettings".to_string(), gus_values);
-        let changes = crate::models::CustomChanges {
+        let changes = crate::core::models::CustomChanges {
             files: HashMap::from([("GameUserSettings.ini".to_string(), sections)]),
             ..Default::default()
         };
@@ -527,7 +527,7 @@ mod tests {
 
         let mut system = HashMap::new();
         system.insert("r.Tonemapper.Sharpen".to_string(), "1.25".to_string());
-        let changes = crate::models::CustomChanges {
+        let changes = crate::core::models::CustomChanges {
             files: HashMap::from([(
                 "Engine.ini".to_string(),
                 HashMap::from([("SystemSettings".to_string(), system)]),
@@ -563,7 +563,7 @@ mod tests {
         )
         .unwrap();
 
-        let changes = crate::models::CustomChanges {
+        let changes = crate::core::models::CustomChanges {
             files: HashMap::from([(
                 "Scalability.ini".to_string(),
                 HashMap::from([(
@@ -637,7 +637,7 @@ mod tests {
         let mut files = HashMap::new();
         files.insert("GameUserSettings.ini".to_string(), gus_sections);
 
-        let changes = crate::models::CustomChanges {
+        let changes = crate::core::models::CustomChanges {
             files,
             ..Default::default()
         };

@@ -10,7 +10,7 @@ mod ue_version;
 use crate::covers::merge_saved_cover;
 use crate::ini::paths::resolve_config_dir;
 use crate::ini::platform::reconcile_config_dir;
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use uuid::Uuid;

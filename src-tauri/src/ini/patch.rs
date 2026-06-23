@@ -157,7 +157,7 @@ fn line_key(line: &str) -> Option<&str> {
 
 /// Duplicates updates into every section in the file where the key already exists (SN2: UpscalingFrameGeneration, etc.).
 pub fn expand_mirror_key_updates(
-    existing: &crate::models::IniFile,
+    existing: &crate::core::models::IniFile,
     updates: &IndexMap<String, IndexMap<String, String>>,
 ) -> IndexMap<String, IndexMap<String, String>> {
     let data = crate::ini::parser::ini_to_data(existing);

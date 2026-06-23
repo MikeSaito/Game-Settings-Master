@@ -1,17 +1,17 @@
 import { useTranslation } from "react-i18next";
-import type { AdvancedPanel } from "@/lib/routing";
+import type { EditorPanel } from "@/lib/routing";
 import { Badge } from "@/components/ds/Badge";
 import { cn } from "@/lib/core";
 
 interface Props {
-  panel: AdvancedPanel;
-  onPanelChange: (panel: AdvancedPanel) => void;
+  panel: EditorPanel;
+  onPanelChange: (panel: EditorPanel) => void;
 }
 
 export function AdvancedEditorPanelTabs({ panel, onPanelChange }: Props) {
   const { t } = useTranslation("advanced");
 
-  const tabs: { id: AdvancedPanel; label: string; badge?: string }[] = [
+  const tabs: { id: EditorPanel; label: string; badge?: string }[] = [
     { id: "basic", label: t("tabs.basic") },
     {
       id: "advanced",

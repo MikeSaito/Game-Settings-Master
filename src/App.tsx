@@ -10,7 +10,8 @@ import {
 } from "react-router-dom";
 import { UpdateGate } from "@/components/app/UpdateGate";
 import { ErrorBoundary } from "@/components/app/ErrorBoundary";
-import { AppShell } from "./components/layout/AppShell";
+import { RouteLoading } from "@/components/app/RouteLoading";
+import { AppShell } from "@/components/layout/AppShell";
 import { AppWindowFocusProvider } from "./context/AppWindowFocusProvider";
 import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
@@ -29,20 +30,30 @@ import { LegacyGameRouteRedirect } from "@/lib/routing";
 import type { GameProfile } from "@/lib/core";
 
 const AdvancedEditor = lazy(() =>
-  import("./pages/AdvancedEditor").then((module) => ({
+  import("@/pages/AdvancedEditor").then((module) => ({
     default: module.AdvancedEditor,
   })),
 );
 const GameLibrary = lazy(() =>
-  import("./pages/GameLibrary").then((module) => ({
+  import("@/pages/GameLibrary").then((module) => ({
     default: module.GameLibrary,
   })),
 );
 
-function GameEditorPage({ games }: { games: GameProfile[] }) {
+function GameEditorPage({
+  games,
+  gamesLoading,
+}: {
+  games: GameProfile[];
+  gamesLoading: boolean;
+}) {
   const { gameId = "" } = useParams();
-  const game = games.find((g) => g.id === decodeURIComponent(gameId)) ?? null;
-  if (!game) return null;
+  const id = decodeURIComponent(gameId);
+  const game = games.find((g) => g.id === id) ?? null;
+  if (!game) {
+    if (gamesLoading) return <RouteLoading />;
+    return null;
+  }
   return <AdvancedEditor game={game} />;
 }
 
@@ -61,11 +72,10 @@ export function AppContent() {
   const location = useLocation();
   const tab = tabFromPathname(location.pathname);
   const gameRoute = parseGameRoute(location.pathname);
-  const previousGameIdRef = useRef<string | null>(null);
   const lastKnownGameRef = useRef<GameProfile | null>(null);
   const gamesQueryEnabled = useBackgroundSafeEnabled();
 
-  const { data: games = [] } = useQuery({
+  const { data: games = [], isPending: gamesLoading } = useQuery({
     queryKey: ["games"],
     queryFn: scanGames,
     enabled: gamesQueryEnabled,
@@ -96,15 +106,6 @@ export function AppContent() {
     if (
       selectedGame &&
       gameRoute &&
-      gameRoute.tab === "backups"
-    ) {
-      writeStoredPanel(selectedGame.id, "backups");
-      navigate(gameTabPath(selectedGame.id, "advanced"), { replace: true });
-      return;
-    }
-    if (
-      selectedGame &&
-      gameRoute &&
       !isGameTabAvailable(selectedGame, gameRoute.tab)
     ) {
       navigate(gameTabPath(selectedGame.id, resolveGameTabRoute(selectedGame) ?? "advanced"), {
@@ -118,12 +119,6 @@ export function AppContent() {
       prefetchGameWorkspace(queryClient, selectedGame, gameRoute.tab);
     }
   }, [queryClient, selectedGame, gameRoute?.tab]);
-
-  useEffect(() => {
-    const currentGameId = selectedGame?.id ?? null;
-    if (currentGameId === previousGameIdRef.current) return;
-    previousGameIdRef.current = currentGameId;
-  }, [selectedGame?.id]);
 
   const handleSelectGame = (game: GameProfile) => {
     const nextTab = resolveGameTabRoute(game);
@@ -155,7 +150,7 @@ export function AppContent() {
   return (
     <AppShell selectedGame={selectedGame}>
       <ErrorBoundary resetKey={`${tab}:${selectedGame?.id ?? ""}`}>
-        <Suspense fallback={null}>
+        <Suspense fallback={<RouteLoading />}>
           <Routes>
             <Route path="/" element={<Navigate to={libraryPath()} replace />} />
             <Route
@@ -169,7 +164,10 @@ export function AppContent() {
                 />
               }
             />
-            <Route path="/game/:gameId/advanced" element={<GameEditorPage games={games} />} />
+            <Route
+              path="/game/:gameId/advanced"
+              element={<GameEditorPage games={games} gamesLoading={gamesLoading} />}
+            />
             <Route path="/game/:gameId/backups" element={<BackupsRouteRedirect />} />
             <Route
               path="/game/:gameId/wizard"

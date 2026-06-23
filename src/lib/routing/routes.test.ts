@@ -18,6 +18,10 @@ describe("gameTabPath", () => {
   it("encodes game id and tab", () => {
     expect(gameTabPath("steam:123", "advanced")).toBe("/game/steam%3A123/advanced");
   });
+
+  it("maps backups tab to advanced URL", () => {
+    expect(gameTabPath("foo", "backups")).toBe("/game/foo/advanced");
+  });
 });
 
 describe("parseGameRoute", () => {

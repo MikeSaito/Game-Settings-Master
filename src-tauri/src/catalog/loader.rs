@@ -1,5 +1,5 @@
 use crate::ini::{parser::ini_to_data, read_ini_file};
-use crate::models::GameParameter;
+use crate::core::models::GameParameter;
 use crate::scalability::{detect_scalability_limits, is_scalability_quality_index};
 use serde::Deserialize;
 use std::collections::{HashMap, HashSet};
@@ -44,7 +44,7 @@ pub struct ParameterCatalogEntry {
     #[serde(default)]
     pub step: Option<String>,
     #[serde(default)]
-    pub options: Option<Vec<crate::models::ParameterOption>>,
+    pub options: Option<Vec<crate::core::models::ParameterOption>>,
     #[serde(default)]
     pub default: Option<String>,
     #[serde(default)]
@@ -220,7 +220,7 @@ struct ReferenceEntry {
     #[serde(default)]
     pub value_hint_en: Option<String>,
     #[serde(default)]
-    pub options: Option<Vec<crate::models::ParameterOption>>,
+    pub options: Option<Vec<crate::core::models::ParameterOption>>,
     #[serde(default)]
     pub catalog_recommended: bool,
     #[serde(default)]

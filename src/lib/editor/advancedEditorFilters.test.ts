@@ -9,7 +9,7 @@ import {
 } from "./advancedEditorFilters";
 import {
   filterParamsByPanel,
-  filterParamsByRecommendedMode,
+  filterParamsByMode,
 } from "../routing/editorPanels";
 import type { GameParameter } from "../core/types";
 
@@ -141,7 +141,7 @@ describe("panel + recommended integration", () => {
       param({ key: "r.Fog", category: "Rendering", file: "Engine.ini", known: false, present_in_ini: true }),
     ];
     const panelItems = filterParamsByPanel(items, "basic");
-    const filtered = filterParamsByRecommendedMode(panelItems, true, "basic", "");
+    const filtered = filterParamsByMode(panelItems, "recommended", "basic", "");
     expect(filtered.some((p) => p.key === "sg.ShadowQuality")).toBe(true);
     expect(filtered.some((p) => p.key === "r.Fog")).toBe(false);
   });

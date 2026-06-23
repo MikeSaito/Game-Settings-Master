@@ -80,29 +80,9 @@ export function filterParamsByMode(
   }
 }
 
-/** @deprecated use filterParamsByMode */
-export function filterParamsByRecommendedMode(
-  params: GameParameter[],
-  showRecommendedOnly: boolean,
-  panel: EditorPanel,
-  search: string,
-): GameParameter[] {
-  const mode: EditorFilterMode = showRecommendedOnly
-    ? "recommended"
-    : panel === "advanced"
-      ? "full"
-      : "ini_only";
-  return filterParamsByMode(params, mode, panel, search);
-}
-
 export function defaultFilterMode(panel: EditorPanel): EditorFilterMode {
   if (panel === "backups") return "recommended";
   return panel === "basic" ? "recommended" : "full";
-}
-
-/** @deprecated use defaultFilterMode */
-export function defaultRecommendedOnly(panel: EditorPanel): boolean {
-  return panel === "basic";
 }
 
 export function defaultCategoryForPanel(panel: EditorPanel): string {
@@ -120,11 +100,6 @@ export function legacyPanelStorageKey(gameId: string): string {
 
 export function filterStorageKey(gameId: string, panel: EditorPanel): string {
   return `gsm-editor-filter:${panel}:${gameId}`;
-}
-
-/** @deprecated use filterStorageKey */
-export function recommendedStorageKey(gameId: string, panel: EditorPanel): string {
-  return filterStorageKey(gameId, panel);
 }
 
 export function legacyRecommendedStorageKey(gameId: string): string {
@@ -184,29 +159,6 @@ export function writeStoredFilterMode(
   } catch {
     /* ignore */
   }
-}
-
-/** @deprecated use readStoredFilterMode */
-export function readStoredRecommendedOnly(
-  gameId: string,
-  panel: EditorPanel,
-): boolean | null {
-  const mode = readStoredFilterMode(gameId, panel);
-  if (mode === null) return null;
-  return mode === "recommended";
-}
-
-/** @deprecated use writeStoredFilterMode */
-export function writeStoredRecommendedOnly(
-  gameId: string,
-  panel: EditorPanel,
-  value: boolean,
-): void {
-  writeStoredFilterMode(
-    gameId,
-    panel,
-    value ? "recommended" : panel === "advanced" ? "full" : "ini_only",
-  );
 }
 
 export function panelFromHash(hash = ""): EditorPanel | null {

@@ -1,5 +1,5 @@
 use crate::ini::encoding::{detect_encoding, write_text, IniEncoding};
-use crate::models::IniFile;
+use crate::core::models::IniFile;
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::Path;
@@ -63,7 +63,7 @@ pub fn merge_ini(
             result
                 .sections
                 .entry(target_name)
-                .or_insert_with(|| crate::models::IniSection {
+                .or_insert_with(|| crate::core::models::IniSection {
                     entries: IndexMap::new(),
                     preamble: Vec::new(),
                 });
@@ -146,7 +146,7 @@ mod tests {
         system.insert("r.ViewDistanceScale".to_string(), "1.55".to_string());
         updates.insert("SystemSettings".to_string(), system);
         let merged = merge_ini(
-            &crate::models::IniFile {
+            &crate::core::models::IniFile {
                 sections: IndexMap::new(),
             },
             &updates,

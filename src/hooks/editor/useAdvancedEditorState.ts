@@ -1,62 +1,44 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState, useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
-import { currentLanguage } from "../../i18n";
-import { useAppWindowFocused } from "../../context/AppWindowFocusProvider";
-import { useWorkspacePreset } from "../../context/GameWorkspaceContext";
+import { currentLanguage } from "@/i18n";
+import { useAppWindowFocused } from "@/context/AppWindowFocusProvider";
+import { useWorkspacePreset } from "@/context/GameWorkspaceContext";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { useAppSettings } from "@/hooks/app/useAppSettings";
 import { useGameRunning } from "@/hooks/game/useGameRunning";
 import { useRunningExeName } from "@/hooks/game/useRunningExeName";
+import { countPendingChanges } from "@/hooks/editor/editorStateUtils";
+import { useEditorMutations } from "@/hooks/editor/useEditorMutations";
+import { useEditorPanelState } from "@/hooks/editor/useEditorPanelState";
 import {
-  applyCustom,
-  applyGameOverride,
-  deleteGameOverride,
   getGameOverrides,
   getGameParameters,
   getGpuInfo,
   getScalabilityLimits,
-  saveGameOverride,
 } from "@/lib/api";
 import {
-  buildCategoryList,
   ALL_CATEGORY,
+  ENGINE_CATEGORIES,
+  applyParamDependencies,
+  buildCategoryList,
+  buildCustomChanges,
+  collectPendingKeys,
   countEngineStats,
+  defaultValueFor,
+  detectSgEngineConflicts,
+  engineParamId,
   filterParamsByCategory,
-  normalizeParameterCategories,
   filterParamsBySearch,
+  initialEngineEnabledKeys,
+  normalizeParameterCategories,
+  resolveEditableCategories,
   shouldSortByEngineEnabled,
   sortParamsForEngineCategory,
 } from "@/lib/editor";
-import {
-  type EditorPanel,
-  type EditorFilterMode,
-  defaultFilterMode,
-  filterParamsByMode,
-  filterParamsByPanel,
-  panelFromHash,
-  readStoredFilterMode,
-  readStoredPanel,
-  writeStoredFilterMode,
-  writeStoredPanel,
-} from "@/lib/routing";
+import { filterParamsByMode, filterParamsByPanel } from "@/lib/routing";
 import { isParamVisible } from "@/lib/gpu";
-import { applyParamDependencies } from "@/lib/editor";
-import { buildCustomChanges } from "@/lib/editor";
-import {
-  collectPendingKeys,
-  detectSgEngineConflicts,
-} from "@/lib/editor";
-import {
-  defaultValueFor,
-  ENGINE_CATEGORIES,
-  engineParamId,
-  initialEngineEnabledKeys,
-  resolveEditableCategories,
-} from "@/lib/editor";
-import { formatInvokeError } from "@/lib/core";
-import type { GameOverride, GameParameter, GameProfile } from "@/lib/core";
+import type { GameParameter, GameProfile } from "@/lib/core";
 
 const EDITABLE_FOR_APPLY = new Set([
   "Scalability",
@@ -74,51 +56,9 @@ const EDITABLE_FOR_APPLY = new Set([
 
 const EMPTY_ENGINE_ENABLED = new Set<string>();
 
-function countPendingChanges(
-  files: Record<string, Record<string, Record<string, string>>>,
-  removals: Record<string, Record<string, string[]>>,
-) {
-  const breakdown = { sg: 0, display: 0, engine: 0 };
-  const pendingKeys = new Set<string>();
-  let total = 0;
-
-  for (const [file, sections] of Object.entries(files)) {
-    for (const entries of Object.values(sections)) {
-      for (const key of Object.keys(entries)) {
-        pendingKeys.add(key);
-        total += 1;
-        if (key.startsWith("sg.")) breakdown.sg += 1;
-        else if (file === "GameUserSettings.ini") {
-          breakdown.display += 1;
-        } else {
-          breakdown.engine += 1;
-        }
-      }
-    }
-  }
-
-  for (const [file, sections] of Object.entries(removals)) {
-    for (const keys of Object.values(sections)) {
-      for (const key of keys) {
-        pendingKeys.add(key);
-        total += 1;
-        if (key.startsWith("sg.")) breakdown.sg += 1;
-        else if (file === "GameUserSettings.ini") breakdown.display += 1;
-        else breakdown.engine += 1;
-      }
-    }
-  }
-
-  const lowerKeys = [...pendingKeys].map((key) => key.toLowerCase());
-
-  return { total, breakdown, pendingKeys: lowerKeys };
-}
-
 export function useAdvancedEditorState(game: GameProfile | null) {
   const { t } = useTranslation("advanced");
   const { settings } = useAppSettings();
-  const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
   const configDir = game?.config_dir ?? "";
   const runningExeName = useRunningExeName(game);
@@ -142,8 +82,19 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const deferredSearch = useDeferredValue(debouncedSearch);
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
-  const [panel, setPanelState] = useState<EditorPanel>("basic");
-  const [filterMode, setFilterModeState] = useState<EditorFilterMode>("recommended");
+
+  const { panel, setPanel, filterMode, setFilterMode } = useEditorPanelState(
+    game?.id,
+    settings.defaultEditorPanel,
+  );
+
+  const setPanelWithCategoryReset = useCallback(
+    (next: Parameters<typeof setPanel>[0]) => {
+      setPanel(next);
+      setActiveCategory(ALL_CATEGORY);
+    },
+    [setPanel],
+  );
 
   useEffect(() => {
     const handle = window.setTimeout(() => setDebouncedSearch(search), 180);
@@ -151,55 +102,12 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   }, [search]);
 
   useEffect(() => {
-    if (!game?.id) return;
-    const fromHash = panelFromHash(location.hash);
-    const stored = readStoredPanel(game.id);
-    const nextPanel = fromHash ?? stored ?? settings.defaultEditorPanel;
-    setPanelState(nextPanel);
-    if (fromHash) writeStoredPanel(game.id, nextPanel);
-    const storedFilter = readStoredFilterMode(game.id, nextPanel);
-    setFilterModeState(storedFilter ?? defaultFilterMode(nextPanel));
-
-    if (location.hash) {
-      navigate(
-        { pathname: location.pathname, search: location.search, hash: "" },
-        { replace: true },
-      );
-    }
-    // Panel state lives in sessionStorage — do not mirror it to URL hash (breaks library nav).
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- init once per game open
-  }, [game?.id, settings.defaultEditorPanel]);
-
-  const setPanel = useCallback(
-    (next: EditorPanel) => {
-      setPanelState(next);
-      if (game?.id) {
-        writeStoredPanel(game.id, next);
-        const storedFilter = readStoredFilterMode(game.id, next);
-        setFilterModeState(storedFilter ?? defaultFilterMode(next));
-      } else {
-        setFilterModeState(defaultFilterMode(next));
-      }
-      setActiveCategory(ALL_CATEGORY);
-    },
-    [game?.id],
-  );
-
-  const setFilterMode = useCallback(
-    (mode: EditorFilterMode) => {
-      setFilterModeState(mode);
-      if (game?.id) writeStoredFilterMode(game.id, panel, mode);
-    },
-    [game?.id, panel],
-  );
-
-  useEffect(() => {
     setMessage(undefined);
     setApplyError(undefined);
     paramsDirtyRef.current = false;
     overrideNameTouchedRef.current = false;
     setOverrideNameState(defaultOverrideName);
-  }, [game?.id]);
+  }, [game?.id, defaultOverrideName]);
 
   useEffect(() => {
     if (!overrideNameTouchedRef.current) {
@@ -381,17 +289,6 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     return { ...summary, conflictKeys };
   }, [params, panel, parameters, gpu, engineEnabled, editableCategories]);
 
-  const pendingChangesCount = pendingSummary.total;
-
-  const buildChanges = () =>
-    buildCustomChanges(
-      filterParamsByPanel(params, panel),
-      parameters,
-      gpu,
-      engineEnabled,
-      editableCategories,
-    );
-
   const updateParam = useCallback((key: string, section: string, file: string, value: string) => {
     paramsDirtyRef.current = true;
     setParams((prev) =>
@@ -421,115 +318,36 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     setMessage(undefined);
   };
 
-  const applyCustomMutation = useMutation({
-    mutationFn: async () => {
-      const snapshot = { gameId: game!.id, configDir };
-      const { files, removals } = buildChanges();
-      if (
-        Object.keys(files).length === 0 &&
-        Object.keys(removals).length === 0
-      ) {
-        throw new Error(t("errors.noChanges"));
-      }
-      const result = await applyCustom(
-        snapshot.configDir,
-        files,
-        runningExeName ?? undefined,
-        removals,
-        snapshot.gameId,
-        game?.engine_family,
-      );
-      return { result, snapshot };
-    },
-    onMutate: () => setApplyError(undefined),
-    onSuccess: ({ result, snapshot }) => {
-      if (activeGameIdRef.current !== snapshot.gameId) return;
+  const {
+    applyCustomMutation,
+    saveOverrideMutation,
+    applyOverrideMutation,
+    deleteOverrideMutation,
+    importOverrideMutation,
+  } = useEditorMutations({
+    game,
+    configDir,
+    runningExeName: runningExeName ?? null,
+    params,
+    parameters,
+    panel,
+    gpu,
+    engineEnabled,
+    editableCategories,
+    overrideName,
+    activeGameIdRef,
+    setMessage,
+    setApplyError,
+    onApplied: () => {
       paramsDirtyRef.current = false;
-      setMessage(
-        t("applied", {
-          count: result.diff.length,
-          backupId: result.backup_id,
-        }),
-      );
-      queryClient.invalidateQueries({
-        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({ queryKey: ["game-config"] });
     },
-    onError: (err) => setApplyError(formatInvokeError(err)),
-  });
-
-  const saveOverrideMutation = useMutation({
-    mutationFn: async () => {
-      const snapshot = { gameId: game!.id, name: overrideName };
-      const { files, removals } = buildChanges();
-      await saveGameOverride({
-        game_id: snapshot.gameId,
-        name: snapshot.name,
-        files,
-        removals,
-      });
-      return snapshot;
-    },
-    onSuccess: (snapshot) => {
-      if (activeGameIdRef.current !== snapshot.gameId) return;
-      queryClient.invalidateQueries({ queryKey: ["overrides", snapshot.gameId] });
-      setMessage(t("presetSaved", { name: snapshot.name }));
-    },
-    onError: (err) => setApplyError(formatInvokeError(err)),
-  });
-
-  const applyOverrideMutation = useMutation({
-    mutationFn: async (override: (typeof overrides)[0]) => {
-      const snapshot = { gameId: game!.id, configDir };
-      const result = await applyGameOverride(
-        snapshot.configDir,
-        override,
-        runningExeName ?? undefined,
-      );
-      return { result, snapshot };
-    },
-    onSuccess: ({ result, snapshot }) => {
-      if (activeGameIdRef.current !== snapshot.gameId) return;
-      setMessage(t("presetApplied", { backupId: result.backup_id }));
-      queryClient.invalidateQueries({
-        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({ queryKey: ["game-config"] });
-    },
-    onError: (err) => setApplyError(formatInvokeError(err)),
-  });
-
-  const deleteOverrideMutation = useMutation({
-    mutationFn: ({ gameId, name }: { gameId: string; name: string }) =>
-      deleteGameOverride(gameId, name),
-    onSuccess: (_result, variables) => {
-      if (activeGameIdRef.current !== variables.gameId) return;
-      queryClient.invalidateQueries({ queryKey: ["overrides", variables.gameId] });
-    },
-    onError: (err) => setApplyError(formatInvokeError(err)),
-  });
-
-  const importOverrideMutation = useMutation({
-    mutationFn: (override: GameOverride) => saveGameOverride(override),
-    onSuccess: (_result, override) => {
-      if (activeGameIdRef.current !== override.game_id) return;
-      queryClient.invalidateQueries({ queryKey: ["overrides", override.game_id] });
-      setMessage(t("presets.imported", { name: override.name }));
-    },
-    onError: (err) => setApplyError(formatInvokeError(err)),
+    t,
   });
 
   return {
     game,
     configDir,
-    runningExeName,
+    runningExeName: runningExeName ?? null,
     gameRunning,
     gpu,
     limits,
@@ -543,14 +361,14 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     setSearch,
     engineEnabled,
     panel,
-    setPanel,
+    setPanel: setPanelWithCategoryReset,
     filterMode,
     setFilterMode,
     categories,
     filteredParams,
     engineStats,
     catalogStats,
-    pendingChangesCount,
+    pendingChangesCount: pendingSummary.total,
     pendingChangesBreakdown: pendingSummary.breakdown,
     pendingConflictKeys: pendingSummary.conflictKeys,
     conflictCount: pendingSummary.conflictKeys.size,

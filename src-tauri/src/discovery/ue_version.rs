@@ -339,7 +339,7 @@ fn gus_has_ue5_groups(config_dir: Option<&Path>) -> bool {
         || content.contains("sg.CloudsQuality")
 }
 
-pub fn enrich_engine_version(profile: &mut crate::models::GameProfile) {
+pub fn enrich_engine_version(profile: &mut crate::core::models::GameProfile) {
     let install = PathBuf::from(&profile.install_dir);
     let config = profile.config_dir.as_ref().map(PathBuf::from);
     let info = detect_engine_version(&install, config.as_deref(), Some(&profile.id));

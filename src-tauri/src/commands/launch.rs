@@ -1,5 +1,5 @@
 use crate::launch::LaunchResult;
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 
 #[tauri::command]
 pub fn launch_game_cmd(profile: GameProfile) -> Result<LaunchResult, String> {

@@ -1,5 +1,5 @@
 use crate::discovery::normalize_install_dir;
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 use std::fs;
 use std::path::{Path, PathBuf};
 

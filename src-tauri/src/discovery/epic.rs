@@ -3,7 +3,7 @@ use crate::discovery::merge_game_profile;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
 use crate::ini::paths::resolve_config_dir;
 use crate::launch::validate_epic_app_name;
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};

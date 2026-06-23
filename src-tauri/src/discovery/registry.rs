@@ -1,5 +1,5 @@
 use crate::app_error::AppError;
-use crate::models::GameProfile;
+use crate::core::models::GameProfile;
 use crate::profiles::load_saved_profiles;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
@@ -108,7 +108,7 @@ pub(crate) fn reset_scan_counter() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::models::GameProfile;
+    use crate::core::models::GameProfile;
     use crate::profiles::{remove_profile, save_profile};
     use std::path::PathBuf;
     use std::time::SystemTime;
