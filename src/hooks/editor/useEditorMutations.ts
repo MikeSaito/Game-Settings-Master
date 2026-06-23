@@ -7,6 +7,7 @@ import {
   saveGameOverride,
 } from "@/lib/api";
 import { buildCustomChanges } from "@/lib/editor";
+import { invalidateGameWorkspace } from "@/lib/game/invalidateGameWorkspace";
 import { filterParamsByPanel, type EditorPanel } from "@/lib/routing";
 import { formatInvokeError } from "@/lib/core";
 import type { GameOverride, GameParameter, GameProfile, GpuCapabilities } from "@/lib/core";
@@ -82,13 +83,7 @@ export function useEditorMutations(options: Options) {
           backupId: result.backup_id,
         }),
       );
-      queryClient.invalidateQueries({
-        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({ queryKey: ["game-config"] });
+      invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
@@ -126,13 +121,7 @@ export function useEditorMutations(options: Options) {
     onSuccess: ({ result, snapshot }) => {
       if (activeGameIdRef.current !== snapshot.gameId) return;
       setMessage(t("presetApplied", { backupId: result.backup_id }));
-      queryClient.invalidateQueries({
-        queryKey: ["backups", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["parameters", snapshot.configDir, snapshot.gameId],
-      });
-      queryClient.invalidateQueries({ queryKey: ["game-config"] });
+      invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });

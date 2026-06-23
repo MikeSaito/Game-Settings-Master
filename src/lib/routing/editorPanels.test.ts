@@ -5,7 +5,6 @@ import {
   isRecommendedParam,
   panelForParameter,
   panelFromHash,
-  panelToHash,
   readStoredPanel,
   writeStoredPanel,
 } from "./editorPanels";
@@ -272,12 +271,6 @@ describe("panel migration", () => {
   it("migrates legacy hash engine to advanced", () => {
     window.history.replaceState(null, "", "/#engine");
     expect(panelFromHash()).toBe("advanced");
-  });
-
-  it("maps panels to hash fragments", () => {
-    expect(panelToHash("basic")).toBe("#basic");
-    expect(panelToHash("advanced")).toBe("#advanced");
-    expect(panelToHash("backups")).toBe("#backups");
   });
 
   it("writes new storage ids", () => {

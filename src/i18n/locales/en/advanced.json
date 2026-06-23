@@ -290,7 +290,6 @@
   "sentinelHint": "The ini holds −1: the game substitutes its own value. Set 0–4 or another number to fix it manually.",
   "rangeHint": "Range: {{range}} · approximate",
   "newKey": "new key",
-  "loadingPreview": "Loading change preview...",
   "noDiff": {
     "title": "No changes",
     "desc": "The current ini files on disk match the selected preset."

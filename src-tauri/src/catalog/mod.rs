@@ -1,3 +1,4 @@
+mod humanize;
 mod loader;
 mod scalability_tiers;
 

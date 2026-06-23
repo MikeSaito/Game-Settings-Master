@@ -48,6 +48,7 @@
 | Папка | Содержимое |
 |-------|------------|
 | `advanced/` | EditorModeBar, EditorSidebar, ParameterList, apply bar |
+| `backups/` | BackupRow, embedded backups panel |
 | `library/` | Сетка игр, тулбар |
 | `layout/` | AppShell, GameContextBar |
 | `settings/` | Панель настроек |
@@ -62,8 +63,8 @@
 | Папка | Хуки |
 |-------|------|
 | `app/` | settings, updater, debounce, background IPC gating |
-| `game/` | `useGameLaunch`, `useGameRunning`, `useRunningExeName` |
-| `editor/` | `useAdvancedEditorState`, `useEditorPanelState`, `useEditorMutations`, `editorStateUtils` |
+| `game/` | `useGameLaunch`, `useGameRunning`, `useRunningExeName`, `useBackupMutations`, `useActiveGameIdRef` |
+| `editor/` | `useAdvancedEditorState`, `useEditorQueries`, `useEditorFilteredParams`, `useEditorPanelState`, `useEditorMutations` |
 
 ### Куда добавлять новый код
 
@@ -83,7 +84,7 @@ profiles/      сохранённые профили игр
 commands/      Tauri IPC handlers
 discovery/     Steam/Epic scan, UE detect
 ini/           parse / write / patch ini
-catalog/       загрузка и humanize каталога
+catalog/       загрузка каталога; humanize.rs — CVar titles/ranges/categories
 ```
 
 Внутренний код импортирует `crate::core::models`. `lib.rs` по-прежнему re-export'ит `models` и др. для совместимости.

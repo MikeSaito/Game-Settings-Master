@@ -56,7 +56,7 @@ export function AdvancedEditor({ game }: Props) {
       />
 
       {state.panel === "backups" ? (
-        <Backups game={game} embedded />
+        <Backups game={game} />
       ) : (
         <div className="flex gap-4">
           <EditorSidebar

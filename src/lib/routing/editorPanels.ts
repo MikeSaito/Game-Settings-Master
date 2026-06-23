@@ -168,10 +168,3 @@ export function panelFromHash(hash = ""): EditorPanel | null {
   return normalizePanel(raw.replace(/^#/, "").toLowerCase());
 }
 
-/** Hash fragment for the editor panel (React Router `location.hash` form). */
-export function panelToHash(panel: EditorPanel): string {
-  if (panel === "advanced") return "#advanced";
-  if (panel === "backups") return "#backups";
-  return "#basic";
-}
-

@@ -26,8 +26,8 @@ npm run catalog:test
 
 | File | Purpose |
 |------|---------|
-| `data/tier_a_descriptions.json` | Human RU/EN from curated catalog (~83 keys) |
-| `data/tier_b_descriptions.json` | Semi-human for top reference-only CVars (~150 keys) |
+| `data/tier_a_descriptions.json` | Human RU/EN overlay texts (**748** keys in bundled catalog) |
+| `data/tier_b_descriptions.json` | Semi-human for top reference-only CVars (**150** keys) |
 
 Merge order: **curated JSON > tier A > tier B > auto-generated**.
 
