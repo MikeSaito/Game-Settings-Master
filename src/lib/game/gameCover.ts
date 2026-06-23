@@ -1,5 +1,5 @@
-import type { GameProfile } from "../core/types";
-import { safeConvertFileSrc } from "../api/tauriRuntime";
+import type { GameProfile } from "@/lib/core/types";
+import { safeConvertFileSrc } from "@/lib/api/tauriRuntime";
 
 const STEAM_CDN = "https://cdn.cloudflare.steamstatic.com/steam/apps";
 

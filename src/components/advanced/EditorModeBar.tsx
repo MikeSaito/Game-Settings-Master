@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { EditorPanel } from "@/lib/routing";
 import { engineWarningAckKey } from "@/lib/routing";
 import { cn } from "@/lib/core";
-import { SegmentControl } from "../ds/SegmentControl";
+import { SegmentControl } from "@/components/ds/SegmentControl";
 
 const PANELS: EditorPanel[] = ["basic", "advanced", "backups"];
 

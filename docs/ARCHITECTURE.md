@@ -17,7 +17,8 @@
 ### Импорты
 
 - Алиас **`@/`** → `src/` (см. [`tsconfig.json`](../tsconfig.json), [`vite.config.ts`](../vite.config.ts))
-- Пример: `import { getGameParameters } from "@/lib/api"` или `import { cn } from "@/lib/core"`
+- Пример: `import { getGameParameters } from "@/lib/api"`, `import { Button } from "@/components/ds/Button"`
+- Внутри одной папки допустимы относительные `./` импорты; между модулями — `@/`
 - Корневой barrel [`src/lib/index.ts`](../src/lib/index.ts) — `core`, `routing`, `editor`, `game`, `gpu`, `settings`; IPC отдельно из `@/lib/api`
 - [`src/components/ds/index.ts`](../src/components/ds/index.ts) — barrel design system (по желанию)
 
@@ -39,16 +40,17 @@
 
 - Единый URL редактора: `/game/:id/advanced`
 - Активная панель (`basic` | `advanced` | `backups`) — в `sessionStorage` (`gsm-editor-panel:*`)
-- Legacy `/game/:id/backups` → redirect на `/advanced` + panel `backups`
-- UI бэкапов встроен в [`AdvancedEditor`](../src/pages/AdvancedEditor.tsx) (`Backups` с `embedded`)
+- Legacy `/game/:id/backups` → redirect на `/advanced` + panel `backups` (как wizard/reshade)
+- `GameTabRoute` — только `"advanced"`; бэкапы не отдельный URL-tab
+- UI бэкапов встроен в [`AdvancedEditor`](../src/pages/AdvancedEditor.tsx) ([`BackupsPanel`](../src/components/backups/BackupsPanel.tsx))
 - Переход в редактор: [`openGameEditor()`](../src/lib/routing/navigation.ts)
 
 ### `src/components/` — UI по фичам
 
 | Папка | Содержимое |
 |-------|------------|
-| `advanced/` | EditorModeBar, EditorSidebar, ParameterList, apply bar |
-| `backups/` | BackupRow, embedded backups panel |
+| `advanced/` | EditorModeBar, EditorSidebar, ParameterList, ParameterRow (+ utils/control), apply bar |
+| `backups/` | BackupRow, BackupSectionTitle, BackupsPanel (embedded в редакторе) |
 | `library/` | Сетка игр, тулбар |
 | `layout/` | AppShell, GameContextBar |
 | `settings/` | Панель настроек |
@@ -63,7 +65,7 @@
 | Папка | Хуки |
 |-------|------|
 | `app/` | settings, updater, debounce, background IPC gating |
-| `game/` | `useGameLaunch`, `useGameRunning`, `useRunningExeName`, `useBackupMutations`, `useActiveGameIdRef` |
+| `game/` | `useGameLaunch`, `useGameRunning`, `useRunningExeName`, `useBackupMutations`, `useActiveGameIdRef`, `useSelectedGame` |
 | `editor/` | `useAdvancedEditorState`, `useEditorQueries`, `useEditorFilteredParams`, `useEditorPanelState`, `useEditorMutations` |
 
 ### Куда добавлять новый код
@@ -84,7 +86,24 @@ profiles/      сохранённые профили игр
 commands/      Tauri IPC handlers
 discovery/     Steam/Epic scan, UE detect
 ini/           parse / write / patch ini
-catalog/       загрузка каталога; humanize.rs — CVar titles/ranges/categories
+catalog/       загрузка каталога и сборка параметров редактора
+  loader.rs           get_game_parameters (оркестрация)
+  loader_tests.rs     интеграционные тесты загрузчика
+  catalog_index.rs    кэш JSON, build_catalog_index, lookup_entry
+  dedupe.rs           dedupe_parameters_by_file_key
+  unknown.rs          unknown_parameter / unknown_ue_parameter
+  types.rs            ParameterCatalogEntry, ReferenceEntry, CatalogIndex
+  version.rs          UeSemver, reference_applies_to_version
+  localize.rs         pick_localized, pick_title, description quality
+  parameter_build.rs  entry/hint/reference → Parameter
+  injection.rs        inject_catalog_and_reference_parameters
+  humanize/           CVar titles, ranges, categories, hidden keys
+    cvar_title.rs     humanize_cvar_key
+    ranges.rs         apply_known_range_patterns, infer_value_type
+    categories.rs     infer_category, is_game_rendering_key
+    hidden_keys.rs    is_hidden_ue_manual_key, UE5-only keys
+    value_text.rs     is_opaque_struct_value, truncate_preview
+  scalability_tiers.rs
 ```
 
 Внутренний код импортирует `crate::core::models`. `lib.rs` по-прежнему re-export'ит `models` и др. для совместимости.

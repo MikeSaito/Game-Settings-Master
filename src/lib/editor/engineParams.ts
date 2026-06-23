@@ -1,4 +1,4 @@
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 
 export const ENGINE_INI = "Engine.ini";
 

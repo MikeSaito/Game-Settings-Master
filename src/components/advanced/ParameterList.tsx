@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ParameterRow } from "./ParameterRow";
-import { EmptyState } from "../ds/Feedback";
+import { EmptyState } from "@/components/ds/Feedback";
 import { paramRowKey } from "@/lib/editor";
 import { getParamSelectOptions } from "@/lib/editor";
 import { getDependencyLabel } from "@/lib/editor";

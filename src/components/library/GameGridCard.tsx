@@ -4,8 +4,8 @@ import { supportsIniPresets } from "@/lib/game";
 import type { GameProfile } from "@/lib/core";
 import { cn } from "@/lib/core";
 import { GameCover } from "@/components/game/GameCover";
-import { Badge } from "../ds/Badge";
-import { Button } from "../ds/Button";
+import { Badge } from "@/components/ds/Badge";
+import { Button } from "@/components/ds/Button";
 import type { LibraryViewMode } from "./LibraryToolbar";
 
 interface Props {

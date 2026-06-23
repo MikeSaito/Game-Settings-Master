@@ -1,5 +1,5 @@
-import i18n from "../../i18n";
-import type { GameParameter, GpuCapabilities } from "../core/types";
+import i18n from "@/i18n";
+import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 
 export type ParamPatch = Pick<GameParameter, "key" | "section" | "file" | "value">;
 

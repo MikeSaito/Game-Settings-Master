@@ -1,5 +1,5 @@
 import { isEngineEnabled, isEngineToggleable } from "./engineParams";
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 
 const ENGINE_INI_FILES = new Set(["Engine.ini", "Scalability.ini", "Game.ini"]);
 const R_CVAR_RE = /r\.[A-Za-z0-9_.]+/g;

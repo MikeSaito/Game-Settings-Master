@@ -15,24 +15,16 @@ describe("libraryPath", () => {
 });
 
 describe("gameTabPath", () => {
-  it("encodes game id and tab", () => {
+  it("encodes game id", () => {
     expect(gameTabPath("steam:123", "advanced")).toBe("/game/steam%3A123/advanced");
-  });
-
-  it("maps backups tab to advanced URL", () => {
-    expect(gameTabPath("foo", "backups")).toBe("/game/foo/advanced");
   });
 });
 
 describe("parseGameRoute", () => {
-  it("parses valid game routes", () => {
+  it("parses advanced route", () => {
     expect(parseGameRoute("/game/foo/advanced")).toEqual({
       gameId: "foo",
       tab: "advanced",
-    });
-    expect(parseGameRoute("/game/foo/backups")).toEqual({
-      gameId: "foo",
-      tab: "backups",
     });
   });
 
@@ -40,14 +32,16 @@ describe("parseGameRoute", () => {
     expect(parseGameRoute("/library")).toBeNull();
   });
 
-  it("returns null for removed tabs", () => {
+  it("returns null for legacy tabs", () => {
     expect(parseGameRoute("/game/foo/wizard")).toBeNull();
     expect(parseGameRoute("/game/foo/reshade")).toBeNull();
+    expect(parseGameRoute("/game/foo/backups")).toBeNull();
   });
 
-  it("parses legacy wizard/reshade routes for redirect", () => {
+  it("parses legacy routes for redirect", () => {
     expect(parseLegacyGameRoute("/game/foo/wizard")).toEqual({ gameId: "foo" });
     expect(parseLegacyGameRoute("/game/foo/reshade")).toEqual({ gameId: "foo" });
+    expect(parseLegacyGameRoute("/game/foo/backups")).toEqual({ gameId: "foo" });
     expect(parseLegacyGameRoute("/game/foo/advanced")).toBeNull();
   });
 
@@ -63,7 +57,11 @@ describe("tabFromPathname", () => {
     expect(isLibraryRoute("/library")).toBe(true);
   });
 
-  it("maps game tab paths", () => {
-    expect(tabFromPathname("/game/id/backups")).toBe("backups");
+  it("maps advanced game path", () => {
+    expect(tabFromPathname("/game/id/advanced")).toBe("advanced");
+  });
+
+  it("treats legacy backups URL as library until redirect", () => {
+    expect(tabFromPathname("/game/id/backups")).toBe("library");
   });
 });

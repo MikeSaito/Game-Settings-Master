@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 import { setBackendLanguage } from "@/lib/api";
 import {
   applyAppSettings,

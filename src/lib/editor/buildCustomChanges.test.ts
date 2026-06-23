@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildCustomChanges } from "./buildCustomChanges";
-import type { GameParameter, GpuCapabilities } from "../core/types";
+import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 
 function param(
   overrides: Partial<GameParameter> & Pick<GameParameter, "key" | "value">,

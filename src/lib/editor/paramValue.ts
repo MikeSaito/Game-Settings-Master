@@ -1,4 +1,4 @@
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 
 /** Values meaning "leave as the game intended" in UE ini. */
 export function isUeSentinelValue(value: string): boolean {

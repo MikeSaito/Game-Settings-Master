@@ -1,8 +1,8 @@
 import { Grid2X2, List, Plus, RefreshCw, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../ds/Button";
-import { Input } from "../ds/Field";
-import { SegmentControl } from "../ds/SegmentControl";
+import { Button } from "@/components/ds/Button";
+import { Input } from "@/components/ds/Field";
+import { SegmentControl } from "@/components/ds/SegmentControl";
 
 export type LibraryViewMode = "grid" | "list";
 

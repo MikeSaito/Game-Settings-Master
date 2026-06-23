@@ -1,4 +1,4 @@
-import type { EditorPanel } from "../routing/editorPanels";
+import type { EditorPanel } from "@/lib/routing/editorPanels";
 
 export type ThemeMode = "dark" | "light" | "system";
 export type FontScale = 0.875 | 1 | 1.125 | 1.25;

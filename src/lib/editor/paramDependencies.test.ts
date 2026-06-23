@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 import { applyParamDependencies, reconcileAllParams } from "./paramDependencies";
 
 function gusParam(key: string, value: string): GameParameter {

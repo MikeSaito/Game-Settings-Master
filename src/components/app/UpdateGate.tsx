@@ -2,7 +2,7 @@ import { Download, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppUpdater } from "@/hooks/app/useAppUpdater";
-import { Button } from "../ds/Button";
+import { Button } from "@/components/ds/Button";
 
 interface Props {
   children: ReactNode;

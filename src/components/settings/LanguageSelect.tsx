@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { SettingsLanguage } from "@/lib/settings";
-import { SUPPORTED_LANGUAGES } from "../../i18n";
-import { Select } from "../ds/Field";
+import { SUPPORTED_LANGUAGES } from "@/i18n";
+import { Select } from "@/components/ds/Field";
 
 interface Props {
   value: SettingsLanguage;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { GpuCapabilities } from "../core/types";
-import { filterSelectOptions, isParamVisible } from "../gpu/gpuCompat";
+import type { GpuCapabilities } from "@/lib/core/types";
+import { filterSelectOptions, isParamVisible } from "@/lib/gpu/gpuCompat";
 
 const rtxGpu: GpuCapabilities = {
   name: "RTX 4070",

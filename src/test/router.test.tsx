@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { MemoryRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { describe, expect, it } from "vitest";
-import { AppWindowFocusProvider } from "../context/AppWindowFocusProvider";
-import { EditorModeBar } from "../components/advanced/EditorModeBar";
-import { GameLibrary } from "../pages/GameLibrary";
+import { describe, expect, it, vi } from "vitest";
+import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
+import { EditorModeBar } from "@/components/advanced/EditorModeBar";
+import { GameLibrary } from "@/pages/GameLibrary";
 import { libraryPath, parseGameRoute, parseLegacyGameRoute } from "@/lib/routing";
 import { LegacyGameRouteRedirect } from "@/lib/routing";
 import { testGame } from "./fixtures/gameProfile";
@@ -55,6 +55,10 @@ function TestRoutes({
         />
         <Route
           path="/game/:gameId/wizard"
+          element={<LegacyGameRouteRedirect games={games} />}
+        />
+        <Route
+          path="/game/:gameId/backups"
           element={<LegacyGameRouteRedirect games={games} />}
         />
         <Route path="*" element={<Navigate to={libraryPath()} replace />} />
@@ -114,6 +118,29 @@ describe("router integration", () => {
     await waitFor(() => {
       expect(paths.some((p) => p.includes("/advanced"))).toBe(true);
     });
+  });
+
+  it("redirects legacy backups URL to advanced and stores panel", async () => {
+    const paths: string[] = [];
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    queryClient.setQueryData(["games"], [testGame]);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AppWindowFocusProvider>
+          <MemoryRouter initialEntries={[`/game/${testGame.id}/backups`]}>
+            <TestRoutes games={[testGame]} onPath={(p) => paths.push(p)} />
+          </MemoryRouter>
+        </AppWindowFocusProvider>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => {
+      expect(paths.some((p) => p.includes("/advanced"))).toBe(true);
+    });
+    expect(setItem).toHaveBeenCalledWith(`gsm-editor-panel:${testGame.id}`, "backups");
+    setItem.mockRestore();
   });
 
   it("redirects unknown game id to /library", async () => {

@@ -3,11 +3,11 @@ import { useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSettings } from "@/hooks/app/useAppSettings";
 import type { FontScale, ThemeMode } from "@/lib/settings";
-import { Button } from "../ds/Button";
-import { LanguageSelect } from "./LanguageSelect";
-import { SegmentControl } from "../ds/SegmentControl";
-import { Switch } from "../ds/Switch";
-import { Divider } from "../ds/Panel";
+import { Button } from "@/components/ds/Button";
+import { LanguageSelect } from "@/components/settings/LanguageSelect";
+import { SegmentControl } from "@/components/ds/SegmentControl";
+import { Switch } from "@/components/ds/Switch";
+import { Divider } from "@/components/ds/Panel";
 import { APP_VERSION } from "@/lib/core";
 
 interface Props {

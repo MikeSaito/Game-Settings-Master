@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { describe, expect, it, vi } from "vitest";
 import "../../i18n";
 import { NavRail } from "./NavRail";
-import { testGame } from "../../test/fixtures/gameProfile";
+import { testGame } from "@/test/fixtures/gameProfile";
 
 function LocationProbe({ onPath }: { onPath: (path: string) => void }) {
   const { pathname } = useLocation();

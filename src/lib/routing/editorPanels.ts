@@ -1,4 +1,4 @@
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 
 export type EditorPanel = "basic" | "advanced" | "backups";
 

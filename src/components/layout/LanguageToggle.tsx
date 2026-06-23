@@ -1,5 +1,5 @@
 import { useAppSettings } from "@/hooks/app/useAppSettings";
-import { LanguageSelect } from "../settings/LanguageSelect";
+import { LanguageSelect } from "@/components/settings/LanguageSelect";
 
 export function LanguageToggle() {
   const { settings, setLanguage } = useAppSettings();

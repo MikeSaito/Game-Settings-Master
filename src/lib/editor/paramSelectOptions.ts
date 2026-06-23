@@ -1,5 +1,5 @@
-import type { GameParameter } from "../core/types";
-import { filterSelectOptions } from "../gpu/gpuCompat";
+import type { GameParameter } from "@/lib/core/types";
+import { filterSelectOptions } from "@/lib/gpu/gpuCompat";
 
 const DLSS_MODES = ["Off", "Performance", "Balanced", "Quality", "UltraQuality", "DLAA"] as const;
 

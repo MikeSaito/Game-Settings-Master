@@ -2,7 +2,7 @@
  * IPC DTOs — generated from Rust (`npm run types:gen`).
  * Frontend-only types and serde-default augmentations live below.
  */
-import type { GameParameter as GeneratedGameParameter } from "../api/bindings";
+import type { GameParameter as GeneratedGameParameter } from "@/lib/api/bindings";
 
 export type {
   ApplyResult,
@@ -19,7 +19,7 @@ export type {
   ParameterOption,
   ScalabilityLimits,
   ScreenResolution,
-} from "../api/bindings";
+} from "@/lib/api/bindings";
 
 /** Rust defaults `editable` / `present_in_ini` to true when omitted in JSON. */
 export type GameParameter = GeneratedGameParameter & {
@@ -27,5 +27,5 @@ export type GameParameter = GeneratedGameParameter & {
   present_in_ini: boolean;
 };
 
-export type GameTabRoute = "advanced" | "backups";
+export type GameTabRoute = "advanced";
 export type AppTab = "library" | GameTabRoute;

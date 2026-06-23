@@ -1,10 +1,10 @@
 import { useRef, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import { GameWorkspaceProvider } from "../../context/GameWorkspaceContext";
+import { GameWorkspaceProvider } from "@/context/GameWorkspaceContext";
 import { tabFromPathname } from "@/lib/routing";
 import type { GameProfile } from "@/lib/core";
-import { NavRail } from "../ds/NavRail";
-import { SettingsPanel } from "../settings/SettingsPanel";
+import { NavRail } from "@/components/ds/NavRail";
+import { SettingsPanel } from "@/components/settings/SettingsPanel";
 import { GameContextBar } from "./GameContextBar";
 
 interface Props {

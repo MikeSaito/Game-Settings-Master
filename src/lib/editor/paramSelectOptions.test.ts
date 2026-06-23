@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getParamSelectOptions } from "./paramSelectOptions";
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 
 function param(key: string, value = ""): GameParameter {
   return { key, value } as GameParameter;

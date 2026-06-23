@@ -10,8 +10,8 @@ import {
 import {
   filterParamsByPanel,
   filterParamsByMode,
-} from "../routing/editorPanels";
-import type { GameParameter } from "../core/types";
+} from "@/lib/routing/editorPanels";
+import type { GameParameter } from "@/lib/core/types";
 
 function param(
   overrides: Partial<GameParameter> & Pick<GameParameter, "key" | "category">,

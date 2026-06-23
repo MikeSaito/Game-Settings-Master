@@ -20,7 +20,7 @@ interface Props {
   game: GameProfile;
 }
 
-export function Backups({ game }: Props) {
+export function BackupsPanel({ game }: Props) {
   const { t } = useTranslation("backups");
   const [successMessage, setSuccessMessage] = useState<string>();
   const [restoreError, setRestoreError] = useState<string>();

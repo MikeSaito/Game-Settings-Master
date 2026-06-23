@@ -1,5 +1,5 @@
 import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Suspense, lazy, useEffect, useRef } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import {
   Navigate,
   Route,
@@ -15,6 +15,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
 import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
+import { useSelectedGame } from "@/hooks/game/useSelectedGame";
 import { scanGames } from "@/lib/api";
 import { prefetchGameWorkspace, isGameTabAvailable, resolveGameTabRoute } from "@/lib/game";
 import {
@@ -22,9 +23,7 @@ import {
   libraryPath,
   LegacyGameRouteRedirect,
   openGameEditor,
-  parseGameRoute,
   tabFromPathname,
-  writeStoredPanel,
 } from "@/lib/routing";
 import { queryClient, type GameProfile } from "@/lib/core";
 
@@ -56,22 +55,11 @@ function GameEditorPage({
   return <AdvancedEditor game={game} />;
 }
 
-function BackupsRouteRedirect() {
-  const { gameId = "" } = useParams();
-  const id = decodeURIComponent(gameId);
-  useEffect(() => {
-    writeStoredPanel(id, "backups");
-  }, [id]);
-  return <Navigate to={gameTabPath(id, "advanced")} replace />;
-}
-
 export function AppContent() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const tab = tabFromPathname(location.pathname);
-  const gameRoute = parseGameRoute(location.pathname);
-  const lastKnownGameRef = useRef<GameProfile | null>(null);
   const gamesQueryEnabled = useBackgroundSafeEnabled();
 
   const { data: games = [], isPending: gamesLoading } = useQuery({
@@ -81,57 +69,26 @@ export function AppContent() {
     staleTime: 2 * 60_000,
   });
 
-  const selectedGameFromList = gameRoute
-    ? games.find((g) => g.id === gameRoute.gameId) ?? null
-    : null;
-
-  if (selectedGameFromList) {
-    lastKnownGameRef.current = selectedGameFromList;
-  }
-
-  const selectedGame =
-    selectedGameFromList ??
-    (gameRoute && lastKnownGameRef.current?.id === gameRoute.gameId
-      ? lastKnownGameRef.current
-      : null);
-
-  useEffect(() => {
-    if (gameRoute && games.length > 0 && !selectedGame) {
-      navigate(libraryPath(), { replace: true });
-    }
-  }, [gameRoute, games.length, selectedGame, navigate]);
-
-  useEffect(() => {
-    if (
-      selectedGame &&
-      gameRoute &&
-      !isGameTabAvailable(selectedGame, gameRoute.tab)
-    ) {
-      navigate(gameTabPath(selectedGame.id, resolveGameTabRoute(selectedGame) ?? "advanced"), {
-        replace: true,
-      });
-    }
-  }, [selectedGame, gameRoute, navigate]);
+  const { selectedGame, gameRoute } = useSelectedGame(games);
 
   useEffect(() => {
     if (selectedGame && gameRoute) {
-      prefetchGameWorkspace(queryClient, selectedGame, gameRoute.tab);
+      prefetchGameWorkspace(queryClient, selectedGame);
     }
-  }, [queryClient, selectedGame, gameRoute?.tab]);
+  }, [queryClient, selectedGame, gameRoute?.gameId]);
 
   const handleSelectGame = (game: GameProfile) => {
-    const nextTab = resolveGameTabRoute(game);
-    if (!nextTab) {
+    if (!resolveGameTabRoute(game)) {
       return;
     }
-    prefetchGameWorkspace(queryClient, game, nextTab);
-    openGameEditor(navigate, game.id, nextTab === "backups" ? "backups" : "basic");
+    prefetchGameWorkspace(queryClient, game);
+    openGameEditor(navigate, game.id, "basic");
   };
 
   const handleGameUpdated = (game: GameProfile) => {
     if (gameRoute?.gameId === game.id) {
       if (isGameTabAvailable(game, gameRoute.tab)) {
-        prefetchGameWorkspace(queryClient, game, gameRoute.tab);
+        prefetchGameWorkspace(queryClient, game);
       } else {
         navigate(gameTabPath(game.id, resolveGameTabRoute(game) ?? "advanced"), {
           replace: true,
@@ -167,7 +124,10 @@ export function AppContent() {
               path="/game/:gameId/advanced"
               element={<GameEditorPage games={games} gamesLoading={gamesLoading} />}
             />
-            <Route path="/game/:gameId/backups" element={<BackupsRouteRedirect />} />
+            <Route
+              path="/game/:gameId/backups"
+              element={<LegacyGameRouteRedirect games={games} />}
+            />
             <Route
               path="/game/:gameId/wizard"
               element={<LegacyGameRouteRedirect games={games} />}

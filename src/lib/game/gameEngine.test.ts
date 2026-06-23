@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { resolveGameTabRoute } from "./gameEngine";
-import { testGame } from "../../test/fixtures/gameProfile";
+import { testGame } from "@/test/fixtures/gameProfile";
 
 describe("resolveGameTabRoute", () => {
   it("returns advanced for UE game with config_dir", () => {

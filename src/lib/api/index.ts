@@ -11,7 +11,7 @@ import type {
   LaunchResult,
   ScreenResolution,
   ScalabilityLimits,
-} from "../core/types";
+} from "@/lib/core/types";
 
 export function getGpuInfo(): Promise<GpuCapabilities> {
   return invoke("get_gpu_info_cmd");

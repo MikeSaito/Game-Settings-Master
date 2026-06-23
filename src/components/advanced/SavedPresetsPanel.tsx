@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 import type { GameOverride } from "@/lib/core";
-import { Button } from "../ds/Button";
+import { Button } from "@/components/ds/Button";
 
 interface Props {
   state: AdvancedEditorState;

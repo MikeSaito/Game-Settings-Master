@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AppWindowFocusProvider } from "../context/AppWindowFocusProvider";
-import { ParameterList } from "../components/advanced/ParameterList";
+import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
+import { ParameterList } from "@/components/advanced/ParameterList";
 import { testParameters } from "./fixtures/testParameters";
 import "../i18n";
 

@@ -1,14 +1,11 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { currentLanguage } from "../../i18n";
-import { getGameParameters, listBackups } from "../api";
-import type { AppTab, GameProfile } from "../core/types";
+import { currentLanguage } from "@/i18n";
+import { getGameParameters, listBackups } from "@/lib/api";
+import { readStoredPanel } from "@/lib/routing/editorPanels";
+import type { GameProfile } from "@/lib/core/types";
 
-/** Prefetches data only for the active game tab. */
-export function prefetchGameWorkspace(
-  queryClient: QueryClient,
-  game: GameProfile,
-  tab: AppTab,
-): void {
+/** Prefetches data for the active editor panel (from sessionStorage). */
+export function prefetchGameWorkspace(queryClient: QueryClient, game: GameProfile): void {
   const {
     config_dir: configDir,
     engine_family: engineFamily,
@@ -19,29 +16,27 @@ export function prefetchGameWorkspace(
 
   if (!configDir) return;
 
-  switch (tab) {
-    case "advanced":
-      void queryClient.prefetchQuery({
-        queryKey: [
-          "parameters",
-          configDir,
-          id,
-          engineFamily,
-          engineVersion,
-          currentLanguage(),
-        ],
-        queryFn: () =>
-          getGameParameters(configDir, id, installDir, engineFamily, engineVersion),
-        staleTime: 5 * 60_000,
-      });
-      break;
-    case "backups":
-      void queryClient.prefetchQuery({
-        queryKey: ["backups", configDir, id],
-        queryFn: () => listBackups(configDir, id),
-      });
-      break;
-    default:
-      break;
+  const panel = readStoredPanel(id) ?? "basic";
+
+  if (panel === "backups") {
+    void queryClient.prefetchQuery({
+      queryKey: ["backups", configDir, id],
+      queryFn: () => listBackups(configDir, id),
+    });
+    return;
   }
+
+  void queryClient.prefetchQuery({
+    queryKey: [
+      "parameters",
+      configDir,
+      id,
+      engineFamily,
+      engineVersion,
+      currentLanguage(),
+    ],
+    queryFn: () =>
+      getGameParameters(configDir, id, installDir, engineFamily, engineVersion),
+    staleTime: 5 * 60_000,
+  });
 }

@@ -8,7 +8,7 @@ import {
   readStoredPanel,
   writeStoredPanel,
 } from "./editorPanels";
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 
 function param(
   overrides: Partial<GameParameter> & Pick<GameParameter, "key">,

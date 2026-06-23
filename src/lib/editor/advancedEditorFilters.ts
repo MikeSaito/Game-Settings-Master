@@ -3,7 +3,7 @@ import {
   isEngineEnabled,
   isEngineToggleable,
 } from "./engineParams";
-import type { GameParameter } from "../core/types";
+import type { GameParameter } from "@/lib/core/types";
 
 export const ALL_CATEGORY = "All";
 

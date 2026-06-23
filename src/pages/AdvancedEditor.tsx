@@ -1,16 +1,16 @@
 import { AlertTriangle, SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { EditorApplyBar } from "../components/advanced/EditorApplyBar";
-import { EditorModeBar } from "../components/advanced/EditorModeBar";
-import { EditorSidebar } from "../components/advanced/EditorSidebar";
-import { ParameterList } from "../components/advanced/ParameterList";
-import { SavedPresetsPanel } from "../components/advanced/SavedPresetsPanel";
-import { Alert, EmptyState } from "../components/ds/Feedback";
-import { Badge } from "../components/ds/Badge";
+import { EditorApplyBar } from "@/components/advanced/EditorApplyBar";
+import { EditorModeBar } from "@/components/advanced/EditorModeBar";
+import { EditorSidebar } from "@/components/advanced/EditorSidebar";
+import { ParameterList } from "@/components/advanced/ParameterList";
+import { SavedPresetsPanel } from "@/components/advanced/SavedPresetsPanel";
+import { Alert, EmptyState } from "@/components/ds/Feedback";
+import { Badge } from "@/components/ds/Badge";
 import { useAdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 import { gpuFilterHint } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
-import { Backups } from "./Backups";
+import { BackupsPanel } from "@/components/backups";
 
 interface Props {
   game: GameProfile | null;
@@ -56,7 +56,7 @@ export function AdvancedEditor({ game }: Props) {
       />
 
       {state.panel === "backups" ? (
-        <Backups game={game} />
+        <BackupsPanel game={game} />
       ) : (
         <div className="flex gap-4">
           <EditorSidebar

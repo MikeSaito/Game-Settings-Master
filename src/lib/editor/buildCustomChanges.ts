@@ -1,5 +1,5 @@
-import type { GameParameter, GpuCapabilities } from "../core/types";
-import { isParamVisible } from "../gpu/gpuCompat";
+import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
+import { isParamVisible } from "@/lib/gpu/gpuCompat";
 import {
   defaultValueFor,
   isEngineEnabled,

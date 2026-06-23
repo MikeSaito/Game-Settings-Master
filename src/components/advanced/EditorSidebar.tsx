@@ -2,9 +2,9 @@ import { Search } from "lucide-react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorFilterMode } from "@/lib/routing";
-import { Input } from "../ds/Field";
-import { Panel } from "../ds/Panel";
-import { SegmentControl } from "../ds/SegmentControl";
+import { Input } from "@/components/ds/Field";
+import { Panel } from "@/components/ds/Panel";
+import { SegmentControl } from "@/components/ds/SegmentControl";
 import { cn } from "@/lib/core";
 
 interface CategoryItem {

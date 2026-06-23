@@ -1,5 +1,5 @@
-import i18n from "../../i18n";
-import type { GpuCapabilities, GameParameter } from "../core/types";
+import i18n from "@/i18n";
+import type { GpuCapabilities, GameParameter } from "@/lib/core/types";
 
 /** Parameters fully hidden without DLSS/RTX support. */
 const NVIDIA_ONLY_KEYS = new Set([

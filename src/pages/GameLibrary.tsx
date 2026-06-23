@@ -2,11 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Gamepad2, Plus, RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GameGridCard } from "../components/library/GameGridCard";
-import { LibraryToolbar, type LibraryViewMode } from "../components/library/LibraryToolbar";
-import { Alert, EmptyState, Skeleton } from "../components/ds/Feedback";
-import { Badge } from "../components/ds/Badge";
-import { Button } from "../components/ds/Button";
+import { GameGridCard } from "@/components/library/GameGridCard";
+import { LibraryToolbar, type LibraryViewMode } from "@/components/library/LibraryToolbar";
+import { Alert, EmptyState, Skeleton } from "@/components/ds/Feedback";
+import { Badge } from "@/components/ds/Badge";
+import { Button } from "@/components/ds/Button";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import {
   addManualGame,

@@ -1,4 +1,4 @@
-import type { AppTab, GameTabRoute } from "../core/types";
+import type { AppTab, GameTabRoute } from "@/lib/core/types";
 
 export type { GameTabRoute };
 
@@ -6,26 +6,22 @@ export function libraryPath(): string {
   return "/library";
 }
 
-export function gameTabPath(gameId: string, tab: GameTabRoute): string {
-  const id = encodeURIComponent(gameId);
-  if (tab === "backups") {
-    return `/game/${id}/advanced`;
-  }
-  return `/game/${id}/${tab}`;
+export function gameTabPath(gameId: string, _tab: GameTabRoute = "advanced"): string {
+  return `/game/${encodeURIComponent(gameId)}/advanced`;
 }
 
 export function parseGameRoute(pathname: string): {
   gameId: string;
   tab: GameTabRoute;
 } | null {
-  const match = pathname.match(/^\/game\/([^/]+)\/(advanced|backups)$/);
+  const match = pathname.match(/^\/game\/([^/]+)\/advanced$/);
   if (!match) return null;
-  return { gameId: decodeURIComponent(match[1]), tab: match[2] as GameTabRoute };
+  return { gameId: decodeURIComponent(match[1]), tab: "advanced" };
 }
 
-/** Removed tabs (wizard, reshade) — redirect to advanced when game exists. */
+/** Legacy game URLs (wizard, reshade, backups) — redirect to `/advanced`. */
 export function parseLegacyGameRoute(pathname: string): { gameId: string } | null {
-  const match = pathname.match(/^\/game\/([^/]+)\/(wizard|reshade)$/);
+  const match = pathname.match(/^\/game\/([^/]+)\/(wizard|reshade|backups)$/);
   if (!match) return null;
   return { gameId: decodeURIComponent(match[1]) };
 }
