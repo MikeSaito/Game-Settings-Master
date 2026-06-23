@@ -17,7 +17,8 @@
 ### Импорты
 
 - Алиас **`@/`** → `src/` (см. [`tsconfig.json`](../tsconfig.json), [`vite.config.ts`](../vite.config.ts))
-- Пример: `import { getGameParameters } from "@/lib/api"`
+- Пример: `import { getGameParameters } from "@/lib/api"` или `import { cn } from "@/lib/core"`
+- Корневой barrel [`src/lib/index.ts`](../src/lib/index.ts) — `core`, `routing`, `editor`, `game`, `gpu`, `settings`; IPC отдельно из `@/lib/api`
 
 ### `src/lib/` — доменные модули
 
@@ -41,11 +42,11 @@
 | `library/` | Сетка игр, тулбар |
 | `layout/` | AppShell, header, sidebar |
 | `settings/` | Панель настроек |
-| `ds/` | Design system (кнопки, поля) |
-| `ui/` | Legacy UI-обёртки |
+| `ds/` | Design system (кнопки, поля, панели, Toggle) |
 | `app/` | ErrorBoundary, UpdateGate |
 | `game/` | GameCover |
-| `backups/` | IniDiffView, BackupBanner |
+
+Удалён legacy-слой `components/ui/` — новый UI только через `ds/`.
 
 ### `src/hooks/`
 
@@ -120,3 +121,4 @@ npm run landing:build
 2. **Barrel `index.ts`** — публичный API модуля; внутри папки можно использовать относительные импорты.
 3. **Co-located tests** — тест рядом с модулем, не в отдельном дереве зеркал.
 4. **Без изменения данных каталога** в архитектурных PR — `src-tauri/catalog/*.json` только осознанно.
+5. **`npm run types:gen`** пишет в `src/lib/api/bindings.ts` (не в корень `lib/`).

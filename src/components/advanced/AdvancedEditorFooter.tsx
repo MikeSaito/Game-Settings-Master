@@ -1,9 +1,9 @@
 import { Save, Trash2, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../ui/Button";
-import { Card } from "../ui/Card";
-import { Input } from "../ui/Input";
-import { SectionHeader } from "../ui/SectionHeader";
+import { Button } from "@/components/ds/Button";
+import { Input } from "@/components/ds/Field";
+import { Panel } from "@/components/ds/Panel";
+import { SectionHeader } from "@/components/ds/SectionHeader";
 import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 
 interface Props {
@@ -15,7 +15,7 @@ export function AdvancedEditorFooter({ state }: Props) {
 
   return (
     <>
-      <Card padding="md">
+      <Panel padding="md">
         <SectionHeader title={t("applyAndSave")} />
         <div className="flex flex-wrap items-end gap-3">
           <div className="min-w-[200px] flex-1">
@@ -43,14 +43,14 @@ export function AdvancedEditorFooter({ state }: Props) {
             {t("savePreset")}
           </Button>
         </div>
-      </Card>
+      </Panel>
 
       {state.overrides.length > 0 && (
         <section>
           <SectionHeader title={t("savedPresets")} />
           <div className="space-y-2">
             {state.overrides.map((override) => (
-              <Card key={`${override.game_id}-${override.name}`} padding="sm" className="!p-0">
+              <Panel key={`${override.game_id}-${override.name}`} padding="sm" className="!p-0">
                 <div className="flex items-center justify-between gap-4 px-4 py-3">
                   <span className="font-medium text-[var(--color-text-secondary)]">
                     {override.name}
@@ -78,7 +78,7 @@ export function AdvancedEditorFooter({ state }: Props) {
                     </button>
                   </div>
                 </div>
-              </Card>
+              </Panel>
             ))}
           </div>
         </section>

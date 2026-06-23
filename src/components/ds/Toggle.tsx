@@ -1,4 +1,4 @@
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 import { cn } from "@/lib/core";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-/** Off / On toggle switch */
+/** Labeled Off / On toggle for editor acknowledgements. */
 export function Toggle({ checked, onChange, disabled, className }: Props) {
   return (
     <button

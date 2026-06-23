@@ -1,9 +1,9 @@
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { AdvancedPanel } from "@/lib/routing";
-import { Alert } from "../ui/Alert";
-import { Input } from "../ui/Input";
-import { Toggle } from "../ui/Toggle";
+import { Alert } from "@/components/ds/Feedback";
+import { Input } from "@/components/ds/Field";
+import { Toggle } from "@/components/ds/Toggle";
 import { cn } from "@/lib/core";
 
 interface CategoryItem {

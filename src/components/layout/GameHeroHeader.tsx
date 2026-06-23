@@ -24,9 +24,9 @@ import { gameTabPath } from "@/lib/routing";
 import { gpuSummaryLabel } from "@/lib/gpu";
 import type { AppTab, GameProfile, GameTabRoute } from "@/lib/core";
 import { cn } from "@/lib/core";
-import { Alert } from "../ui/Alert";
-import { Badge } from "../ui/Badge";
-import { Button } from "../ui/Button";
+import { Alert } from "@/components/ds/Feedback";
+import { Badge } from "@/components/ds/Badge";
+import { Button } from "@/components/ds/Button";
 
 interface Props {
   game: GameProfile;
@@ -220,15 +220,15 @@ export function GameHeroHeader({ game, activeTab }: Props) {
                 <Badge tone="warning">{t("badge.engineUnknown")}</Badge>
               )}
               {game.engine_version && (
-                <Badge tone="default">{game.engine_version}</Badge>
+                <Badge tone="neutral">{game.engine_version}</Badge>
               )}
               <Badge tone={configDir ? "success" : "warning"}>
                 {configDir ? t("badge.configOk") : t("badge.needConfig")}
               </Badge>
-              <Badge tone="default">
+              <Badge tone="neutral">
                 {t(`source.${game.source}`, { defaultValue: game.source })}
               </Badge>
-              {gpu && <Badge tone="default">{gpuSummaryLabel(gpu)}</Badge>}
+              {gpu && <Badge tone="neutral">{gpuSummaryLabel(gpu)}</Badge>}
             </div>
           </div>
         </div>

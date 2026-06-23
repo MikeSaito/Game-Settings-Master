@@ -1,4 +1,4 @@
-//! Generates `src/lib/bindings.ts` from Rust DTOs (run via `npm run types:gen`).
+//! Generates `src/lib/api/bindings.ts` from Rust DTOs (run via `npm run types:gen`).
 
 use crate::display::ScreenResolution;
 use crate::gpu::{GpuCapabilities, GpuVendor};
@@ -12,7 +12,7 @@ use specta::Types;
 use specta_serde::PhasesFormat;
 use specta_typescript::Typescript;
 
-const BINDINGS_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../src/lib/bindings.ts");
+const BINDINGS_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../src/lib/api/bindings.ts");
 
 #[test]
 fn export_typescript_bindings() {

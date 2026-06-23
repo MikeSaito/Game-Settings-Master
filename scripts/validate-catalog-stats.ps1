@@ -72,10 +72,10 @@ if ($versionCount -ge 8) {
         Write-Error "merge_stats missing applicable_by_version.5.4 - re-run catalog:build."
     }
     if ([int]$stats.sg_registry_count -lt 12) {
-        Write-Error "Expected sg_registry_count >= 12 (got $($stats.sg_registry_count)). Run extract_sg_from_cpp.py --all-versions."
+        Write-Error "Expected sg_registry_count >= 12 (got $($stats.sg_registry_count)). Run tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions."
     }
     if ([int]$stats.gus_registry_count -lt 20) {
-        Write-Error "Expected gus_registry_count >= 20 (got $($stats.gus_registry_count)). Run extract_gus_from_header.py --all-versions."
+        Write-Error "Expected gus_registry_count >= 20 (got $($stats.gus_registry_count)). Run tools/ue-catalog-builder/extract/gus_from_header.py --all-versions."
     }
     Write-Host ""
     Write-Host "Full fetch mode ($versionCount sources, $total merged keys)."

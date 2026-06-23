@@ -187,7 +187,7 @@ class MergeStatsTests(unittest.TestCase):
         registry_path = ROOT / "tools" / "ue-catalog-builder" / "generated" / "sg_registry_merged.json"
         curated_path = ROOT / "src-tauri" / "catalog" / "scalability.json"
         if not registry_path.exists():
-            self.skipTest("run extract_sg_from_cpp.py first")
+            self.skipTest("run tools/ue-catalog-builder/extract/sg_from_cpp.py first")
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
         curated = json.loads(curated_path.read_text(encoding="utf-8"))
         curated_keys = {item["key"] for item in curated}
@@ -198,7 +198,7 @@ class MergeStatsTests(unittest.TestCase):
         registry_path = ROOT / "tools" / "ue-catalog-builder" / "generated" / "gus_registry_merged.json"
         curated_path = ROOT / "src-tauri" / "catalog" / "display.json"
         if not registry_path.exists():
-            self.skipTest("run extract_gus_from_header.py first")
+            self.skipTest("run tools/ue-catalog-builder/extract/gus_from_header.py first")
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
         curated = json.loads(curated_path.read_text(encoding="utf-8"))
         curated_keys = {item["key"] for item in curated}

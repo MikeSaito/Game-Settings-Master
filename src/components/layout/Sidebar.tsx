@@ -6,7 +6,7 @@ import { libraryPath } from "@/lib/routing";
 import type { AppTab, GameProfile } from "@/lib/core";
 import { cn } from "@/lib/core";
 import { GameCover } from "@/components/game/GameCover";
-import { Badge } from "../ui/Badge";
+import { Badge } from "@/components/ds/Badge";
 import { LanguageToggle } from "./LanguageToggle";
 
 interface Props {

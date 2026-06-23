@@ -1,7 +1,7 @@
-# Fail when src/lib/bindings.ts is out of sync with Rust DTOs (run after editing models.rs).
+# Fail when src/lib/api/bindings.ts is out of sync with Rust DTOs (run after editing models.rs).
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
-$bindings = Join-Path $root "src\lib\bindings.ts"
+$bindings = Join-Path $root "src\lib\api\bindings.ts"
 $backup = Join-Path $env:TEMP "gsm-bindings-backup-$([guid]::NewGuid().ToString()).ts"
 
 Copy-Item -LiteralPath $bindings -Destination $backup -Force
@@ -16,11 +16,11 @@ finally {
     Pop-Location
 }
 
-$diff = & git -C $root diff --no-color -- src/lib/bindings.ts
+$diff = & git -C $root diff --no-color -- src/lib/api/bindings.ts
 if ($diff) {
     Copy-Item -LiteralPath $backup -Destination $bindings -Force
     Write-Error @"
-src/lib/bindings.ts is out of sync with Rust models.
+src/lib/api/bindings.ts is out of sync with Rust models.
 Run: npm run types:gen
 Then commit the updated bindings.ts
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { engineWarningAckKey } from "@/lib/routing";
-import { Alert } from "../ui/Alert";
-import { Toggle } from "../ui/Toggle";
+import { Alert } from "@/components/ds/Feedback";
+import { Toggle } from "@/components/ds/Toggle";
 
 interface Props {
   gameId: string;
