@@ -42,6 +42,7 @@ impl AppInvokeError {
         Self::new(AppErrorCode::GameNotFound, message)
     }
 
+    #[allow(dead_code)] // reserved for preset IPC; covered in app_error_tests
     pub fn preset_not_found(message: impl Into<String>) -> Self {
         Self::new(AppErrorCode::PresetNotFound, message)
     }
