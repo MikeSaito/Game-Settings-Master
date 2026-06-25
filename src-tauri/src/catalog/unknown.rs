@@ -7,7 +7,12 @@ use super::humanize::{
     is_opaque_struct_value, is_standard_ue_cvar_key, truncate_preview,
 };
 
-pub(crate) fn unknown_parameter(key: &str, section: &str, file: &str, value: &str) -> GameParameter {
+pub(crate) fn unknown_parameter(
+    key: &str,
+    section: &str,
+    file: &str,
+    value: &str,
+) -> GameParameter {
     if is_opaque_struct_value(value) {
         return GameParameter {
             key: key.to_string(),
@@ -128,10 +133,9 @@ pub(crate) fn unknown_ue_parameter(
         && section
             .trim_matches(|c| c == '[' || c == ']')
             .eq_ignore_ascii_case("ScalabilityGroups")
+        && (key == "sg.ResolutionQuality" || is_scalability_quality_index(key))
     {
-        if key == "sg.ResolutionQuality" || is_scalability_quality_index(key) {
-            return Some(unknown_parameter(key, section, file, value));
-        }
+        return Some(unknown_parameter(key, section, file, value));
     }
     if matches!(
         file,

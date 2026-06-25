@@ -60,7 +60,7 @@ pub fn scan_local_appdata_configs() -> Vec<ConfigIndexEntry> {
 }
 
 fn scan_local_appdata_configs_uncached(local_app_data: &Path) -> Vec<ConfigIndexEntry> {
-    let Ok(entries) = std::fs::read_dir(&local_app_data) else {
+    let Ok(entries) = std::fs::read_dir(local_app_data) else {
         return Vec::new();
     };
 

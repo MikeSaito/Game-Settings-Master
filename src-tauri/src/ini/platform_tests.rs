@@ -1,6 +1,4 @@
-use super::{
-    apply_target_dirs, ends_with_platform, pick_platform_config_dir, PlatformHints,
-};
+use super::{apply_target_dirs, ends_with_platform, pick_platform_config_dir, PlatformHints};
 use std::fs;
 
 #[test]

@@ -81,9 +81,3 @@ pub(crate) fn resolve_backup_path(config_dir: &Path, backup_id: &str) -> Result<
         &format!("Backup '{backup_id}' not found"),
     ))
 }
-
-#[cfg(test)]
-#[allow(dead_code)]
-pub fn backup_path_for(config_dir: &Path, backup_id: &str) -> Result<PathBuf, String> {
-    resolve_backup_path(config_dir, backup_id)
-}

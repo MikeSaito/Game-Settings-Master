@@ -80,9 +80,7 @@ pub(crate) fn pick_reference_default(
         if let Some((_, value)) = reference
             .defaults_by_version
             .iter()
-            .filter(|(label, _)| {
-                parse_version_label(label).is_some_and(|snap| snap <= gv)
-            })
+            .filter(|(label, _)| parse_version_label(label).is_some_and(|snap| snap <= gv))
             .max_by(|(a, _), (b, _)| {
                 parse_version_label(a)
                     .unwrap_or(UeSemver {

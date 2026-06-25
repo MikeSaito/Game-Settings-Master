@@ -8,6 +8,7 @@ use std::sync::OnceLock;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct KnownGameEntry {
+    #[serde(default, rename = "name")]
     #[allow(dead_code)]
     pub name: String,
     pub local_app_folder: String,

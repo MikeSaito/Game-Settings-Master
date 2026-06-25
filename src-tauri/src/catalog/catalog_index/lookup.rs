@@ -26,13 +26,12 @@ pub(crate) fn lookup_entry<'a>(
     }
 
     if let Some(reference) = index.reference_by_key.get(&key.to_lowercase()) {
-        if reference.file.eq_ignore_ascii_case(file)
+        if (reference.file.eq_ignore_ascii_case(file)
             || file == "Engine.ini"
-            || (file == "GameUserSettings.ini" && key.starts_with("sg."))
+            || (file == "GameUserSettings.ini" && key.starts_with("sg.")))
+            && reference_applies_to_version(reference, game_version, is_ue4)
         {
-            if reference_applies_to_version(reference, game_version, is_ue4) {
-                return Some(CatalogMatch::Reference(reference));
-            }
+            return Some(CatalogMatch::Reference(reference));
         }
     }
 

@@ -2,9 +2,9 @@ mod manifest;
 mod paths;
 mod signal;
 
+use crate::core::models::GameProfile;
 use crate::discovery::dedupe_paths;
 use crate::discovery::known_games::load_known_games;
-use crate::core::models::GameProfile;
 use std::collections::HashMap;
 use std::fs;
 

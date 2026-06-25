@@ -1,23 +1,6 @@
 use crate::scalability::is_scalability_quality_index;
 
-pub(crate) fn is_game_rendering_key(key: &str) -> bool {
-    let lower = key.to_lowercase();
-    [
-        "dlss",
-        "xess",
-        "fsr",
-        "tsr",
-        "raytracing",
-        "ray_tracing",
-        "lumen",
-        "nanite",
-        "upscal",
-        "framegeneration",
-        "frame_generation",
-    ]
-    .iter()
-    .any(|needle| lower.contains(needle))
-}
+use super::rendering_markers::is_game_rendering_key;
 
 pub(crate) fn infer_category(section: &str, key: &str) -> String {
     let lower = section.to_lowercase();

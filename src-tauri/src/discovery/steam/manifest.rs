@@ -1,8 +1,8 @@
+use crate::core::models::GameProfile;
 use crate::discovery::config_index::scan_local_appdata_configs;
 use crate::discovery::known_games::KnownGameEntry;
 use crate::discovery::ue_detect::{detect_unreal_engine, find_executables, UeDetectResult};
 use crate::ini::paths::resolve_config_dir;
-use crate::core::models::GameProfile;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;

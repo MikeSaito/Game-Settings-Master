@@ -43,9 +43,12 @@ pub fn patch_ini_text(
         };
         let mut remove_at: Vec<usize> = Vec::new();
         for key in keys {
-            for idx in sec.start..sec.end.min(lines.len()) {
-                if line_key(&lines[idx]) == Some(key.as_str()) {
-                    remove_at.push(idx);
+            for (offset, line) in lines[sec.start..sec.end.min(lines.len())]
+                .iter()
+                .enumerate()
+            {
+                if line_key(line) == Some(key.as_str()) {
+                    remove_at.push(sec.start + offset);
                 }
             }
         }

@@ -21,7 +21,9 @@ pub fn launch_steam_app_id(app_id: &str) -> Result<LaunchResult, String> {
     })
 }
 
-pub(crate) fn steam_app_id_from_profile(profile: &crate::core::models::GameProfile) -> Result<&str, String> {
+pub(crate) fn steam_app_id_from_profile(
+    profile: &crate::core::models::GameProfile,
+) -> Result<&str, String> {
     profile
         .id
         .strip_prefix("steam-")
@@ -34,7 +36,9 @@ pub(crate) fn steam_app_id_from_profile(profile: &crate::core::models::GameProfi
         })
 }
 
-pub(crate) fn launch_steam_profile(profile: &crate::core::models::GameProfile) -> Result<LaunchResult, String> {
+pub(crate) fn launch_steam_profile(
+    profile: &crate::core::models::GameProfile,
+) -> Result<LaunchResult, String> {
     let app_id = steam_app_id_from_profile(profile)?;
     launch_steam_app_id(app_id)
 }

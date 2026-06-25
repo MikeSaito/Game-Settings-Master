@@ -2,7 +2,9 @@ use crate::core::models::ConfigDiffEntry;
 use indexmap::IndexMap;
 use std::collections::HashMap;
 
-pub(crate) fn normalize_removals(sections: &HashMap<String, Vec<String>>) -> HashMap<String, Vec<String>> {
+pub(crate) fn normalize_removals(
+    sections: &HashMap<String, Vec<String>>,
+) -> HashMap<String, Vec<String>> {
     let mut result = HashMap::new();
     for (section, keys) in sections {
         let section_name = super::resolve::normalize_section(section);

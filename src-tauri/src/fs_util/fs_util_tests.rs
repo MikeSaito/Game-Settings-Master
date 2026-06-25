@@ -1,6 +1,4 @@
-use super::io::{
-    read_file_bytes, strip_utf8_bom, write_file_bytes, write_file_bytes_opts,
-};
+use super::io::{read_file_bytes, strip_utf8_bom, write_file_bytes, write_file_bytes_opts};
 use super::path_safety::{
     is_allowed_config_ini_filename, is_allowed_restore_filename, is_safe_backup_id,
     is_safe_exe_basename, is_safe_ini_key_name, is_safe_ini_section_name, is_safe_ini_value,

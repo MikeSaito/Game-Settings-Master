@@ -1,7 +1,5 @@
 use super::custom_changes::MAX_CUSTOM_CHANGES_JSON_BYTES;
-use super::{
-    guard_config_dir_for_write, validate_custom_changes_payload,
-};
+use super::{guard_config_dir_for_write, validate_custom_changes_payload};
 use crate::core::models::CustomChanges;
 use std::collections::HashMap;
 use std::fs;

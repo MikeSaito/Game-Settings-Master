@@ -1,12 +1,14 @@
-use crate::ini::{parser::ini_to_data, read_ini_file};
 use crate::core::models::GameParameter;
+use crate::ini::{parser::ini_to_data, read_ini_file};
 use crate::scalability::{detect_scalability_limits, is_scalability_quality_index};
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
 use super::catalog_index::{get_or_build_catalog_index, lookup_entry};
 use super::dedupe::dedupe_parameters_by_file_key;
-use super::humanize::{apply_known_range_patterns, fill_generic_value_hint, infer_range_from_value};
+use super::humanize::{
+    apply_known_range_patterns, fill_generic_value_hint, infer_range_from_value,
+};
 use super::injection::{inject_catalog_and_reference_parameters, mark_parameter_seen};
 use super::parameter_build::{
     attach_scalability_tier_hints, entry_to_parameter, hint_to_parameter, reference_to_parameter,
@@ -110,7 +112,3 @@ pub fn get_game_parameters(
 
     Ok(parameters)
 }
-
-#[cfg(test)]
-#[path = "loader_tests.rs"]
-mod tests;

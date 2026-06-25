@@ -8,19 +8,19 @@ pub fn find_executables(install_dir: &Path) -> Vec<PathBuf> {
         .into_iter()
         .filter_map(|e| e.ok())
     {
-        if entry.file_type().is_file() {
-            if entry.path().extension().and_then(|e| e.to_str()) == Some("exe") {
-                let name = entry.file_name().to_string_lossy().to_lowercase();
-                if !name.contains("uninstall")
-                    && !name.contains("setup")
-                    && !name.contains("redist")
-                    && !name.contains("crash")
-                    && !name.contains("launcher")
-                    && !name.contains("eac")
-                    && !name.contains("battleye")
-                {
-                    exes.push(entry.path().to_path_buf());
-                }
+        if entry.file_type().is_file()
+            && entry.path().extension().and_then(|e| e.to_str()) == Some("exe")
+        {
+            let name = entry.file_name().to_string_lossy().to_lowercase();
+            if !name.contains("uninstall")
+                && !name.contains("setup")
+                && !name.contains("redist")
+                && !name.contains("crash")
+                && !name.contains("launcher")
+                && !name.contains("eac")
+                && !name.contains("battleye")
+            {
+                exes.push(entry.path().to_path_buf());
             }
         }
     }

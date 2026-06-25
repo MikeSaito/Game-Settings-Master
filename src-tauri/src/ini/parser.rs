@@ -1,5 +1,5 @@
-use crate::ini::encoding::read_text;
 use crate::core::models::{IniFile, IniSection};
+use crate::ini::encoding::read_text;
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::path::Path;

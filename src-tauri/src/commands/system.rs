@@ -1,18 +1,19 @@
+use crate::core::app_error::AppInvokeError;
 use crate::fs_util::{is_exe_running, is_safe_exe_basename, kill_exe};
 use crate::gpu::{detect_gpu, GpuCapabilities};
 
 #[tauri::command]
-pub fn get_gpu_info_cmd() -> Result<GpuCapabilities, String> {
+pub fn get_gpu_info_cmd() -> Result<GpuCapabilities, AppInvokeError> {
     Ok(detect_gpu())
 }
 
 #[tauri::command]
-pub fn get_desktop_resolution_cmd() -> Result<crate::display::ScreenResolution, String> {
+pub fn get_desktop_resolution_cmd() -> Result<crate::display::ScreenResolution, AppInvokeError> {
     crate::display::primary_resolution().ok_or_else(|| {
-        crate::i18n::t(
+        AppInvokeError::other(crate::i18n::t(
             "Не удалось определить разрешение экрана",
             "Failed to determine screen resolution",
-        )
+        ))
     })
 }
 
@@ -33,12 +34,12 @@ pub fn set_app_background_mode_cmd(background: bool) {
 }
 
 #[tauri::command]
-pub fn set_language_cmd(lang: String) -> Result<(), String> {
-    crate::i18n::set_language(&lang)
+pub fn set_language_cmd(lang: String) -> Result<(), AppInvokeError> {
+    crate::i18n::set_language(&lang).map_err(AppInvokeError::from)
 }
 
 #[tauri::command]
-pub fn close_game_cmd(game_id: String, exe_name: Option<String>) -> Result<(), String> {
+pub fn close_game_cmd(game_id: String, exe_name: Option<String>) -> Result<(), AppInvokeError> {
     let exe = super::helpers::resolve_trusted_close_exe_name(&game_id, exe_name.as_deref())?;
-    kill_exe(&exe)
+    kill_exe(&exe).map_err(AppInvokeError::from)
 }

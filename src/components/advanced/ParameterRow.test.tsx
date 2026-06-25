@@ -108,18 +108,18 @@ describe("ParameterRow", () => {
     expect(screen.getByRole("option", { name: "Borderless" })).toBeInTheDocument();
   });
 
-  it("renders humanized title when title equals raw key", () => {
+  it("renders backend title as display label", () => {
     render(
       <ParameterRow
         param={baseParam({
           key: "r.ViewDistanceScale",
-          title: "r.ViewDistanceScale",
+          title: "обзор · дистанция · масштаб",
         })}
       />,
     );
 
     const row = screen.getByTestId("parameter-row");
-    expect(within(row).getByText(/view · distance · scale/i)).toBeInTheDocument();
+    expect(within(row).getByText("обзор · дистанция · масштаб")).toBeInTheDocument();
   });
 
   it("renders conflict chip", () => {

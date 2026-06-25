@@ -6,7 +6,7 @@ use super::cache::cached_scan_all_games;
 
 /// Look up a game by id: saved profiles first, then cached discovery scan.
 pub fn find_game_by_id(game_id: &str) -> Result<Option<GameProfile>, String> {
-    let saved = load_saved_profiles().map_err(|e| AppError::io(e).to_invoke_string())?;
+    let saved = load_saved_profiles().map_err(|e| AppError::io(e).message)?;
     if let Some(profile) = saved.into_iter().find(|g| g.id == game_id) {
         return Ok(Some(profile));
     }

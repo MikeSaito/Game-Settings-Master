@@ -14,8 +14,8 @@ mod ue_version;
 pub use config_index::{
     build_match_candidates, match_config_from_index, scan_local_appdata_configs,
 };
-pub use dedupe::{dedupe_games, merge_game_profile, normalize_install_dir};
 pub(crate) use dedupe::dedupe_paths;
+pub use dedupe::{dedupe_games, merge_game_profile, normalize_install_dir};
 pub use enrich::{enrich_config_dir, enrich_engine_flags};
 pub use known_games::{known_config_dir, load_known_games, platform_hints_for_game};
 pub use manual::profile_from_manual_path;

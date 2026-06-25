@@ -1,9 +1,9 @@
-mod core;
 mod backup;
 #[cfg(test)]
 mod bindings_export;
 mod catalog;
 mod commands;
+mod core;
 mod covers;
 mod discovery;
 mod display;
@@ -16,7 +16,8 @@ mod presets;
 mod profiles;
 mod scalability;
 
-pub use core::{app_error, models, process_util, resource_paths};
+pub use core::app_error::{self, AppError, AppErrorCode, AppInvokeError};
+pub use core::{models, process_util, resource_paths};
 
 use commands::{
     add_manual_game, apply_custom_cmd, apply_game_override, close_game_cmd, delete_game_override,

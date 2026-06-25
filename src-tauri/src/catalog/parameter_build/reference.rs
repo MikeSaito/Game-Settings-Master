@@ -1,7 +1,9 @@
-use crate::core::models::GameParameter;
 use super::super::humanize::{apply_known_range_patterns, fill_generic_value_hint};
-use super::super::localize::{infer_description_quality, is_stub_description, pick_localized, pick_title};
+use super::super::localize::{
+    infer_description_quality, is_stub_description, pick_localized, pick_title,
+};
 use super::super::types::ReferenceEntry;
+use crate::core::models::GameParameter;
 
 pub(crate) fn reference_to_parameter(
     reference: &ReferenceEntry,

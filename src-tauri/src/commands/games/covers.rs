@@ -1,21 +1,25 @@
 use crate::commands::helpers::{find_profile_by_id, validate_config_dir_for_game};
+use crate::core::app_error::{AppError, AppInvokeError};
+use crate::core::models::GameProfile;
 use crate::covers::{enrich_cover, import_custom_cover, merge_saved_cover, remove_custom_cover};
 use crate::discovery::{
     cached_scan_all_games, enrich_config_dir, enrich_engine_flags, enrich_engine_version,
 };
-use crate::core::models::GameProfile;
 use crate::profiles::{load_saved_profiles, save_profile};
 use std::path::PathBuf;
 
 #[tauri::command]
-pub fn import_game_cover_cmd(game_id: String, image_path: String) -> Result<GameProfile, String> {
+pub fn import_game_cover_cmd(
+    game_id: String,
+    image_path: String,
+) -> Result<GameProfile, AppInvokeError> {
     crate::profiles::ensure_known_game_id(&game_id)?;
     let image_path = image_path.trim();
     if image_path.is_empty() || image_path.len() > 1024 {
-        return Err(crate::i18n::t(
+        return Err(AppError::validation(crate::i18n::t(
             "Недопустимый путь к изображению",
             "Invalid image path",
-        ));
+        )));
     }
     let custom_cover = import_custom_cover(&game_id, &PathBuf::from(image_path))?;
 
@@ -41,10 +45,10 @@ pub fn import_game_cover_cmd(game_id: String, image_path: String) -> Result<Game
     }
 
     let profile = games.iter_mut().find(|g| g.id == game_id).ok_or_else(|| {
-        crate::i18n::t(
+        AppError::game_not_found(crate::i18n::t(
             &format!("Игра «{game_id}» не найдена — нажмите «Сканировать» в библиотеке"),
             &format!("Game «{game_id}» not found — click Scan in the library"),
-        )
+        ))
     })?;
 
     profile.custom_cover = Some(custom_cover);
@@ -53,7 +57,7 @@ pub fn import_game_cover_cmd(game_id: String, image_path: String) -> Result<Game
 }
 
 #[tauri::command]
-pub fn remove_game_cover_cmd(game_id: String) -> Result<GameProfile, String> {
+pub fn remove_game_cover_cmd(game_id: String) -> Result<GameProfile, AppInvokeError> {
     crate::profiles::ensure_known_game_id(&game_id)?;
     remove_custom_cover(&game_id)?;
 
@@ -62,10 +66,10 @@ pub fn remove_game_cover_cmd(game_id: String) -> Result<GameProfile, String> {
         .find(|g| g.id == game_id)
         .or_else(|| find_profile_by_id(&game_id).ok().flatten())
         .ok_or_else(|| {
-            crate::i18n::t(
+            AppError::game_not_found(crate::i18n::t(
                 &format!("Игра '{game_id}' не найдена"),
                 &format!("Game '{game_id}' not found"),
-            )
+            ))
         })?;
 
     profile.custom_cover = None;
@@ -75,15 +79,18 @@ pub fn remove_game_cover_cmd(game_id: String) -> Result<GameProfile, String> {
 }
 
 #[tauri::command]
-pub fn open_config_folder(config_dir: String, game_id: Option<String>) -> Result<(), String> {
+pub fn open_config_folder(
+    config_dir: String,
+    game_id: Option<String>,
+) -> Result<(), AppInvokeError> {
     if let Some(gid) = game_id.as_deref() {
         validate_config_dir_for_game(gid, &config_dir)?;
     }
     let path = crate::ini::paths::validate_config_dir(&config_dir)?;
     open::that(path).map_err(|e| {
-        crate::i18n::t(
+        AppError::io(crate::i18n::t(
             &format!("Не удалось открыть папку: {e}"),
             &format!("Failed to open folder: {e}"),
-        )
+        ))
     })
 }

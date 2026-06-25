@@ -3,8 +3,8 @@ use std::path::Path;
 
 use serde::Deserialize;
 
-use crate::discovery::known_games::{known_app_id_for_game, load_known_games};
 use super::types::{format_version, UeEngineFamily, UeVersionInfo};
+use crate::discovery::known_games::{known_app_id_for_game, load_known_games};
 
 pub(crate) fn known_engine_family(game_id: &str) -> Option<UeEngineFamily> {
     let app_id = known_app_id_for_game(game_id).or_else(|| {

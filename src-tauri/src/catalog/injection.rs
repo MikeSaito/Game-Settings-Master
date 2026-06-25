@@ -1,12 +1,10 @@
-use crate::core::models::GameParameter;
 use super::catalog_index::{catalog_id, should_include_catalog_entry};
-use super::types::CatalogIndex;
 use super::localize::is_stub_description;
-use super::parameter_build::{
-    catalog_default_value, entry_to_parameter, reference_to_parameter,
-};
+use super::parameter_build::{catalog_default_value, entry_to_parameter, reference_to_parameter};
+use super::types::CatalogIndex;
 use super::types::{ParameterCatalogEntry, ReferenceEntry};
 use super::version::{pick_reference_default, reference_applies_to_version, UeSemver};
+use crate::core::models::GameParameter;
 use std::collections::{HashMap, HashSet};
 
 fn injection_file_key(file: &str, key: &str) -> String {

@@ -2,7 +2,10 @@ use super::load::{load_key_hints, load_reference_index};
 use crate::catalog::types::{CatalogIndex, ParameterCatalogEntry};
 use std::collections::HashMap;
 
-pub(crate) fn build_catalog_index(catalog: Vec<ParameterCatalogEntry>, _is_ue4: bool) -> CatalogIndex {
+pub(crate) fn build_catalog_index(
+    catalog: Vec<ParameterCatalogEntry>,
+    _is_ue4: bool,
+) -> CatalogIndex {
     let mut by_full_id = HashMap::new();
     let mut by_file_key = HashMap::new();
     let mut by_key = HashMap::new();

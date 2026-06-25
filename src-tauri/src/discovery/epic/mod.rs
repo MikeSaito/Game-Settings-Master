@@ -2,8 +2,8 @@ mod manifest;
 mod paths;
 mod signal;
 
-use crate::discovery::merge_game_profile;
 use crate::core::models::GameProfile;
+use crate::discovery::merge_game_profile;
 use std::collections::HashMap;
 use std::fs;
 

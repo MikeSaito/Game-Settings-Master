@@ -1,6 +1,6 @@
-use crate::core::models::GameParameter;
 use super::super::localize::{pick_localized, pick_title};
 use super::super::types::KeyHintEntry;
+use crate::core::models::GameParameter;
 
 pub(crate) fn hint_to_parameter(
     hint: &KeyHintEntry,

@@ -1,0 +1,2 @@
+# Project-wide Clippy defaults (see CI: cargo clippy -- -D warnings).
+avoid-breaking-exported-api = false

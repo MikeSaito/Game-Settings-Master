@@ -92,10 +92,7 @@ pub(crate) fn reset_scan_counter() {
 }
 
 #[cfg(test)]
-pub(crate) fn patch_steam_mtime_for_test(
-    path: std::path::PathBuf,
-    mtime: std::time::SystemTime,
-) {
+pub(crate) fn patch_steam_mtime_for_test(path: std::path::PathBuf, mtime: std::time::SystemTime) {
     if let Ok(mut guard) = GAME_SCAN_CACHE.lock() {
         if let Some(cache) = guard.as_mut() {
             cache.mtime_snapshot.steam_libraries = vec![(path, mtime)];

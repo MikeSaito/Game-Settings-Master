@@ -1,6 +1,7 @@
 use crate::commands::helpers::{
     guard_config_dir_for_write, resolve_write_exe_name, validate_custom_changes_payload,
 };
+use crate::core::app_error::AppInvokeError;
 use crate::core::models::{ApplyResult, CustomChanges};
 use crate::discovery::platform_hints_for_game;
 use crate::fs_util::ensure_config_writable;
@@ -15,7 +16,7 @@ pub fn apply_custom_cmd(
     exe_name: Option<String>,
     game_id: Option<String>,
     engine_family: Option<String>,
-) -> Result<ApplyResult, String> {
+) -> Result<ApplyResult, AppInvokeError> {
     guard_config_dir_for_write(game_id.as_deref(), &config_dir)?;
     let resolved_exe = resolve_write_exe_name(exe_name.as_deref(), game_id.as_deref())?;
     let path = validate_config_dir(&config_dir)?;

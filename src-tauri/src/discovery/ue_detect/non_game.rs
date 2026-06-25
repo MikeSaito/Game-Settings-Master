@@ -49,12 +49,7 @@ fn is_epic_engine_install_path(install_dir: &Path) -> bool {
         .and_then(|n| n.to_str())
         .is_some_and(|dir| {
             let lower = dir.to_lowercase();
-            lower.starts_with("ue_")
-                && lower
-                    .chars()
-                    .skip(3)
-                    .next()
-                    .is_some_and(|c| c.is_ascii_digit())
+            lower.starts_with("ue_") && lower.chars().nth(3).is_some_and(|c| c.is_ascii_digit())
         })
 }
 

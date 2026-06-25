@@ -87,7 +87,6 @@ pub(crate) struct KeyHintEntry {
 pub(crate) struct ReferenceEntry {
     pub key: String,
     pub file: String,
-    #[allow(dead_code)]
     pub section: String,
     pub value_type: String,
     #[serde(default)]

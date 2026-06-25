@@ -1,8 +1,7 @@
 use super::overrides::validate_override_payload;
 use super::persist::{remove_profile, save_profile};
 use super::trust::{
-    ensure_known_game_id, is_stale_saved_profile, resolve_trusted_profile,
-    validate_profile_paths,
+    ensure_known_game_id, is_stale_saved_profile, resolve_trusted_profile, validate_profile_paths,
 };
 use crate::core::models::{GameOverride, GameProfile};
 

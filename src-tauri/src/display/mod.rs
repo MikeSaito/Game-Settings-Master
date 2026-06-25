@@ -8,7 +8,7 @@ pub struct ScreenResolution {
 pub fn primary_resolution() -> Option<ScreenResolution> {
     #[cfg(windows)]
     {
-        return detect_windows_primary();
+        detect_windows_primary()
     }
     #[cfg(not(windows))]
     {

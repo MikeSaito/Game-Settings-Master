@@ -18,8 +18,20 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Rust format check
+        working-directory: src-tauri
+        run: cargo fmt --check
+
+      - name: Rust clippy
+        working-directory: src-tauri
+        run: cargo clippy -- -D warnings
 
       - name: Rust tests
         working-directory: src-tauri
@@ -38,6 +50,9 @@ jobs:
 
       - name: Frontend unit tests
         run: npm test
+
+      - name: Catalog builder tests
+        run: npm run catalog:test
 
       - name: Landing build
         run: npm ci --prefix landing && npm run build --prefix landing

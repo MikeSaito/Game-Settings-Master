@@ -2,7 +2,9 @@ use chrono::Local;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use crate::fs_util::{ensure_safe_child_file, is_safe_backup_id, read_file_bytes, write_file_bytes};
+use crate::fs_util::{
+    ensure_safe_child_file, is_safe_backup_id, read_file_bytes, write_file_bytes,
+};
 
 use super::paths::{backup_store_dir, legacy_backup_root, INI_FILES};
 

@@ -1,7 +1,8 @@
-/// Stable marker in the "game is running" error text — independent of UI wording.
+/// Legacy marker kept for parsing old invoke error strings during transition.
 pub const RUNNING_GAME_ERROR_MARKER: &str = "GSM_ERR_GAME_RUNNING:";
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, specta::Type)]
+#[serde(rename_all = "snake_case")]
 pub enum AppErrorCode {
     GameRunning,
     InvalidPath,
@@ -12,22 +13,21 @@ pub enum AppErrorCode {
     Other,
 }
 
-#[derive(Debug, Clone)]
-pub struct AppError {
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
+pub struct AppInvokeError {
     pub code: AppErrorCode,
     pub message: String,
 }
 
-impl AppError {
+/// Internal alias — command handlers and helpers build structured invoke errors.
+pub type AppError = AppInvokeError;
+
+impl AppInvokeError {
     pub fn new(code: AppErrorCode, message: impl Into<String>) -> Self {
         Self {
             code,
             message: message.into(),
         }
-    }
-
-    pub fn to_invoke_string(self) -> String {
-        String::from(self)
     }
 
     pub fn validation(message: impl Into<String>) -> Self {
@@ -59,36 +59,37 @@ impl AppError {
     }
 }
 
-impl From<AppError> for String {
-    fn from(err: AppError) -> String {
-        match err.code {
-            // Frontend strips the marker; message must stay byte-identical to legacy helpers.
-            AppErrorCode::GameRunning => err.message,
-            AppErrorCode::GameNotFound
-            | AppErrorCode::InvalidPath
-            | AppErrorCode::PresetNotFound => err.message,
-            AppErrorCode::IoError | AppErrorCode::Validation | AppErrorCode::Other => err.message,
-        }
-    }
-}
-
-#[cfg(test)]
 pub fn is_running_game_error(err: &str) -> bool {
     err.starts_with(RUNNING_GAME_ERROR_MARKER)
 }
 
-pub fn running_game_ini_blocked(exe: &str) -> String {
-    AppError::game_running(crate::i18n::t(
-        &format!(
-            "{RUNNING_GAME_ERROR_MARKER}Игра «{exe}» запущена. Закройте игру перед применением — иначе ini-файлы заблокированы."
-        ),
-        &format!(
-            "{RUNNING_GAME_ERROR_MARKER}Game «{exe}» is running. Close the game before applying changes — otherwise ini files are locked."
-        ),
-    ))
-    .into()
+impl From<String> for AppInvokeError {
+    fn from(message: String) -> Self {
+        if is_running_game_error(&message) {
+            Self::game_running(message.replace(RUNNING_GAME_ERROR_MARKER, ""))
+        } else {
+            Self::other(message)
+        }
+    }
+}
+
+impl From<&str> for AppInvokeError {
+    fn from(message: &str) -> Self {
+        message.to_string().into()
+    }
 }
 
 #[cfg(test)]
 #[path = "app_error_tests.rs"]
 mod tests;
+
+pub fn running_game_ini_blocked(exe: &str) -> AppInvokeError {
+    AppInvokeError::game_running(crate::i18n::t(
+        &format!(
+            "Игра «{exe}» запущена. Закройте игру перед применением — иначе ini-файлы заблокированы."
+        ),
+        &format!(
+            "Game «{exe}» is running. Close the game before applying changes — otherwise ini files are locked."
+        ),
+    ))
+}

@@ -6,7 +6,7 @@ import {
   DLSS_NUM_TO_MODE,
   GUS,
 } from "./constants";
-import { dlssIsOff, findInFile, normalizeDlssMode, setInFile } from "./patchUtils";
+import { dlssIsOff, findInFile, setInFile } from "./patchUtils";
 
 export function syncFromDlssMode(
   params: GameParameter[],

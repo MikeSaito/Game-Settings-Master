@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next";
 import type { GameParameter } from "@/lib/core";
-import { humanizeCvarKey, isUeSentinelValue } from "@/lib/editor";
+import { isUeSentinelValue } from "@/lib/editor";
 
 export type ControlKind = "toggle" | "select" | "slider" | "number" | "text";
 
@@ -94,19 +94,7 @@ export function sameValue(a: string, b: string): boolean {
   return a.trim() === b.trim();
 }
 
-export function isPoorTitle(title: string, key: string): boolean {
-  const t = title.trim();
-  if (!t || t === key) return true;
-  if (t.replace(/[.\s·]/g, "").toLowerCase() === key.replace(/[.\s]/g, "").toLowerCase()) {
-    return true;
-  }
-  return false;
-}
-
-export function resolveDisplayTitle(param: GameParameter, t: TFunction<"advanced">): string {
-  if (isPoorTitle(param.title, param.key)) {
-    return humanizeCvarKey(param.key, t);
-  }
+export function resolveDisplayTitle(param: GameParameter): string {
   return param.title;
 }
 

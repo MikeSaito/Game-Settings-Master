@@ -1,14 +1,15 @@
+use crate::core::app_error::AppInvokeError;
+use crate::core::models::GameProfile;
 use crate::covers::{enrich_cover, merge_saved_cover};
 use crate::discovery::{
     dedupe_games, detect_unreal_engine, enrich_config_dir, enrich_engine_flags,
     enrich_engine_version, force_refresh_scan_all_games, is_non_game_install, UeDetectResult,
 };
-use crate::core::models::GameProfile;
 use crate::profiles::{is_stale_saved_profile, load_saved_profiles, prune_stale_saved_profiles};
 use std::path::PathBuf;
 
 #[tauri::command]
-pub fn scan_games() -> Result<Vec<GameProfile>, String> {
+pub fn scan_games() -> Result<Vec<GameProfile>, AppInvokeError> {
     let _ = prune_stale_saved_profiles();
     let mut games = force_refresh_scan_all_games().as_ref().clone();
     let saved = load_saved_profiles()?;

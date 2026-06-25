@@ -24,11 +24,6 @@ fn exe_resources_root() -> Option<PathBuf> {
     if resources.is_dir() {
         return Some(resources);
     }
-    #[cfg(windows)]
-    {
-        return None;
-    }
-    #[cfg(not(windows))]
     None
 }
 

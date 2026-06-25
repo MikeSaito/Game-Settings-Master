@@ -1,8 +1,8 @@
-use crate::app_error::AppError;
 use crate::commands::helpers::{
     find_profile_by_id, guard_config_dir_for_write, normalize_path_cmp, resolve_write_exe_name,
     validate_custom_changes_payload,
 };
+use crate::core::app_error::{AppError, AppInvokeError};
 use crate::core::models::{ApplyResult, CustomChanges, GameOverride};
 use crate::discovery::{cached_scan_all_games, platform_hints_for_game};
 use crate::fs_util::ensure_config_writable;
@@ -14,29 +14,30 @@ use crate::profiles::{
 };
 
 #[tauri::command]
-pub fn save_game_override(override_def: GameOverride) -> Result<(), String> {
+pub fn save_game_override(override_def: GameOverride) -> Result<(), AppInvokeError> {
     crate::profiles::validate_override_bounds(&override_def)?;
     crate::profiles::ensure_known_game_id(&override_def.game_id)?;
-    save_override(&override_def)
+    save_override(&override_def)?;
+    Ok(())
 }
 
 #[tauri::command]
-pub fn get_game_overrides(game_id: String) -> Result<Vec<GameOverride>, String> {
+pub fn get_game_overrides(game_id: String) -> Result<Vec<GameOverride>, AppInvokeError> {
     crate::profiles::ensure_known_game_id(&game_id)?;
-    get_overrides_for_game(&game_id)
+    Ok(get_overrides_for_game(&game_id)?)
 }
 
 #[tauri::command]
-pub fn delete_game_override(game_id: String, name: String) -> Result<(), String> {
+pub fn delete_game_override(game_id: String, name: String) -> Result<(), AppInvokeError> {
     crate::profiles::ensure_known_game_id(&game_id)?;
     if name.trim().is_empty() || name.len() > 120 {
         return Err(AppError::validation(crate::i18n::t(
             "Недопустимое имя override",
             "Invalid override name",
-        ))
-        .to_invoke_string());
+        )));
     }
-    delete_override(&game_id, &name)
+    delete_override(&game_id, &name)?;
+    Ok(())
 }
 
 #[tauri::command]
@@ -44,7 +45,7 @@ pub fn apply_game_override(
     config_dir: String,
     override_def: GameOverride,
     exe_name: Option<String>,
-) -> Result<ApplyResult, String> {
+) -> Result<ApplyResult, AppInvokeError> {
     crate::profiles::validate_override_bounds(&override_def)?;
     crate::profiles::ensure_known_game_id(&override_def.game_id)?;
     let resolved_exe = resolve_write_exe_name(exe_name.as_deref(), Some(&override_def.game_id))?;
@@ -67,8 +68,7 @@ pub fn apply_game_override(
             return Err(AppError::validation(crate::i18n::t(
                 "game_id override не соответствует указанному config_dir",
                 "game_id override does not match the specified config_dir",
-            ))
-            .to_invoke_string());
+            )));
         }
     } else {
         let conflict = load_saved_profiles()?
@@ -85,8 +85,7 @@ pub fn apply_game_override(
             return Err(AppError::validation(crate::i18n::t(
                 "config_dir принадлежит другой игре",
                 "config_dir belongs to another game",
-            ))
-            .to_invoke_string());
+            )));
         }
     }
     let trusted = find_profile_by_id(&override_def.game_id)?.ok_or_else(|| {
@@ -94,7 +93,6 @@ pub fn apply_game_override(
             &format!("Игра {} не найдена", override_def.game_id),
             &format!("Game {} not found", override_def.game_id),
         ))
-        .to_invoke_string()
     })?;
     let hints = platform_hints_for_game(Some(&override_def.game_id), Some(&trusted.engine_family));
     let path = reconcile_config_dir(&path, &hints);

@@ -4,7 +4,10 @@ pub(crate) fn derive_catalog_recommended(entry: &ParameterCatalogEntry) -> bool 
     if entry.catalog_recommended {
         return true;
     }
-    if entry.key.starts_with("sg.") || entry.category == "Scalability" || entry.category == "Display" {
+    if entry.key.starts_with("sg.")
+        || entry.category == "Scalability"
+        || entry.category == "Display"
+    {
         return true;
     }
     entry
@@ -37,15 +40,13 @@ pub(crate) fn catalog_default_value(entry: &ParameterCatalogEntry) -> String {
 }
 
 fn extract_hint_number(hint: &str) -> Option<String> {
-    let token = hint
-        .split(|c: char| c == ',' || c == '—' || c == '-' || c == ' ')
-        .find_map(|part| {
-            let t = part.trim();
-            if t.parse::<f64>().is_ok() || t.parse::<i64>().is_ok() {
-                Some(t.to_string())
-            } else {
-                None
-            }
-        })?;
+    let token = hint.split([',', '—', '-', ' ']).find_map(|part| {
+        let t = part.trim();
+        if t.parse::<f64>().is_ok() || t.parse::<i64>().is_ok() {
+            Some(t.to_string())
+        } else {
+            None
+        }
+    })?;
     Some(token)
 }

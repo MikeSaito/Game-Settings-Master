@@ -1,9 +1,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use super::constants::{
-    group_to_sg_key, QUALITY_INDEX_GROUPS, UE_DEFAULT_SCALABILITY_MAX,
-};
+use super::constants::{group_to_sg_key, QUALITY_INDEX_GROUPS, UE_DEFAULT_SCALABILITY_MAX};
 use super::parse::{
     find_scalability_files, merge_max_map, parse_scalability_ini, read_observed_max_from_gus,
 };

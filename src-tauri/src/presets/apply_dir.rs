@@ -48,7 +48,7 @@ pub fn apply_changes_to_dir(
             .unwrap_or_default();
         let file_removals = removals
             .get(&file_name)
-            .map(|sections| normalize_removals(sections))
+            .map(normalize_removals)
             .unwrap_or_default();
         validate_ini_payload(
             &file_name,

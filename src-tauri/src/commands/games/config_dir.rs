@@ -1,14 +1,14 @@
 use crate::commands::helpers::validate_config_dir_for_game;
-use crate::app_error::AppError;
+use crate::core::app_error::{AppError, AppInvokeError};
+use crate::core::models::GameProfile;
 use crate::discovery::cached_scan_all_games;
 use crate::ini::paths::validate_config_dir;
-use crate::core::models::GameProfile;
 use crate::profiles::{load_saved_profiles, save_profile};
 
 pub fn update_game_profile_config_dir(
     game_id: &str,
     config_dir: &str,
-) -> Result<GameProfile, String> {
+) -> Result<GameProfile, AppInvokeError> {
     let path = validate_config_dir(config_dir)?;
     let mut canonical = path.to_string_lossy().to_string();
     let mut saved = load_saved_profiles()?;
@@ -41,14 +41,17 @@ pub fn update_game_profile_config_dir(
         return Ok(game.clone());
     }
 
-    Err(
-        AppError::game_not_found(crate::i18n::t("Игра не найдена", "Game not found"))
-            .to_invoke_string(),
-    )
+    Err(AppError::game_not_found(crate::i18n::t(
+        "Игра не найдена",
+        "Game not found",
+    )))
 }
 
 #[tauri::command]
-pub fn set_game_config_dir(game_id: String, config_dir: String) -> Result<GameProfile, String> {
+pub fn set_game_config_dir(
+    game_id: String,
+    config_dir: String,
+) -> Result<GameProfile, AppInvokeError> {
     crate::profiles::ensure_known_game_id(&game_id)?;
     validate_config_dir_for_game(&game_id, &config_dir)?;
     update_game_profile_config_dir(&game_id, &config_dir)

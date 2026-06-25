@@ -1,39 +1,47 @@
 use super::{
-    is_running_game_error, running_game_ini_blocked, AppError,
+    is_running_game_error, running_game_ini_blocked, AppError, AppErrorCode, AppInvokeError,
 };
 
 #[test]
 fn marker_detects_running_game_errors() {
-    assert!(is_running_game_error(&running_game_ini_blocked("Game.exe")));
+    let legacy = format!("{}blocked", super::RUNNING_GAME_ERROR_MARKER);
+    assert!(is_running_game_error(&legacy));
     assert!(!is_running_game_error("другая ошибка"));
 }
 
 #[test]
-fn from_app_error_preserves_game_running_marker() {
-    let msg = running_game_ini_blocked("Game.exe");
-    let err = AppError::game_running(msg.clone());
-    let out: String = err.into();
-    assert!(is_running_game_error(&out));
-    assert_eq!(out, msg);
+fn running_game_error_has_structured_code() {
+    let err = running_game_ini_blocked("Game.exe");
+    assert_eq!(err.code, AppErrorCode::GameRunning);
+    assert!(err.message.contains("Game.exe"));
+    assert!(!err.message.contains(super::RUNNING_GAME_ERROR_MARKER));
 }
 
 #[test]
 fn game_not_found_roundtrips_message() {
     let err = AppError::game_not_found("missing game");
-    let out: String = err.into();
-    assert_eq!(out, "missing game");
+    assert_eq!(err.code, AppErrorCode::GameNotFound);
+    assert_eq!(err.message, "missing game");
 }
 
 #[test]
 fn preset_not_found_roundtrips_message() {
     let err = AppError::preset_not_found("no preset");
-    let out: String = err.into();
-    assert_eq!(out, "no preset");
+    assert_eq!(err.code, AppErrorCode::PresetNotFound);
+    assert_eq!(err.message, "no preset");
 }
 
 #[test]
 fn validation_error_roundtrips_message() {
     let err = AppError::validation("bad value");
-    let out: String = err.into();
-    assert_eq!(out, "bad value");
+    assert_eq!(err.code, AppErrorCode::Validation);
+    assert_eq!(err.message, "bad value");
+}
+
+#[test]
+fn legacy_string_converts_to_game_running() {
+    let legacy = format!("{}Игра запущена", super::RUNNING_GAME_ERROR_MARKER);
+    let err: AppInvokeError = legacy.into();
+    assert_eq!(err.code, AppErrorCode::GameRunning);
+    assert_eq!(err.message, "Игра запущена");
 }

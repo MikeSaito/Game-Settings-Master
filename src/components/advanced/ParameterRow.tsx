@@ -42,7 +42,7 @@ export const ParameterRow = memo(function ParameterRow({
   const isOff = engineToggleable && engineEnabled === false;
   const canEdit = editable && param.editable && onChange && !isOff;
   const lockedReason = readOnlyReason(param, !!engineToggleable, engineEnabled ?? false);
-  const displayTitle = resolveDisplayTitle(param, t);
+  const displayTitle = resolveDisplayTitle(param);
   const sentinel = isUeSentinelValue(param.value);
   const maxNum = param.max != null ? Number(param.max) : NaN;
   const qualityName =

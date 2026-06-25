@@ -3,7 +3,7 @@ import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 
 import { ENGINE } from "./constants";
 import { normalizeDlssMode, syncFromDlssMode, syncFromDlssQualityNum } from "./dlssSync";
-import { dlssIsOff, setInFile } from "./patchUtils";
+import { setInFile } from "./patchUtils";
 import {
   syncMotionBlurQuality,
   syncResolutionScaleBounds,

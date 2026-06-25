@@ -11,3 +11,6 @@ mod unknown;
 mod version;
 
 pub use loader::get_game_parameters;
+
+#[cfg(test)]
+mod loader_tests;

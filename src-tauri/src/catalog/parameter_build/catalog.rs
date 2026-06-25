@@ -1,8 +1,8 @@
-use crate::core::models::GameParameter;
 use super::super::localize::pick_localized;
 use super::super::localize::pick_title;
 use super::super::types::ParameterCatalogEntry;
 use super::defaults::{catalog_default_value, derive_catalog_recommended};
+use crate::core::models::GameParameter;
 
 pub(crate) fn entry_to_parameter(
     entry: &ParameterCatalogEntry,

@@ -1,25 +1,12 @@
+import type { GameParameter } from "@/lib/core";
+import { isGameRenderingKey } from "@/lib/shared/gameRenderingKeyMarkers";
 import {
   ENGINE_CATEGORIES,
   isEngineEnabled,
   isEngineToggleable,
 } from "./engineParams";
-import type { GameParameter } from "@/lib/core/types";
 
 export const ALL_CATEGORY = "All";
-
-const GAME_RENDERING_KEY_MARKERS = [
-  "dlss",
-  "xess",
-  "fsr",
-  "tsr",
-  "raytracing",
-  "ray_tracing",
-  "lumen",
-  "nanite",
-  "upscal",
-  "framegeneration",
-  "frame_generation",
-];
 
 export const CATEGORY_ORDER = [
   "Scalability",
@@ -46,8 +33,7 @@ export const CATEGORY_ORDER = [
 ] as const;
 
 export function normalizeParameterCategory(param: GameParameter): GameParameter {
-  const key = param.key.toLowerCase();
-  if (GAME_RENDERING_KEY_MARKERS.some((marker) => key.includes(marker))) {
+  if (isGameRenderingKey(param.key)) {
     return param.category === "Rendering" ? param : { ...param, category: "Rendering" };
   }
   if (param.category === "AuthorCurated") {
