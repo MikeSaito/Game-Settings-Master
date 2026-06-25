@@ -168,7 +168,11 @@ ini/           parse / write / patch ini
     serialize.rs      write_ini_file_with_encoding_hint
     writer_tests.rs   merge + UTF-16 inheritance tests
 fs_util/       file I/O, path safety, process checks
-  io.rs             read/write bytes, BOM, Windows shared access
+  io/               read/write bytes, BOM, Windows shared access
+    read.rs           read_file_bytes, read_utf8_text_file
+    write.rs          write_file_bytes, write_file_bytes_opts
+    atomic.rs         temp-file atomic replace
+    permissions.rs    clear_readonly, format_io_error
   path_safety.rs    ini filename/key validation, safe_child_path
   process/          is_exe_running, kill_exe (Windows)
     cache.rs          running-process TTL cache
@@ -177,6 +181,9 @@ fs_util/       file I/O, path safety, process checks
   config.rs         ensure_config_writable probe
   fs_util_tests.rs  I/O + path safety unit tests
 covers/        Steam CDN URLs, custom cover files
+  steam.rs          steam_header_url (Steam CDN)
+  custom.rs         import/remove custom cover, covers_dir cache
+  enrich.rs         enrich_cover, merge_saved_cover
   covers_tests.rs   steam_header_url format test
 display/       primary monitor resolution (Windows)
   display_tests.rs  resolution string parsing tests
@@ -190,7 +197,11 @@ presets/       apply custom changes to config dirs
 catalog/       загрузка каталога и сборка параметров редактора
   loader.rs           get_game_parameters (оркестрация)
   loader_tests.rs     интеграционные тесты загрузчика
-  catalog_index.rs    кэш JSON, build_catalog_index, lookup_entry
+  catalog_index/    кэш JSON, build_catalog_index, lookup_entry
+    cache.rs          get_or_build_catalog_index, test invalidation
+    load.rs           load_parameter_catalog_for_family, parse JSON files
+    build.rs          build_catalog_index, catalog_id
+    lookup.rs         lookup_entry, should_include_catalog_entry
   dedupe.rs           dedupe_parameters_by_file_key
   unknown.rs          unknown_parameter / unknown_ue_parameter
   types.rs            ParameterCatalogEntry, ReferenceEntry, CatalogIndex
@@ -209,8 +220,11 @@ catalog/       загрузка каталога и сборка парамет�
     categories.rs     infer_category, is_game_rendering_key
     hidden_keys.rs    is_hidden_ue_manual_key, UE5-only keys
     value_text.rs     is_opaque_struct_value, truncate_preview
-  scalability_tiers.rs
-  scalability_tiers_tests.rs sg.* tier hint coverage tests
+  scalability_tiers/  sg.* tier hints from reference index
+    load.rs             tiers JSON cache from disk
+    hint.rs             tier_hint_for_key, build_tier_hint_pair
+    types.rs            ScalabilityTierRow, UeSemver parse
+    scalability_tiers_tests.rs sg.* tier hint coverage tests
 scalability/   sg.* quality limits from ini + GUS
   constants.rs      QUALITY_INDEX_GROUPS, is_scalability_quality_index
   parse.rs          DefaultScalability.ini, GUS observed max

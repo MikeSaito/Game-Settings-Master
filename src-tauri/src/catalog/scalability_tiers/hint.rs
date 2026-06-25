@@ -1,59 +1,6 @@
-use serde::Deserialize;
+use super::load::tiers_cache;
+use super::types::{parse_ue_semver, ScalabilityTierRow, UeSemver};
 use std::collections::HashMap;
-use std::sync::{Mutex, OnceLock};
-
-#[derive(Debug, Clone, Deserialize)]
-struct ScalabilityTierRow {
-    group: String,
-    index: i32,
-    cvars: HashMap<String, String>,
-    ue_version: String,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct TiersIndex {
-    #[serde(default)]
-    scalability_tiers: Vec<ScalabilityTierRow>,
-}
-
-static TIERS_CACHE: OnceLock<Mutex<Vec<ScalabilityTierRow>>> = OnceLock::new();
-
-fn tiers_cache() -> &'static Mutex<Vec<ScalabilityTierRow>> {
-    TIERS_CACHE.get_or_init(|| Mutex::new(load_tiers_from_disk()))
-}
-
-fn load_tiers_from_disk() -> Vec<ScalabilityTierRow> {
-    let path = crate::resource_paths::catalog_dir().join("ue_reference_index.json");
-    let content = std::fs::read_to_string(&path).unwrap_or_else(|_| {
-        r#"{"schema_version":2,"entries":[],"scalability_tiers":[]}"#.to_string()
-    });
-    serde_json::from_str::<TiersIndex>(&content)
-        .map(|i| i.scalability_tiers)
-        .unwrap_or_default()
-}
-
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-struct UeSemver {
-    major: u32,
-    minor: u32,
-    patch: u32,
-}
-
-fn parse_ue_semver(raw: &str) -> Option<UeSemver> {
-    let trimmed = raw.trim();
-    if trimmed.is_empty() {
-        return None;
-    }
-    let mut parts = trimmed.split('.');
-    let major = parts.next()?.parse().ok()?;
-    let minor = parts.next().unwrap_or("0").parse().ok()?;
-    let patch = parts.next().unwrap_or("0").parse().ok()?;
-    Some(UeSemver {
-        major,
-        minor,
-        patch,
-    })
-}
 
 fn sg_key_to_group(key: &str) -> Option<String> {
     if !key.starts_with("sg.") {
@@ -207,7 +154,3 @@ pub fn tier_hint_for_key(key: &str, engine_version: Option<&str>) -> Option<Stri
         _ => None,
     }
 }
-
-#[cfg(test)]
-#[path = "scalability_tiers_tests.rs"]
-mod tests;
