@@ -116,10 +116,13 @@ discovery/     Steam/Epic scan, UE detect
   enrich.rs         post-scan profile enrichment
   discovery_tests.rs dedupe + manual validation tests
   known_games.rs    curated game_id → config hints
+  known_games_tests.rs app_id resolution + PUBG config path tests
   mtime_snapshot.rs library folder mtime for cache invalidation
   registry/         cached scan_all + find_game_by_id
     cache.rs          GAME_SCAN_CACHE_TTL, cached_scan_all_games
     lookup.rs         find_game_by_id
+    registry_tests.rs cache TTL + find_game_by_id tests
+    registry_mtime_tests.rs steam mtime invalidation tests
   steam/            Steam library scan
     paths.rs          libraryfolders, common app paths
     manifest.rs       appmanifest_*.acf parse
@@ -128,18 +131,22 @@ discovery/     Steam/Epic scan, UE detect
     paths.rs          manifests, launcher data
     manifest.rs       *.item parse, app name validation
     signal.rs         manifest mtime signals
+    epic_tests.rs     manifest validation tests
   config_index/     LocalAppData Saved/Config index
     scan.rs           scan_local_appdata_configs
     matcher.rs        match_config_from_index
     types.rs          ConfigIndexEntry
+    config_index_tests.rs normalize + match tests
   ue_detect/        is this install a UE game?
     markers.rs        content.paks, Engine folder heuristics
     executables.rs    *-Win64-Shipping.exe detection
     non_game.rs       Fab plugin, engine-only installs
+    ue_detect_tests.rs UE marker + non-game install tests
   ue_version/       engine_family + semver from build files
     parse.rs          Build.version, ProjectVersion
     heuristics.rs     IOStore, WindowsNoEditor fallbacks
     types.rs          UeSemver
+    ue_version_tests.rs build.version + heuristic tests
 ini/           parse / write / patch ini
   patch/            line-by-line patch preserving preamble
     sections.rs     scan_sections, line_key
@@ -159,6 +166,10 @@ fs_util/       file I/O, path safety, process checks
     kill.rs           TerminateProcess + permission errors
   config.rs         ensure_config_writable probe
   fs_util_tests.rs  I/O + path safety unit tests
+covers/        Steam CDN URLs, custom cover files
+  covers_tests.rs   steam_header_url format test
+display/       primary monitor resolution (Windows)
+  display_tests.rs  resolution string parsing tests
 presets/       apply custom changes to config dirs
   apply_dir.rs      merge + patch single config directory
   apply_targets.rs  multi-target apply with rollback
