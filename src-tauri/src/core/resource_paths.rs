@@ -60,12 +60,5 @@ pub fn catalog_dir() -> PathBuf {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn compile_time_catalog_dir_exists_in_workspace() {
-        let dir = compile_time_src_root().join("catalog");
-        assert!(dir.is_dir(), "dev catalog dir: {}", dir.display());
-    }
-}
+#[path = "resource_paths_tests.rs"]
+mod tests;

@@ -81,6 +81,8 @@
 
 ```
 core/          app_error, models, process_util, resource_paths
+  app_error_tests.rs   error markers + roundtrip tests
+  resource_paths_tests.rs dev catalog dir smoke test
 i18n/          RU/EN строки backend
 profiles/      сохранённые профили игр (games.json, overrides.json)
   storage.rs        app_data_dir, profiles_path, write_json_atomic
@@ -148,6 +150,14 @@ discovery/     Steam/Epic scan, UE detect
     types.rs          UeSemver
     ue_version_tests.rs build.version + heuristic tests
 ini/           parse / write / patch ini
+  parser.rs         parse_ini, coalesce sections
+  parser_tests.rs   float equality + section merge tests
+  encoding.rs       UTF-8/UTF-16 LE read/write
+  encoding_tests.rs UTF-16 roundtrip test
+  paths.rs          validate_config_dir, pack ini paths
+  paths_tests.rs    Saved segment + validation tests
+  platform.rs       pick_platform_config_dir, apply targets
+  platform_tests.rs UE4/UE5 platform dir selection tests
   patch/            line-by-line patch preserving preamble
     sections.rs     scan_sections, line_key
     text.rs         patch_ini_text
@@ -200,6 +210,7 @@ catalog/       загрузка каталога и сборка парамет�
     hidden_keys.rs    is_hidden_ue_manual_key, UE5-only keys
     value_text.rs     is_opaque_struct_value, truncate_preview
   scalability_tiers.rs
+  scalability_tiers_tests.rs sg.* tier hint coverage tests
 scalability/   sg.* quality limits from ini + GUS
   constants.rs      QUALITY_INDEX_GROUPS, is_scalability_quality_index
   parse.rs          DefaultScalability.ini, GUS observed max
