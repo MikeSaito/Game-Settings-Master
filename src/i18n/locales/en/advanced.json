@@ -53,7 +53,7 @@
     "backupsTitle": "Backups",
     "basicBody": "Settings like in the game — resolution, quality, sg.*. Writes only to GameUserSettings.ini.",
     "advancedBody": "Fine engine tuning. May create or change Engine.ini / Scalability.ini. For experienced users.",
-    "backupsBody": "Automatic ini snapshots in `.uesm-backups`. Restore or reset to a clean config.",
+    "backupsBody": "Automatic ini snapshots stored locally by the app. Restore or reset to a clean config.",
     "basicSafe": "GameUserSettings.ini only",
     "advancedFiles": "Engine.ini / Scalability.ini"
   },

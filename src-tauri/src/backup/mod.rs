@@ -1,3 +1,4 @@
+mod migrate;
 mod paths;
 mod reset;
 mod restore;

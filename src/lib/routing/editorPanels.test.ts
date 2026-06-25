@@ -263,9 +263,11 @@ describe("panel migration", () => {
     window.history.replaceState(null, "", "/");
   });
 
-  it("migrates legacy storage scalability to basic", () => {
+  it("migrates legacy storage scalability to basic and removes legacy key", () => {
     sessionStorage.setItem("gsm-advanced-panel:game-1", "scalability");
     expect(readStoredPanel("game-1")).toBe("basic");
+    expect(sessionStorage.getItem("gsm-advanced-panel:game-1")).toBeNull();
+    expect(sessionStorage.getItem("gsm-editor-panel:game-1")).toBe("basic");
   });
 
   it("migrates legacy hash engine to advanced", () => {

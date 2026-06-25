@@ -90,20 +90,15 @@ export function defaultCategoryForPanel(panel: EditorPanel): string {
   return panel === "basic" ? "Scalability" : "Rendering";
 }
 
+const LEGACY_PANEL_PREFIX = "gsm-advanced-panel:";
+const LEGACY_RECOMMENDED_PREFIX = "gsm-advanced-recommended:";
+
 export function panelStorageKey(gameId: string): string {
   return `gsm-editor-panel:${gameId}`;
 }
 
-export function legacyPanelStorageKey(gameId: string): string {
-  return `gsm-advanced-panel:${gameId}`;
-}
-
 export function filterStorageKey(gameId: string, panel: EditorPanel): string {
   return `gsm-editor-filter:${panel}:${gameId}`;
-}
-
-export function legacyRecommendedStorageKey(gameId: string): string {
-  return `gsm-advanced-recommended:${gameId}`;
 }
 
 export function engineWarningAckKey(gameId: string): string {
@@ -114,9 +109,11 @@ export function readStoredPanel(gameId: string): EditorPanel | null {
   try {
     const stored = normalizePanel(sessionStorage.getItem(panelStorageKey(gameId)));
     if (stored) return stored;
-    const legacy = normalizePanel(sessionStorage.getItem(legacyPanelStorageKey(gameId)));
+    const legacyKey = `${LEGACY_PANEL_PREFIX}${gameId}`;
+    const legacy = normalizePanel(sessionStorage.getItem(legacyKey));
     if (legacy) {
       writeStoredPanel(gameId, legacy);
+      sessionStorage.removeItem(legacyKey);
       return legacy;
     }
   } catch {
@@ -141,8 +138,14 @@ export function readStoredFilterMode(
     const raw = sessionStorage.getItem(filterStorageKey(gameId, panel));
     const parsed = normalizeFilterMode(raw, panel);
     if (parsed) return parsed;
-    const legacy = sessionStorage.getItem(legacyRecommendedStorageKey(gameId));
-    return normalizeFilterMode(legacy, panel);
+    const legacyKey = `${LEGACY_RECOMMENDED_PREFIX}${gameId}`;
+    const legacy = sessionStorage.getItem(legacyKey);
+    const legacyParsed = normalizeFilterMode(legacy, panel);
+    if (legacyParsed) {
+      writeStoredFilterMode(gameId, panel, legacyParsed);
+      sessionStorage.removeItem(legacyKey);
+      return legacyParsed;
+    }
   } catch {
     /* ignore */
   }

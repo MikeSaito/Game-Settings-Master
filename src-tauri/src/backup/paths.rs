@@ -4,6 +4,8 @@ use std::path::{Path, PathBuf};
 
 use crate::fs_util::{is_safe_backup_id, path_within_root};
 
+use super::migrate::migrate_legacy_backups;
+
 pub(crate) const BACKUP_DIR_LEGACY: &str = ".uesm-backups";
 
 pub(crate) const INI_FILES: [&str; 6] = [
@@ -52,6 +54,8 @@ pub(crate) fn resolve_backup_path(config_dir: &Path, backup_id: &str) -> Result<
         ));
     }
 
+    migrate_legacy_backups(config_dir)?;
+
     let store = backup_store_dir(config_dir);
     let primary = store.join(backup_id);
     if primary.exists() {
@@ -62,18 +66,6 @@ pub(crate) fn resolve_backup_path(config_dir: &Path, backup_id: &str) -> Result<
             ));
         }
         return Ok(primary);
-    }
-
-    let legacy_root = legacy_backup_root(config_dir);
-    let legacy = legacy_root.join(backup_id);
-    if legacy.exists() {
-        if !path_within_root(&legacy_root, &legacy) {
-            return Err(crate::i18n::t(
-                &format!("Недопустимый путь backup: {backup_id}"),
-                &format!("Invalid backup path: {backup_id}"),
-            ));
-        }
-        return Ok(legacy);
     }
 
     Err(crate::i18n::t(

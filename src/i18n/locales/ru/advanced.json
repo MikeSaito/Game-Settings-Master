@@ -53,7 +53,7 @@
     "backupsTitle": "Бэкапы",
     "basicBody": "Настройки как в игре — разрешение, качество, sg.*. Записываются только в GameUserSettings.ini.",
     "advancedBody": "Тонкая настройка движка. Может создать или изменить Engine.ini / Scalability.ini. Для опытных пользователей.",
-    "backupsBody": "Автоматические снимки конфигов в `.uesm-backups`. Восстановление и сброс к чистой конфигурации.",
+    "backupsBody": "Автоматические снимки конфигов хранятся локально в данных приложения. Восстановление и сброс к чистой конфигурации.",
     "basicSafe": "Только GameUserSettings.ini",
     "advancedFiles": "Engine.ini / Scalability.ini"
   },

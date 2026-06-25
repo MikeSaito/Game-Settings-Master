@@ -1,7 +1,7 @@
-use super::paths::backup_store_dir;
+use super::paths::{backup_store_dir, legacy_backup_root};
 use super::reset::reset_config_to_user_settings;
 use super::restore::restore_backup;
-use super::snapshot::backup_config_dir;
+use super::snapshot::{backup_config_dir, list_backups};
 use std::fs;
 
 #[test]
@@ -69,4 +69,33 @@ fn restore_removes_override_files_absent_from_snapshot() {
     assert_eq!(restored, vec!["GameUserSettings.ini".to_string()]);
     assert!(config.join("GameUserSettings.ini").exists());
     assert!(!config.join("Engine.ini").exists());
+}
+
+#[test]
+fn migrates_legacy_backup_folder_into_app_data_store() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let config = tmp.path();
+    fs::write(config.join("GameUserSettings.ini"), b"[Settings]\nFoo=1\n").unwrap();
+
+    let legacy_id = "20250611_140000";
+    let legacy_path = legacy_backup_root(config).join(legacy_id);
+    fs::create_dir_all(&legacy_path).unwrap();
+    fs::write(
+        legacy_path.join("GameUserSettings.ini"),
+        b"[Settings]\nLegacy=1\n",
+    )
+    .unwrap();
+
+    let listed = list_backups(config).expect("list");
+    assert_eq!(listed.len(), 1);
+    assert_eq!(listed[0].0, legacy_id);
+    assert!(!legacy_backup_root(config).exists());
+
+    let store = backup_store_dir(config);
+    assert!(store.join(legacy_id).join("GameUserSettings.ini").exists());
+
+    let restored = restore_backup(config, legacy_id).expect("restore");
+    assert_eq!(restored, vec!["GameUserSettings.ini".to_string()]);
+    let content = fs::read_to_string(config.join("GameUserSettings.ini")).unwrap();
+    assert!(content.contains("Legacy=1"));
 }

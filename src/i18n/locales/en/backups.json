@@ -6,7 +6,7 @@
   },
   "howItWorks": {
     "title": "How it works",
-    "body": "Before every preset application or manual edit, a snapshot of the ini files is created in the `.uesm-backups` folder next to the configs."
+    "body": "Before every preset application or manual edit, a snapshot of the ini files is saved locally in the app data folder (not next to game configs)."
   },
   "restore": {
     "success": "Backup {{date}} restored: {{files}}. Restart the game.",

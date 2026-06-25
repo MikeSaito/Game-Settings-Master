@@ -42,7 +42,8 @@
 
 - Единый URL редактора: `/game/:id/advanced`
 - Активная панель (`basic` | `advanced` | `backups`) — в `sessionStorage` (`gsm-editor-panel:*`)
-- Legacy `/game/:id/backups` → redirect на `/advanced` + panel `backups` (как wizard/reshade)
+- Legacy `/game/:id/backups` → redirect на `/advanced` + panel `backups` (как wizard/reshade); redirects оставлены для старых закладок
+- `sessionStorage`: ключи `gsm-editor-panel:*` / `gsm-editor-filter:*`; legacy `gsm-advanced-*` мигрируются один раз при чтении и удаляются
 - `GameTabRoute` — только `"advanced"`; бэкапы не отдельный URL-tab
 - UI бэкапов встроен в [`AdvancedEditor`](../src/pages/AdvancedEditor.tsx) ([`BackupsPanel`](../src/components/backups/BackupsPanel.tsx))
 - Переход в редактор: [`openGameEditor()`](../src/lib/routing/navigation.ts)
@@ -94,7 +95,8 @@ profiles/      сохранённые профили игр (games.json, overrid
   overrides.rs      load/save/delete overrides, validate_override_payload
   profiles_tests.rs IPC security + validation tests
 backup/        снимки ini перед apply/reset
-  paths.rs          backup_store_dir, OVERRIDE_INI_FILES
+  paths.rs          backup_store_dir (%LocalAppData%), legacy `.uesm-backups` migration
+  migrate.rs        one-time move legacy `.uesm-backups` → app data store
   snapshot.rs       backup_config_dir, backup_all_targets, list_backups
   restore.rs        restore_backup, rollback_apply_snapshot
   reset.rs          reset_config_all_targets

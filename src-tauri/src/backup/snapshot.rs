@@ -6,7 +6,8 @@ use crate::fs_util::{
     ensure_safe_child_file, is_safe_backup_id, read_file_bytes, write_file_bytes,
 };
 
-use super::paths::{backup_store_dir, legacy_backup_root, INI_FILES};
+use super::migrate::migrate_legacy_backups;
+use super::paths::{backup_store_dir, INI_FILES};
 
 pub fn backup_all_targets(targets: &[PathBuf]) -> Result<String, String> {
     let shared_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
@@ -65,17 +66,8 @@ pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<S
 }
 
 pub fn list_backups(config_dir: &Path) -> Result<Vec<(String, String, Vec<String>)>, String> {
+    migrate_legacy_backups(config_dir)?;
     let mut backups = list_backups_in(&backup_store_dir(config_dir))?;
-
-    let legacy = legacy_backup_root(config_dir);
-    if legacy.exists() {
-        let mut legacy_backups = list_backups_in(&legacy)?;
-        for (id, _, _) in &backups {
-            legacy_backups.retain(|(lid, _, _)| lid != id);
-        }
-        backups.extend(legacy_backups);
-    }
-
     backups.sort_by(|a, b| b.0.cmp(&a.0));
     Ok(backups)
 }
