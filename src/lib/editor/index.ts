@@ -3,7 +3,7 @@ export * from "./engineParams";
 export * from "./paramValue";
 export * from "./paramValueEqual";
 export * from "./paramSelectOptions";
-export * from "./paramDependencies";
+export * from "./paramDependencies/index";
 export * from "./sgEngineConflicts";
 export * from "./buildCustomChanges";
 export * from "./lastPreset";

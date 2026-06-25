@@ -18,7 +18,7 @@ pub fn ensure_config_writable(
 ) -> Result<(), AppInvokeError> {
     if let Some(exe) = exe_name {
         if is_exe_running_uncached(exe) {
-            return Err(crate::app_error::running_game_ini_blocked(exe));
+            return Err(crate::core::app_error::running_game_ini_blocked(exe));
         }
     }
 

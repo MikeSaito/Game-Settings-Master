@@ -252,7 +252,7 @@ gpu/           DLSS/RT capability from adapter name
   gpu_tests.rs      DLSS/FG capability + GPU priority tests
 ```
 
-Внутренний код импортирует `crate::core::models`. `lib.rs` по-прежнему re-export'ит `models` и др. для совместимости.
+Внутренний код импортирует `crate::core::{models, app_error, resource_paths, process_util}`. `lib.rs` не re-export'ит core-модули наружу.
 
 ## Catalog builder (`tools/ue-catalog-builder/`)
 

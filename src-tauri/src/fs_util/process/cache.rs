@@ -22,7 +22,7 @@ const RUNNING_CACHE_MAX: usize = 16;
 
 #[cfg(windows)]
 fn running_cache_ttl() -> Duration {
-    if crate::process_util::is_app_background() {
+    if crate::core::process_util::is_app_background() {
         Duration::from_secs(120)
     } else {
         Duration::from_secs(30)

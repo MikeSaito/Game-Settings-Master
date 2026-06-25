@@ -6,7 +6,7 @@ pub(crate) fn find_steam_install_paths() -> Vec<PathBuf> {
 
     #[cfg(windows)]
     {
-        if let Ok(output) = crate::process_util::hidden_command("reg")
+        if let Ok(output) = crate::core::process_util::hidden_command("reg")
             .args(["query", r"HKCU\Software\Valve\Steam", "/v", "SteamPath"])
             .output()
         {

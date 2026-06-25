@@ -30,7 +30,7 @@ pub fn is_game_running_cmd(exe_name: Option<String>) -> bool {
 
 #[tauri::command]
 pub fn set_app_background_mode_cmd(background: bool) {
-    crate::process_util::set_process_background_mode(background);
+    crate::core::process_util::set_process_background_mode(background);
 }
 
 #[tauri::command]

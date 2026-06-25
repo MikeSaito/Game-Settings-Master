@@ -35,7 +35,7 @@ fn should_load_catalog_file(name: &str, is_ue4: bool) -> bool {
 }
 
 fn load_bundled_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
-    let dir = crate::resource_paths::catalog_dir();
+    let dir = crate::core::resource_paths::catalog_dir();
     let mut entries = Vec::new();
 
     if let Ok(read_dir) = fs::read_dir(&dir) {
@@ -61,7 +61,7 @@ pub fn parse_catalog_file(path: &Path) -> Vec<ParameterCatalogEntry> {
 }
 
 pub(crate) fn load_key_hints() -> HashMap<String, KeyHintEntry> {
-    let path = crate::resource_paths::catalog_dir().join("key_hints.json");
+    let path = crate::core::resource_paths::catalog_dir().join("key_hints.json");
     let content = fs::read_to_string(&path).unwrap_or_else(|_| "[]".to_string());
     let hints: Vec<KeyHintEntry> = serde_json::from_str(&content).unwrap_or_default();
     hints
@@ -72,7 +72,7 @@ pub(crate) fn load_key_hints() -> HashMap<String, KeyHintEntry> {
 }
 
 pub(crate) fn load_reference_index() -> HashMap<String, ReferenceEntry> {
-    let path = crate::resource_paths::catalog_dir().join("ue_reference_index.json");
+    let path = crate::core::resource_paths::catalog_dir().join("ue_reference_index.json");
     let content = fs::read_to_string(&path)
         .unwrap_or_else(|_| r#"{"schema_version":2,"entries":[]}"#.to_string());
     parse_reference_index_json(&content)

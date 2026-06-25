@@ -1,4 +1,4 @@
-use crate::app_error::AppError;
+use crate::core::app_error::AppError;
 use crate::core::models::GameProfile;
 use crate::profiles::load_saved_profiles;
 

@@ -16,9 +16,6 @@ mod presets;
 mod profiles;
 mod scalability;
 
-pub use core::app_error::{self, AppError, AppErrorCode, AppInvokeError};
-pub use core::{models, process_util, resource_paths};
-
 use commands::{
     add_manual_game, apply_custom_cmd, apply_game_override, close_game_cmd, delete_game_override,
     get_desktop_resolution_cmd, get_game_config, get_game_overrides, get_game_parameters_cmd,
