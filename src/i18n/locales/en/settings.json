@@ -1,0 +1,39 @@
+{
+  "title": "Settings",
+  "subtitle": "Interface, language, and behavior",
+  "close": "Close settings",
+  "language": {
+    "title": "Language",
+    "aria": "Interface language",
+    "ru": "Russian",
+    "en": "English"
+  },
+  "theme": {
+    "title": "Theme",
+    "aria": "Interface theme",
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  },
+  "fontScale": {
+    "title": "UI scale",
+    "preview": "Current {{value}}%",
+    "small": "Small 87.5%",
+    "normal": "Normal 100%",
+    "large": "Large 112.5%",
+    "xlarge": "Extra large 125%"
+  },
+  "more": {
+    "title": "More",
+    "reducedMotion": "Reduce motion",
+    "reducedMotionDesc": "Disables long transitions and extra movement.",
+    "compactDensity": "Compact parameter list",
+    "compactDensityDesc": "Reduces row height in the editor.",
+    "defaultPanel": "Default editor tab",
+    "defaultPanelDesc": "Used when there is no hash or saved tab for the game.",
+    "basic": "Basic",
+    "advanced": "Advanced"
+  },
+  "reset": "Reset",
+  "version": "v{{version}}"
+}

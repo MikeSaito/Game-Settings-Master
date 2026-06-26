@@ -1,0 +1,44 @@
+{
+  "version": "5.1",
+  "keys": [
+    "sg.AntiAliasingQuality",
+    "sg.EffectsQuality",
+    "sg.FoliageQuality",
+    "sg.GlobalIlluminationQuality",
+    "sg.PostProcessQuality",
+    "sg.ReflectionQuality",
+    "sg.ResolutionQuality",
+    "sg.ShadingQuality",
+    "sg.ShadowQuality",
+    "sg.TextureQuality",
+    "sg.ViewDistanceQuality"
+  ],
+  "source": "Scalability.cpp",
+  "source_path": "D:\\app\\tools\\ue-reference\\UE_5.1\\source\\Scalability.cpp",
+  "metadata": {
+    "num_levels": {
+      "sg.ViewDistanceQuality": 5,
+      "sg.AntiAliasingQuality": 5,
+      "sg.ShadowQuality": 5,
+      "sg.GlobalIlluminationQuality": 5,
+      "sg.ReflectionQuality": 5,
+      "sg.PostProcessQuality": 5,
+      "sg.TextureQuality": 5,
+      "sg.EffectsQuality": 5,
+      "sg.FoliageQuality": 5,
+      "sg.ShadingQuality": 5
+    },
+    "readonly_keys": [
+      "sg.AntiAliasingQuality.NumLevels",
+      "sg.EffectsQuality.NumLevels",
+      "sg.FoliageQuality.NumLevels",
+      "sg.GlobalIlluminationQuality.NumLevels",
+      "sg.PostProcessQuality.NumLevels",
+      "sg.ReflectionQuality.NumLevels",
+      "sg.ShadingQuality.NumLevels",
+      "sg.ShadowQuality.NumLevels",
+      "sg.TextureQuality.NumLevels",
+      "sg.ViewDistanceQuality.NumLevels"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "name": "ue-settings-master",
+  "private": true,
+  "version": "1.0.2-a",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "types:gen": "cargo test export_typescript_bindings --manifest-path src-tauri/Cargo.toml -- --nocapture",
+    "catalog:build": "python tools/ue-catalog-builder/fixtures/gen_fixtures.py && python tools/ue-catalog-builder/build.py",
+    "catalog:test": "python tools/ue-catalog-builder/test_build.py",
+    "catalog:gaps": "python tools/ue-catalog-builder/analysis/catalog_gaps.py",
+    "tauri": "tauri",
+    "icons": "npm run generate --prefix brand",
+    "landing:build": "npm run build --prefix landing",
+    "landing:dev": "npm run dev --prefix landing",
+    "landing:capture": "npm run capture-screenshots --prefix landing",
+    "updater:keys": "powershell -ExecutionPolicy Bypass -File scripts/open-keygen-terminal.ps1",
+    "updater:sync-pubkey": "powershell -ExecutionPolicy Bypass -File scripts/sync-updater-pubkey.ps1",
+    "updater:build": "powershell -ExecutionPolicy Bypass -File scripts/build-signed.ps1"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-virtual": "^3.14.3",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.10.1",
+    "i18next": "^26.3.1",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "lucide-react": "^0.562.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-i18next": "^17.0.8",
+    "react-router-dom": "^7.17.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@tauri-apps/cli": "^2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "jsdom": "^26.1.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  }
+}

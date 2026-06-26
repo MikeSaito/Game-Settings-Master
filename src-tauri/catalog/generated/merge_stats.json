@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-06-21T15:57:55.815993+00:00",
+  "sources": [
+    "UE_4.27",
+    "UE_5.0",
+    "UE_5.1",
+    "UE_5.2",
+    "UE_5.3",
+    "UE_5.4",
+    "UE_5.5",
+    "UE_5.6",
+    "UE_5.7",
+    "UE_5.8"
+  ],
+  "schema_version": 2,
+  "total_reference_entries": 767,
+  "reference_only_keys": 663,
+  "curated_collisions": 104,
+  "curated_keys_loaded": 115,
+  "sg_registry_count": 12,
+  "gus_registry_count": 41,
+  "tier_a_overlays": 748,
+  "tier_b_overlays": 150,
+  "display_overrides": 17,
+  "tier_b_effective": 150,
+  "ini_comment_keys": 8,
+  "scalability_tiers": 352,
+  "deprecated_count": 22,
+  "introduced_by_version": {
+    "4.27": 621,
+    "5.8": 38,
+    "5.0": 36,
+    "5.3": 6,
+    "5.4": 27,
+    "5.6": 13,
+    "5.5": 8,
+    "5.7": 6,
+    "5.2": 2,
+    "5.1": 10
+  },
+  "by_version_counts": {
+    "4.27": 365,
+    "5.0": 468,
+    "5.1": 485,
+    "5.2": 482,
+    "5.3": 488,
+    "5.4": 486,
+    "5.5": 510,
+    "5.6": 519,
+    "5.7": 522,
+    "5.8": 637
+  },
+  "applicable_by_version": {
+    "4.27": 621,
+    "5.0": 656,
+    "5.1": 663,
+    "5.2": 662,
+    "5.3": 665,
+    "5.4": 690,
+    "5.5": 697,
+    "5.6": 706,
+    "5.7": 708,
+    "5.8": 745
+  },
+  "description_quality_counts": {
+    "human": 767
+  },
+  "bare_stub_descriptions": 0
+}

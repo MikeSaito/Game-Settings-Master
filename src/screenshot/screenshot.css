@@ -1,0 +1,31 @@
+.shot-root {
+  background: var(--color-bg);
+  padding: 0;
+}
+
+.shot-frame {
+  width: 1440px;
+  height: 880px;
+  margin-bottom: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.shot-frame__inner {
+  width: 1440px;
+  height: 880px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.shot-frame__inner > .flex.h-screen,
+.shot-frame__inner .flex.h-screen {
+  height: 880px;
+  min-height: 880px;
+}
+
+.shot-frame [data-testid="parameter-list-scroll"] {
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}

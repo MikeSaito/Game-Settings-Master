@@ -1,0 +1,203 @@
+/* ── FX layers ── */
+
+.fx-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Hero aura & tilt ── */
+
+.hero__visual {
+  position: relative;
+}
+
+.hero__aura {
+  position: absolute;
+  inset: -10% -8%;
+  z-index: 0;
+  background:
+    conic-gradient(from 210deg at 30% 70%, rgba(184, 122, 20, 0.16), transparent 55%),
+    conic-gradient(from 30deg at 75% 25%, rgba(184, 122, 20, 0.12), transparent 50%);
+  clip-path: polygon(12% 78%, 42% 52%, 58% 48%, 88% 22%, 100% 100%, 0 100%);
+  filter: blur(24px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.hero__visual .app-shot--hero {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shot--hero::before {
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    rgba(184, 122, 20, 0.7),
+    rgba(184, 122, 20, 0.15) 35%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(184, 122, 20, 0.15) 65%,
+    rgba(184, 122, 20, 0.7)
+  );
+  background-size: 300% 300%;
+  animation: hero-border 6s ease infinite;
+  content: "";
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.app-shot.fx-tilt {
+  transform: perspective(1000px) rotateY(var(--fx-ry, 0deg)) rotateX(var(--fx-rx, 0deg));
+}
+
+@keyframes hero-aura {
+  0% {
+    opacity: 0.75;
+    transform: scale(0.96) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.04) translateY(-6px);
+  }
+}
+
+@keyframes hero-border {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ── Gamer polish on surfaces ── */
+
+.app-shot {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.app-shot:hover {
+  border-color: rgba(184, 122, 20, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(184, 122, 20, 0.2),
+    0 16px 48px rgba(184, 122, 20, 0.18),
+    0 8px 28px rgba(20, 18, 14, 0.08);
+}
+
+.mode-card,
+.highlight-card,
+.step-card,
+.faq__panel,
+.gpu-band__inner,
+.download__card {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.mode-card:hover,
+.highlight-card:hover,
+.step-card:hover,
+.gpu-band__inner:hover {
+  border-color: rgba(184, 122, 20, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(184, 122, 20, 0.1),
+    0 16px 40px rgba(184, 122, 20, 0.12);
+}
+
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn--primary::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+  content: "";
+}
+
+.btn--primary:hover:not(:disabled)::after {
+  transform: translateX(120%);
+}
+
+.marquee {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.marquee__track span {
+  background: linear-gradient(90deg, var(--color-text-muted) 0%, #b87a14 45%, var(--color-text-muted) 90%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: marquee-shimmer 4s linear infinite;
+}
+
+@keyframes marquee-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.hero__title-accent {
+  text-shadow: 0 0 40px rgba(184, 122, 20, 0.25);
+}
+
+.site-header.is-scrolled {
+  background: rgba(245, 242, 234, 0.78);
+  border-bottom-color: rgba(184, 122, 20, 0.12);
+  box-shadow: 0 10px 40px rgba(184, 122, 20, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__aura,
+  .app-shot--hero::before,
+  .marquee__track span {
+    animation: none;
+  }
+
+  .marquee__track {
+    animation: none;
+  }
+
+  .app-shot,
+  .mode-card,
+  .highlight-card,
+  .step-card,
+  .gpu-band__inner,
+  .btn--primary::after {
+    transition: none;
+  }
+
+  .mode-card:hover,
+  .highlight-card:hover,
+  .step-card:hover,
+  .gpu-band__inner:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "ue-settings-master-landing",
+  "private": true,
+  "version": "1.0.2-a",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "capture-screenshots": "node scripts/capture-screenshots.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  }
+}

@@ -1,0 +1,145 @@
+name: Release app
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Resolve release version
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $version = "${{ github.ref_name }}".TrimStart('v')
+          } else {
+            $pkg = Get-Content "package.json" -Raw | ConvertFrom-Json
+            $version = $pkg.version
+          }
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Fail if release tag already exists
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "v${{ env.VERSION }}"
+          $ErrorActionPreference = "Continue"
+          $PSNativeCommandUseErrorActionPreference = $false
+          gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
+          if ($LASTEXITCODE -eq 0) {
+            throw "GitHub release $tag already exists"
+          }
+          exit 0
+
+      - name: Point release tag at current commit (manual republish)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "v${{ env.VERSION }}"
+          $ErrorActionPreference = "Continue"
+          $PSNativeCommandUseErrorActionPreference = $false
+          gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            exit 0
+          }
+          gh release edit $tag --repo "${{ github.repository }}" --target "${{ github.sha }}"
+          git tag -f $tag "${{ github.sha }}"
+          git push origin "refs/tags/${tag}:refs/tags/${tag}" --force
+
+      - name: Rust tests
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Build Tauri bundles
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri build
+
+      - name: Prepare release assets
+        shell: pwsh
+        run: |
+          $version = "${{ env.VERSION }}"
+
+          $setup = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe" | Select-Object -First 1
+          if (-not $setup) { throw "NSIS setup.exe not found" }
+
+          $sig = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe.sig" | Select-Object -First 1
+          if (-not $sig) { throw "NSIS setup.exe.sig not found" }
+
+          $setupName = "Game-Settings-Master_${version}_x64-setup.exe"
+          Copy-Item $setup.FullName $setupName
+
+          $signature = (Get-Content $sig.FullName -Raw).Trim()
+          $tag = "v$version"
+          $repo = "${{ github.repository }}"
+          $downloadUrl = "https://github.com/$repo/releases/download/$tag/$setupName"
+
+          $latest = [ordered]@{
+            version   = $version
+            notes     = ""
+            pub_date  = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            platforms = [ordered]@{
+              "windows-x86_64" = [ordered]@{
+                url       = $downloadUrl
+                signature = $signature
+              }
+            }
+          }
+
+          $latestJson = $latest | ConvertTo-Json -Depth 5
+          $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+          [System.IO.File]::WriteAllText("$PWD\latest.json", $latestJson + "`n", $utf8NoBom)
+
+          "SETUP_NAME=$setupName" >> $env:GITHUB_ENV
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          token: ${{ github.token }}
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
+          name: Game Settings Master v${{ env.VERSION }}
+          body: |
+            ## Game Settings Master v${{ env.VERSION }}
+
+            Windows · бесплатно · без подписи издателя
+
+            **Установщик:** `${{ env.SETUP_NAME }}`
+
+            Обновление внутри приложения: при запуске GSM сам проверит `latest.json` на GitHub Releases.
+
+            При первом запуске SmartScreen: **Подробнее → Выполнить в любом случае**.
+
+            Сайт: https://gsm-tool.com/
+          generate_release_notes: false
+          make_latest: true
+          overwrite_files: true
+          files: |
+            ${{ env.SETUP_NAME }}
+            latest.json

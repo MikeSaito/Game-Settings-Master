@@ -1,0 +1,29 @@
+{
+  "source": {
+    "steam": "Steam",
+    "epic": "Epic",
+    "manual": "Manual"
+  },
+  "badge": {
+    "engineUnknown": "Engine ?",
+    "configOk": "Config OK",
+    "needConfig": "Config required"
+  },
+  "button": {
+    "close": "Close",
+    "play": "Play",
+    "open": "Open",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Copy failed"
+  },
+  "configLabel": "Config",
+  "noConfigPath": "Config path is not set",
+  "gameSections": "Game sections",
+  "launchWarningTitle": "Launch warning",
+  "launchVia": "Launching via {{launcher}}…",
+  "gameClosed": "Game closed.",
+  "errors": {
+    "noProcessName": "Game process name is undefined"
+  }
+}

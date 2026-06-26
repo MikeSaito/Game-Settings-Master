@@ -1,0 +1,189 @@
+{
+  "AudioQualityLevel": {
+    "title": "Качество звука",
+    "title_en": "Audio quality level",
+    "description": "Выбирает уровень качества аудио, если игра использует аудио-профили Unreal Engine. Обычно влияет на качество эффектов и количество одновременно звучащих источников, а не на графику.",
+    "description_en": "Selects the audio quality level when the game uses Unreal Engine audio profiles. Usually affects effect quality and the number of active sound sources, not visuals.",
+    "impact": "Выше - богаче звук и больше одновременных эффектов. Ниже - меньше нагрузка на CPU и аудиосистему.",
+    "impact_en": "Higher - richer sound and more simultaneous effects. Lower - less CPU and audio-system load.",
+    "value_hint": "0 - низко, 4 - максимум",
+    "value_hint_en": "0 - low, 4 - max",
+    "category": "Audio"
+  },
+  "bIsHDRUILuminanceSeparate": {
+    "title": "HDR: отдельная яркость интерфейса",
+    "title_en": "HDR UI luminance separated",
+    "description": "Разделяет яркость интерфейса и игровой HDR-картинки. Полезно, если меню или HUD выглядят слишком тускло или слишком ярко на HDR-мониторе.",
+    "description_en": "Separates UI brightness from the game HDR image. Useful when menus or HUD look too dim or too bright on an HDR display.",
+    "impact": "Влияет только на читаемость интерфейса в HDR; на FPS почти не влияет.",
+    "impact_en": "Affects HDR UI readability only; almost no FPS impact.",
+    "value_hint": "True - отдельно, False - вместе с картинкой",
+    "value_hint_en": "True - separate, False - tied to the image",
+    "category": "Display"
+  },
+  "r.BloomQuality": {
+    "title": "Качество bloom-свечения",
+    "title_en": "Bloom quality",
+    "description": "Настраивает свечение вокруг ярких источников света: солнца, ламп, неона, взрывов. Низкие значения быстрее, высокие делают свет мягче и ярче.",
+    "description_en": "Controls glow around bright light sources: sun, lamps, neon, explosions. Lower values are faster; higher values make highlights softer and richer.",
+    "impact": "Выше - красивее яркие блики, но больше нагрузка на GPU. 0 почти отключает bloom.",
+    "impact_en": "Higher - nicer highlights but more GPU load. 0 almost disables bloom.",
+    "value_hint": "0 - выкл/низко, 5 - максимум",
+    "value_hint_en": "0 - off/low, 5 - max",
+    "category": "PostProcess"
+  },
+  "r.DepthOfFieldQuality": {
+    "title": "Качество глубины резкости (DOF)",
+    "title_en": "Depth of field quality",
+    "description": "Управляет кинематографическим размытием фона и переднего плана вне фокуса. Часто заметно в кат-сценах, диалогах и фоторежиме.",
+    "description_en": "Controls cinematic blur of foreground/background areas outside focus. Often visible in cutscenes, dialogue scenes, and photo mode.",
+    "impact": "Выше - мягче и чище размытие, но ниже FPS. 0 отключает эффект, если игра разрешает.",
+    "impact_en": "Higher - softer, cleaner blur but lower FPS. 0 disables the effect if the game allows it.",
+    "value_hint": "0 - выкл, 2 - обычно, 4 - максимум",
+    "value_hint_en": "0 - off, 2 - typical, 4 - max",
+    "category": "PostProcess"
+  },
+  "r.MotionBlurQuality": {
+    "title": "Качество размытия в движении",
+    "title_en": "Motion blur quality",
+    "description": "Задаёт качество размытия камеры и объектов при движении. Может сделать картинку кинематографичнее, но часто ухудшает читаемость в быстрых играх.",
+    "description_en": "Sets the quality of camera and object motion blur. Can look more cinematic, but often reduces clarity in fast games.",
+    "impact": "Выше - плавнее размытие, ниже - чётче картинка и немного больше FPS. 0 отключает motion blur.",
+    "impact_en": "Higher - smoother blur; lower - clearer image and slightly more FPS. 0 disables motion blur.",
+    "value_hint": "0 - выкл, 4 - максимум",
+    "value_hint_en": "0 - off, 4 - max",
+    "category": "PostProcess"
+  },
+  "r.ScreenPercentage": {
+    "title": "Масштаб внутреннего разрешения",
+    "title_en": "Internal resolution scale",
+    "description": "Процент от выбранного разрешения, в котором реально рендерится игра. 100 - нативное разрешение; ниже 100 повышает FPS за счёт мыльности; выше 100 работает как supersampling.",
+    "description_en": "Percentage of the selected resolution actually rendered by the game. 100 is native; below 100 improves FPS with blurrier image; above 100 acts like supersampling.",
+    "impact": "Один из самых сильных рычагов FPS. 75-90 часто даёт большой прирост, 120-150 резко повышает нагрузку на GPU.",
+    "impact_en": "One of the strongest FPS levers. 75-90 often gives a large boost; 120-150 sharply increases GPU load.",
+    "value_hint": "50-100 - быстрее, 100 - нативно, 120+ - supersampling",
+    "value_hint_en": "50-100 - faster, 100 - native, 120+ - supersampling",
+    "category": "Display"
+  },
+  "r.SecondaryScreenPercentage.GameViewport": {
+    "title": "Вторичный масштаб разрешения viewport",
+    "title_en": "Secondary viewport resolution scale",
+    "description": "Дополнительный масштаб рендера для игрового viewport. Встречается в цепочке upscaling/TSR и может переопределять итоговую чёткость картинки.",
+    "description_en": "Additional render scale for the game viewport. Used in upscaling/TSR chains and may override final image sharpness.",
+    "impact": "Ниже - больше FPS и мягче картинка. Выше - чётче, но тяжелее для GPU.",
+    "impact_en": "Lower - more FPS and softer image. Higher - sharper but heavier on the GPU.",
+    "value_hint": "100 - без доп. масштаба",
+    "value_hint_en": "100 - no extra scaling",
+    "category": "Display"
+  },
+  "r.Streaming.PoolSize": {
+    "title": "Пул памяти для текстур",
+    "title_en": "Texture streaming pool size",
+    "description": "Лимит видеопамяти, который Unreal Engine выделяет под потоковую загрузку текстур. Если пул слишком мал, текстуры могут долго оставаться мыльными.",
+    "description_en": "VRAM budget Unreal Engine uses for texture streaming. If the pool is too small, textures may stay blurry for longer.",
+    "impact": "Больше - меньше подгрузок и мыльных текстур, но выше риск нехватки VRAM. Ставьте под объём видеопамяти.",
+    "impact_en": "Higher - fewer streaming issues and blurry textures, but higher VRAM pressure. Match it to your GPU memory.",
+    "value_hint": "2048/4096/8192 MB - типичные значения",
+    "value_hint_en": "2048/4096/8192 MB - typical values",
+    "category": "Textures"
+  },
+  "r.DistanceFieldAO": {
+    "title": "Distance Field Ambient Occlusion",
+    "title_en": "Distance field ambient occlusion",
+    "description": "Включает затенение на основе distance fields: мягкие тени в углах, под объектами и в местах контакта геометрии.",
+    "description_en": "Enables distance-field ambient occlusion: soft darkening in corners, under objects, and around geometry contacts.",
+    "impact": "1 - глубже объём и контактные тени, но тяжелее GPU. 0 - быстрее, картинка может стать площе.",
+    "impact_en": "1 - deeper volume and contact shadows, but heavier GPU. 0 - faster, image may look flatter.",
+    "value_hint": "0 - выкл, 1 - вкл",
+    "value_hint_en": "0 - off, 1 - on",
+    "category": "Shadows"
+  },
+  "r.DistanceFieldShadowing": {
+    "title": "Тени через Distance Fields",
+    "title_en": "Distance field shadowing",
+    "description": "Разрешает тени, построенные по distance fields. Используется для мягких дальних теней и крупных объектов в некоторых проектах UE.",
+    "description_en": "Allows shadows generated from distance fields. Used for soft distant shadows and large objects in some UE projects.",
+    "impact": "Включение улучшает объёмность дальних теней, но может стоить FPS и памяти.",
+    "impact_en": "Enabling improves distant shadow volume, but can cost FPS and memory.",
+    "value_hint": "0 - выкл, 1 - вкл",
+    "value_hint_en": "0 - off, 1 - on",
+    "category": "Shadows"
+  },
+  "r.OneFrameThreadLag": {
+    "title": "Задержка рендера на один кадр",
+    "title_en": "One-frame render thread lag",
+    "description": "Разрешает рендер-потоку отставать на один кадр от игрового потока. Это сглаживает загрузку CPU/GPU, но добавляет немного input lag.",
+    "description_en": "Allows the render thread to run one frame behind the game thread. This smooths CPU/GPU scheduling, but adds a bit of input latency.",
+    "impact": "1 - обычно стабильнее FPS. 0 - меньше задержка ввода, но возможны просадки и микрофризы.",
+    "impact_en": "1 - usually steadier FPS. 0 - lower input latency, but possible dips and micro-stutter.",
+    "value_hint": "0 - меньше input lag, 1 - стабильнее",
+    "value_hint_en": "0 - lower input lag, 1 - steadier",
+    "category": "Performance"
+  },
+  "r.Lumen.FinalGatherQuality": {
+    "title": "Lumen: качество финального сбора света",
+    "title_en": "Lumen final gather quality",
+    "description": "Детализация финального прохода непрямого света Lumen. Влияет на шум в тёмных углах, стабильность GI и качество освещения в интерьерах.",
+    "description_en": "Detail of Lumen's final indirect-light gather pass. Affects noise in dark corners, GI stability, and indoor lighting quality.",
+    "impact": "Выше - чище GI и меньше шум, но заметно тяжелее. Ниже - быстрее, но темнее и шумнее.",
+    "impact_en": "Higher - cleaner GI and less noise, but noticeably heavier. Lower - faster, but darker and noisier.",
+    "value_hint": "0 - быстро, 1-2 - обычно, 4 - максимум",
+    "value_hint_en": "0 - fast, 1-2 - typical, 4 - max",
+    "category": "Rendering"
+  },
+  "r.Lumen.HardwareRayTracing": {
+    "title": "Lumen: аппаратная трассировка лучей",
+    "title_en": "Lumen hardware ray tracing",
+    "description": "Разрешает Lumen использовать RT-ядра видеокарты для GI и отражений. Требует GPU с аппаратной трассировкой лучей.",
+    "description_en": "Allows Lumen to use GPU RT cores for GI and reflections. Requires a GPU with hardware ray tracing.",
+    "impact": "1 - точнее отражения и освещение, но тяжелее. 0 - быстрее и совместимее со старыми GPU.",
+    "impact_en": "1 - more accurate reflections and lighting, but heavier. 0 - faster and better for older GPUs.",
+    "value_hint": "0 - software, 1 - hardware RT",
+    "value_hint_en": "0 - software, 1 - hardware RT",
+    "category": "Rendering"
+  },
+  "r.Lumen.MaxTraceDistance": {
+    "title": "Lumen: максимальная дальность трассировки",
+    "title_en": "Lumen max trace distance",
+    "description": "Как далеко Lumen ищет геометрию для непрямого света и отражений. Малое значение обрывает дальние отражения, большое держит их дальше.",
+    "description_en": "How far Lumen searches for geometry for indirect lighting and reflections. Low values cut distant reflections; high values keep them farther.",
+    "impact": "Меньше - экономия FPS. Больше - стабильнее дальние отражения и освещение, но выше нагрузка.",
+    "impact_en": "Lower - saves FPS. Higher - more stable distant reflections and lighting, but more load.",
+    "value_hint": "меньше - быстрее, больше - дальше трассировка",
+    "value_hint_en": "lower - faster, higher - longer tracing",
+    "category": "Rendering"
+  },
+  "r.Nanite.MaxPixelsPerEdge": {
+    "title": "Nanite: пикселей на ребро",
+    "title_en": "Nanite max pixels per edge",
+    "description": "Главный регулятор детализации Nanite. Чем меньше число, тем мельче треугольники и выше детализация на экране.",
+    "description_en": "Main Nanite detail control. Lower values mean smaller triangles and higher on-screen detail.",
+    "impact": "Ниже - красивее и тяжелее. Выше - грубее геометрия, но больше FPS.",
+    "impact_en": "Lower - prettier and heavier. Higher - coarser geometry but more FPS.",
+    "value_hint": "меньше - качество, больше - FPS",
+    "value_hint_en": "lower - quality, higher - FPS",
+    "category": "Rendering"
+  },
+  "r.Shadow.Virtual.Enable": {
+    "title": "Virtual Shadow Maps (VSM)",
+    "title_en": "Virtual Shadow Maps (VSM)",
+    "description": "Включает виртуальные карты теней UE5. Они дают стабильные детальные тени на больших сценах, но требуют больше GPU и памяти.",
+    "description_en": "Enables UE5 Virtual Shadow Maps. They provide stable detailed shadows on large scenes, but need more GPU and memory.",
+    "impact": "1 - качественнее дальние и мелкие тени. 0 - классические shadow maps, обычно быстрее.",
+    "impact_en": "1 - better distant and fine shadows. 0 - classic shadow maps, usually faster.",
+    "value_hint": "0 - classic, 1 - VSM",
+    "value_hint_en": "0 - classic, 1 - VSM",
+    "category": "Shadows"
+  },
+  "r.TemporalAA.Upsampling": {
+    "title": "TAA upsampling",
+    "title_en": "TAA upsampling",
+    "description": "Разрешает Temporal AA одновременно сглаживать и масштабировать изображение до целевого разрешения.",
+    "description_en": "Allows Temporal AA to both anti-alias and upscale the image to the target resolution.",
+    "impact": "1 - лучше качество при render scale ниже 100%. 0 - проще и иногда резче, но больше лестниц.",
+    "impact_en": "1 - better quality below 100% render scale. 0 - simpler and sometimes sharper, but more aliasing.",
+    "value_hint": "0 - выкл, 1 - вкл",
+    "value_hint_en": "0 - off, 1 - on",
+    "category": "PostProcess"
+  }
+}

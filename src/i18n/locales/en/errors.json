@@ -1,0 +1,16 @@
+{
+  "gameRunningTitle": "{{label}} is running",
+  "gameRunningIni": "Close the game before applying — Engine.ini and other files are locked by the process.",
+  "paramSync": {
+    "DLSSQualityMode": "Linked to DLSSMode",
+    "ResolutionScaleDLSS": "Linked to DLSS mode",
+    "UpscalingMethod": "Linked to DLSS / TSR / FSR",
+    "TSRQualityMode": "Linked to upscaling method",
+    "AntiAliasingType": "Linked to DLSS / TSR",
+    "UpscalingFrameGeneration": "Only when DLSS is enabled (RTX 40+)",
+    "ResolutionScaleMin": "Must not exceed ResolutionScaleMax",
+    "ResolutionScaleMax": "Must not be less than ResolutionScaleMin",
+    "r.SSR.Quality": "Works when water/floor reflections are enabled",
+    "r.MotionBlurQuality": "Works when motion blur is enabled"
+  }
+}

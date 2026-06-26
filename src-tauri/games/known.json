@@ -1,0 +1,15 @@
+{
+  "578080": {
+    "name": "PUBG: BATTLEGROUNDS",
+    "local_app_folder": "TslGame",
+    "config_platform": "WindowsNoEditor",
+    "engine_family": "ue4"
+  },
+  "1962700": {
+    "name": "Subnautica 2",
+    "local_app_folder": "Subnautica2",
+    "config_platform": "Windows",
+    "engine_family": "ue5",
+    "epic_app_names": ["Subnautica2"]
+  }
+}

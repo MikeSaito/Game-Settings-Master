@@ -1,0 +1,319 @@
+{
+  "version": "5.4",
+  "keys": [
+    {
+      "key": "bUseVSync",
+      "cpp_type": "bool",
+      "value_type": "bool",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "bUseDynamicResolution",
+      "cpp_type": "bool",
+      "value_type": "bool",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "False"
+    },
+    {
+      "key": "ResolutionSizeX",
+      "cpp_type": "uint32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultResolution().X"
+    },
+    {
+      "key": "ResolutionSizeY",
+      "cpp_type": "uint32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultResolution().Y"
+    },
+    {
+      "key": "LastUserConfirmedResolutionSizeX",
+      "cpp_type": "uint32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultResolution().X"
+    },
+    {
+      "key": "LastUserConfirmedResolutionSizeY",
+      "cpp_type": "uint32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultResolution().Y"
+    },
+    {
+      "key": "WindowPosX",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Window",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultWindowPosition().X"
+    },
+    {
+      "key": "WindowPosY",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Window",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultWindowPosition().Y"
+    },
+    {
+      "key": "FullscreenMode",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "GetDefaultWindowMode()"
+    },
+    {
+      "key": "LastConfirmedFullscreenMode",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "PreferredFullscreenMode",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "CVar->GetValueOnGameThread()"
+    },
+    {
+      "key": "Version",
+      "cpp_type": "uint32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "AudioQualityLevel",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Audio",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "LastConfirmedAudioQualityLevel",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Audio",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "FrameRateLimit",
+      "cpp_type": "float",
+      "value_type": "float",
+      "category": "Performance",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "0.0"
+    },
+    {
+      "key": "DesiredScreenWidth",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "1280"
+    },
+    {
+      "key": "bUseDesiredScreenHeight",
+      "cpp_type": "bool",
+      "value_type": "bool",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "globalconfig"
+    },
+    {
+      "key": "DesiredScreenHeight",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "720"
+    },
+    {
+      "key": "LastUserConfirmedDesiredScreenWidth",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "DesiredScreenWidth"
+    },
+    {
+      "key": "LastUserConfirmedDesiredScreenHeight",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "DesiredScreenHeight"
+    },
+    {
+      "key": "LastRecommendedScreenWidth",
+      "cpp_type": "float",
+      "value_type": "float",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "-1.0"
+    },
+    {
+      "key": "LastRecommendedScreenHeight",
+      "cpp_type": "float",
+      "value_type": "float",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "-1.0"
+    },
+    {
+      "key": "LastCPUBenchmarkResult",
+      "cpp_type": "float",
+      "value_type": "float",
+      "category": "Performance",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "-1.0"
+    },
+    {
+      "key": "LastGPUBenchmarkResult",
+      "cpp_type": "float",
+      "value_type": "float",
+      "category": "Performance",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "-1.0"
+    },
+    {
+      "key": "LastCPUBenchmarkSteps",
+      "cpp_type": "TArray<float>",
+      "value_type": "array",
+      "category": "Performance",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "LastGPUBenchmarkSteps",
+      "cpp_type": "TArray<float>",
+      "value_type": "array",
+      "category": "Performance",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config"
+    },
+    {
+      "key": "LastGPUBenchmarkMultiplier",
+      "cpp_type": "float",
+      "value_type": "float",
+      "category": "Performance",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "1.0"
+    },
+    {
+      "key": "bUseHDRDisplayOutput",
+      "cpp_type": "bool",
+      "value_type": "bool",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "FPlatformMisc::UseHDRByDefault()"
+    },
+    {
+      "key": "HDRDisplayOutputNits",
+      "cpp_type": "int32",
+      "value_type": "int",
+      "category": "Display",
+      "file": "GameUserSettings.ini",
+      "section": "/Script/Engine.GameUserSettings",
+      "source": "GameUserSettings.h",
+      "config_scope": "config",
+      "default": "1000"
+    }
+  ],
+  "source": "GameUserSettings.h",
+  "source_path": "D:\\app\\tools\\ue-reference\\UE_5.4\\source\\GameUserSettings.h",
+  "defaults_source_path": "D:\\app\\tools\\ue-reference\\UE_5.4\\source\\GameUserSettings.cpp"
+}

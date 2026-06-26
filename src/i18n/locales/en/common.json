@@ -1,0 +1,22 @@
+{
+  "toggleOn": "On",
+  "toggleOff": "Off",
+  "workspaceUser": "Custom",
+  "workspaceApplied": "Configured",
+  "errorBoundaryTitle": "Something went wrong on this screen",
+  "errorBoundaryBody": "A UI error occurred. The rest of the app keeps working — return to the library or try again.",
+  "errorBoundaryRetry": "Try again",
+  "paramReadOnly": "System parameter — read only. The game updates this value itself; editing it manually may break settings.",
+  "paramDisabled": "Parameter is off (Off toggle). Turn it on and click Apply to edit.",
+  "gpuNoRtx": "no RTX",
+  "gpuDlssFg": "DLSS + FG",
+  "gpuDlss": "DLSS",
+  "gpuFsrTsr": "FSR / TSR",
+  "workspaceAppliedPrefix": "Applied: {{label}}",
+  "paramSentinel": "−1 · automatic (engine default)",
+  "gpuFilterAmd": "GPU {{name}}: DLSS unavailable — editor hides DLSS and suggests FSR 3.",
+  "gpuFilterIntel": "GPU {{name}}: DLSS unavailable — editor hides DLSS and suggests FSR or TSR.",
+  "gpuFilterNvidiaNoDlss": "GPU {{name}}: DLSS unavailable — GTX has no Tensor Cores.",
+  "gpuFilterNvidiaNoFg": "GPU {{name}}: Frame Generation unavailable — DLSS FG will be hidden.",
+  "gpuFilterNvidiaDlssOnly": "GPU {{name}}: DLSS available. Frame Generation (DLSS 3) — RTX 40 series and newer only."
+}

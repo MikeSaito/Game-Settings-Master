@@ -1,0 +1,387 @@
+{
+  "generated_at": "2026-06-21T14:11:32.724438+00:00",
+  "source": "Scalability.cpp",
+  "versions_scanned": [
+    "4.27",
+    "5.0",
+    "5.1",
+    "5.2",
+    "5.3",
+    "5.4",
+    "5.5",
+    "5.6",
+    "5.7",
+    "5.8"
+  ],
+  "sources": {
+    "4.27": "D:\\app\\tools\\ue-reference\\UE_4.27\\source\\Scalability.cpp",
+    "5.0": "D:\\app\\tools\\ue-reference\\UE_5.0\\source\\Scalability.cpp",
+    "5.1": "D:\\app\\tools\\ue-reference\\UE_5.1\\source\\Scalability.cpp",
+    "5.2": "D:\\app\\tools\\ue-reference\\UE_5.2\\source\\Scalability.cpp",
+    "5.3": "D:\\app\\tools\\ue-reference\\UE_5.3\\source\\Scalability.cpp",
+    "5.4": "D:\\app\\tools\\ue-reference\\UE_5.4\\source\\Scalability.cpp",
+    "5.5": "D:\\app\\tools\\ue-reference\\UE_5.5\\source\\Scalability.cpp",
+    "5.6": "D:\\app\\tools\\ue-reference\\UE_5.6\\source\\Scalability.cpp",
+    "5.7": "D:\\app\\tools\\ue-reference\\UE_5.7\\source\\Scalability.cpp",
+    "5.8": "D:\\app\\tools\\ue-reference\\UE_5.8\\source\\Scalability.cpp"
+  },
+  "keys": [
+    {
+      "key": "sg.AntiAliasingQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.EffectsQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.FoliageQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.GlobalIlluminationQuality",
+      "introduced_in": "5.0",
+      "removed_in": null,
+      "versions_present": [
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.LandscapeQuality",
+      "introduced_in": "5.4",
+      "removed_in": null,
+      "versions_present": [
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.PostProcessQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.ReflectionQuality",
+      "introduced_in": "5.0",
+      "removed_in": null,
+      "versions_present": [
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.ResolutionQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true
+    },
+    {
+      "key": "sg.ShadingQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.ShadowQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.TextureQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    },
+    {
+      "key": "sg.ViewDistanceQuality",
+      "introduced_in": "4.27",
+      "removed_in": null,
+      "versions_present": [
+        "4.27",
+        "5.0",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.7",
+        "5.8"
+      ],
+      "source": "Scalability.cpp",
+      "editable": true,
+      "num_levels_by_version": {
+        "4.27": 5,
+        "5.0": 5,
+        "5.1": 5,
+        "5.2": 5,
+        "5.3": 5,
+        "5.4": 5,
+        "5.5": 5,
+        "5.6": 5,
+        "5.7": 5,
+        "5.8": 5
+      },
+      "max_level": 4
+    }
+  ]
+}

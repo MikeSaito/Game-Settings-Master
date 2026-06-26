@@ -1,0 +1,77 @@
+# ─── Секреты и локальная конфигурация ───────────────────────────────────────
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# ─── Node / frontend ────────────────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# ─── Rust / Tauri ───────────────────────────────────────────────────────────
+src-tauri/target/
+src-tauri/target-test-i18n/
+src-tauri/gen/schemas/
+
+# ─── Сборки Tauri (установщики, бинарники) ──────────────────────────────────
+src-tauri/target/release/bundle/
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# ─── Логи ───────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─── ОС ─────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ─── IDE / редакторы ────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.cursor/
+
+# ─── ReShade бинарники/шейдеры (не в git, но нужны на диске перед tauri build) ─
+# Локально и в CI: npm run reshade:setup → tauri bundle кладёт presets/reshade/**/* в установщик.
+src-tauri/presets/reshade/bin/*.dll
+src-tauri/presets/reshade/bin/ReShade64.json
+src-tauri/presets/reshade/shaders/Shaders/
+src-tauri/presets/reshade/shaders/Textures/
+
+# ─── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+
+# ─── Прочее ─────────────────────────────────────────────────────────────────
+*.orig
+*.bak
+*.tmp
+~$*

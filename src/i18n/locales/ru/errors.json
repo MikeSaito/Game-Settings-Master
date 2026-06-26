@@ -1,0 +1,16 @@
+{
+  "gameRunningTitle": "{{label}} запущена",
+  "gameRunningIni": "Закройте игру перед применением — Engine.ini и другие файлы заблокированы процессом.",
+  "paramSync": {
+    "DLSSQualityMode": "Связан с DLSSMode",
+    "ResolutionScaleDLSS": "Связан с режимом DLSS",
+    "UpscalingMethod": "Связан с DLSS / TSR / FSR",
+    "TSRQualityMode": "Связан с методом upscaling",
+    "AntiAliasingType": "Связан с DLSS / TSR",
+    "UpscalingFrameGeneration": "Только при включённом DLSS (RTX 40+)",
+    "ResolutionScaleMin": "Не больше ResolutionScaleMax",
+    "ResolutionScaleMax": "Не меньше ResolutionScaleMin",
+    "r.SSR.Quality": "Работает при включённых отражениях на воде/полу",
+    "r.MotionBlurQuality": "Работает при включённом размытии в движении"
+  }
+}
