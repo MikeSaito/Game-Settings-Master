@@ -1,12 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1254 1254" role="img" aria-label="Game Settings Master">
-  <defs>
-    <linearGradient id="logo-amber" x1="180" y1="120" x2="1050" y2="1130" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ffc24a"/>
-      <stop offset="0.52" stop-color="#ff8a00"/>
-      <stop offset="1" stop-color="#c85f00"/>
-    </linearGradient>
-  </defs>
-  <rect width="1254" height="1254" rx="198" fill="url(#logo-amber)"/>
+  <rect width="1254" height="1254" rx="198" fill="#ffc24a"/>
   <g transform="translate(627 627) scale(1.12) translate(-627 -627)">
   <g transform="translate(0 1254) scale(.1 -.1)" fill="#11110f">
     <path d="M1980 12525 c-923 -112 -1684 -778 -1914 -1676 -72 -278 -67 73 -63
