@@ -31,7 +31,7 @@
   },
   "noConfig": {
     "title": "Config not found",
-    "default": "Specify the path to Saved/Config/Windows on the “Library” tab."
+    "default": "On the Library tab, click Set config and select Saved/Config/Windows, WindowsNoEditor, WinGDK, or WindowsClient."
   },
   "errorTitle": "Error",
   "gpuHintTitle": "Graphics card",
@@ -68,7 +68,7 @@
   "filter": {
     "recommended": "Recommended",
     "full": "Full catalog",
-    "ini_only": "My ini only",
+    "ini_only": "In ini",
     "allInIni": "All in ini"
   },
   "paramsForEngine_one": "{{count}} parameter for UE {{version}}",

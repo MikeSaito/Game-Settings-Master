@@ -1,4 +1,5 @@
 import type { EditorPanel } from "@/lib/routing/editorPanels";
+import { detectSystemLanguage } from "@/i18n/detectLanguage";
 
 export type ThemeMode = "dark" | "light" | "system";
 export type FontScale = 0.875 | 1 | 1.125 | 1.25;
@@ -19,7 +20,7 @@ const I18N_LANGUAGE_STORAGE_KEY = "uesm:language";
 export const DEFAULT_APP_SETTINGS: AppSettings = {
   theme: "system",
   fontScale: 1,
-  language: "ru",
+  language: detectSystemLanguage(),
   reducedMotion: false,
   compactDensity: false,
   defaultEditorPanel: "basic",
@@ -48,10 +49,7 @@ function detectedLanguage(): SettingsLanguage {
     const stored = localStorage.getItem(I18N_LANGUAGE_STORAGE_KEY);
     if (isLanguage(stored)) return stored;
   }
-  if (typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("en")) {
-    return "en";
-  }
-  return "ru";
+  return detectSystemLanguage();
 }
 
 export function resolveTheme(theme: ThemeMode): "dark" | "light" {

@@ -11,6 +11,7 @@ import { useAdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 import { gpuFilterHint } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
 import { BackupsPanel } from "@/components/backups";
+import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
 
 interface Props {
   game: GameProfile | null;
@@ -32,9 +33,12 @@ export function AdvancedEditor({ game }: Props) {
 
   if (!state.configDir) {
     return (
-      <Alert tone="warning" title={t("noConfig.title")}>
-        {t("noConfig.default")}
-      </Alert>
+      <div className="space-y-3">
+        <Alert tone="warning" title={t("noConfig.title")}>
+          {t("noConfig.default")}
+        </Alert>
+        <ConfigPathHelp />
+      </div>
     );
   }
 

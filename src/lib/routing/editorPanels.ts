@@ -82,7 +82,7 @@ export function filterParamsByMode(
 
 export function defaultFilterMode(panel: EditorPanel): EditorFilterMode {
   if (panel === "backups") return "recommended";
-  return panel === "basic" ? "recommended" : "full";
+  return "ini_only";
 }
 
 export function defaultCategoryForPanel(panel: EditorPanel): string {

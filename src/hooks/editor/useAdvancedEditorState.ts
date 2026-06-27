@@ -110,8 +110,11 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   }, [defaultOverrideName]);
 
   useEffect(() => {
-    if (categories.length && !categories.some((c) => c.cat === activeCategory)) {
-      setActiveCategory(categories[0].cat);
+    if (!categories.length) return;
+    if (categories.some((c) => c.cat === activeCategory)) return;
+    const nextCategory = categories[0]?.cat;
+    if (nextCategory && nextCategory !== activeCategory) {
+      setActiveCategory(nextCategory);
     }
   }, [categories, activeCategory, panel]);
 

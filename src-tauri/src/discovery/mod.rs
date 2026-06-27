@@ -1,5 +1,6 @@
 mod config_index;
 mod dedupe;
+mod drives;
 mod enrich;
 mod epic;
 pub mod known_games;

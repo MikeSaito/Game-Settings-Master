@@ -3,7 +3,8 @@ import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 
 const base = process.env.VITE_BASE_PATH ?? "/";
-const siteUrl = (process.env.VITE_SITE_URL ?? "http://localhost").replace(/\/$/, "");
+const siteUrl = (process.env.VITE_SITE_URL ?? "https://gsm-tool.com").replace(/\/$/, "");
+const lastmod = new Date().toISOString().slice(0, 10);
 
 function rewriteEnRoute(url: string): string | null {
   const parsed = new URL(url, "http://localhost");
@@ -104,30 +105,71 @@ function injectYandexMetrika(): Plugin {
 }
 
 function injectSiteMeta(): Plugin {
+  const ruUrl = `${siteUrl}/`;
+  const enUrl = `${siteUrl}/en/`;
+
   return {
     name: "inject-site-meta",
     transformIndexHtml(html, ctx) {
       const isEn = ctx.filename?.includes("en.html");
-      const pathSuffix = isEn ? "/en/" : "/";
-      const canonical = `${siteUrl}${pathSuffix === "/" ? "" : pathSuffix}`.replace(
-        /([^:]\/)\/+/g,
-        "$1",
-      );
-      const pageUrl = canonical.endsWith("/") ? canonical : `${canonical}/`;
+      const pageUrl = isEn ? enUrl : ruUrl;
+      const ogLocale = isEn ? "en_US" : "ru_RU";
 
       return html
-        .replace(/http:\/\/localhost\/?/g, `${siteUrl}/`)
-        .replace(/http:\/\/localhost\/en\//g, `${siteUrl}/en/`)
+        .replaceAll("https://gsm-tool.com/", `${siteUrl}/`)
+        .replaceAll("https://gsm-tool.com/en/", enUrl)
         .replace(
           /<link rel="canonical" href="[^"]*"/,
           `<link rel="canonical" href="${pageUrl}"`,
         )
         .replace(
+          /<link rel="alternate" hreflang="ru" href="[^"]*"/,
+          `<link rel="alternate" hreflang="ru" href="${ruUrl}"`,
+        )
+        .replace(
+          /<link rel="alternate" hreflang="en" href="[^"]*"/,
+          `<link rel="alternate" hreflang="en" href="${enUrl}"`,
+        )
+        .replace(
+          /<link rel="alternate" hreflang="x-default" href="[^"]*"/,
+          `<link rel="alternate" hreflang="x-default" href="${ruUrl}"`,
+        )
+        .replace(
+          /<meta property="og:locale" content="[^"]*"/,
+          `<meta property="og:locale" content="${ogLocale}"`,
+        )
+        .replace(
           /<meta property="og:url" content="[^"]*"/,
           `<meta property="og:url" content="${pageUrl}"`,
+        )
+        .replace(
+          /<meta property="og:image" content="[^"]*"/,
+          `<meta property="og:image" content="${siteUrl}/og-image.png"`,
+        )
+        .replace(
+          /<meta name="twitter:image" content="[^"]*"/,
+          `<meta name="twitter:image" content="${siteUrl}/og-image.png"`,
+        )
+        .replace(
+          /"url": "https:\/\/gsm-tool.com\/"/,
+          `"url": "${pageUrl}"`,
         );
     },
   };
+}
+
+function sitemapEntry(loc: string, priority: string): string {
+  const ruUrl = `${siteUrl}/`;
+  const enUrl = `${siteUrl}/en/`;
+  return `  <url>
+    <loc>${loc}</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="${ruUrl}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${enUrl}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${ruUrl}" />
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
 }
 
 function emitSeoFiles(): Plugin {
@@ -135,19 +177,28 @@ function emitSeoFiles(): Plugin {
     name: "emit-seo-files",
     closeBundle() {
       const outDir = resolve(__dirname, "dist");
-      const root = siteUrl.replace(/\/$/, "");
+      const host = new URL(siteUrl).host;
+
       writeFileSync(
         resolve(outDir, "sitemap.xml"),
         `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${root}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>${root}/en/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${sitemapEntry(`${siteUrl}/`, "1.0")}
+${sitemapEntry(`${siteUrl}/en/`, "0.9")}
 </urlset>
 `,
       );
+
       writeFileSync(
         resolve(outDir, "robots.txt"),
-        `User-agent: *\nAllow: /\n\nSitemap: ${root}/sitemap.xml\n`,
+        `User-agent: *
+Allow: /
+
+Host: ${host}
+
+Sitemap: ${siteUrl}/sitemap.xml
+`,
       );
     },
   };

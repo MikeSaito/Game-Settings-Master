@@ -20,9 +20,22 @@
   },
   "dialogs": {
     "installFolder": "Выберите папку установки Unreal Engine игры",
-    "configFolder": "Выберите папку Saved/Config/Windows",
+    "configFolder": "Выберите папку конфигов игры: Saved/Config/Windows или WindowsNoEditor",
     "coverFile": "Выберите обложку игры",
     "imageFilter": "Изображение"
+  },
+  "configHelp": {
+    "title": "Как указать путь к конфигу",
+    "body": "Кнопка «Указать конфиг» должна вести не к папке установки игры, а к папке, где Unreal Engine хранит ini-файлы. Нужна папка внутри Saved/Config.",
+    "pickFolder": "В диалоге выбора откройте папку игры в профиле пользователя и выберите саму папку Windows, WindowsNoEditor, WinGDK или WindowsClient.",
+    "gameLaunchHint": "Если папки Saved/Config ещё нет, запустите игру один раз, измените любую настройку в меню и закройте игру – Unreal создаст ini-файлы.",
+    "examplesTitle": "Примеры путей",
+    "examples": [
+      "C:\\Users\\<имя>\\AppData\\Local\\GameName\\Saved\\Config\\Windows",
+      "C:\\Users\\<имя>\\AppData\\Local\\GameName\\Saved\\Config\\WindowsNoEditor",
+      "C:\\Users\\<имя>\\AppData\\Local\\GameName\\Saved\\Config\\WinGDK",
+      "D:\\Games\\GameName\\Saved\\Config\\Windows"
+    ]
   },
   "card": {
     "engineUnknown": "Движок не определён",

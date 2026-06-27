@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://localhost/sitemap.xml
+Host: gsm-tool.com
+
+Sitemap: https://gsm-tool.com/sitemap.xml

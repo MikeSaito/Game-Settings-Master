@@ -31,7 +31,7 @@
   },
   "noConfig": {
     "title": "Конфигурация не найдена",
-    "default": "Укажите путь к Saved/Config/Windows на вкладке «Библиотека»."
+    "default": "На вкладке «Библиотека» нажмите «Указать конфиг» и выберите папку Saved/Config/Windows, WindowsNoEditor, WinGDK или WindowsClient."
   },
   "errorTitle": "Ошибка",
   "gpuHintTitle": "Видеокарта",
@@ -68,7 +68,7 @@
   "filter": {
     "recommended": "Рекомендуемые",
     "full": "Полный каталог",
-    "ini_only": "Только в моих ini",
+    "ini_only": "Есть в ini",
     "allInIni": "Все из ini"
   },
   "paramsForEngine_one": "{{count}} параметр для UE {{version}}",

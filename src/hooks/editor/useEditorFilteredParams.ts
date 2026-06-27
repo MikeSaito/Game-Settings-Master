@@ -48,8 +48,21 @@ export function useEditorParamDraft(
 
   useEffect(() => {
     if (paramsDirtyRef.current) return;
-    setParams(normalizedParameters);
-    setEngineEnabled(initialEngineEnabledKeys(normalizedParameters));
+
+    setParams((current) =>
+      current === normalizedParameters ? current : normalizedParameters,
+    );
+
+    setEngineEnabled((current) => {
+      const next = initialEngineEnabledKeys(normalizedParameters);
+      if (
+        current.size === next.size &&
+        [...current].every((key) => next.has(key))
+      ) {
+        return current;
+      }
+      return next;
+    });
   }, [normalizedParameters, paramsDirtyRef]);
 
   return { params, setParams, engineEnabled, setEngineEnabled };

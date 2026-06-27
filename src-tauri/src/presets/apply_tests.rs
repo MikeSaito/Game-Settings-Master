@@ -214,7 +214,10 @@ fn apply_changes_rejects_traversal_filename() {
         1080,
     )
     .unwrap_err();
-    assert!(err.contains("Недопустимое имя"));
+    assert!(
+        err.contains("Недопустимое имя") || err.contains("Invalid configuration file name"),
+        "unexpected error: {err}"
+    );
 }
 
 #[test]
@@ -239,7 +242,10 @@ fn apply_changes_rejects_ini_value_injection() {
         1080,
     )
     .unwrap_err();
-    assert!(err.contains("Недопустимое"));
+    assert!(
+        err.contains("Недопустимое") || err.contains("Invalid INI"),
+        "unexpected error: {err}"
+    );
 }
 
 #[test]

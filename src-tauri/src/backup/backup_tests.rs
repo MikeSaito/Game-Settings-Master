@@ -10,7 +10,10 @@ fn restore_rejects_unsafe_backup_id() {
     let config = tmp.path();
     fs::write(config.join("GameUserSettings.ini"), b"[Settings]\n").unwrap();
     let err = restore_backup(config, "../evil").unwrap_err();
-    assert!(err.contains("Недопустимый"));
+    assert!(
+        err.contains("Недопустимый") || err.contains("Invalid backup"),
+        "unexpected error: {err}"
+    );
 }
 
 #[test]
@@ -26,7 +29,10 @@ fn restore_rejects_unsafe_filename_in_backup() {
     fs::write(backup_path.join("evil.ini"), b"bad\n").unwrap();
 
     let err = restore_backup(config, backup_id).unwrap_err();
-    assert!(err.contains("Недопустимый"));
+    assert!(
+        err.contains("Недопустимый") || err.contains("Invalid file in backup"),
+        "unexpected error: {err}"
+    );
 }
 
 #[test]

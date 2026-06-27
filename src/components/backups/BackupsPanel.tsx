@@ -8,6 +8,7 @@ import { Badge } from "@/components/ds/Badge";
 import { Button } from "@/components/ds/Button";
 import { Alert, EmptyState } from "@/components/ds/Feedback";
 import { Panel } from "@/components/ds/Panel";
+import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { useActiveGameIdRef } from "@/hooks/game/useActiveGameIdRef";
 import { useBackupMutations } from "@/hooks/game/useBackupMutations";
@@ -66,9 +67,12 @@ export function BackupsPanel({ game }: Props) {
 
   if (!configDir) {
     return (
-      <Alert tone="warning" icon={AlertTriangle} title={t("configMissing.title", { name: game.name })}>
-        {t("configMissing.body")}
-      </Alert>
+      <div className="space-y-3">
+        <Alert tone="warning" icon={AlertTriangle} title={t("configMissing.title", { name: game.name })}>
+          {t("configMissing.body")}
+        </Alert>
+        <ConfigPathHelp />
+      </div>
     );
   }
 

@@ -31,7 +31,7 @@
   },
   "configMissing": {
     "title": "Config not found — {{name}}",
-    "body": "Specify the Saved/Config/Windows folder in the library or launch the game once."
+    "body": "In the library, click Set config and select Saved/Config/Windows, WindowsNoEditor, WinGDK, or WindowsClient. If it does not exist, launch the game once."
   },
   "list": {
     "title": "Backup list",

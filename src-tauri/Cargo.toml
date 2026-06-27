@@ -1,10 +1,9 @@
 [package]
 name = "ue-settings-master"
-version = "1.0.2-a"
+version = "1.0.3"
 description = "UE Settings Master — мастер настроек для игр Unreal Engine"
 authors = ["Mike Saito <chigikovden@gmail.com>"]
 license = "MIT"
-license-file = "../LICENSE"
 edition = "2021"
 
 [lib]
@@ -29,6 +28,7 @@ regex = "1"
 dirs = "6"
 indexmap = { version = "2", features = ["serde"] }
 uuid = { version = "1", features = ["v4"] }
+sys-locale = "0.3"
 open = "5"
 tauri-plugin-process = "2"
 
@@ -39,6 +39,7 @@ windows-sys = { version = "0.59", features = [
   "Win32_System_Diagnostics_ToolHelp",
   "Win32_System_Threading",
   "Win32_UI_WindowsAndMessaging",
+  "Win32_Storage_FileSystem",
 ] }
 winreg = "0.55"
 

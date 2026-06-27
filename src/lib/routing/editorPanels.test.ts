@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import {
+  defaultFilterMode,
   filterParamsByPanel,
   filterParamsByMode,
   isRecommendedParam,
@@ -254,6 +255,17 @@ describe("filterParamsByMode (recommended)", () => {
     const panel = filterParamsByPanel(items, "advanced");
     const full = filterParamsByMode(panel, "full", "advanced", "");
     expect(full.length).toBeGreaterThan(300);
+  });
+});
+
+describe("defaultFilterMode", () => {
+  it("opens editable panels on keys that already exist in ini", () => {
+    expect(defaultFilterMode("basic")).toBe("ini_only");
+    expect(defaultFilterMode("advanced")).toBe("ini_only");
+  });
+
+  it("keeps backups on a non-empty neutral mode", () => {
+    expect(defaultFilterMode("backups")).toBe("recommended");
   });
 });
 

@@ -12,9 +12,11 @@ import {
   getScalabilityLimits,
 } from "@/lib/api";
 import { normalizeParameterCategories } from "@/lib/editor";
-import type { GameProfile } from "@/lib/core";
+import type { GameOverride, GameParameter, GameProfile } from "@/lib/core";
 
 const FOCUS_DISK_REFRESH_MS = 60_000;
+const EMPTY_PARAMETERS: GameParameter[] = [];
+const EMPTY_OVERRIDES: GameOverride[] = [];
 
 export function useEditorQueries(game: GameProfile | null) {
   const queryClient = useQueryClient();
@@ -26,7 +28,7 @@ export function useEditorQueries(game: GameProfile | null) {
   const gpuEnabled = useBackgroundSafeEnabled();
   const paramsDirtyRef = useRef(false);
 
-  const { data: parameters = [], isLoading, isFetching } = useQuery({
+  const { data: parameters = EMPTY_PARAMETERS, isLoading, isFetching } = useQuery({
     queryKey: [
       "parameters",
       configDir,
@@ -62,7 +64,7 @@ export function useEditorQueries(game: GameProfile | null) {
     enabled: queriesEnabled && !!game,
   });
 
-  const { data: overrides = [] } = useQuery({
+  const { data: overrides = EMPTY_OVERRIDES } = useQuery({
     queryKey: ["overrides", game?.id],
     queryFn: () => getGameOverrides(game!.id),
     enabled: overridesEnabled,

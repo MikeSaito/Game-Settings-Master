@@ -22,7 +22,7 @@ interface Props {
   onFilterModeChange: (mode: EditorFilterMode) => void;
 }
 
-const FILTER_MODES: EditorFilterMode[] = ["recommended", "full", "ini_only"];
+const FILTER_MODES: EditorFilterMode[] = ["ini_only", "recommended", "full"];
 
 export function EditorSidebar({
   search,

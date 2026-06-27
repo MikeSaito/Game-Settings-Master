@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost/</loc>
+    <loc>https://gsm-tool.com/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://gsm-tool.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsm-tool.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gsm-tool.com/" />
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>http://localhost/en/</loc>
+    <loc>https://gsm-tool.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://gsm-tool.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://gsm-tool.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gsm-tool.com/" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>

@@ -54,6 +54,12 @@ describe("appSettings", () => {
     });
   });
 
+  it("defaults to English for non-Russian system locale on first run", () => {
+    vi.stubGlobal("navigator", { language: "de-DE", languages: ["de-DE"] });
+    expect(sanitizeAppSettings(null).language).toBe("en");
+    vi.unstubAllGlobals();
+  });
+
   it("resolves system theme through matchMedia", () => {
     vi.stubGlobal("matchMedia", (query: string) => ({
       matches: query.includes("light"),

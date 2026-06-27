@@ -39,10 +39,10 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
     const window = getCurrentWindow();
 
     void window.isFocused().then((isFocused) => {
-      setTauriFocused(isFocused);
+      setTauriFocused((prev) => (prev === isFocused ? prev : isFocused));
     });
     void window.onFocusChanged(({ payload }) => {
-      setTauriFocused(payload);
+      setTauriFocused((prev) => (prev === payload ? prev : payload));
     }).then((fn) => {
       unlisten = fn;
     });
@@ -53,7 +53,10 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   }, [inTauri]);
 
   useEffect(() => {
-    const onVisibility = () => setDocVisible(document.visibilityState === "visible");
+    const onVisibility = () => {
+      const visible = document.visibilityState === "visible";
+      setDocVisible((prev) => (prev === visible ? prev : visible));
+    };
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);

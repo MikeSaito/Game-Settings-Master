@@ -33,7 +33,7 @@
   },
   "configMissing": {
     "title": "Конфиг не найден — {{name}}",
-    "body": "Укажите папку Saved/Config/Windows в библиотеке или запустите игру один раз."
+    "body": "В библиотеке нажмите «Указать конфиг» и выберите папку Saved/Config/Windows, WindowsNoEditor, WinGDK или WindowsClient. Если её нет, запустите игру один раз."
   },
   "list": {
     "title": "Список резервных копий",

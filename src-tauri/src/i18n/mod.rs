@@ -11,9 +11,11 @@ pub enum Lang {
 
 impl Lang {
     fn from_code(code: &str) -> Lang {
-        match code.trim().to_ascii_lowercase().as_str() {
-            "en" => Lang::En,
-            _ => Lang::Ru,
+        let lower = code.trim().to_ascii_lowercase();
+        if lower.starts_with("ru") {
+            Lang::Ru
+        } else {
+            Lang::En
         }
     }
 
@@ -28,7 +30,7 @@ impl Lang {
 const LANG_RU: u8 = 0;
 const LANG_EN: u8 = 1;
 
-static CURRENT_LANG: AtomicU8 = AtomicU8::new(LANG_RU);
+static CURRENT_LANG: AtomicU8 = AtomicU8::new(LANG_EN);
 
 const SETTINGS_FILE: &str = "app_settings.json";
 
@@ -65,19 +67,29 @@ pub fn t(ru: &str, en: &str) -> String {
     }
 }
 
-/// Read the saved language at startup (defaults to Russian).
+/// Read saved language or fall back to the OS locale (English for non-Russian systems).
 pub fn init_from_disk() {
     let Ok(path) = settings_path() else {
+        store_lang(detect_system_lang());
         return;
     };
     let Ok(raw) = fs::read_to_string(&path) else {
+        store_lang(detect_system_lang());
         return;
     };
     if let Ok(settings) = serde_json::from_str::<AppSettings>(&raw) {
         if let Some(code) = settings.language {
             store_lang(Lang::from_code(&code));
+            return;
         }
     }
+    store_lang(detect_system_lang());
+}
+
+fn detect_system_lang() -> Lang {
+    sys_locale::get_locale()
+        .map(|locale| Lang::from_code(&locale))
+        .unwrap_or(Lang::En)
 }
 
 /// Set and persist the active language.

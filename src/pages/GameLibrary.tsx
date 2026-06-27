@@ -3,6 +3,7 @@ import { Gamepad2, Plus, RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GameGridCard } from "@/components/library/GameGridCard";
+import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
 import { LibraryToolbar, type LibraryViewMode } from "@/components/library/LibraryToolbar";
 import { Alert, EmptyState, Skeleton } from "@/components/ds/Feedback";
 import { Badge } from "@/components/ds/Badge";
@@ -60,6 +61,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
       .filter((game) => !q || game.name.toLowerCase().includes(q))
       .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase(), "ru"));
   }, [games, query]);
+  const hasGamesWithoutConfig = filteredGames.some((game) => !game.config_dir);
 
   const addManual = useMutation({
     mutationFn: async () => {
@@ -183,6 +185,8 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
         onAdd={() => addManual.mutate()}
         adding={addManual.isPending}
       />
+
+      {hasGamesWithoutConfig && <ConfigPathHelp />}
 
       {libraryLoading ? (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

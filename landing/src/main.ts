@@ -1,5 +1,5 @@
 import "./styles/landing.css";
-import { getLocale } from "./i18n";
+import { getLocale, maybeRedirectToEnglishHome } from "./i18n";
 import { createSiteHeader } from "./components/layout/SiteHeader";
 import { createSiteFooter } from "./components/layout/SiteFooter";
 import { createHeroSection } from "./components/sections/HeroSection";
@@ -12,7 +12,10 @@ import { initStaggeredReveal } from "./scroll/revealController";
 import { initLandingEffects } from "./effects/initEffects";
 
 function init(): void {
+  maybeRedirectToEnglishHome();
+
   const t = getLocale();
+  document.documentElement.lang = t.lang;
 
   const app = document.getElementById("app");
   if (!app) return;

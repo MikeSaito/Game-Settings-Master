@@ -20,9 +20,22 @@
   },
   "dialogs": {
     "installFolder": "Select Unreal Engine game install folder",
-    "configFolder": "Select Saved/Config/Windows folder",
+    "configFolder": "Select the game's config folder: Saved/Config/Windows or WindowsNoEditor",
     "coverFile": "Select game cover image",
     "imageFilter": "Image"
+  },
+  "configHelp": {
+    "title": "How to set the config path",
+    "body": "The Set config button should point to the folder where Unreal Engine stores ini files, not to the game install folder. Pick a folder inside Saved/Config.",
+    "pickFolder": "In the folder picker, open the game's user profile config directory and select the Windows, WindowsNoEditor, WinGDK, or WindowsClient folder itself.",
+    "gameLaunchHint": "If Saved/Config does not exist yet, launch the game once, change any setting in the menu, then close it – Unreal will create the ini files.",
+    "examplesTitle": "Path examples",
+    "examples": [
+      "C:\\Users\\<name>\\AppData\\Local\\GameName\\Saved\\Config\\Windows",
+      "C:\\Users\\<name>\\AppData\\Local\\GameName\\Saved\\Config\\WindowsNoEditor",
+      "C:\\Users\\<name>\\AppData\\Local\\GameName\\Saved\\Config\\WinGDK",
+      "D:\\Games\\GameName\\Saved\\Config\\Windows"
+    ]
   },
   "card": {
     "engineUnknown": "Engine unknown",
