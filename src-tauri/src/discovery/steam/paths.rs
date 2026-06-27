@@ -209,4 +209,3 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam
         assert!(is_steam_library_root(temp.path()));
     }
 }
-
