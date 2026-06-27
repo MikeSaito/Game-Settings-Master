@@ -12,10 +12,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/github/v/release/MikeSaito/Game-Settings-Master?label=version&color=b87a14" alt="version"></a>
-  <img src="https://img.shields.io/badge/platform-Windows-0078D4" alt="Windows">
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT">
-  <a href="https://gsm-tool.com/"><img src="https://img.shields.io/badge/site-gsm--tool.com-b87a14" alt="gsm-tool.com"></a>
+  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/badge/release-v1.0.2--a-b87a14?style=flat-square" alt="v1.0.2-a"></a>
+  <img src="https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows">
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT">
+  <a href="https://gsm-tool.com/"><img src="https://img.shields.io/badge/site-gsm--tool.com-b87a14?style=flat-square" alt="gsm-tool.com"></a>
 </p>
 
 <p align="center">
