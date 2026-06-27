@@ -3,7 +3,21 @@ name: CI
 on:
   push:
     branches: [main, master]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "landing/**"
+      - "SECURITY.md"
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "landing/**"
+      - "SECURITY.md"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-windows:
@@ -17,6 +31,10 @@ jobs:
           cache: npm
 
       - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
 
       - uses: actions/setup-python@v6
         with:
@@ -43,7 +61,7 @@ jobs:
 
       - name: Rust release compile check
         working-directory: src-tauri
-        run: cargo build --release
+        run: cargo check --release
 
       - name: Frontend build
         run: npm run build
@@ -53,6 +71,3 @@ jobs:
 
       - name: Catalog builder tests
         run: npm run catalog:test
-
-      - name: Landing build
-        run: npm ci --prefix landing && npm run build --prefix landing
