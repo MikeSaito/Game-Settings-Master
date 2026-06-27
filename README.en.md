@@ -1,58 +1,88 @@
-# Game Settings Master
+<p align="center">
+  <img src="landing/public/logo.png" width="88" alt="Game Settings Master">
+</p>
 
-[Русский](README.md) · [English](README.en.md) · [Support development](https://www.donationalerts.com/r/mike_saito)
+<h1 align="center">Game Settings Master</h1>
 
-**Game settings in focus**
+<p align="center">
+  <a href="README.md">Русский</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="https://gsm-tool.com/en/">Website</a> ·
+  <a href="https://www.donationalerts.com/r/mike_saito">Donate</a>
+</p>
 
-Read and tune Unreal Engine game configs — with parameter descriptions, GPU-aware options, and backups.
+<p align="center">
+  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/github/v/release/MikeSaito/Game-Settings-Master?label=version&color=b87a14" alt="version"></a>
+  <img src="https://img.shields.io/badge/platform-Windows-0078D4" alt="Windows">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT">
+  <a href="https://gsm-tool.com/"><img src="https://img.shields.io/badge/site-gsm--tool.com-b87a14" alt="gsm-tool.com"></a>
+</p>
 
-`UE 4` · `UE 5`
+<p align="center">
+  <strong>Ini editor for Unreal Engine games</strong><br>
+  GameUserSettings and Engine.ini in one window — with hints, backups, and GPU-aware filters.
+</p>
 
-## Features
-
-**01 — Game library**  
-Steam and Epic scan, manual add for UE games. The app finds your config folder automatically.
-
-**02 — Parameter editor**  
-Advanced Editor with two zones: **Basic** (GameUserSettings.ini: official sg.*, display/audio/window — like the in-game menu) and **Advanced** (Engine.ini/Game.ini/Scalability.ini r.* — engine modding with a warning). Recommended filter, quality labels, and sg.* tier tooltips.
-
-**03 — GPU-aware filters**  
-DLSS, FSR, ray tracing and Frame Generation — safe clamp for your GPU. No pointless options on weak hardware.
-
-**04 — Backups**  
-Snapshot before every apply. Roll back to the previous state in one click — no fear of breaking your config.
-
-**05 — Parameter metadata catalog**  
-**115** human-curated keys (RU+EN), tier A/B overlays on the reference index (**767** entries with readable descriptions). The editor injects GUS/Engine and version-applicable reference keys even when they are missing from the player's ini.
-
-## Download
-
-Windows · free · unsigned build
-
-* [Download installer](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2-a_x64-setup.exe)
-* [GitHub](https://github.com/MikeSaito/Game-Settings-Master)
-* [Website](https://gsm-tool.com/)
-
-### First launch on Windows
-
-The app is not commercially signed yet — SmartScreen may show a blue warning. That's normal for indie software.
-
-1. Click **More info**
-2. Then **Run anyway**
-
-After the first run, Windows usually stops asking.
+<p align="center">
+  <code>UE 4.27</code> · <code>UE 5.8</code> · <code>Steam</code> · <code>Epic</code> · <code>DLSS</code> · <code>FSR</code>
+</p>
 
 ---
 
-## Developer setup
+## Screenshots
+
+<p align="center">
+  <img src="landing/public/screenshots/en/library.png" width="420" alt="Game library">
+  &nbsp;&nbsp;
+  <img src="landing/public/screenshots/en/editor-basic.png" width="420" alt="Basic editor">
+</p>
+
+<p align="center">
+  <img src="landing/public/screenshots/en/editor-advanced.png" width="420" alt="Advanced editor">
+  &nbsp;&nbsp;
+  <img src="landing/public/screenshots/en/backups.png" width="420" alt="Backups">
+</p>
+
+---
+
+## Features
+
+| | |
+|---|---|
+| **Game library** | Steam and Epic scan, manual add. Finds config folders and shows game context — engine, paths, cover art. |
+| **Basic / Advanced** | **Basic** — GameUserSettings.ini: sg.*, resolution, window mode, VSync — like in-game menus. **Advanced** — Engine.ini CVars with tier hints, warnings, and a Recommended filter. |
+| **Backups** | Config snapshot before every apply. Roll back to a previous state in one click. |
+| **Parameter catalog** | **767** reference keys (UE 4.27–5.8), **115** curated RU/EN descriptions, tier A/B overlays. Keys injected by game engine version. |
+| **GPU-aware filters** | DLSS, FSR, ray tracing, and Frame Generation only show when your GPU supports them. |
+
+---
+
+## Download
+
+**Windows · free · MIT · unsigned build**
+
+| | |
+|---|---|
+| Installer | [**Game-Settings-Master_1.0.2-a_x64-setup.exe**](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2-a_x64-setup.exe) |
+| Releases | [github.com/MikeSaito/Game-Settings-Master/releases](https://github.com/MikeSaito/Game-Settings-Master/releases) |
+| Website | [gsm-tool.com](https://gsm-tool.com/) |
+
+### First launch (SmartScreen)
+
+The build is unsigned — Windows may show a blue warning. Normal for indie software.
+
+1. **More info**
+2. **Run anyway**
+
+After the first run, Windows usually stops asking. Source is open — you can verify the build yourself.
+
+---
+
+## Development
 
 ### Requirements
 
-| Tool | Purpose |
-|------|---------|
-| **Node.js** 20+ | Frontend, Tauri CLI, tests |
-| **Rust** (stable) + **MSVC Build Tools** | Tauri backend (Windows) |
-| **Python** 3.10+ | UE catalog build (`tools/ue-catalog-builder/`) |
+Node.js 20+ · Rust (stable) + MSVC · Python 3.10+ (UE catalog build)
 
 ### Quick start
 
@@ -60,70 +90,35 @@ After the first run, Windows usually stops asking.
 npm ci
 powershell -File scripts/install-githooks.ps1
 
-npm run tauri dev    # desktop app (Vite + Tauri)
-npm test             # Vitest
-npm run build        # production frontend
+npm run tauri dev     # desktop (Vite + Tauri)
+npm test              # Vitest
+npm run build         # production frontend
+npm run landing:dev   # gsm-tool.com landing
 ```
 
-Landing separately: `npm run landing:dev` / `npm run landing:build`.
+After changing IPC DTOs in Rust: `npm run types:gen`
 
-After changing IPC DTOs in Rust:
-
-```powershell
-npm run types:gen
-```
-
-### Repository layout
+### Layout
 
 ```
-src/                    React SPA (@/ alias → src/)
-  lib/                  api, core, routing, editor, game, gpu, settings
-  components/           feature UI (advanced, library, layout, app, …)
-  hooks/                app, game, editor
-  pages/                router screens
-src-tauri/src/          Rust: commands, ini, discovery, catalog
-  core/                 models, errors, paths
-landing/src/            marketing site (GitHub Pages)
-tools/ue-catalog-builder/   Python ue_reference_index.json pipeline
-tools/ue-reference/     local Epic ini snapshots (not fully in git)
-docs/                   ARCHITECTURE.md, epic-clone-setup, parameter-sources
+src/                      React SPA (@/ → src/)
+src-tauri/src/            Rust: commands, ini, discovery, catalog
+landing/                  gsm-tool.com site (GitHub Pages)
+tools/ue-catalog-builder/ Python UE catalog pipeline
+docs/                     ARCHITECTURE, parameter-sources, epic-clone-setup
 ```
 
-Full module map, import conventions, and where to add new code — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+Full module map — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-### Parameter catalog (UE)
+### UE catalog (brief)
 
-The app ships two layers:
+| Layer | Count |
+|-------|-------|
+| Reference index | **767** keys (UE 4.27–5.8) |
+| Curated descriptions | **115** keys RU+EN |
+| Tier A / B overlays | **748** / **150** |
 
-| Layer | Files | Purpose |
-|-------|-------|---------|
-| **Curated (human)** | `engine.json`, `scalability.json`, `ue4.json`, `display.json`, … | **115** keys with full RU+EN titles/descriptions |
-| **Tier overlays** | `tier_a_descriptions.json`, `tier_b_descriptions.json` → merged into reference | tier A **748**, tier B **150** overlay texts |
-| **Reference index** | `ue_reference_index.json` | **767** merged engine keys (UE 4.27–5.8), RU+EN descriptions |
-| **Source registries** | `sg_registry_merged.json`, `gus_registry_merged.json` | Auto-generated from Epic `Scalability.cpp` / `GameUserSettings.h` |
-
-**Lookup priority:** curated JSON → ini row → reference index (version-filtered) → key hints → auto-guess. Curated always wins on key collision.
-
-**Editor injection:** bundled curated GUS (`sg.*`, display) + Engine/Scalability entries, then **every reference key applicable to the game's UE version** (see `applicable_by_version` in `merge_stats.json`). Advanced default filter: **Full catalog**.
-
-Rebuild reference index after updating UE snapshots:
-
-```powershell
-# First-time / full catalog build — see docs/epic-clone-setup.md
-.\scripts\fetch-ue-reference.ps1 -AutoTags
-
-python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
-npm run catalog:build
-npm run catalog:test
-.\scripts\validate-catalog-stats.ps1
-```
-
-Without an Epic clone the app ships fixture snapshots (UE 4.27 + 5.4). Full rebuild from 10 UE versions yields **767** merged engine keys, source-extracted `sg.*`, and standard `UGameUserSettings` fields — see [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) and [`docs/parameter-sources.md`](docs/parameter-sources.md). Current counts: `src-tauri/catalog/generated/merge_stats.json`.
-
-Advanced Editor filters reference keys by detected `engine_version` (UE 4.27–5.8). Keys in your ini are always listed.
-
-See [`tools/ue-reference/README.md`](tools/ue-reference/README.md), [`docs/parameter-sources.md`](docs/parameter-sources.md).
+Rebuild: [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) · [`docs/parameter-sources.md`](docs/parameter-sources.md) · current counts in `src-tauri/catalog/generated/merge_stats.json`
 
 ### Pre-PR checks
 
@@ -135,19 +130,19 @@ python tools/ue-catalog-builder/test_build.py
 npm run landing:build
 ```
 
+---
+
 ## Documentation
 
 | File | Contents |
 |------|----------|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Code layout, imports, module boundaries |
-| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Epic UE clone and full catalog rebuild |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Code layout and module boundaries |
 | [`docs/parameter-sources.md`](docs/parameter-sources.md) | Where parameter descriptions come from |
-| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python catalog pipeline |
+| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Epic UE clone and catalog rebuild |
+| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python pipeline |
 
 ---
 
-## License
-
-[MIT](LICENSE) © 2026 Mike Saito
-
-Game Settings Master v1.0.2-a
+<p align="center">
+  <a href="LICENSE">MIT License</a> © 2026 Mike Saito
+</p>

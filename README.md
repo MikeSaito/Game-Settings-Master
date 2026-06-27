@@ -1,46 +1,80 @@
-# Game Settings Master
+<p align="center">
+  <img src="landing/public/logo.png" width="88" alt="Game Settings Master">
+</p>
 
-[Русский](README.md) · [English](README.en.md) · [Поддержите разработку](https://www.donationalerts.com/r/mike_saito)
+<h1 align="center">Game Settings Master</h1>
 
-**Настройки игр в фокусе**
+<p align="center">
+  <a href="README.md">Русский</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="https://gsm-tool.com/">Сайт</a> ·
+  <a href="https://www.donationalerts.com/r/mike_saito">Поддержать</a>
+</p>
 
-Читайте и настраивайте ini игр на Unreal Engine — с описаниями параметров, фильтрами под видеокарту и резервными копиями.
+<p align="center">
+  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/github/v/release/MikeSaito/Game-Settings-Master?label=версия&color=b87a14" alt="version"></a>
+  <img src="https://img.shields.io/badge/платформа-Windows-0078D4" alt="Windows">
+  <img src="https://img.shields.io/badge/лицензия-MIT-blue" alt="MIT">
+  <a href="https://gsm-tool.com/"><img src="https://img.shields.io/badge/site-gsm--tool.com-b87a14" alt="gsm-tool.com"></a>
+</p>
 
-`UE 4` · `UE 5`
+<p align="center">
+  <strong>Редактор ini для игр на Unreal Engine</strong><br>
+  GameUserSettings и Engine.ini в одном окне — с подсказками, бэкапами и фильтрами под вашу видеокарту.
+</p>
+
+<p align="center">
+  <code>UE 4.27</code> · <code>UE 5.8</code> · <code>Steam</code> · <code>Epic</code> · <code>DLSS</code> · <code>FSR</code>
+</p>
+
+---
+
+## Скриншоты
+
+<p align="center">
+  <img src="landing/public/screenshots/ru/library.png" width="420" alt="Библиотека игр">
+  &nbsp;&nbsp;
+  <img src="landing/public/screenshots/ru/editor-basic.png" width="420" alt="Редактор Basic">
+</p>
+
+<p align="center">
+  <img src="landing/public/screenshots/ru/editor-advanced.png" width="420" alt="Редактор Advanced">
+  &nbsp;&nbsp;
+  <img src="landing/public/screenshots/ru/backups.png" width="420" alt="Резервные копии">
+</p>
+
+---
 
 ## Возможности
 
-**01 — Библиотека игр**  
-Сканирование Steam и Epic, ручное добавление UE-игр. Приложение само находит папку конфигурации.
+| | |
+|---|---|
+| **Библиотека игр** | Сканирование Steam и Epic, ручное добавление. Приложение находит папку конфигов и показывает контекст игры — движок, пути, обложку. |
+| **Basic / Advanced** | **Basic** — GameUserSettings.ini: sg.*, разрешение, окно, VSync — как в меню игры. **Advanced** — Engine.ini и CVars с tier-подсказками, предупреждениями и фильтром «Рекомендуемые». |
+| **Резервные копии** | Снимок конфигов перед каждым применением. Откат к предыдущему состоянию в один клик. |
+| **Каталог параметров** | **767** справочных ключей (UE 4.27–5.8), **115** ручных описаний RU/EN, tier A/B overlays. Подмешивание ключей по версии движка игры. |
+| **Фильтры под GPU** | DLSS, FSR, трассировка и Frame Generation показываются только если видеокарта поддерживает. |
 
-**02 — Редактор параметров**  
-Редактор с двумя зонами: **Базовое** (GameUserSettings.ini: официальные sg.*, экран/аудио/окно — как меню игры) и **Расширенное** (Engine.ini/Game.ini/Scalability.ini r.* — настройка движка с предупреждением). Фильтр «Рекомендуемые», подписи качества и подсказки по уровням для sg.*.
-
-**03 — Фильтры под видеокарту**  
-DLSS, FSR, трассировка лучей и генерация кадров — безопасное ограничение под ваш GPU. Без бессмысленных опций на слабом железе.
-
-**04 — Резервные копии**  
-Снимок конфигов перед каждым применением. Откат к предыдущему состоянию одним кликом — без страха сломать настройки.
-
-**05 — Каталог описаний параметров**  
-**115** ручных ключей (RU+EN), tier A/B overlays на справочник (**767** записей с человекочитаемыми описаниями). Редактор подмешивает GUS/Engine и справочные ключи по версии UE игры, даже если их нет в ini.
+---
 
 ## Скачать
 
-Windows · бесплатно · без подписи издателя
+**Windows · бесплатно · MIT · без подписи издателя**
 
-* [Скачать установщик](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2-a_x64-setup.exe)
-* [GitHub](https://github.com/MikeSaito/Game-Settings-Master)
-* [Сайт](https://gsm-tool.com/)
+| | |
+|---|---|
+| Установщик | [**Game-Settings-Master_1.0.2-a_x64-setup.exe**](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.2-a_x64-setup.exe) |
+| Релизы | [github.com/MikeSaito/Game-Settings-Master/releases](https://github.com/MikeSaito/Game-Settings-Master/releases) |
+| Сайт | [gsm-tool.com](https://gsm-tool.com/) |
 
-### Первый запуск в Windows
+### Первый запуск (SmartScreen)
 
-Приложение пока без коммерческой подписи — SmartScreen может показать синее предупреждение. Для indie-софта это нормально.
+Сборка без коммерческой подписи — Windows может показать синее предупреждение. Для indie-софта это нормально.
 
-1. Нажмите **Подробнее**
-2. Затем **Выполнить в любом случае**
+1. **Подробнее**
+2. **Выполнить в любом случае**
 
-После первого запуска Windows обычно больше не спрашивает.
+После первого запуска Windows обычно больше не спрашивает. Исходники открыты — можно проверить сборку самостоятельно.
 
 ---
 
@@ -48,11 +82,7 @@ Windows · бесплатно · без подписи издателя
 
 ### Требования
 
-| Инструмент | Зачем |
-|------------|--------|
-| **Node.js** 20+ | Frontend, Tauri CLI, тесты |
-| **Rust** (stable) + **MSVC Build Tools** | Tauri backend (Windows) |
-| **Python** 3.10+ | Сборка каталога UE (`tools/ue-catalog-builder/`) |
+Node.js 20+ · Rust (stable) + MSVC · Python 3.10+ (сборка каталога UE)
 
 ### Быстрый старт
 
@@ -60,71 +90,35 @@ Windows · бесплатно · без подписи издателя
 npm ci
 powershell -File scripts/install-githooks.ps1
 
-npm run tauri dev    # desktop-приложение (Vite + Tauri)
-npm test             # Vitest
-npm run build        # production frontend
+npm run tauri dev     # desktop (Vite + Tauri)
+npm test              # Vitest
+npm run build         # production frontend
+npm run landing:dev   # лендинг gsm-tool.com
 ```
 
-Лендинг отдельно: `npm run landing:dev` / `npm run landing:build`.
+После изменения IPC DTO в Rust: `npm run types:gen`
 
-После изменения IPC DTO в Rust:
-
-```powershell
-npm run types:gen
-```
-
-### Структура репозитория
+### Структура
 
 ```
-src/                    React SPA (alias @/ → src/)
-  lib/                  api, core, routing, editor, game, gpu, settings
-  components/           UI по фичам (advanced, library, layout, app, …)
-  hooks/                app, game, editor
-  pages/                экраны роутера
-src-tauri/src/          Rust: commands, ini, discovery, catalog
-  core/                 models, errors, paths
-landing/src/            маркетинговый сайт (GitHub Pages)
-tools/ue-catalog-builder/   Python-сборка ue_reference_index.json
-tools/ue-reference/     локальные снимки ini Epic (не в git целиком)
-docs/                   ARCHITECTURE.md, epic-clone-setup, parameter-sources
+src/                      React SPA (@/ → src/)
+src-tauri/src/            Rust: commands, ini, discovery, catalog
+landing/                  сайт gsm-tool.com (GitHub Pages)
+tools/ue-catalog-builder/ Python pipeline каталога UE
+docs/                     ARCHITECTURE, parameter-sources, epic-clone-setup
 ```
 
-Подробная карта модулей, соглашения об импортах и «куда класть новый код» — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+Подробная карта модулей — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-### Каталог параметров (UE)
+### Каталог UE (кратко)
 
-В приложении два слоя:
+| Слой | Счётчик |
+|------|---------|
+| Справочный индекс | **767** ключей (UE 4.27–5.8) |
+| Ручные описания | **115** ключей RU+EN |
+| Tier A / B overlays | **748** / **150** |
 
-| Слой | Файлы | Назначение |
-|------|-------|------------|
-| **Ручные записи** | `engine.json`, `scalability.json`, `ue4.json`, `display.json`, … | **115** ключей с полными описаниями RU+EN |
-| **Наложения уровней** | `tier_a_descriptions.json`, `tier_b_descriptions.json` → в справочник | tier A **748**, tier B **150** overlay-текстов |
-| **Справочный индекс** | `ue_reference_index.json` | **767** объединённых ключей движка (UE 4.27–5.8), описания RU+EN |
-| **Исходные реестры** | `sg_registry_merged.json`, `gus_registry_merged.json` | Автогенерация из Epic `Scalability.cpp` / `GameUserSettings.h` |
-
-**Приоритет поиска:** ручные JSON → строка ini → справочный индекс (с фильтром по версии) → подсказки по ключам → авто-угадывание. Ручные записи всегда побеждают при коллизии ключей.
-
-**Подмешивание в редакторе:** подготовленные GUS (`sg.*`, display) + Engine/Scalability, затем **каждый справочный ключ, применимый к версии UE игры** (см. `applicable_by_version` в `merge_stats.json`). Фильтр расширенного режима по умолчанию: **Полный каталог**.
-
-Пересборка справочного индекса после обновления снимков UE:
-
-```powershell
-# Первый раз / полная сборка каталога — см. docs/epic-clone-setup.md
-.\scripts\fetch-ue-reference.ps1 -AutoTags
-# или: -EngineRoot "D:\UnrealEngine" -AutoTags
-
-python tools/ue-catalog-builder/extract/sg_from_cpp.py --all-versions
-python tools/ue-catalog-builder/extract/gus_from_header.py --all-versions
-npm run catalog:build
-npm run catalog:test
-.\scripts\validate-catalog-stats.ps1
-```
-
-Без клона Epic приложение поставляется с фикстурными снимками (UE 4.27 + 5.4). Полная пересборка из 10 версий UE даёт **767** объединённых ключей движка, извлечённые `sg.*` и поля `UGameUserSettings` — см. [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) и [`docs/parameter-sources.md`](docs/parameter-sources.md). Актуальные счётчики: `src-tauri/catalog/generated/merge_stats.json`.
-
-Расширенный редактор фильтрует справочные ключи по обнаруженной `engine_version` (UE 4.27–5.8). Ключи из ваших ini всегда в списке.
-
-Подробнее: [`tools/ue-reference/README.md`](tools/ue-reference/README.md), [`docs/parameter-sources.md`](docs/parameter-sources.md).
+Пересборка: [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) · [`docs/parameter-sources.md`](docs/parameter-sources.md) · актуальные цифры в `src-tauri/catalog/generated/merge_stats.json`
 
 ### Проверка перед PR
 
@@ -136,19 +130,19 @@ python tools/ue-catalog-builder/test_build.py
 npm run landing:build
 ```
 
+---
+
 ## Документация
 
 | Файл | Содержание |
 |------|------------|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Структура кода, импорты, границы модулей |
-| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Клон Epic UE и полная пересборка каталога |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Структура кода и границы модулей |
 | [`docs/parameter-sources.md`](docs/parameter-sources.md) | Откуда берутся описания параметров |
-| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python pipeline каталога |
+| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Клон Epic UE и пересборка каталога |
+| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python pipeline |
 
 ---
 
-## Лицензия
-
-[MIT](LICENSE) © 2026 Mike Saito
-
-Game Settings Master v1.0.2-a
+<p align="center">
+  <a href="LICENSE">MIT License</a> © 2026 Mike Saito
+</p>
