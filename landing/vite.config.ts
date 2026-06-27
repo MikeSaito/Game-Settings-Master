@@ -177,7 +177,6 @@ function emitSeoFiles(): Plugin {
     name: "emit-seo-files",
     closeBundle() {
       const outDir = resolve(__dirname, "dist");
-      const host = new URL(siteUrl).host;
 
       writeFileSync(
         resolve(outDir, "sitemap.xml"),
@@ -194,8 +193,6 @@ ${sitemapEntry(`${siteUrl}/en/`, "0.9")}
         resolve(outDir, "robots.txt"),
         `User-agent: *
 Allow: /
-
-Host: ${host}
 
 Sitemap: ${siteUrl}/sitemap.xml
 `,

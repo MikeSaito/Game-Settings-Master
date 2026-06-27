@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
 
-Host: gsm-tool.com
-
 Sitemap: https://gsm-tool.com/sitemap.xml
