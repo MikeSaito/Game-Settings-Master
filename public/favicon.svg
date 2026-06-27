@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1254 1254" role="img" aria-label="Game Settings Master">
   <defs>
     <linearGradient id="logo-amber" x1="180" y1="120" x2="1050" y2="1130" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#f3bd5a"/>
-      <stop offset="0.52" stop-color="#b87a14"/>
-      <stop offset="1" stop-color="#8b560f"/>
+      <stop offset="0" stop-color="#ffc24a"/>
+      <stop offset="0.52" stop-color="#ff8a00"/>
+      <stop offset="1" stop-color="#c85f00"/>
     </linearGradient>
   </defs>
   <rect width="1254" height="1254" rx="198" fill="url(#logo-amber)"/>
