@@ -33,6 +33,10 @@
 
 Out of scope: сторонние игры, Steam/Epic, проблемы SmartScreen без подписи издателя.
 
+### Известные транзитивные зависимости (Dependabot)
+
+**`glib` (Rust, CVE в gtk-rs 0.18)** — тянется через Tauri → GTK **только для Linux-сборки**. Релиз GSM — **только Windows**; `glib` не входит в установщик. Dependabot не может обновить до `0.20.0`, пока Tauri/wry не перейдут на gtk-rs 0.20+. Alert закрыт как допустимый риск для Windows-only дистрибуции.
+
 ---
 
 ## English
@@ -63,3 +67,9 @@ Expect a reply within **7 days**. Confirmed issues are fixed in the next patch/m
 In scope: GSM installer, Tauri backend, auto-update (`latest.json`), ini/game config handling.
 
 Out of scope: third-party games, Steam/Epic, SmartScreen warnings without publisher signing.
+
+### Known transitive dependencies (Dependabot)
+
+**`glib` (Rust, gtk-rs 0.18 advisory)** — pulled in via Tauri → GTK for **Linux builds only**. GSM ships **Windows-only**; `glib` is not in the installer. Dependabot cannot bump to `0.20.0` until Tauri/wry move to gtk-rs 0.20+. Alert dismissed as tolerable risk for Windows-only distribution.
+
+---
