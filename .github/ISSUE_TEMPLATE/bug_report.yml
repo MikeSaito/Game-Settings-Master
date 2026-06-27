@@ -1,0 +1,60 @@
+name: Bug report
+description: Что-то сломалось в приложении
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Перед отправкой: [последний Release](https://github.com/MikeSaito/Game-Settings-Master/releases/latest).
+        Before submitting: use the [latest release](https://github.com/MikeSaito/Game-Settings-Master/releases/latest).
+
+  - type: input
+    id: version
+    attributes:
+      label: Версия GSM / GSM version
+      placeholder: "1.0.3"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Windows
+      options:
+        - Windows 11
+        - Windows 10
+        - Другое / Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Шаги / Steps to reproduce
+      placeholder: "1. Открыть… 2. Нажать…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ожидалось / Expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Фактически / Actual
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи / скриншоты (опционально)
+      description: Без путей к личным файлам и без ключей
+    validations:
+      required: false

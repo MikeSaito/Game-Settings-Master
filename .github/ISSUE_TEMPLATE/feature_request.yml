@@ -1,0 +1,27 @@
+name: Feature request
+description: Предложение улучшения
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Проблема или задача / Problem or goal
+      placeholder: "Сейчас неудобно… / Currently it's hard to…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Предлагаемое решение / Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Альтернативы (опционально) / Alternatives
+    validations:
+      required: false

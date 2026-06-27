@@ -1,0 +1,48 @@
+name: Game not found / config path
+description: Игра не находится или нет конфига
+title: "[Game]: "
+labels:
+  - game-discovery
+body:
+  - type: input
+    id: game
+    attributes:
+      label: Игра / Game name
+      placeholder: "Black Myth: Wukong"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: launcher
+    attributes:
+      label: Лаунчер / Launcher
+      options:
+        - Steam
+        - Epic
+        - Вручную / Manual
+        - Другое / Other
+    validations:
+      required: true
+
+  - type: input
+    id: engine
+    attributes:
+      label: Unreal Engine (если знаете) / UE version
+      placeholder: "UE 5.4"
+    validations:
+      required: false
+
+  - type: textarea
+    id: path
+    attributes:
+      label: Путь к конфигу (если указывали) / Config path
+      description: "Пример: …\\Saved\\Config\\Windows"
+    validations:
+      required: false
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Что происходит / What happens
+    validations:
+      required: true

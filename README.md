@@ -12,6 +12,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/MikeSaito/Game-Settings-Master/actions/workflows/ci.yml"><img src="https://github.com/MikeSaito/Game-Settings-Master/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/badge/release-v1.0.3-b87a14?style=flat-square" alt="v1.0.3"></a>
   <img src="https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT">

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Сайт / Website
+    url: https://gsm-tool.com/
+    about: Документация, FAQ и скачивание · Docs, FAQ, download
+  - name: Сообщить об уязвимости / Security
+    url: https://github.com/MikeSaito/Game-Settings-Master/security/policy
+    about: Не создавайте публичный Issue · Do not open a public issue
