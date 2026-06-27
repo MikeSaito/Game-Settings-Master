@@ -25,7 +25,7 @@ export function Sidebar({ active, selectedGame }: Props) {
       <div className="border-b border-[var(--color-border)] px-4 pb-4 pt-2">
         <div className="flex items-center gap-2.5">
           <img
-            src="/logo.png"
+            src="/logo.svg"
             width={28}
             height={28}
             alt=""

@@ -7,7 +7,7 @@ export function createSiteHeader(t: LocaleStrings): HTMLElement {
   const homeHref = localeHome(t.lang);
   const otherHref = localeHome(t.lang === "en" ? "ru" : "en");
   const otherLabel = t.lang === "en" ? t.localeSwitch.ru : t.localeSwitch.en;
-  const logoSrc = assetPath("logo.png");
+  const logoSrc = assetPath("logo.svg");
 
   header.innerHTML = `
     <a href="${homeHref}" class="site-header__brand">

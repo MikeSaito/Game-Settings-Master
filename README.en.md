@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="landing/public/logo.png" width="88" alt="Game Settings Master">
+  <img src="landing/public/logo.svg" width="88" alt="Game Settings Master">
 </p>
 
 <h1 align="center">Game Settings Master</h1>

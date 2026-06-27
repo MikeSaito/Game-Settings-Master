@@ -25,6 +25,7 @@ async function main() {
   const tauriDir = path.join(ROOT, "src-tauri", "icons");
   const landingPublic = path.join(ROOT, "landing", "public");
   const appPublic = path.join(ROOT, "public");
+  const logoSvg = await fs.readFile(LOGO, "utf8");
 
   for (const size of TAURI_SIZES) {
     const name = `Square${size}x${size}Logo.png`;
@@ -45,8 +46,12 @@ async function main() {
 
   await renderPng(32, path.join(landingPublic, "favicon.png"));
   await renderPng(128, path.join(landingPublic, "logo.png"));
+  await fs.writeFile(path.join(landingPublic, "favicon.svg"), logoSvg);
+  await fs.writeFile(path.join(landingPublic, "logo.svg"), logoSvg);
   await renderPng(128, path.join(appPublic, "logo.png"));
   await renderPng(32, path.join(appPublic, "favicon.png"));
+  await fs.writeFile(path.join(appPublic, "favicon.svg"), logoSvg);
+  await fs.writeFile(path.join(appPublic, "logo.svg"), logoSvg);
 
   const ogWidth = 1200;
   const ogHeight = 630;
@@ -68,8 +73,8 @@ async function main() {
 
   console.log("Icons generated:");
   console.log("  src-tauri/icons/");
-  console.log("  landing/public/favicon.png, logo.png, og-image.png");
-  console.log("  public/favicon.png, logo.png");
+  console.log("  landing/public/favicon.png, favicon.svg, logo.png, logo.svg, og-image.png");
+  console.log("  public/favicon.png, favicon.svg, logo.png, logo.svg");
 }
 
 main().catch((err) => {
