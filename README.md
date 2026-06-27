@@ -147,4 +147,8 @@ npm run landing:build
 
 ---
 
+## Лицензия
+
+[MIT](LICENSE) © 2026 Mike Saito
+
 Game Settings Master v1.0.2-a

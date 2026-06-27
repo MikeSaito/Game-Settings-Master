@@ -2,7 +2,9 @@
 name = "ue-settings-master"
 version = "1.0.2-a"
 description = "UE Settings Master — мастер настроек для игр Unreal Engine"
-authors = ["Mike"]
+authors = ["Mike Saito <chigikovden@gmail.com>"]
+license = "MIT"
+license-file = "../LICENSE"
 edition = "2021"
 
 [lib]
