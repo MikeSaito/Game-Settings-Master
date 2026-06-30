@@ -26,6 +26,8 @@ export const ru: LocaleStrings = {
     subtitle:
       "GameUserSettings и Engine.ini в одном окне. Бэкап перед применением, подсказки по версии UE, фильтры DLSS и FSR под вашу видеокарту.",
     shotAlt: "Редактор Game Settings Master – режим Basic",
+    sceneCredit:
+      "Фон — концепт-рендер из серии визуальных референсов, не сборка на движке. © автор проекта.",
   },
   engineTags: [
     "UE 4.27",
