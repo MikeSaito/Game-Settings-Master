@@ -1,0 +1,202 @@
+/* ── Boot sequence ── */
+
+body.is-booting {
+  overflow: hidden;
+}
+
+body:not(.is-live) .shell {
+  visibility: hidden;
+}
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  background: var(--night);
+  pointer-events: none;
+}
+
+.boot__ring {
+  position: absolute;
+  width: min(28vw, 180px);
+  height: min(28vw, 180px);
+  border: 1px solid rgba(232, 148, 18, 0.45);
+  border-radius: 50%;
+  animation: boot-ring 1.1s var(--ease) both;
+}
+
+.boot__logo {
+  position: relative;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  box-shadow: 0 0 60px rgba(232, 148, 18, 0.4);
+  animation: boot-logo 0.95s var(--ease) both;
+}
+
+.boot__name {
+  position: absolute;
+  bottom: clamp(2rem, 8vh, 4rem);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.45);
+  animation: boot-name 0.8s 0.2s ease both;
+}
+
+.boot__bar {
+  position: absolute;
+  bottom: clamp(1.25rem, 5vh, 2.5rem);
+  width: min(14rem, 50vw);
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.boot__bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: boot-bar 1s 0.08s var(--ease) forwards;
+}
+
+.boot.is-out {
+  animation: boot-out 0.7s var(--ease) forwards;
+}
+
+@keyframes boot-ring {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes boot-logo {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(16px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes boot-name {
+  from {
+    opacity: 0;
+    letter-spacing: 0.42em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.28em;
+  }
+}
+
+@keyframes boot-bar {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes boot-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ── Gate hero entrance ── */
+
+body.is-live .gate__label,
+body.is-live .gate__title span,
+body.is-live .gate__title em,
+body.is-live .gate__lead,
+body.is-live .gate__actions,
+body.is-live .gate__scroll,
+body.is-live .gate__credit {
+  animation: rise 0.9s var(--ease) both;
+}
+
+body.is-live .gate__title span {
+  animation-delay: 0.06s;
+}
+
+body.is-live .gate__title em {
+  animation-delay: 0.14s;
+}
+
+body.is-live .gate__lead {
+  animation-delay: 0.22s;
+}
+
+body.is-live .gate__actions {
+  animation-delay: 0.32s;
+}
+
+body.is-live .gate__scroll {
+  animation-delay: 0.42s;
+}
+
+body.is-live .gate__credit {
+  animation-delay: 0.48s;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Scroll reveal ── */
+
+[data-reveal] {
+  transform: translateY(28px);
+  transition: transform 0.75s var(--ease);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+[data-reveal].is-in {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot__ring,
+  .boot__logo,
+  .boot__name,
+  .boot__bar i,
+  body.is-live .gate__label,
+  body.is-live .gate__title span,
+  body.is-live .gate__title em,
+  body.is-live .gate__lead,
+  body.is-live .gate__actions,
+  body.is-live .gate__scroll,
+  body.is-live .gate__credit {
+    animation: none;
+  }
+
+  [data-reveal] {
+    transform: none;
+    transition: none;
+  }
+}

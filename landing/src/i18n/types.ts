@@ -49,6 +49,7 @@ export interface LocaleStrings {
     titleAccent: string;
     subtitle: string;
     shotAlt: string;
+    sceneCredit: string;
   };
   engineTags: string[];
   basicAdvanced: BasicAdvancedStrings;
