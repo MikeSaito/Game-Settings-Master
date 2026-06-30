@@ -26,6 +26,8 @@ export const en: LocaleStrings = {
     subtitle:
       "GameUserSettings and Engine.ini in one window. Backup before apply, UE version hints, DLSS and FSR filters matched to your GPU.",
     shotAlt: "Game Settings Master editor – Basic mode",
+    sceneCredit:
+      "Background: a concept render from a visual reference series — not in-engine footage. © project author.",
   },
   engineTags: [
     "UE 4.27",
