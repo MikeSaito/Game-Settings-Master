@@ -76,6 +76,7 @@ export interface LocaleStrings {
   footer: {
     version: (v: string) => string;
     donateLink: string;
+    telegramLink: string;
   };
   donate: {
     title: string;

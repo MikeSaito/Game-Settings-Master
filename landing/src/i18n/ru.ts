@@ -151,6 +151,7 @@ export const ru: LocaleStrings = {
   footer: {
     version: (v: string) => `Game Settings Master v${v}`,
     donateLink: "Поддержать проект",
+    telegramLink: "Telegram",
   },
   localeSwitch: {
     label: "Язык",

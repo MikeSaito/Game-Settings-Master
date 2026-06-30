@@ -24,6 +24,8 @@ export const downloadUrl = `https://github.com/${githubRepo}/releases/latest/dow
 
 export const donateUrl = "https://www.donationalerts.com/r/mike_saito";
 
+export const telegramUrl = "https://t.me/game_settings_master";
+
 export function joinBase(...segments: string[]): string {
   const base = basePath.endsWith("/") ? basePath : `${basePath}/`;
   const tail = segments

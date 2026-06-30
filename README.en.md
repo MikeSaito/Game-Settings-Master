@@ -8,6 +8,7 @@
   <a href="README.md">Русский</a> ·
   <a href="README.en.md">English</a> ·
   <a href="https://gsm-tool.com/en/">Website</a> ·
+  <a href="https://t.me/game_settings_master">Telegram</a> ·
   <a href="https://www.donationalerts.com/r/mike_saito">Donate</a>
 </p>
 

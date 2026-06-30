@@ -151,6 +151,7 @@ export const en: LocaleStrings = {
   footer: {
     version: (v: string) => `Game Settings Master v${v}`,
     donateLink: "Support the project",
+    telegramLink: "Telegram",
   },
   localeSwitch: {
     label: "Language",
