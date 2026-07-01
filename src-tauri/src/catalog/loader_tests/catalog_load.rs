@@ -67,25 +67,18 @@ fn reference_index_loads_for_ue5() {
 }
 
 #[test]
-#[serial_test::serial]
 fn catalog_index_is_reused_for_same_engine_family() {
-    use crate::catalog::catalog_index::{
-        catalog_build_count, get_or_build_catalog_index, invalidate_catalog_cache,
-        reset_catalog_build_count,
-    };
+    use crate::catalog::catalog_index::{get_or_build_catalog_index, invalidate_catalog_cache};
     use std::sync::Arc;
 
     invalidate_catalog_cache();
-    reset_catalog_build_count();
 
-    let _ = get_or_build_catalog_index(Some("ue5"));
-    let builds_after_warm = catalog_build_count();
+    let warm = get_or_build_catalog_index(Some("ue5"));
     let first = get_or_build_catalog_index(Some("ue5"));
     let second = get_or_build_catalog_index(Some("ue5"));
-    assert_eq!(
-        catalog_build_count(),
-        builds_after_warm,
-        "cached lookups must not trigger another catalog build"
+    assert!(
+        Arc::ptr_eq(&warm, &first),
+        "warm cache should be reused on subsequent lookup"
     );
     assert!(
         Arc::ptr_eq(&first, &second),

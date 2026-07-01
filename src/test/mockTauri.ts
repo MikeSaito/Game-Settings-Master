@@ -9,10 +9,9 @@ export const mockInvokeHandlers: Record<string, InvokeHandler> = {
   scan_games: () => [testGame],
   get_game_parameters_cmd: () => testParameters,
   get_scalability_limits_cmd: () => ({
-    global_min: 0,
+    groups: {},
     global_max: 4,
-    resolution_quality_min: 25,
-    resolution_quality_max: 200,
+    sources: [],
   }),
   get_game_overrides: () => [],
   get_gpu_info_cmd: () => ({

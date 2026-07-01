@@ -13,19 +13,6 @@ fn catalog_cache() -> &'static Mutex<std::collections::HashMap<String, Arc<Catal
 }
 
 #[cfg(test)]
-static CATALOG_BUILD_COUNT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
-
-#[cfg(test)]
-pub(crate) fn catalog_build_count() -> usize {
-    CATALOG_BUILD_COUNT.load(std::sync::atomic::Ordering::SeqCst)
-}
-
-#[cfg(test)]
-pub fn reset_catalog_build_count() {
-    CATALOG_BUILD_COUNT.store(0, std::sync::atomic::Ordering::SeqCst);
-}
-
-#[cfg(test)]
 pub fn invalidate_catalog_cache() {
     if let Ok(mut guard) = catalog_cache().lock() {
         guard.clear();
@@ -58,8 +45,6 @@ pub(crate) fn get_or_build_catalog_index(engine_family: Option<&str>) -> Arc<Cat
             return Arc::clone(existing);
         }
         guard.insert(key.to_string(), Arc::clone(&index));
-        #[cfg(test)]
-        CATALOG_BUILD_COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         return Arc::clone(guard.get(key).unwrap_or(&index));
     }
     index

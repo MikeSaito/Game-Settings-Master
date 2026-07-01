@@ -107,11 +107,11 @@ function injectYandexMetrika(): Plugin {
 function injectContentSecurityPolicy(): Plugin {
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://mc.yandex.ru",
+    "script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://yastatic.net",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     `img-src 'self' data: https://mc.yandex.ru ${siteUrl}`,
-    "connect-src 'self' https://mc.yandex.ru",
+    "connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://*.yandex.ru https://*.yandex.net",
     "frame-src https://mc.yandex.ru",
     "base-uri 'self'",
     "form-action 'self'",

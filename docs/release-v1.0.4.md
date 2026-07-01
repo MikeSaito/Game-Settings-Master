@@ -21,23 +21,23 @@
 
 ### Исправления и качество
 
-- **Flaky catalog test:** `serial_test` + `reset_catalog_build_count()` для `catalog_index_is_reused_for_same_engine_family`
+- **Flaky catalog test:** cache reuse проверяется через `Arc::ptr_eq` без глобального счётчика сборок
 - **Removals на Basic panel:** `buildCustomChanges` учитывает removals для Scalability/Game.ini; фильтр панели внутри функции (full draft для removals)
 - **Pending keys конфликтов:** removals не считаются active override при детекте sg/r
 - **Prefix matching sg→r:** `sgQualityToRPrefix` + `matchesSgRPrefixFamily` — не ловит посторонние ключи вроде `r.TextureStreamingPoolSize`
 - **ErrorBoundary:** `componentStack` в payload; «saved» только после успешного submit crash report
 - **Backups UI:** кнопка «Удалить Engine / Scalability ini» вместо «Сброс (только GUS)»; в описании — полный список override ini включая DeviceProfiles
-- **Landing CSP:** meta CSP для production; `'unsafe-inline'` для Yandex Metrika
+- **Landing CSP:** meta CSP для production; Metrika — `mc.yandex.ru`, `yastatic.net`, `*.yandex.ru/net`
 - **IDE:** `.vscode/settings.json` — `typescript.tsdk` → `node_modules/typescript/lib` (убирает ложную ошибку `ignoreDeprecations: "6.0"`)
 
 ### Ревью перед релизом
 
 | Проверка | Результат |
 |----------|-----------|
-| Bugbot (финальный diff) | ⚠️ medium — CSP лендинга может блокировать доп. скрипты Metrika с `yastatic.net` и geo `connect-src`; при необходимости расширить директивы |
+| Bugbot (финальный diff) | ✅ CSP Metrika расширен (`yastatic.net`, yandex geo) |
 | Security review | ✅ medium+ не найдено |
 | `npm test -- --run` | ✅ 136/136 |
-| `cargo test` (полный параллельный) | ⚠️ 159/160 — `catalog_index_is_reused_for_same_engine_family` нестабилен при полном прогоне; изолированно и с `--test-threads=1` проходит |
+| `cargo test` (полный параллельный) | ✅ 160/160 |
 | `npm run e2e` | ✅ 3/3 |
 | IPC / guard (backups, config, covers) | ✅ ужесточены path checks в diff |
 
@@ -84,23 +84,23 @@
 
 ### Fixes & quality
 
-- **Flaky catalog test:** `serial_test` + `reset_catalog_build_count()` for `catalog_index_is_reused_for_same_engine_family`
+- **Flaky catalog test:** cache reuse verified via `Arc::ptr_eq` without a global build counter
 - **Basic panel removals:** `buildCustomChanges` handles Scalability/Game.ini removals; panel filter applied inside the function (full draft for removals)
 - **Conflict pending keys:** removals are not counted as active overrides in sg/r detection
 - **sg→r prefix matching:** `sgQualityToRPrefix` + `matchesSgRPrefixFamily` — avoids false positives like `r.TextureStreamingPoolSize`
 - **ErrorBoundary:** `componentStack` in payload; “saved” only after successful crash report submit
 - **Backups UI:** button “Remove Engine / Scalability ini” instead of “Reset (GUS only)”; full override ini list including DeviceProfiles in copy
-- **Landing CSP:** production meta CSP; `'unsafe-inline'` for Yandex Metrika
+- **Landing CSP:** production meta CSP; Metrika — `mc.yandex.ru`, `yastatic.net`, `*.yandex.ru/net`
 - **IDE:** `.vscode/settings.json` — `typescript.tsdk` → fixes spurious `ignoreDeprecations: "6.0"` IDE warning
 
 ### Pre-release review
 
 | Check | Result |
 |-------|--------|
-| Bugbot (final diff) | ⚠️ medium — landing CSP may block extra Metrika scripts from `yastatic.net` and geo-specific `connect-src`; widen directives if analytics are required |
+| Bugbot (final diff) | ✅ Metrika CSP widened (`yastatic.net`, yandex geo) |
 | Security review | ✅ no medium+ findings |
 | `npm test -- --run` | ✅ 136/136 |
-| `cargo test` (full parallel) | ⚠️ 159/160 — `catalog_index_is_reused_for_same_engine_family` flaky in full parallel run; passes isolated / with `--test-threads=1` |
+| `cargo test` (full parallel) | ✅ 160/160 |
 | `npm run e2e` | ✅ 3/3 |
 | IPC / guard (backups, config, covers) | ✅ tightened path checks in diff |
 

@@ -129,33 +129,21 @@ jobs:
         run: |
           $version = "${{ env.VERSION }}"
           $setupName = "${{ env.SETUP_NAME }}"
-          $docPath = "docs/release-v$version.md"
-          $footer = @"
+          $body = @"
+          Game Settings Master v$version
+          Windows · бесплатно · без подписи издателя
 
-          ---
+          Установщик: $setupName
 
-          **Установщик / Installer:** ``$setupName``
+          Обновление внутри приложения: при запуске GSM сам проверит latest.json на GitHub Releases.
 
-          Обновление в приложении: GSM проверяет ``latest.json`` на GitHub Releases.
-
-          SmartScreen: **Подробнее → Выполнить в любом случае**.
+          При первом запуске SmartScreen: Подробнее → Выполнить в любом случае.
 
           Сайт: https://gsm-tool.com/
           "@
 
-          if (Test-Path $docPath) {
-            $body = (Get-Content $docPath -Raw) + $footer
-          } else {
-            $body = @"
-          ## Game Settings Master v$version
-
-          Windows · бесплатно · free
-          $footer
-          "@
-          }
-
           $utf8NoBom = New-Object System.Text.UTF8Encoding $false
-          [System.IO.File]::WriteAllText("$PWD/release-notes.md", $body, $utf8NoBom)
+          [System.IO.File]::WriteAllText("$PWD/release-notes.md", $body.Trim(), $utf8NoBom)
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v3
