@@ -11,6 +11,7 @@ import {
 import { UpdateGate } from "@/components/app/UpdateGate";
 import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { RouteLoading } from "@/components/app/RouteLoading";
+import { useCrashReporting } from "@/hooks/app/useCrashReporting";
 import { AppShell } from "@/components/layout/AppShell";
 import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
 import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
@@ -145,6 +146,8 @@ export function AppContent() {
 }
 
 export default function App() {
+  useCrashReporting();
+
   return (
     <QueryClientProvider client={queryClient}>
       <UpdateGate>

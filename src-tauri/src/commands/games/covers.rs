@@ -1,4 +1,4 @@
-use crate::commands::helpers::{find_profile_by_id, validate_config_dir_for_game};
+use crate::commands::helpers::{find_profile_by_id, guard_config_dir_for_read};
 use crate::core::app_error::{AppError, AppInvokeError};
 use crate::core::models::GameProfile;
 use crate::covers::{enrich_cover, import_custom_cover, merge_saved_cover, remove_custom_cover};
@@ -83,9 +83,7 @@ pub fn open_config_folder(
     config_dir: String,
     game_id: Option<String>,
 ) -> Result<(), AppInvokeError> {
-    if let Some(gid) = game_id.as_deref() {
-        validate_config_dir_for_game(gid, &config_dir)?;
-    }
+    guard_config_dir_for_read(game_id.as_deref(), &config_dir)?;
     let path = crate::ini::paths::validate_config_dir(&config_dir)?;
     open::that(path).map_err(|e| {
         AppError::io(crate::i18n::t(

@@ -12,6 +12,7 @@ export interface AppSettings {
   reducedMotion: boolean;
   compactDensity: boolean;
   defaultEditorPanel: EditorPanel;
+  crashReportsEnabled: boolean;
 }
 
 export const APP_SETTINGS_STORAGE_KEY = "gsm-app-settings";
@@ -24,6 +25,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   reducedMotion: false,
   compactDensity: false,
   defaultEditorPanel: "basic",
+  crashReportsEnabled: false,
 };
 
 const FONT_SCALES: FontScale[] = [0.875, 1, 1.125, 1.25];
@@ -75,6 +77,10 @@ export function sanitizeAppSettings(value: unknown): AppSettings {
     defaultEditorPanel: isEditorPanel(input.defaultEditorPanel)
       ? input.defaultEditorPanel
       : DEFAULT_APP_SETTINGS.defaultEditorPanel,
+    crashReportsEnabled:
+      typeof input.crashReportsEnabled === "boolean"
+        ? input.crashReportsEnabled
+        : DEFAULT_APP_SETTINGS.crashReportsEnabled,
   };
 }
 

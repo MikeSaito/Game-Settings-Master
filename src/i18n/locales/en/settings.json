@@ -35,5 +35,21 @@
     "advanced": "Advanced"
   },
   "reset": "Reset",
-  "version": "v{{version}}"
+  "version": "v{{version}}",
+  "crashReports": {
+    "title": "Crash reports",
+    "enable": "Send crash reports",
+    "enableDesc": "When enabled, uncaught errors are saved locally (no analytics or behavior tracking). You choose whether to send them to GitHub.",
+    "pending_one": "{{count}} saved report",
+    "pending_other": "{{count}} saved reports",
+    "listLabel": "Saved crash reports",
+    "openGithub": "Open GitHub issue",
+    "copyReport": "Copy report",
+    "clear": "Clear saved reports",
+    "kind": {
+      "error_boundary": "UI error",
+      "uncaught": "Uncaught error",
+      "unhandled_rejection": "Unhandled rejection"
+    }
+  }
 }

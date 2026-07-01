@@ -35,5 +35,23 @@
     "advanced": "Расширенное"
   },
   "reset": "Сбросить",
-  "version": "v{{version}}"
+  "version": "v{{version}}",
+  "crashReports": {
+    "title": "Отчёты об ошибках",
+    "enable": "Сохранять отчёты об ошибках",
+    "enableDesc": "При включении необработанные ошибки сохраняются локально (без аналитики и отслеживания поведения). Отправка на GitHub — только по вашему выбору.",
+    "pending_one": "{{count}} сохранённый отчёт",
+    "pending_few": "{{count}} сохранённых отчёта",
+    "pending_many": "{{count}} сохранённых отчётов",
+    "pending_other": "{{count}} сохранённого отчёта",
+    "listLabel": "Сохранённые отчёты об ошибках",
+    "openGithub": "Открыть issue на GitHub",
+    "copyReport": "Скопировать отчёт",
+    "clear": "Очистить сохранённые",
+    "kind": {
+      "error_boundary": "Ошибка UI",
+      "uncaught": "Необработанная ошибка",
+      "unhandled_rejection": "Необработанный rejection"
+    }
+  }
 }

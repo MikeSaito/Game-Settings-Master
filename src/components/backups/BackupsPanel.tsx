@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { BackupRow } from "@/components/backups/BackupRow";
 import { BackupSectionTitle } from "@/components/backups/BackupSectionTitle";
+import { OVERRIDE_INI_FILES_LABEL } from "@/lib/ini/configFiles";
 import { Badge } from "@/components/ds/Badge";
 import { Button } from "@/components/ds/Button";
 import { Alert, EmptyState } from "@/components/ds/Feedback";
@@ -109,7 +110,7 @@ export function BackupsPanel({ game }: Props) {
       <section>
         <BackupSectionTitle
           title={t("reset.sectionTitle")}
-          description={t("reset.sectionDesc")}
+          description={t("reset.sectionDesc", { files: OVERRIDE_INI_FILES_LABEL })}
         />
         {resetConfirm ? (
           <Panel padding="md" className="border-[var(--color-danger)]/45 bg-[var(--color-danger-soft)]">

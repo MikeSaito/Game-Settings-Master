@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/MikeSaito/Game-Settings-Master/actions/workflows/ci.yml"><img src="https://github.com/MikeSaito/Game-Settings-Master/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/badge/release-v1.0.3-b87a14?style=flat-square" alt="v1.0.3"></a>
+  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/badge/release-v1.0.4-b87a14?style=flat-square" alt="v1.0.4"></a>
   <img src="https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT">
   <a href="https://gsm-tool.com/"><img src="https://img.shields.io/badge/site-gsm--tool.com-b87a14?style=flat-square" alt="gsm-tool.com"></a>
@@ -65,7 +65,7 @@
 
 | | |
 |---|---|
-| Установщик | [**Game-Settings-Master_1.0.3_x64-setup.exe**](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.3_x64-setup.exe) |
+| Установщик | [**Game-Settings-Master_1.0.4_x64-setup.exe**](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.4_x64-setup.exe) |
 | Релизы | [github.com/MikeSaito/Game-Settings-Master/releases](https://github.com/MikeSaito/Game-Settings-Master/releases) |
 | Сайт | [gsm-tool.com](https://gsm-tool.com/) |
 

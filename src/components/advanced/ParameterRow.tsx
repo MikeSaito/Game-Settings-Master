@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { ENGINE_INI } from "@/lib/editor";
+import { INI_TOGGLE_FILES } from "@/lib/editor";
 import { cn } from "@/lib/core";
 import type { GameParameter } from "@/lib/core";
 import { clampParamValue, isUeSentinelValue, readOnlyReason } from "@/lib/editor";
@@ -126,7 +126,7 @@ export const ParameterRow = memo(function ParameterRow({
           <code className="truncate font-mono text-[var(--color-accent-hover)]">{param.key}</code>
           <span>{t(`category.${param.category}`, { defaultValue: param.category })}</span>
           <span>{param.file}</span>
-          {param.file === ENGINE_INI && !isOff && !param.present_in_ini && (
+          {INI_TOGGLE_FILES.has(param.file) && !isOff && !param.present_in_ini && (
             <span className="text-[var(--color-accent)]">{t("newKey")}</span>
           )}
         </div>

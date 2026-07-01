@@ -2,29 +2,15 @@ use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 
-use crate::fs_util::{is_safe_backup_id, path_within_root};
+use crate::fs_util::{is_safe_backup_id, path_within_root, ALLOWED_CONFIG_INI_FILES};
 
 use super::migrate::migrate_legacy_backups;
 
 pub(crate) const BACKUP_DIR_LEGACY: &str = ".uesm-backups";
 
-pub(crate) const INI_FILES: [&str; 6] = [
-    "GameUserSettings.ini",
-    "Engine.ini",
-    "Game.ini",
-    "Scalability.ini",
-    "Input.ini",
-    "DeviceProfiles.ini",
-];
+pub(crate) const INI_FILES: [&str; 6] = ALLOWED_CONFIG_INI_FILES;
 
-/// Preset override ini files; removed on reset, GameUserSettings.ini is kept.
-pub const OVERRIDE_INI_FILES: [&str; 5] = [
-    "Engine.ini",
-    "Game.ini",
-    "Scalability.ini",
-    "Input.ini",
-    "DeviceProfiles.ini",
-];
+pub use crate::fs_util::OVERRIDE_INI_FILES;
 
 pub fn backup_store_dir(config_dir: &Path) -> PathBuf {
     let canonical = config_dir

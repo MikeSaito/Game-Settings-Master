@@ -137,9 +137,7 @@ export function countEngineStats(
   visibleParams: GameParameter[],
   engineEnabled: Set<string>,
 ): { total: number; on: number; off: number } {
-  const engine = visibleParams.filter(
-    (p) => p.file === "Engine.ini" && isEngineToggleable(p),
-  );
+  const engine = visibleParams.filter((p) => isEngineToggleable(p));
   const on = engine.filter((p) => isEngineEnabled(p, engineEnabled)).length;
   return { total: engine.length, on, off: engine.length - on };
 }

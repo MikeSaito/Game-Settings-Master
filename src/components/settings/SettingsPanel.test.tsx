@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -11,7 +12,13 @@ const handlers = vi.hoisted(() => ({
   setReducedMotion: vi.fn(),
   setCompactDensity: vi.fn(),
   setDefaultEditorPanel: vi.fn(),
+  setCrashReportsEnabled: vi.fn(),
   reset: vi.fn(),
+}));
+
+vi.mock("@/lib/api", () => ({
+  listCrashReports: vi.fn(() => Promise.resolve([])),
+  clearCrashReports: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock("@/hooks/app/useAppSettings", () => ({
@@ -23,14 +30,26 @@ vi.mock("@/hooks/app/useAppSettings", () => ({
       reducedMotion: false,
       compactDensity: false,
       defaultEditorPanel: "basic",
+      crashReportsEnabled: false,
     },
     ...handlers,
   }),
 }));
 
+function renderPanel() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <SettingsPanel open onClose={() => {}} />
+    </QueryClientProvider>,
+  );
+}
+
 describe("SettingsPanel", () => {
   it("changes language through settings handler", async () => {
-    render(<SettingsPanel open onClose={() => {}} />);
+    renderPanel();
     await userEvent.selectOptions(screen.getByLabelText(/interface language|язык интерфейса/i), "en");
     expect(handlers.setLanguage).toHaveBeenCalledWith("en");
   });

@@ -13,9 +13,8 @@ import i18n from "@/i18n";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { getGameConfig } from "@/lib/api";
 import { formatPresetLabel, getLastPreset } from "@/lib/editor";
+import { isUserOnlyConfig } from "@/lib/ini/configFiles";
 import type { AppTab, GameProfile } from "@/lib/core";
-
-const OVERRIDE_INI = ["Engine.ini", "Game.ini", "Scalability.ini", "Input.ini"];
 
 export type PresetMode = "user" | "selected" | "applied";
 
@@ -30,11 +29,6 @@ interface GameWorkspaceContextValue {
 }
 
 const GameWorkspaceContext = createContext<GameWorkspaceContextValue | null>(null);
-
-function detectUserOnly(files: Record<string, unknown> | undefined): boolean {
-  if (!files) return false;
-  return !OVERRIDE_INI.some((f) => f in files);
-}
 
 interface ProviderProps {
   game: GameProfile;
@@ -57,7 +51,7 @@ export function GameWorkspaceProvider({ game, activeTab, children }: ProviderPro
     refetchOnMount: false,
   });
 
-  const userOnly = detectUserOnly(gameConfig?.files);
+  const userOnly = isUserOnlyConfig(gameConfig?.files);
 
   const fallbackPreset = useCallback(
     (userOnlyMode: boolean): WorkspacePreset => {

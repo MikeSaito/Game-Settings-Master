@@ -83,10 +83,10 @@
   "undocumented": "undocumented",
   "scalabilityLimits": "sg max {{max}} · scale 25–200%",
   "engineIni": {
-    "title": "Engine.ini parameters",
+    "title": "Ini parameters (Engine / Scalability / Game)",
     "addToIni": "Add to ini",
     "removeFromIni": "Remove from ini",
-    "before": "Use “Add to ini” and “Remove from ini” to control whether a line exists in the file — the key is written or removed after “Apply”. Currently in Engine.ini: {{on}} of {{total}}.",
+    "before": "Use “Add to ini” and “Remove from ini” to control whether a line exists in the file — the key is written or removed after “Apply”. Currently in ini: {{on}} of {{total}}.",
     "short": "In ini: {{on}} of {{total}}."
   },
   "categoryNav": "Parameter categories",
@@ -177,7 +177,12 @@
     "sgEngine": "sg/r conflict",
     "bannerTitle": "sg.* and r.* overlap",
     "bannerBody_one": "{{count}} parameter: a GUS quality preset overlaps a manual Engine/Scalability.ini override.",
-    "bannerBody_other": "{{count}} parameters: sg.* presets overlap manual r.* overrides in ini."
+    "bannerBody_other": "{{count}} parameters: sg.* presets overlap manual r.* overrides in ini.",
+    "sgValue": "sg = {{value}}",
+    "overridesList": "Manual r.* overrides: {{keys}}",
+    "resetRKeepSg": "Reset {{prefix}}, keep {{sg}}",
+    "tierForSg": "UE tier for {{sg}}={{value}} ({{tier}})",
+    "resolved": "Removed conflicting r.* overrides; {{sg}} unchanged. Apply to write ini."
   },
   "inPractice": "In practice: ",
   "recommendedValues": "Recommended values: ",

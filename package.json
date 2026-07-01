@@ -1,7 +1,7 @@
 {
   "name": "ue-settings-master",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -9,6 +9,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "e2e": "playwright test",
+    "e2e:serve": "cross-env GSM_E2E=1 vite",
     "types:gen": "cargo test export_typescript_bindings --manifest-path src-tauri/Cargo.toml -- --nocapture",
     "catalog:build": "python tools/ue-catalog-builder/fixtures/gen_fixtures.py && python tools/ue-catalog-builder/build.py",
     "catalog:test": "python tools/ue-catalog-builder/test_build.py",
@@ -38,6 +40,7 @@
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/vite": "^4.3.1",
     "@tauri-apps/cli": "^2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -46,6 +49,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "cross-env": "^7.0.3",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.3",

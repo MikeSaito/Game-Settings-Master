@@ -2,7 +2,8 @@ use super::io::{read_file_bytes, strip_utf8_bom, write_file_bytes, write_file_by
 use super::path_safety::{
     is_allowed_config_ini_filename, is_allowed_restore_filename, is_safe_backup_id,
     is_safe_exe_basename, is_safe_ini_key_name, is_safe_ini_section_name, is_safe_ini_value,
-    is_safe_pack_ini_filename,
+    is_safe_pack_ini_filename, ALLOWED_CONFIG_INI_FILES, GAME_USER_SETTINGS_INI,
+    OVERRIDE_INI_FILES,
 };
 use std::io::Write;
 use tempfile::TempDir;
@@ -102,4 +103,19 @@ fn clears_readonly_before_write() {
 
     write_file_bytes(&path, b"new").unwrap();
     assert_eq!(read_file_bytes(&path).unwrap(), b"new");
+}
+
+#[test]
+fn override_ini_files_match_allowed_config_list() {
+    for file in OVERRIDE_INI_FILES {
+        assert!(
+            ALLOWED_CONFIG_INI_FILES.contains(&file),
+            "{file} missing from ALLOWED_CONFIG_INI_FILES"
+        );
+        assert_ne!(file, GAME_USER_SETTINGS_INI);
+    }
+    assert_eq!(
+        ALLOWED_CONFIG_INI_FILES.len(),
+        OVERRIDE_INI_FILES.len() + 1
+    );
 }

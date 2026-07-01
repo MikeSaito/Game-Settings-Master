@@ -60,7 +60,7 @@ export function useEditorQueries(game: GameProfile | null) {
 
   const { data: limits } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir, game?.id],
-    queryFn: () => getScalabilityLimits(configDir, game!.install_dir, game!.id),
+    queryFn: () => getScalabilityLimits(configDir, game!.id, game!.install_dir),
     enabled: queriesEnabled && !!game,
   });
 

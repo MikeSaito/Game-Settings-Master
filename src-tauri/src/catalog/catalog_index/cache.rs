@@ -21,6 +21,11 @@ pub(crate) fn catalog_build_count() -> usize {
 }
 
 #[cfg(test)]
+pub fn reset_catalog_build_count() {
+    CATALOG_BUILD_COUNT.store(0, std::sync::atomic::Ordering::SeqCst);
+}
+
+#[cfg(test)]
 pub fn invalidate_catalog_cache() {
     if let Ok(mut guard) = catalog_cache().lock() {
         guard.clear();
@@ -47,14 +52,15 @@ pub(crate) fn get_or_build_catalog_index(engine_family: Option<&str>) -> Arc<Cat
     let catalog = load_parameter_catalog_for_family(engine_family);
     let is_ue4 = engine_family == Some("ue4");
     let index = Arc::new(build_catalog_index(catalog, is_ue4));
-    #[cfg(test)]
-    CATALOG_BUILD_COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
 
     if let Ok(mut guard) = catalog_cache().lock() {
         if let Some(existing) = guard.get(key) {
             return Arc::clone(existing);
         }
         guard.insert(key.to_string(), Arc::clone(&index));
+        #[cfg(test)]
+        CATALOG_BUILD_COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        return Arc::clone(guard.get(key).unwrap_or(&index));
     }
     index
 }

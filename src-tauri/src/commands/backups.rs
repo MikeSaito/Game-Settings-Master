@@ -1,6 +1,6 @@
 use super::helpers::{
-    ensure_all_targets_writable, guard_config_dir_for_write, guard_write_context,
-    resolve_write_exe_name, validate_config_dir_for_game,
+    ensure_all_targets_writable, guard_config_dir_for_read, guard_config_dir_for_write,
+    guard_write_context, resolve_write_exe_name,
 };
 use crate::backup::{list_backups, restore_backup_all_targets};
 use crate::core::app_error::AppInvokeError;
@@ -14,9 +14,7 @@ pub fn list_backups_cmd(
     config_dir: String,
     game_id: Option<String>,
 ) -> Result<Vec<BackupInfo>, AppInvokeError> {
-    if let Some(gid) = game_id.as_deref() {
-        validate_config_dir_for_game(gid, &config_dir)?;
-    }
+    guard_config_dir_for_read(game_id.as_deref(), &config_dir)?;
     let path = validate_config_dir(&config_dir)?;
     let backups = list_backups(&path)?;
     Ok(backups

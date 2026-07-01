@@ -1,5 +1,6 @@
 import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 import { isParamVisible } from "@/lib/gpu/gpuCompat";
+import { filterParamsByPanel, type EditorPanel } from "@/lib/routing";
 import {
   defaultValueFor,
   isEngineEnabled,
@@ -51,6 +52,7 @@ export function buildCustomChanges(
   gpu: GpuCapabilities | undefined,
   engineEnabled: Set<string>,
   editableCategories: Set<string>,
+  panel?: EditorPanel,
 ): {
   files: Record<string, Record<string, Record<string, string>>>;
   removals: Record<string, Record<string, string[]>>;
@@ -58,11 +60,12 @@ export function buildCustomChanges(
   const files: Record<string, Record<string, Record<string, string>>> = {};
   const removals: Record<string, Record<string, string[]>> = {};
   const reconciled = reconcileAllParams(params, gpu);
+  const writeParams = panel ? filterParamsByPanel(reconciled, panel) : reconciled;
   const baselineByCatalogId = new Map(
     parameters.map((p) => [catalogParamId(p), p]),
   );
 
-  for (const p of reconciled) {
+  for (const p of writeParams) {
     const baseline = baselineByCatalogId.get(catalogParamId(p));
     const value =
       p.value.trim() || (isEngineToggleable(p) ? defaultValueFor(p) : "");
@@ -76,16 +79,39 @@ export function buildCustomChanges(
     setIniValue(files, p.file, sectionKeyFor(p), p.key, value);
   }
 
+  const draftByCatalogId = new Map(
+    reconciled.map((p) => [catalogParamId(p), p]),
+  );
+
   for (const p of parameters) {
-    if (p.file !== "Engine.ini" || !p.present_in_ini || !isEngineToggleable(p)) {
+    if (!p.present_in_ini) continue;
+    const draft = draftByCatalogId.get(catalogParamId(p));
+    if (!draft) continue;
+
+    const sectionKey = sectionKeyFor(p);
+    const addRemoval = () => {
+      if (!removals[p.file]) removals[p.file] = {};
+      if (!removals[p.file][sectionKey]) removals[p.file][sectionKey] = [];
+      if (!removals[p.file][sectionKey].includes(p.key)) {
+        removals[p.file][sectionKey].push(p.key);
+      }
+    };
+
+    if (isEngineToggleable(p)) {
+      if (isEngineEnabled(p, engineEnabled)) continue;
+      addRemoval();
       continue;
     }
-    if (isEngineEnabled(p, engineEnabled)) continue;
-    const sectionKey = sectionKeyFor(p);
-    if (!removals[p.file]) removals[p.file] = {};
-    if (!removals[p.file][sectionKey]) removals[p.file][sectionKey] = [];
-    if (!removals[p.file][sectionKey].includes(p.key)) {
-      removals[p.file][sectionKey].push(p.key);
+
+    if (
+      p.key.toLowerCase().startsWith("r.") &&
+      (p.file === "Engine.ini" ||
+        p.file === "Scalability.ini" ||
+        p.file === "Game.ini") &&
+      !draft.present_in_ini &&
+      draft.value.trim() === ""
+    ) {
+      addRemoval();
     }
   }
 

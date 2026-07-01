@@ -69,5 +69,11 @@ jobs:
       - name: Frontend unit tests
         run: npm test
 
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: E2E tests
+        run: npm run e2e
+
       - name: Catalog builder tests
         run: npm run catalog:test

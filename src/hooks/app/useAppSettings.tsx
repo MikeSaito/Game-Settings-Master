@@ -32,6 +32,7 @@ interface AppSettingsContextValue {
   setReducedMotion: (enabled: boolean) => void;
   setCompactDensity: (enabled: boolean) => void;
   setDefaultEditorPanel: (panel: EditorPanel) => void;
+  setCrashReportsEnabled: (enabled: boolean) => void;
   reset: () => void;
 }
 
@@ -94,6 +95,8 @@ export function AppSettingsProvider({ children }: { children: ReactNode }) {
         commit((current) => ({ ...current, compactDensity })),
       setDefaultEditorPanel: (defaultEditorPanel) =>
         commit((current) => ({ ...current, defaultEditorPanel })),
+      setCrashReportsEnabled: (crashReportsEnabled) =>
+        commit((current) => ({ ...current, crashReportsEnabled })),
       reset: () => {
         const next = resetAppSettings();
         setSettings(next);
@@ -121,6 +124,7 @@ export function useAppSettings(): AppSettingsContextValue {
       setReducedMotion: () => {},
       setCompactDensity: () => {},
       setDefaultEditorPanel: () => {},
+      setCrashReportsEnabled: () => {},
       reset: () => {},
     };
   }

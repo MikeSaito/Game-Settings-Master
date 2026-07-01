@@ -133,4 +133,52 @@ describe("buildCustomChanges", () => {
     expect(section?.UpscalingMethod).toBe("U_FSR");
     expect(section?.UpscalingFrameGeneration).toBe("0");
   });
+
+  it("removes disabled Scalability.ini toggle params on apply", () => {
+    const baseline = [
+      param({
+        key: "r.ShadowQuality",
+        file: "Scalability.ini",
+        section: "[ShadowQuality@3]",
+        value: "5",
+        category: "Shadows",
+        present_in_ini: true,
+      }),
+    ];
+    const { removals } = buildCustomChanges(
+      baseline,
+      baseline,
+      undefined,
+      new Set(),
+      new Set(["Shadows"]),
+    );
+    expect(removals["Scalability.ini"]?.["[ShadowQuality@3]"]).toContain(
+      "r.ShadowQuality",
+    );
+  });
+
+  it("includes engine removals when applying from basic panel", () => {
+    const baseline = [
+      param({
+        key: "r.ShadowQuality",
+        file: "Scalability.ini",
+        section: "[ShadowQuality@3]",
+        value: "5",
+        category: "Shadows",
+        present_in_ini: true,
+      }),
+    ];
+    const { files, removals } = buildCustomChanges(
+      baseline,
+      baseline,
+      undefined,
+      new Set(),
+      new Set(["Shadows"]),
+      "basic",
+    );
+    expect(Object.keys(files)).toHaveLength(0);
+    expect(removals["Scalability.ini"]?.["[ShadowQuality@3]"]).toContain(
+      "r.ShadowQuality",
+    );
+  });
 });

@@ -43,26 +43,26 @@ export function scanGames(): Promise<GameProfile[]> {
 
 export function getGameConfig(
   configDir: string,
-  gameId?: string,
+  gameId: string,
   engineFamily?: string,
 ): Promise<GameConfig> {
   return invoke("get_game_config", {
     configDir,
-    gameId: gameId ?? null,
+    gameId,
     engineFamily: engineFamily ?? null,
   });
 }
 
 export function getGameParameters(
   configDir: string,
-  gameId?: string,
+  gameId: string,
   installDir?: string,
   engineFamily?: string,
   engineVersion?: string | null,
 ): Promise<GameParameter[]> {
   return invoke("get_game_parameters_cmd", {
     configDir,
-    gameId: gameId ?? null,
+    gameId,
     installDir: installDir ?? null,
     engineFamily: engineFamily ?? null,
     engineVersion: engineVersion ?? null,
@@ -71,13 +71,13 @@ export function getGameParameters(
 
 export function getScalabilityLimits(
   configDir: string,
+  gameId: string,
   installDir?: string,
-  gameId?: string,
 ): Promise<ScalabilityLimits> {
   return invoke("get_scalability_limits_cmd", {
     configDir,
+    gameId,
     installDir: installDir ?? null,
-    gameId: gameId ?? null,
   });
 }
 
@@ -100,11 +100,11 @@ export function applyCustom(
 
 export function listBackups(
   configDir: string,
-  gameId?: string,
+  gameId: string,
 ): Promise<BackupInfo[]> {
   return invoke("list_backups_cmd", {
     configDir,
-    gameId: gameId ?? null,
+    gameId,
   });
 }
 
@@ -205,16 +205,30 @@ export function applyGameOverride(
 
 export function openConfigFolder(
   configDir: string,
-  gameId?: string,
+  gameId: string,
 ): Promise<void> {
   return invoke("open_config_folder", {
     configDir,
-    gameId: gameId ?? null,
+    gameId,
   });
 }
 
 export function launchGame(profile: GameProfile): Promise<LaunchResult> {
   return invoke("launch_game_cmd", { profile });
+}
+
+export function submitCrashReport(
+  payload: import("@/lib/crashReport").CrashReportPayload,
+): Promise<import("@/lib/crashReport").CrashReportEntry> {
+  return invoke("submit_crash_report_cmd", { payload });
+}
+
+export function listCrashReports(): Promise<import("@/lib/crashReport").CrashReportEntry[]> {
+  return invoke("list_crash_reports_cmd");
+}
+
+export function clearCrashReports(): Promise<void> {
+  return invoke("clear_crash_reports_cmd");
 }
 
 export * from "./bindings";

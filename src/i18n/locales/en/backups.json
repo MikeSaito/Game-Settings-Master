@@ -14,15 +14,15 @@
     "button": "Restore"
   },
   "reset": {
-    "noFiles": "Override files are already absent — only GameUserSettings.ini remains. A backup was created just in case.",
-    "success": "Reset completed: removed {{files}}. GameUserSettings.ini kept. Backup {{backupId}}. Restart the game.",
-    "errorTitle": "Reset error",
-    "sectionTitle": "Reset to user defaults",
-    "sectionDesc": "Removes Engine.ini, Game.ini, Scalability.ini and Input.ini. GameUserSettings.ini is left untouched.",
-    "confirmBody": "A backup is created before reset. The game must be closed. Continue?",
-    "confirmYes": "Yes, reset",
+    "noFiles": "Override ini files are already gone — only GameUserSettings.ini (in-game menu) remains. A backup was created just in case.",
+    "success": "Override ini removed: {{files}}. GameUserSettings.ini kept. Backup {{backupId}}. Restart the game.",
+    "errorTitle": "Override ini removal error",
+    "sectionTitle": "Remove engine override ini",
+    "sectionDesc": "Deletes {{files}} — risky tweaks outside the in-game menu. GameUserSettings.ini (sg.* and menu settings) is left untouched.",
+    "confirmBody": "A backup is created before removal. The game must be closed. Continue?",
+    "confirmYes": "Yes, remove override ini",
     "cancel": "Cancel",
-    "button": "Reset (keep only GameUserSettings.ini)"
+    "button": "Remove Engine / Scalability ini"
   },
   "successTitle": "Done",
   "empty": {

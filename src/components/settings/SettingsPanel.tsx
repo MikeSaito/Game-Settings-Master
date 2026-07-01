@@ -5,6 +5,7 @@ import { useAppSettings } from "@/hooks/app/useAppSettings";
 import type { FontScale, ThemeMode } from "@/lib/settings";
 import { Button } from "@/components/ds/Button";
 import { LanguageSelect } from "@/components/settings/LanguageSelect";
+import { CrashReportsSection } from "@/components/settings/CrashReportsSection";
 import { SegmentControl } from "@/components/ds/SegmentControl";
 import { Switch } from "@/components/ds/Switch";
 import { Divider } from "@/components/ds/Panel";
@@ -33,6 +34,7 @@ export function SettingsPanel({ open, onClose, scoped = false }: Props) {
     setLanguage,
     setReducedMotion,
     setCompactDensity,
+    setCrashReportsEnabled,
     reset,
   } = useAppSettings();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -181,6 +183,13 @@ export function SettingsPanel({ open, onClose, scoped = false }: Props) {
               onChange={setCompactDensity}
             />
           </section>
+
+          <Divider />
+
+          <CrashReportsSection
+            enabled={settings.crashReportsEnabled}
+            onEnabledChange={setCrashReportsEnabled}
+          />
 
           <Divider />
 

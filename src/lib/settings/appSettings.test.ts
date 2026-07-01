@@ -16,6 +16,7 @@ const base: AppSettings = {
   reducedMotion: false,
   compactDensity: false,
   defaultEditorPanel: "basic",
+  crashReportsEnabled: false,
 };
 
 describe("appSettings", () => {

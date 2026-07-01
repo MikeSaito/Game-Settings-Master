@@ -16,6 +16,8 @@ dist-ssr/
 .vite/
 .cache/
 coverage/
+test-results/
+playwright-report/
 *.tsbuildinfo
 
 # ─── Rust / Tauri ───────────────────────────────────────────────────────────

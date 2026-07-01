@@ -45,6 +45,28 @@ export type ConfigResetResult = {
 	deleted_files: string[],
 };
 
+export type CrashReportEntry = {
+	id: string,
+	created_at: string,
+	kind: CrashReportKind,
+	message: string,
+	stack: string | null,
+	component_stack: string | null,
+	url: string | null,
+	app_version: string,
+};
+
+export type CrashReportKind = "error_boundary" | "uncaught" | "unhandled_rejection";
+
+export type CrashReportPayload = {
+	kind: CrashReportKind,
+	message: string,
+	stack: string | null,
+	component_stack: string | null,
+	url: string | null,
+	app_version: string,
+};
+
 export type GameConfig = {
 	config_dir: string,
 	files: { [key in string]: IniFileData },

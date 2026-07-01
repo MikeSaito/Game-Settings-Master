@@ -5,6 +5,7 @@ import { EditorModeBar } from "@/components/advanced/EditorModeBar";
 import { EditorSidebar } from "@/components/advanced/EditorSidebar";
 import { ParameterList } from "@/components/advanced/ParameterList";
 import { SavedPresetsPanel } from "@/components/advanced/SavedPresetsPanel";
+import { SgEngineConflictPanel } from "@/components/advanced/SgEngineConflictPanel";
 import { Alert, EmptyState } from "@/components/ds/Feedback";
 import { Badge } from "@/components/ds/Badge";
 import { useAdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
@@ -112,10 +113,11 @@ export function AdvancedEditor({ game }: Props) {
               )}
             </div>
 
-            {state.conflictCount > 0 && (
-              <Alert tone="warning" icon={AlertTriangle} className="mb-3" title={t("conflict.bannerTitle")}>
-                {t("conflict.bannerBody", { count: state.conflictCount })}
-              </Alert>
+            {state.conflictGroups.length > 0 && (
+              <SgEngineConflictPanel
+                groups={state.conflictGroups}
+                onResolve={state.resolveSgConflict}
+              />
             )}
 
             {state.gameRunning && (

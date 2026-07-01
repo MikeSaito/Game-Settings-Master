@@ -24,8 +24,19 @@ pub fn is_safe_pack_ini_filename(name: &str) -> bool {
 }
 
 /// UE config INI files that GSM may read or write.
+pub const GAME_USER_SETTINGS_INI: &str = "GameUserSettings.ini";
+
 pub const ALLOWED_CONFIG_INI_FILES: [&str; 6] = [
-    "GameUserSettings.ini",
+    GAME_USER_SETTINGS_INI,
+    "Engine.ini",
+    "Game.ini",
+    "Scalability.ini",
+    "Input.ini",
+    "DeviceProfiles.ini",
+];
+
+/// Override ini removed on reset; GameUserSettings.ini is kept.
+pub const OVERRIDE_INI_FILES: [&str; 5] = [
     "Engine.ini",
     "Game.ini",
     "Scalability.ini",

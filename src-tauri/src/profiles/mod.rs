@@ -8,6 +8,7 @@ pub use overrides::{
 };
 pub use persist::{load_saved_profiles, prune_stale_saved_profiles, remove_profile, save_profile};
 pub use storage::app_data_dir;
+pub(crate) use storage::write_json_atomic;
 pub use trust::{
     ensure_known_game_id, ensure_trusted_ipc_profile, is_stale_saved_profile,
     resolve_trusted_profile,

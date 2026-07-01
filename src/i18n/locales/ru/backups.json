@@ -16,15 +16,15 @@
     "button": "Восстановить"
   },
   "reset": {
-    "noFiles": "Переопределяющие файлы уже отсутствуют — остался только GameUserSettings.ini. Резервная копия создана на всякий случай.",
-    "success": "Сброс выполнен: удалены {{files}}. GameUserSettings.ini сохранён. Резервная копия {{backupId}}. Перезапустите игру.",
-    "errorTitle": "Ошибка сброса",
-    "sectionTitle": "Сброс до пользовательских",
-    "sectionDesc": "Удаляет Engine.ini, Game.ini, Scalability.ini и Input.ini. GameUserSettings.ini не трогается.",
-    "confirmBody": "Перед сбросом создаётся резервная копия. Игра должна быть закрыта. Продолжить?",
-    "confirmYes": "Да, сбросить",
+    "noFiles": "Override ini уже нет — остался только GameUserSettings.ini (меню игры). Резервная копия создана на всякий случай.",
+    "success": "Override ini удалены: {{files}}. GameUserSettings.ini сохранён. Резервная копия {{backupId}}. Перезапустите игру.",
+    "errorTitle": "Ошибка удаления override ini",
+    "sectionTitle": "Убрать override ini движка",
+    "sectionDesc": "Удаляет {{files}} — рискованные правки вне игрового меню. GameUserSettings.ini (sg.* и настройки из меню) не трогается.",
+    "confirmBody": "Перед удалением создаётся резервная копия. Игра должна быть закрыта. Продолжить?",
+    "confirmYes": "Да, удалить override ini",
     "cancel": "Отмена",
-    "button": "Сброс (только GameUserSettings.ini)"
+    "button": "Удалить Engine / Scalability ini"
   },
   "successTitle": "Готово",
   "empty": {

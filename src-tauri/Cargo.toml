@@ -1,6 +1,6 @@
 [package]
 name = "ue-settings-master"
-version = "1.0.3"
+version = "1.0.4"
 description = "UE Settings Master — мастер настроек для игр Unreal Engine"
 authors = ["Mike Saito <chigikovden@gmail.com>"]
 license = "MIT"
@@ -47,6 +47,7 @@ winreg = "0.56"
 tauri-plugin-updater = "2"
 
 [dev-dependencies]
+serial_test = "3"
 tempfile = "3"
 
 [profile.release]

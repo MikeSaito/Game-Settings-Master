@@ -14,13 +14,14 @@ import { useEditorPanelState } from "@/hooks/editor/useEditorPanelState";
 import { useEditorQueries } from "@/hooks/editor/useEditorQueries";
 import {
   applyParamDependencies,
+  analyzeSgEngineConflictGroups,
   buildCustomChanges,
   collectPendingKeys,
   defaultValueFor,
   detectSgEngineConflicts,
   initialEngineEnabledKeys,
+  resolveConflictKeepSg,
 } from "@/lib/editor";
-import { filterParamsByPanel } from "@/lib/routing";
 import { ENGINE_CATEGORIES } from "@/lib/editor";
 import type { GameParameter, GameProfile } from "@/lib/core";
 
@@ -125,16 +126,18 @@ export function useAdvancedEditorState(game: GameProfile | null) {
 
   const pendingSummary = useMemo(() => {
     const { files, removals } = buildCustomChanges(
-      filterParamsByPanel(params, panel),
+      params,
       parameters,
       gpu,
       engineEnabled,
       editableCategories,
+      panel,
     );
     const summary = countPendingChanges(files, removals);
     const pendingKeySet = collectPendingKeys(files, removals);
     const conflictKeys = detectSgEngineConflicts(params, pendingKeySet, engineEnabled);
-    return { ...summary, conflictKeys };
+    const conflictGroups = analyzeSgEngineConflictGroups(params, pendingKeySet, engineEnabled);
+    return { ...summary, conflictKeys, conflictGroups };
   }, [params, panel, parameters, gpu, engineEnabled, editableCategories]);
 
   const updateParam = useCallback(
@@ -171,6 +174,33 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     setApplyError(undefined);
     setMessage(undefined);
   };
+
+  const resolveSgConflict = useCallback(
+    (sgKey: string) => {
+      const group = pendingSummary.conflictGroups.find((g) => g.sgKey === sgKey);
+      if (!group) return;
+      paramsDirtyRef.current = true;
+      const { params: nextParams, engineEnabled: nextEnabled } = resolveConflictKeepSg(
+        group,
+        params,
+        parameters,
+        engineEnabled,
+      );
+      setParams(nextParams);
+      setEngineEnabled(nextEnabled);
+      setMessage(t("conflict.resolved", { sg: group.sgParam.key }));
+    },
+    [
+      pendingSummary.conflictGroups,
+      params,
+      parameters,
+      engineEnabled,
+      paramsDirtyRef,
+      setParams,
+      setEngineEnabled,
+      t,
+    ],
+  );
 
   const {
     applyCustomMutation,
@@ -226,6 +256,8 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     pendingChangesBreakdown: pendingSummary.breakdown,
     pendingConflictKeys: pendingSummary.conflictKeys,
     conflictCount: pendingSummary.conflictKeys.size,
+    conflictGroups: pendingSummary.conflictGroups,
+    resolveSgConflict,
     parametersLoading,
     overrideName,
     setOverrideName,

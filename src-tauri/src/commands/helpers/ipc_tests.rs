@@ -1,5 +1,7 @@
 use super::custom_changes::MAX_CUSTOM_CHANGES_JSON_BYTES;
-use super::{guard_config_dir_for_write, validate_custom_changes_payload};
+use super::{
+    guard_config_dir_for_read, guard_config_dir_for_write, validate_custom_changes_payload,
+};
 use crate::core::models::CustomChanges;
 use std::collections::HashMap;
 use std::fs;
@@ -13,6 +15,7 @@ fn guard_without_game_id_rejects_ue_config() {
     fs::write(config.join("GameUserSettings.ini"), b"[x]").unwrap();
     let path = config.to_string_lossy();
     assert!(guard_config_dir_for_write(None, path.as_ref()).is_err());
+    assert!(guard_config_dir_for_read(None, path.as_ref()).is_err());
 }
 
 #[test]

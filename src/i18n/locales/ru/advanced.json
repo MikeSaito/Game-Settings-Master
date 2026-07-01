@@ -91,10 +91,10 @@
   "undocumented": "без описания",
   "scalabilityLimits": "sg макс. {{max}} · масштаб 25–200%",
   "engineIni": {
-    "title": "Параметры Engine.ini",
+    "title": "Параметры ini (Engine / Scalability / Game)",
     "addToIni": "Добавить в ini",
     "removeFromIni": "Удалить из ini",
-    "before": "Кнопки «Добавить в ini» и «Удалить из ini» управляют наличием строки в файле: после «Применить» ключ будет записан или удалён. Сейчас в Engine.ini: {{on}} из {{total}}.",
+    "before": "Кнопки «Добавить в ini» и «Удалить из ini» управляют наличием строки в файле: после «Применить» ключ будет записан или удалён. Сейчас в ini: {{on}} из {{total}}.",
     "short": "В ini: {{on}} из {{total}}."
   },
   "categoryNav": "Категории параметров",
@@ -195,7 +195,12 @@
     "bannerBody_one": "{{count}} параметр: пресет качества в GameUserSettings.ini перекрывается ручным override в Engine/Scalability.ini.",
     "bannerBody_few": "{{count}} параметра: пресеты sg.* перекрываются ручными r.* в ini.",
     "bannerBody_many": "{{count}} параметров: пресеты sg.* перекрываются ручными r.* в ini.",
-    "bannerBody_other": "{{count}} параметра: пресеты sg.* перекрываются ручными r.* в ini."
+    "bannerBody_other": "{{count}} параметра: пресеты sg.* перекрываются ручными r.* в ini.",
+    "sgValue": "sg = {{value}}",
+    "overridesList": "Ручные r.* override: {{keys}}",
+    "resetRKeepSg": "Сбросить {{prefix}}, оставить {{sg}}",
+    "tierForSg": "Tier UE для {{sg}}={{value}} ({{tier}})",
+    "resolved": "Конфликтующие r.* сняты; {{sg}} без изменений. Нажмите «Применить» для записи в ini."
   },
   "inPractice": "На практике: ",
   "recommendedValues": "Рекомендуемые значения: ",

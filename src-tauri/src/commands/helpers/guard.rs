@@ -18,7 +18,21 @@ pub(crate) fn guard_write_context(
     Ok(())
 }
 
+pub(crate) fn guard_config_dir_for_read(
+    game_id: Option<&str>,
+    config_dir: &str,
+) -> Result<(), AppInvokeError> {
+    guard_trusted_config_dir(game_id, config_dir)
+}
+
 pub(crate) fn guard_config_dir_for_write(
+    game_id: Option<&str>,
+    config_dir: &str,
+) -> Result<(), AppInvokeError> {
+    guard_trusted_config_dir(game_id, config_dir)
+}
+
+fn guard_trusted_config_dir(
     game_id: Option<&str>,
     config_dir: &str,
 ) -> Result<(), AppInvokeError> {
@@ -28,8 +42,8 @@ pub(crate) fn guard_config_dir_for_write(
         return Ok(());
     }
     Err(AppError::validation(crate::i18n::t(
-        "Для записи в конфиг Unreal Engine укажите game_id — без него путь не проверяется",
-        "Specify game_id to write to Unreal Engine config — without it the path is not validated",
+        "Для доступа к конфигу Unreal Engine укажите game_id — без него путь не проверяется",
+        "Specify game_id to access Unreal Engine config — without it the path is not validated",
     )))
 }
 

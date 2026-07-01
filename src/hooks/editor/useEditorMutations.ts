@@ -8,7 +8,7 @@ import {
 } from "@/lib/api";
 import { buildCustomChanges } from "@/lib/editor";
 import { invalidateGameWorkspace } from "@/lib/game/invalidateGameWorkspace";
-import { filterParamsByPanel, type EditorPanel } from "@/lib/routing";
+import type { EditorPanel } from "@/lib/routing";
 import { formatInvokeError } from "@/lib/core";
 import type { GameOverride, GameParameter, GameProfile, GpuCapabilities } from "@/lib/core";
 
@@ -34,11 +34,12 @@ interface Options {
 
 function buildChanges(options: Options) {
   return buildCustomChanges(
-    filterParamsByPanel(options.params, options.panel),
+    options.params,
     options.parameters,
     options.gpu,
     options.engineEnabled,
     options.editableCategories,
+    options.panel,
   );
 }
 

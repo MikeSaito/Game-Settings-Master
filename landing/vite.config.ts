@@ -78,7 +78,7 @@ function injectYandexMetrika(): Plugin {
 
       ym(${id}, "init", {
         ssr: true,
-        webvisor: true,
+        webvisor: false,
         clickmap: true,
         referrer: document.referrer,
         url: location.href,
@@ -100,6 +100,31 @@ function injectYandexMetrika(): Plugin {
     name: "inject-yandex-metrika",
     transformIndexHtml(html) {
       return html.replace("<head>", `<head>\n${snippet}`);
+    },
+  };
+}
+
+function injectContentSecurityPolicy(): Plugin {
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://mc.yandex.ru",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    `img-src 'self' data: https://mc.yandex.ru ${siteUrl}`,
+    "connect-src 'self' https://mc.yandex.ru",
+    "frame-src https://mc.yandex.ru",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join("; ");
+
+  return {
+    name: "inject-csp",
+    apply: "build",
+    transformIndexHtml(html) {
+      return html.replace(
+        "<head>",
+        `<head>\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
+      );
     },
   };
 }
@@ -204,7 +229,7 @@ Sitemap: ${siteUrl}/sitemap.xml
 export default defineConfig({
   base,
   appType: "mpa",
-  plugins: [enRoutePlugin(), injectYandexMetrika(), injectSiteMeta(), emitSeoFiles()],
+  plugins: [enRoutePlugin(), injectYandexMetrika(), injectContentSecurityPolicy(), injectSiteMeta(), emitSeoFiles()],
   build: {
     outDir: "dist",
     emptyOutDir: true,

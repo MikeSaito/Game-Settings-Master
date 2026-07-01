@@ -2,6 +2,13 @@ import type { GameParameter } from "@/lib/core/types";
 
 export const ENGINE_INI = "Engine.ini";
 
+/** Ini files where known r.* / engine params use add/remove toggle. */
+export const INI_TOGGLE_FILES = new Set([
+  "Engine.ini",
+  "Scalability.ini",
+  "Game.ini",
+]);
+
 export const ENGINE_CATEGORIES = new Set([
   "Rendering",
   "Shadows",
@@ -9,7 +16,7 @@ export const ENGINE_CATEGORIES = new Set([
   "PostProcess",
 ]);
 
-/** Unique id for toggle state (key inside Engine.ini). */
+/** Unique id for ini membership toggle (`file::key`). */
 export function engineParamId(p: Pick<GameParameter, "file" | "key">): string {
   return `${p.file}::${p.key}`;
 }
@@ -18,10 +25,10 @@ export function paramId(p: Pick<GameParameter, "file" | "section" | "key">): str
   return `${p.file}|${p.section}|${p.key}`;
 }
 
-/** Engine.ini parameters with on/off toggle (editable, not opaque). */
+/** Known editable params in Engine/Scalability/Game ini with on/off toggle. */
 export function isEngineToggleable(p: GameParameter): boolean {
   return (
-    p.file === ENGINE_INI &&
+    INI_TOGGLE_FILES.has(p.file) &&
     p.known &&
     p.editable &&
     p.value_type !== "opaque"
@@ -51,7 +58,7 @@ export function shouldIncludeInApply(
   p: GameParameter,
   engineEnabled: Set<string>,
 ): boolean {
-  if (p.file === ENGINE_INI) {
+  if (INI_TOGGLE_FILES.has(p.file)) {
     if (!isEngineToggleable(p)) return false;
     return isEngineEnabled(p, engineEnabled);
   }
