@@ -32,10 +32,7 @@ pub(crate) fn guard_config_dir_for_write(
     guard_trusted_config_dir(game_id, config_dir)
 }
 
-fn guard_trusted_config_dir(
-    game_id: Option<&str>,
-    config_dir: &str,
-) -> Result<(), AppInvokeError> {
+fn guard_trusted_config_dir(game_id: Option<&str>, config_dir: &str) -> Result<(), AppInvokeError> {
     let _path = validate_config_dir(config_dir)?;
     if let Some(gid) = game_id {
         validate_config_dir_for_game(gid, config_dir)?;

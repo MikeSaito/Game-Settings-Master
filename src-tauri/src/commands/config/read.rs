@@ -5,10 +5,10 @@ use crate::commands::helpers::{
 use crate::core::app_error::AppInvokeError;
 use crate::core::models::{GameConfig, GameParameter, IniFileData};
 use crate::discovery::platform_hints_for_game;
+use crate::fs_util::ALLOWED_CONFIG_INI_FILES;
 use crate::ini::paths::validate_config_dir;
 use crate::ini::platform::reconcile_config_dir;
 use crate::ini::{parser::ini_to_data, read_ini_file};
-use crate::fs_util::ALLOWED_CONFIG_INI_FILES;
 use crate::scalability::detect_scalability_limits;
 use std::collections::HashMap;
 use std::path::PathBuf;

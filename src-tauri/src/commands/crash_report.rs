@@ -1,6 +1,7 @@
 use crate::core::app_error::AppInvokeError;
 use crate::crash_report::{
-    clear_crash_reports, list_crash_reports, save_crash_report, CrashReportEntry, CrashReportPayload,
+    clear_crash_reports, list_crash_reports, save_crash_report, CrashReportEntry,
+    CrashReportPayload,
 };
 
 #[tauri::command]

@@ -114,8 +114,5 @@ fn override_ini_files_match_allowed_config_list() {
         );
         assert_ne!(file, GAME_USER_SETTINGS_INI);
     }
-    assert_eq!(
-        ALLOWED_CONFIG_INI_FILES.len(),
-        OVERRIDE_INI_FILES.len() + 1
-    );
+    assert_eq!(ALLOWED_CONFIG_INI_FILES.len(), OVERRIDE_INI_FILES.len() + 1);
 }

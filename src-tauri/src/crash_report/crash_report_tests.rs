@@ -1,5 +1,5 @@
-use super::{payload_to_entry, CrashReportKind, CrashReportPayload};
 use super::storage::set_test_crash_reports_root;
+use super::{payload_to_entry, CrashReportKind, CrashReportPayload};
 use crate::crash_report::{clear_crash_reports, list_crash_reports, save_crash_report};
 use tempfile::tempdir;
 
