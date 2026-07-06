@@ -8,7 +8,6 @@ use crate::gpu::{detect_gpu, GpuCapabilities};
 use crate::ini::parser::read_ini_file;
 use crate::scalability::{
     detect_scalability_limits, is_scalability_quality_index, ScalabilityLimits,
-    UE_DEFAULT_SCALABILITY_MAX,
 };
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
@@ -55,14 +54,9 @@ fn collect_semantic_issues(
     ctx: &SemanticValidationContext<'_>,
 ) -> Vec<SemanticIssue> {
     let is_ue4 = ctx.engine_family == Some("ue4");
-    let game_version = ctx
-        .engine_version
-        .and_then(|raw| parse_ue_semver(raw));
+    let game_version = ctx.engine_version.and_then(parse_ue_semver);
     let index = get_or_build_catalog_index(ctx.engine_family);
-    let limits = detect_scalability_limits(
-        ctx.install_dir.map(Path::new),
-        Some(ctx.config_path),
-    );
+    let limits = detect_scalability_limits(ctx.install_dir.map(Path::new), Some(ctx.config_path));
     let gpu = detect_gpu();
     let pending_values = collect_pending_values(&changes.files);
 
@@ -76,12 +70,20 @@ fn collect_semantic_issues(
     ));
     issues.extend(check_combo_rules(&changes.files, &pending_values, &gpu));
     issues.extend(check_sg_r_conflicts(ctx.config_path, changes));
-    issues.extend(check_shipped_gus_removals(ctx.config_path, &changes.removals));
+    issues.extend(check_shipped_gus_removals(
+        ctx.config_path,
+        &changes.removals,
+    ));
     dedupe_issues(issues)
 }
 
-fn gate_apply(issues: Vec<SemanticIssue>, warnings_acknowledged: bool) -> Result<(), AppInvokeError> {
-    let has_errors = issues.iter().any(|issue| issue.severity == IssueSeverity::Error);
+fn gate_apply(
+    issues: Vec<SemanticIssue>,
+    warnings_acknowledged: bool,
+) -> Result<(), AppInvokeError> {
+    let has_errors = issues
+        .iter()
+        .any(|issue| issue.severity == IssueSeverity::Error);
     if has_errors {
         let message = issues
             .iter()
@@ -92,7 +94,9 @@ fn gate_apply(issues: Vec<SemanticIssue>, warnings_acknowledged: bool) -> Result
         return Err(AppError::validation(message));
     }
 
-    let has_warnings = issues.iter().any(|issue| issue.severity == IssueSeverity::Warning);
+    let has_warnings = issues
+        .iter()
+        .any(|issue| issue.severity == IssueSeverity::Warning);
     if has_warnings && !warnings_acknowledged {
         return Err(AppError::validation(crate::i18n::t(
             "Подтвердите предупреждения валидации перед apply",
@@ -471,7 +475,9 @@ fn check_combo_rules(
             issues.push(SemanticIssue {
                 code: "combo_engine_scalability_dup",
                 severity: IssueSeverity::Warning,
-                message_ru: format!("{key} в Engine.ini и Scalability.ini: победит последняя запись"),
+                message_ru: format!(
+                    "{key} в Engine.ini и Scalability.ini: победит последняя запись"
+                ),
                 message_en: format!(
                     "{key} in both Engine.ini and Scalability.ini: last write wins"
                 ),
@@ -595,10 +601,8 @@ mod tests {
             files: HashMap::from([("GameUserSettings.ini".to_string(), sections)]),
             removals: HashMap::new(),
         };
-        let result = validate_custom_changes_semantics(
-            &changes,
-            ctx(dir.path(), Some("ue5"), Some("5.4")),
-        );
+        let result =
+            validate_custom_changes_semantics(&changes, ctx(dir.path(), Some("ue5"), Some("5.4")));
         assert!(result.is_err());
     }
 
@@ -615,10 +619,8 @@ mod tests {
             files: HashMap::from([("Engine.ini".to_string(), sections)]),
             removals: HashMap::new(),
         };
-        let result = validate_custom_changes_semantics(
-            &changes,
-            ctx(dir.path(), Some("ue4"), Some("4.27")),
-        );
+        let result =
+            validate_custom_changes_semantics(&changes, ctx(dir.path(), Some("ue4"), Some("4.27")));
         assert!(result.is_err());
     }
 
@@ -649,11 +651,6 @@ mod tests {
     }
 
     #[test]
-    fn default_sg_max_is_four() {
-        assert_eq!(UE_DEFAULT_SCALABILITY_MAX, 4);
-    }
-
-    #[test]
     fn warns_on_sg_r_conflict_from_disk_ini() {
         invalidate_catalog_cache();
         let dir = TempDir::new().unwrap();
@@ -671,10 +668,8 @@ mod tests {
             files: HashMap::new(),
             removals: HashMap::new(),
         };
-        let result = validate_custom_changes_semantics(
-            &changes,
-            ctx(dir.path(), Some("ue5"), Some("5.4")),
-        );
+        let result =
+            validate_custom_changes_semantics(&changes, ctx(dir.path(), Some("ue5"), Some("5.4")));
         assert!(result.is_err());
     }
 
@@ -751,10 +746,8 @@ mod tests {
                 )]),
             )]),
         };
-        let result = validate_custom_changes_semantics(
-            &changes,
-            ctx(dir.path(), Some("ue5"), Some("5.4")),
-        );
+        let result =
+            validate_custom_changes_semantics(&changes, ctx(dir.path(), Some("ue5"), Some("5.4")));
         assert!(result.is_err());
     }
 }

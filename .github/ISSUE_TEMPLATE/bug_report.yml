@@ -14,7 +14,7 @@ body:
     id: version
     attributes:
       label: Версия GSM / GSM version
-      placeholder: "1.0.4"
+      placeholder: "1.0.5"
     validations:
       required: true
 

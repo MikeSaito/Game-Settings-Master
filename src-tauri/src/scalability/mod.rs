@@ -3,7 +3,7 @@ mod detect;
 mod parse;
 mod types;
 
-pub(crate) use constants::{is_scalability_quality_index, UE_DEFAULT_SCALABILITY_MAX};
+pub(crate) use constants::is_scalability_quality_index;
 pub use detect::detect_scalability_limits;
 pub use types::ScalabilityLimits;
 

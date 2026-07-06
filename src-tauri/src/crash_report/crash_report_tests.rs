@@ -14,14 +14,14 @@ fn save_and_list_crash_reports() {
         stack: Some("stack trace".to_string()),
         component_stack: None,
         url: Some("/library".to_string()),
-        app_version: "1.0.4".to_string(),
+        app_version: "1.0.5".to_string(),
     })
     .expect("save");
 
     let reports = list_crash_reports().expect("list");
     assert_eq!(reports.len(), 1);
     assert_eq!(reports[0].message, "test error");
-    assert_eq!(reports[0].app_version, "1.0.4");
+    assert_eq!(reports[0].app_version, "1.0.5");
 
     clear_crash_reports().expect("clear");
     assert!(list_crash_reports().expect("list after clear").is_empty());

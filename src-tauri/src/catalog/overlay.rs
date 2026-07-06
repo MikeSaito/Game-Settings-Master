@@ -72,6 +72,9 @@ mod tests {
 
     #[test]
     fn epic_subnautica_does_not_match_subnautica2_overlay() {
-        assert!(!game_id_matches_overlay_slug("epic-Subnautica", "subnautica2"));
+        assert!(!game_id_matches_overlay_slug(
+            "epic-Subnautica",
+            "subnautica2"
+        ));
     }
 }

@@ -14,7 +14,7 @@ const sampleReports: CrashReportEntry[] = [
     stack: null,
     component_stack: null,
     url: "/library",
-    app_version: "1.0.4",
+    app_version: "1.0.5",
   },
   {
     id: "b",
@@ -24,7 +24,7 @@ const sampleReports: CrashReportEntry[] = [
     stack: "Error: boom",
     component_stack: "at App",
     url: "/game/test",
-    app_version: "1.0.4",
+    app_version: "1.0.5",
   },
 ];
 

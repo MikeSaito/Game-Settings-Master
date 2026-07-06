@@ -66,7 +66,11 @@ fn validate_custom_changes_rejects_ini_injection() {
 #[test]
 fn validate_custom_changes_semantics_rejects_sg_above_limit() {
     let dir = TempDir::new().unwrap();
-    fs::write(dir.path().join("GameUserSettings.ini"), b"[ScalabilityGroups]\n").unwrap();
+    fs::write(
+        dir.path().join("GameUserSettings.ini"),
+        b"[ScalabilityGroups]\n",
+    )
+    .unwrap();
     let changes = CustomChanges {
         files: HashMap::from([(
             "GameUserSettings.ini".to_string(),

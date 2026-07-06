@@ -88,8 +88,10 @@ pub(crate) fn dedupe_parameters_by_file_key(
 
 #[cfg(test)]
 mod tests {
+    use super::super::catalog_index::{
+        build_catalog_index, invalidate_catalog_cache, load_parameter_catalog_for_family,
+    };
     use super::*;
-    use super::super::catalog_index::{build_catalog_index, invalidate_catalog_cache, load_parameter_catalog_for_family};
     use crate::core::models::GameParameter;
 
     fn param_with_key(key: &str, section: &str, value: &str) -> GameParameter {
@@ -138,18 +140,9 @@ mod tests {
             sn2_param("/script/subnautica2.s2gameusersettings", "Off"),
             sn2_param("/Script/Subnautica2.S2GameUserSettings", "Quality"),
         ];
-        dedupe_parameters_by_file_key(
-            &mut params,
-            &index,
-            None,
-            false,
-            Some("epic-Subnautica2"),
-        );
+        dedupe_parameters_by_file_key(&mut params, &index, None, false, Some("epic-Subnautica2"));
         assert_eq!(params.len(), 1);
-        assert_eq!(
-            params[0].section,
-            "/Script/Subnautica2.S2GameUserSettings"
-        );
+        assert_eq!(params[0].section, "/Script/Subnautica2.S2GameUserSettings");
         assert_eq!(params[0].value, "Quality");
     }
 

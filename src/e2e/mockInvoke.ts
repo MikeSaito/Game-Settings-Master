@@ -237,7 +237,7 @@ export function handleE2eInvoke(cmd: string, args?: Record<string, unknown>): un
             stack: null,
             component_stack: null,
             url: null,
-            app_version: "1.0.4",
+            app_version: "1.0.5",
           };
     case "clear_crash_reports_cmd":
       return null;
