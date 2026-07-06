@@ -18,7 +18,7 @@ export function Input({ label, icon, className, ...props }: InputProps) {
   return (
     <label className="block">
       {label && (
-        <span className="mb-1.5 block text-xs font-medium text-[var(--color-text-muted)]">
+        <span className="mb-1.5 block text-sm font-medium text-[var(--color-text-muted)]">
           {label}
         </span>
       )}
@@ -29,7 +29,7 @@ export function Input({ label, icon, className, ...props }: InputProps) {
           </span>
         )}
         <input
-          className={cn(fieldBase, "h-9 px-3 text-sm", icon ? "pl-9" : undefined, className)}
+          className={cn(fieldBase, "h-10 px-3 text-base", icon ? "pl-9" : undefined, className)}
           {...props}
         />
       </span>
@@ -45,11 +45,11 @@ export function Select({ label, className, children, ...props }: SelectProps) {
   return (
     <label className="block">
       {label && (
-        <span className="mb-1.5 block text-xs font-medium text-[var(--color-text-muted)]">
+        <span className="mb-1.5 block text-sm font-medium text-[var(--color-text-muted)]">
           {label}
         </span>
       )}
-      <select className={cn(fieldBase, "h-9 px-3 text-sm", className)} {...props}>
+      <select className={cn(fieldBase, "h-10 px-3 text-base", className)} {...props}>
         {children}
       </select>
     </label>
@@ -64,11 +64,11 @@ export function Textarea({ label, className, ...props }: TextareaProps) {
   return (
     <label className="block">
       {label && (
-        <span className="mb-1.5 block text-xs font-medium text-[var(--color-text-muted)]">
+        <span className="mb-1.5 block text-sm font-medium text-[var(--color-text-muted)]">
           {label}
         </span>
       )}
-      <textarea className={cn(fieldBase, "min-h-24 px-3 py-2 text-sm", className)} {...props} />
+      <textarea className={cn(fieldBase, "min-h-24 px-3 py-2 text-base", className)} {...props} />
     </label>
   );
 }

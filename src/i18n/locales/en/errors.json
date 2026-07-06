@@ -1,6 +1,6 @@
 {
   "gameRunningTitle": "{{label}} is running",
-  "gameRunningIni": "Close the game before applying — Engine.ini and other files are locked by the process.",
+  "gameRunningIni": "Close the game before applying: Engine.ini and other files are locked by the process.",
   "paramSync": {
     "DLSSQualityMode": "Linked to DLSSMode",
     "ResolutionScaleDLSS": "Linked to DLSS mode",

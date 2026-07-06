@@ -1,6 +1,6 @@
 use crate::commands::helpers::{
     find_profile_by_id, guard_config_dir_for_write, normalize_path_cmp, resolve_write_exe_name,
-    validate_custom_changes_payload,
+    validate_custom_changes_payload, validate_custom_changes_semantics, SemanticValidationContext,
 };
 use crate::core::app_error::{AppError, AppInvokeError};
 use crate::core::models::{ApplyResult, CustomChanges, GameOverride};
@@ -45,6 +45,7 @@ pub fn apply_game_override(
     config_dir: String,
     override_def: GameOverride,
     exe_name: Option<String>,
+    warnings_acknowledged: Option<bool>,
 ) -> Result<ApplyResult, AppInvokeError> {
     crate::profiles::validate_override_bounds(&override_def)?;
     crate::profiles::ensure_known_game_id(&override_def.game_id)?;
@@ -105,6 +106,16 @@ pub fn apply_game_override(
         removals: override_def.removals,
     };
     validate_custom_changes_payload(&changes, &path)?;
+    validate_custom_changes_semantics(
+        &changes,
+        SemanticValidationContext {
+            engine_family: Some(trusted.engine_family.as_str()),
+            engine_version: trusted.engine_version.as_deref(),
+            config_path: &path,
+            install_dir: Some(trusted.install_dir.as_str()),
+            warnings_acknowledged: warnings_acknowledged.unwrap_or(false),
+        },
+    )?;
     let backup_id = crate::backup::backup_all_targets(&targets)?;
     let (width, height) = resolve_apply_resolution(&path);
     let (changed_files, diff) =

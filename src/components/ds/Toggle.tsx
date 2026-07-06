@@ -37,7 +37,7 @@ export function Toggle({ checked, onChange, disabled, className }: Props) {
       />
       <span
         className={cn(
-          "pointer-events-none w-full text-center text-[11px] font-semibold tracking-wide",
+          "pointer-events-none w-full text-center text-xs font-semibold tracking-wide",
           checked ? "pr-6 text-white" : "pl-6 text-muted",
         )}
       >

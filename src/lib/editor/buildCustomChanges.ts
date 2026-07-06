@@ -4,9 +4,10 @@ import { filterParamsByPanel, type EditorPanel } from "@/lib/routing";
 import {
   defaultValueFor,
   isEngineEnabled,
-  isEngineToggleable,
+  isIniMembershipToggleable,
   shouldIncludeInApply,
 } from "./engineParams";
+import { EMPTY_INI_SNAPSHOT } from "./iniSnapshot";
 import { reconcileAllParams } from "./paramDependencies";
 import { paramValuesEqual } from "./paramValueEqual";
 
@@ -53,6 +54,7 @@ export function buildCustomChanges(
   engineEnabled: Set<string>,
   editableCategories: Set<string>,
   panel?: EditorPanel,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): {
   files: Record<string, Record<string, Record<string, string>>>;
   removals: Record<string, Record<string, string[]>>;
@@ -68,12 +70,17 @@ export function buildCustomChanges(
   for (const p of writeParams) {
     const baseline = baselineByCatalogId.get(catalogParamId(p));
     const value =
-      p.value.trim() || (isEngineToggleable(p) ? defaultValueFor(p) : "");
+      p.value.trim() || (isIniMembershipToggleable(p, shippedIniKeys) ? defaultValueFor(p) : "");
     if (!value) continue;
 
-    if (baseline && paramValuesEqual(value, baseline.value)) continue;
+    const addingToIni =
+      isIniMembershipToggleable(p, shippedIniKeys) &&
+      isEngineEnabled(p, engineEnabled, shippedIniKeys) &&
+      baseline != null &&
+      !baseline.present_in_ini;
+    if (baseline && paramValuesEqual(value, baseline.value) && !addingToIni) continue;
     if (!isParamVisible(p, gpu) && !baseline) continue;
-    if (!shouldIncludeInApply(p, engineEnabled)) continue;
+    if (!shouldIncludeInApply(p, engineEnabled, shippedIniKeys)) continue;
     if (!editableCategories.has(p.category)) continue;
 
     setIniValue(files, p.file, sectionKeyFor(p), p.key, value);
@@ -97,8 +104,8 @@ export function buildCustomChanges(
       }
     };
 
-    if (isEngineToggleable(p)) {
-      if (isEngineEnabled(p, engineEnabled)) continue;
+    if (isIniMembershipToggleable(p, shippedIniKeys)) {
+      if (isEngineEnabled(p, engineEnabled, shippedIniKeys)) continue;
       addRemoval();
       continue;
     }

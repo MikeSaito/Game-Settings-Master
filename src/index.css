@@ -3,8 +3,8 @@
 
 :root {
   font-family: var(--font-sans);
-  font-size: calc(14px * var(--app-font-scale, 1));
-  line-height: 1.5;
+  font-size: calc(var(--app-font-base) * var(--app-font-scale, 1));
+  line-height: 1.55;
   font-weight: 400;
   color: var(--color-text);
   background-color: var(--color-bg);

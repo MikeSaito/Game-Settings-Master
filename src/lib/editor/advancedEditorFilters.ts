@@ -3,8 +3,10 @@ import { isGameRenderingKey } from "@/lib/shared/gameRenderingKeyMarkers";
 import {
   ENGINE_CATEGORIES,
   isEngineEnabled,
-  isEngineToggleable,
+  isGusIniExtra,
+  isIniMembershipToggleable,
 } from "./engineParams";
+import { EMPTY_INI_SNAPSHOT } from "./iniSnapshot";
 
 export const ALL_CATEGORY = "All";
 
@@ -136,10 +138,21 @@ export function filterParamsByCategoryAndSearch(
 export function countEngineStats(
   visibleParams: GameParameter[],
   engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): { total: number; on: number; off: number } {
-  const engine = visibleParams.filter((p) => isEngineToggleable(p));
-  const on = engine.filter((p) => isEngineEnabled(p, engineEnabled)).length;
+  const engine = visibleParams.filter((p) => isIniMembershipToggleable(p, shippedIniKeys));
+  const on = engine.filter((p) => isEngineEnabled(p, engineEnabled, shippedIniKeys)).length;
   return { total: engine.length, on, off: engine.length - on };
+}
+
+export function countGusIniStats(
+  visibleParams: GameParameter[],
+  engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
+): { total: number; on: number; off: number } {
+  const extras = visibleParams.filter((p) => isGusIniExtra(p, shippedIniKeys));
+  const on = extras.filter((p) => isEngineEnabled(p, engineEnabled, shippedIniKeys)).length;
+  return { total: extras.length, on, off: extras.length - on };
 }
 
 export function paramRowKey(param: Pick<GameParameter, "file" | "section" | "key">): string {

@@ -1,18 +1,19 @@
 import { AlertTriangle, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorPanel } from "@/lib/routing";
 import { engineWarningAckKey } from "@/lib/routing";
 import { cn } from "@/lib/core";
 import { SegmentControl } from "@/components/ds/SegmentControl";
 
-const PANELS: EditorPanel[] = ["basic", "advanced", "backups"];
+const BASE_PANELS: EditorPanel[] = ["basic", "advanced", "presets", "backups"];
 
 interface Props {
   gameId: string;
   panel: EditorPanel;
   onPanelChange: (panel: EditorPanel) => void;
   engineStats: { total: number; on: number; off: number };
+  showExtraTab?: boolean;
 }
 
 export function EditorModeBar({
@@ -20,9 +21,17 @@ export function EditorModeBar({
   panel,
   onPanelChange,
   engineStats,
+  showExtraTab = false,
 }: Props) {
   const { t } = useTranslation("advanced");
   const [advancedWarningDismissed, setAdvancedWarningDismissed] = useState(false);
+
+  const panels = useMemo(() => {
+    if (showExtraTab || panel === "extra") {
+      return ["basic", "advanced", "extra", "presets", "backups"] as EditorPanel[];
+    }
+    return BASE_PANELS;
+  }, [showExtraTab, panel]);
 
   useEffect(() => {
     try {
@@ -46,35 +55,43 @@ export function EditorModeBar({
       ? t("tabs.basicHint")
       : panel === "advanced"
         ? t("tabs.advancedHint")
-        : t("tabs.backupsHint");
+        : panel === "extra"
+          ? t("tabs.extraHint")
+          : panel === "presets"
+            ? t("tabs.presetsHint")
+            : t("tabs.backupsHint");
   const activeBody =
     panel === "basic"
       ? t("mode.basicBody")
       : panel === "advanced"
         ? t("mode.advancedBody")
-        : t("mode.backupsBody");
+        : panel === "extra"
+          ? t("mode.extraBodyShort")
+          : panel === "presets"
+            ? t("mode.presetsBody")
+            : t("mode.backupsBody");
 
   return (
     <div className="mb-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-soft)]">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <SegmentControl
+        value={panel}
+        onChange={onPanelChange}
+        ariaLabel={t("tabs.aria")}
+        sizeToContent
+        className="w-full max-w-full overflow-x-auto"
+        options={panels.map((value) => ({
+          value,
+          label: t(`tabs.${value}`),
+        }))}
+      />
+
+      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
-          <SegmentControl
-            value={panel}
-            onChange={onPanelChange}
-            ariaLabel={t("tabs.aria")}
-            segmentClassName="min-w-[5.5rem] px-3 sm:min-w-[6.75rem]"
-            options={PANELS.map((value) => ({
-              value,
-              label: t(`tabs.${value}`),
-            }))}
-          />
-          <div className="mt-2">
-            <div className="text-sm font-medium text-[var(--color-text)]">{activeHint}</div>
-            <div className="text-xs text-[var(--color-text-muted)]">{activeBody}</div>
-          </div>
+          <div className="text-sm font-medium text-[var(--color-text)]">{activeHint}</div>
+          <div className="text-xs text-[var(--color-text-muted)]">{activeBody}</div>
         </div>
 
-        {panel !== "backups" && (
+        {panel !== "backups" && panel !== "extra" && panel !== "presets" && (
           <div
             className={cn(
               "min-w-0 rounded-[var(--radius-control)] border px-3 py-2 text-xs sm:max-w-[min(50%,34rem)]",

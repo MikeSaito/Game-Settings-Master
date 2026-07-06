@@ -88,6 +88,8 @@ export function applyCustom(
   removals?: Record<string, Record<string, string[]>>,
   gameId?: string,
   engineFamily?: string,
+  engineVersion?: string | null,
+  warningsAcknowledged?: boolean,
 ): Promise<ApplyResult> {
   return invoke("apply_custom_cmd", {
     configDir,
@@ -95,6 +97,8 @@ export function applyCustom(
     exeName: exeName ?? null,
     gameId: gameId ?? null,
     engineFamily: engineFamily ?? null,
+    engineVersion: engineVersion ?? null,
+    warningsAcknowledged: warningsAcknowledged ?? false,
   });
 }
 
@@ -195,11 +199,13 @@ export function applyGameOverride(
   configDir: string,
   override: GameOverride,
   exeName?: string,
+  warningsAcknowledged?: boolean,
 ): Promise<ApplyResult> {
   return invoke("apply_game_override", {
     configDir,
     overrideDef: override,
     exeName: exeName ?? null,
+    warningsAcknowledged: warningsAcknowledged ?? false,
   });
 }
 

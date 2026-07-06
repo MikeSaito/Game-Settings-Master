@@ -8,12 +8,23 @@ use crate::catalog::types::CatalogIndex;
 static CATALOG_INDEX_CACHE: OnceLock<Mutex<std::collections::HashMap<String, Arc<CatalogIndex>>>> =
     OnceLock::new();
 
+#[cfg(test)]
+static CATALOG_CACHE_TEST_LOCK: Mutex<()> = Mutex::new(());
+
+#[cfg(test)]
+fn catalog_cache_test_lock() -> std::sync::MutexGuard<'static, ()> {
+    CATALOG_CACHE_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+}
+
 fn catalog_cache() -> &'static Mutex<std::collections::HashMap<String, Arc<CatalogIndex>>> {
     CATALOG_INDEX_CACHE.get_or_init(|| Mutex::new(std::collections::HashMap::new()))
 }
 
 #[cfg(test)]
 pub fn invalidate_catalog_cache() {
+    let _lock = catalog_cache_test_lock();
     if let Ok(mut guard) = catalog_cache().lock() {
         guard.clear();
     }
@@ -28,6 +39,9 @@ fn catalog_cache_key(engine_family: Option<&str>) -> &'static str {
 }
 
 pub(crate) fn get_or_build_catalog_index(engine_family: Option<&str>) -> Arc<CatalogIndex> {
+    #[cfg(test)]
+    let _test_lock = catalog_cache_test_lock();
+
     let key = catalog_cache_key(engine_family);
 
     if let Ok(guard) = catalog_cache().lock() {

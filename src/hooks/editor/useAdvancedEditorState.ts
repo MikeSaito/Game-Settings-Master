@@ -16,12 +16,21 @@ import {
   applyParamDependencies,
   analyzeSgEngineConflictGroups,
   buildCustomChanges,
+  buildIniSnapshot,
+  EMPTY_INI_SNAPSHOT,
   collectPendingKeys,
+  comboIssuesForKey,
   defaultValueFor,
   detectSgEngineConflicts,
   initialEngineEnabledKeys,
   resolveConflictKeepSg,
+  validateApplyPlan,
+  validateOverridePlan,
+  mergePanelValidationIssues,
+  validationIssueSignature,
+  hasBlockingErrors,
 } from "@/lib/editor";
+import type { GameOverride } from "@/lib/core";
 import { ENGINE_CATEGORIES } from "@/lib/editor";
 import type { GameParameter, GameProfile } from "@/lib/core";
 
@@ -39,8 +48,15 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     parametersLoading,
     normalizedParameters,
     limits,
+    limitsLoading,
     overrides,
     gpu,
+    gpuLoading,
+    gpuUnavailable,
+    gameConfig,
+    gameConfigLoading,
+    gameConfigFetched,
+    extraIniAvailable,
     paramsDirtyRef,
   } = useEditorQueries(game);
 
@@ -50,6 +66,10 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   const [overrideName, setOverrideNameState] = useState(defaultOverrideName);
   const [message, setMessage] = useState<string>();
   const [applyError, setApplyError] = useState<string>();
+  const [applyWarningsAcknowledged, setApplyWarningsAcknowledged] = useState(false);
+  const [pendingPresetApply, setPendingPresetApply] = useState<GameOverride | null>(null);
+  const [presetApplyWarningsAcknowledged, setPresetApplyWarningsAcknowledged] = useState(false);
+  const [applyingPresetName, setApplyingPresetName] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>(ALL_CATEGORY);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -60,15 +80,36 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     settings.defaultEditorPanel,
   );
 
+  const shippedIniSnapshotGameRef = useRef<string | undefined>(undefined);
+  const shippedIniSnapshotCacheRef = useRef<ReadonlySet<string>>(EMPTY_INI_SNAPSHOT);
+
+  const shippedIniKeys = useMemo(() => {
+    if (!game?.id) {
+      shippedIniSnapshotGameRef.current = undefined;
+      shippedIniSnapshotCacheRef.current = EMPTY_INI_SNAPSHOT;
+      return EMPTY_INI_SNAPSHOT;
+    }
+    if (parametersLoading || normalizedParameters.length === 0) {
+      return shippedIniSnapshotCacheRef.current;
+    }
+    if (shippedIniSnapshotGameRef.current !== game.id) {
+      shippedIniSnapshotGameRef.current = game.id;
+      shippedIniSnapshotCacheRef.current = buildIniSnapshot(normalizedParameters);
+    }
+    return shippedIniSnapshotCacheRef.current;
+  }, [game?.id, normalizedParameters, parametersLoading]);
+
   const { params, setParams, engineEnabled, setEngineEnabled } = useEditorParamDraft(
     normalizedParameters,
     paramsDirtyRef,
+    shippedIniKeys,
   );
 
   const {
     categories,
     filteredParams,
     engineStats,
+    gusIniStats,
     catalogStats,
     editableCategories,
     engineParamId,
@@ -81,6 +122,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     engineEnabled,
     activeCategory,
     parameters,
+    shippedIniKeys,
   });
 
   const setPanelWithCategoryReset = useCallback(
@@ -99,10 +141,13 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   useEffect(() => {
     setMessage(undefined);
     setApplyError(undefined);
+    setApplyWarningsAcknowledged(false);
+    setPendingPresetApply(null);
+    setPresetApplyWarningsAcknowledged(false);
+    setApplyingPresetName(null);
     paramsDirtyRef.current = false;
     overrideNameTouchedRef.current = false;
-    setOverrideNameState(defaultOverrideName);
-  }, [game?.id, defaultOverrideName, paramsDirtyRef]);
+  }, [game?.id, paramsDirtyRef]);
 
   useEffect(() => {
     if (!overrideNameTouchedRef.current) {
@@ -119,6 +164,129 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     }
   }, [categories, activeCategory, panel]);
 
+  useEffect(() => {
+    if (panel !== "extra" || gameConfigLoading || !gameConfigFetched) return;
+    if (!extraIniAvailable) {
+      setPanelWithCategoryReset("basic");
+    }
+  }, [panel, extraIniAvailable, gameConfigLoading, gameConfigFetched, setPanelWithCategoryReset]);
+
+  const validationPlanContext = useMemo(() => {
+    if (!game) return null;
+    return {
+      game,
+      params,
+      parameters,
+      gpu,
+      engineEnabled,
+      limits,
+      limitsPending: limitsLoading,
+      gpuPending: gpuLoading,
+      gpuUnavailable,
+      editableCategories,
+      shippedIniKeys,
+    };
+  }, [
+    game,
+    params,
+    parameters,
+    gpu,
+    engineEnabled,
+    limits,
+    limitsLoading,
+    gpuLoading,
+    gpuUnavailable,
+    editableCategories,
+    shippedIniKeys,
+  ]);
+
+  const validationIssues = useMemo(() => {
+    if (!validationPlanContext) return [];
+    if (panel === "extra" || panel === "backups" || panel === "presets") {
+      return mergePanelValidationIssues(validationPlanContext);
+    }
+    return validateApplyPlan({ ...validationPlanContext, panel });
+  }, [validationPlanContext, panel]);
+
+  const validationIssuesSignature = useMemo(
+    () => validationIssueSignature(validationIssues),
+    [validationIssues],
+  );
+  const prevValidationSignatureRef = useRef("");
+
+  useEffect(() => {
+    if (prevValidationSignatureRef.current === validationIssuesSignature) return;
+    prevValidationSignatureRef.current = validationIssuesSignature;
+    setApplyWarningsAcknowledged(false);
+  }, [validationIssuesSignature]);
+
+  const presetValidationContext = useMemo(() => {
+    if (!game) return null;
+    return {
+      game,
+      params: parameters,
+      gpu,
+      limits,
+      limitsPending: limitsLoading,
+      gpuPending: gpuLoading,
+      gpuUnavailable,
+      engineEnabled: initialEngineEnabledKeys(parameters, shippedIniKeys),
+      shippedIniKeys,
+    };
+  }, [
+    game,
+    parameters,
+    gpu,
+    limits,
+    limitsLoading,
+    gpuLoading,
+    gpuUnavailable,
+    shippedIniKeys,
+  ]);
+
+  const getPresetValidationIssues = useCallback(
+    (override: GameOverride) => {
+      if (!presetValidationContext) return [];
+      return validateOverridePlan(
+        override.files,
+        override.removals,
+        presetValidationContext,
+      );
+    },
+    [presetValidationContext],
+  );
+
+  const presetApplyIssues = useMemo(
+    () => (pendingPresetApply ? getPresetValidationIssues(pendingPresetApply) : []),
+    [pendingPresetApply, getPresetValidationIssues],
+  );
+
+  const presetApplyIssuesSignature = useMemo(
+    () => validationIssueSignature(presetApplyIssues),
+    [presetApplyIssues],
+  );
+  const prevPresetValidationSignatureRef = useRef("");
+
+  useEffect(() => {
+    if (!pendingPresetApply) {
+      prevPresetValidationSignatureRef.current = "";
+      return;
+    }
+    if (prevPresetValidationSignatureRef.current === presetApplyIssuesSignature) return;
+    prevPresetValidationSignatureRef.current = presetApplyIssuesSignature;
+    setPresetApplyWarningsAcknowledged(false);
+  }, [presetApplyIssuesSignature, pendingPresetApply]);
+
+  const comboWarningsByKey = useMemo(() => {
+    const comboOnly = validationIssues.filter((issue) => issue.code.startsWith("combo_"));
+    const map = new Map<string, typeof comboOnly>();
+    for (const param of params) {
+      const related = comboIssuesForKey(comboOnly, param.key);
+      if (related.length > 0) map.set(param.key.toLowerCase(), related);
+    }
+    return map;
+  }, [validationIssues, params]);
+
   const setOverrideName = useCallback((value: string) => {
     overrideNameTouchedRef.current = true;
     setOverrideNameState(value);
@@ -132,13 +300,24 @@ export function useAdvancedEditorState(game: GameProfile | null) {
       engineEnabled,
       editableCategories,
       panel,
+      shippedIniKeys,
     );
     const summary = countPendingChanges(files, removals);
     const pendingKeySet = collectPendingKeys(files, removals);
-    const conflictKeys = detectSgEngineConflicts(params, pendingKeySet, engineEnabled);
-    const conflictGroups = analyzeSgEngineConflictGroups(params, pendingKeySet, engineEnabled);
+    const conflictKeys = detectSgEngineConflicts(
+      params,
+      pendingKeySet,
+      engineEnabled,
+      shippedIniKeys,
+    );
+    const conflictGroups = analyzeSgEngineConflictGroups(
+      params,
+      pendingKeySet,
+      engineEnabled,
+      shippedIniKeys,
+    );
     return { ...summary, conflictKeys, conflictGroups };
-  }, [params, panel, parameters, gpu, engineEnabled, editableCategories]);
+  }, [params, panel, parameters, gpu, engineEnabled, editableCategories, shippedIniKeys]);
 
   const updateParam = useCallback(
     (key: string, section: string, file: string, value: string) => {
@@ -170,7 +349,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
   const discardChanges = () => {
     paramsDirtyRef.current = false;
     setParams(parameters);
-    setEngineEnabled(initialEngineEnabledKeys(parameters));
+    setEngineEnabled(initialEngineEnabledKeys(parameters, shippedIniKeys));
     setApplyError(undefined);
     setMessage(undefined);
   };
@@ -185,6 +364,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
         params,
         parameters,
         engineEnabled,
+        shippedIniKeys,
       );
       setParams(nextParams);
       setEngineEnabled(nextEnabled);
@@ -195,6 +375,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
       params,
       parameters,
       engineEnabled,
+      shippedIniKeys,
       paramsDirtyRef,
       setParams,
       setEngineEnabled,
@@ -216,17 +397,63 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     parameters,
     panel,
     gpu,
+    limits,
+    limitsPending: limitsLoading,
+    gpuPending: gpuLoading,
+    gpuUnavailable,
     engineEnabled,
     editableCategories,
+    shippedIniKeys,
     overrideName,
+    validationIssues,
+    applyWarningsAcknowledged,
     activeGameIdRef,
     setMessage,
     setApplyError,
     onApplied: () => {
       paramsDirtyRef.current = false;
     },
+    onPresetApplied: () => {
+      setPendingPresetApply(null);
+      setPresetApplyWarningsAcknowledged(false);
+      setApplyingPresetName(null);
+    },
+    onPresetApplyStart: (name: string) => setApplyingPresetName(name),
+    onPresetApplyEnd: () => setApplyingPresetName(null),
     t,
   });
+
+  const requestApplyPreset = useCallback(
+    (override: GameOverride) => {
+      if (applyOverrideMutation.isPending) return;
+      setApplyError(undefined);
+      const issues = getPresetValidationIssues(override);
+      const samePending =
+        pendingPresetApply?.game_id === override.game_id &&
+        pendingPresetApply?.name === override.name;
+
+      if (hasBlockingErrors(issues) || issues.some((issue) => issue.severity === "warning")) {
+        if (!samePending) setPresetApplyWarningsAcknowledged(false);
+        setPendingPresetApply(override);
+        return;
+      }
+      applyOverrideMutation.mutate({ override, warningsAcknowledged: false });
+    },
+    [getPresetValidationIssues, applyOverrideMutation, pendingPresetApply],
+  );
+
+  const confirmPendingPresetApply = useCallback(() => {
+    if (!pendingPresetApply) return;
+    applyOverrideMutation.mutate({
+      override: pendingPresetApply,
+      warningsAcknowledged: presetApplyWarningsAcknowledged,
+    });
+  }, [pendingPresetApply, presetApplyWarningsAcknowledged, applyOverrideMutation]);
+
+  const cancelPendingPresetApply = useCallback(() => {
+    setPendingPresetApply(null);
+    setPresetApplyWarningsAcknowledged(false);
+  }, []);
 
   return {
     game,
@@ -251,12 +478,20 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     categories,
     filteredParams,
     engineStats,
+    gusIniStats,
     catalogStats,
     pendingChangesCount: pendingSummary.total,
     pendingChangesBreakdown: pendingSummary.breakdown,
     pendingConflictKeys: pendingSummary.conflictKeys,
     conflictCount: pendingSummary.conflictKeys.size,
     conflictGroups: pendingSummary.conflictGroups,
+    validationIssues,
+    applyWarningsAcknowledged,
+    setApplyWarningsAcknowledged,
+    comboWarningsByKey,
+    gameConfig,
+    gameConfigLoading,
+    extraIniAvailable,
     resolveSgConflict,
     parametersLoading,
     overrideName,
@@ -269,6 +504,15 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     applyOverrideMutation,
     deleteOverrideMutation,
     importOverrideMutation,
+    pendingPresetApply,
+    presetApplyIssues,
+    presetApplyWarningsAcknowledged,
+    setPresetApplyWarningsAcknowledged,
+    requestApplyPreset,
+    confirmPendingPresetApply,
+    cancelPendingPresetApply,
+    applyingPresetName,
+    shippedIniKeys,
     showEngineIniHint: panel === "advanced" && ENGINE_CATEGORIES.has(activeCategory),
   };
 }

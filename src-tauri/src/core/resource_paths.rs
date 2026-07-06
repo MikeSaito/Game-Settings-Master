@@ -39,11 +39,17 @@ pub fn resource_root() -> PathBuf {
 }
 
 fn resolve_subdir(name: &str) -> PathBuf {
+    let src = compile_time_src_root().join(name);
+    // Debug builds: always read catalog/presets from the source tree (avoids stale target/debug copies).
+    #[cfg(debug_assertions)]
+    if src.is_dir() {
+        return src;
+    }
     let bundled = resource_root().join(name);
     if bundled.is_dir() {
         return bundled;
     }
-    compile_time_src_root().join(name)
+    src
 }
 
 pub fn games_dir() -> PathBuf {

@@ -1,4 +1,5 @@
 import type { GameParameter } from "@/lib/core/types";
+import { EMPTY_INI_SNAPSHOT, isIniShippedKey } from "./iniSnapshot";
 
 export const ENGINE_INI = "Engine.ini";
 
@@ -35,10 +36,43 @@ export function isEngineToggleable(p: GameParameter): boolean {
   );
 }
 
-export function initialEngineEnabledKeys(parameters: GameParameter[]): Set<string> {
+/** Known editable GameUserSettings.ini params with add/remove ini toggle. */
+export function isGusIniMembershipToggleable(p: GameParameter): boolean {
+  return (
+    p.file === "GameUserSettings.ini" &&
+    p.known &&
+    p.editable &&
+    p.value_type !== "opaque"
+  );
+}
+
+/** Catalog GameUserSettings key not yet present in the game's ini file. */
+export function isGusIniExtra(
+  p: GameParameter,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
+): boolean {
+  return (
+    isIniMembershipToggleable(p, shippedIniKeys) &&
+    p.file === "GameUserSettings.ini"
+  );
+}
+
+/** Optional add/remove — only keys not shipped with the game on first load. */
+export function isIniMembershipToggleable(
+  p: GameParameter,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
+): boolean {
+  if (isIniShippedKey(p, shippedIniKeys)) return false;
+  return isEngineToggleable(p) || isGusIniMembershipToggleable(p);
+}
+
+export function initialEngineEnabledKeys(
+  parameters: GameParameter[],
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
+): Set<string> {
   const keys = new Set<string>();
   for (const p of parameters) {
-    if (isEngineToggleable(p) && p.present_in_ini) {
+    if (isIniMembershipToggleable(p, shippedIniKeys) && p.present_in_ini) {
       keys.add(engineParamId(p));
     }
   }
@@ -48,8 +82,9 @@ export function initialEngineEnabledKeys(parameters: GameParameter[]): Set<strin
 export function isEngineEnabled(
   p: GameParameter,
   enabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): boolean {
-  if (!isEngineToggleable(p)) return true;
+  if (!isIniMembershipToggleable(p, shippedIniKeys)) return true;
   return enabled.has(engineParamId(p));
 }
 
@@ -57,10 +92,10 @@ export function isEngineEnabled(
 export function shouldIncludeInApply(
   p: GameParameter,
   engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): boolean {
-  if (INI_TOGGLE_FILES.has(p.file)) {
-    if (!isEngineToggleable(p)) return false;
-    return isEngineEnabled(p, engineEnabled);
+  if (isIniMembershipToggleable(p, shippedIniKeys)) {
+    return isEngineEnabled(p, engineEnabled, shippedIniKeys);
   }
   return p.editable && p.value_type !== "opaque";
 }

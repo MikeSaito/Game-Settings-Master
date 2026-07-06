@@ -1,12 +1,15 @@
 import { Download, Trash2, Upload, Zap } from "lucide-react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { ApplyValidationPanel } from "@/components/advanced/ApplyValidationPanel";
 import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
+import { canApplyPlan } from "@/lib/editor/validation";
 import type { GameOverride } from "@/lib/core";
 import { Button } from "@/components/ds/Button";
 
 interface Props {
   state: AdvancedEditorState;
+  variant?: "embedded" | "page";
 }
 
 function downloadPresetJson(override: GameOverride) {
@@ -37,9 +40,14 @@ function parseImportedPreset(raw: string, gameId: string): GameOverride | null {
   };
 }
 
-export function SavedPresetsPanel({ state }: Props) {
+export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
   const { t } = useTranslation("advanced");
   const importRef = useRef<HTMLInputElement>(null);
+  const pending = state.pendingPresetApply;
+  const presetGate = canApplyPlan(
+    state.presetApplyIssues,
+    state.presetApplyWarningsAcknowledged,
+  );
 
   const onImportFile = async (file: File) => {
     if (!state.game?.id) return;
@@ -57,7 +65,13 @@ export function SavedPresetsPanel({ state }: Props) {
   };
 
   return (
-    <section className="mt-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
+    <section
+      className={
+        variant === "page"
+          ? "rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
+          : "mt-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
+      }
+    >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-[var(--color-text)]">{t("savedPresets")}</h3>
         <div className="flex gap-2">
@@ -83,6 +97,39 @@ export function SavedPresetsPanel({ state }: Props) {
           />
         </div>
       </div>
+
+      {pending && (
+        <div className="mb-3 space-y-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-3">
+          <div className="text-sm font-medium text-[var(--color-text)]">
+            {t("presets.applyConfirmTitle", { name: pending.name })}
+          </div>
+          <ApplyValidationPanel
+            issues={state.presetApplyIssues}
+            warningsAcknowledged={state.presetApplyWarningsAcknowledged}
+            onWarningsAcknowledgedChange={state.setPresetApplyWarningsAcknowledged}
+          />
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="ghost"
+              className="!py-1 !px-2 text-xs"
+              onClick={state.cancelPendingPresetApply}
+            >
+              {t("presets.applyCancel")}
+            </Button>
+            <Button
+              variant="primary"
+              className="!py-1 !px-2 text-xs"
+              icon={<Zap size={14} />}
+              onClick={state.confirmPendingPresetApply}
+              disabled={!presetGate.allowed || state.gameRunning}
+              loading={state.applyOverrideMutation.isPending}
+            >
+              {t("presets.applyConfirm")}
+            </Button>
+          </div>
+        </div>
+      )}
+
       <ul className="space-y-1.5">
         {state.overrides.length === 0 && (
           <li className="px-1 py-2 text-xs text-[var(--color-text-muted)]">{t("presets.empty")}</li>
@@ -109,9 +156,13 @@ export function SavedPresetsPanel({ state }: Props) {
                 variant="secondary"
                 className="!py-1 !px-2 text-xs"
                 icon={<Zap size={14} />}
-                onClick={() => state.applyOverrideMutation.mutate(override)}
-                disabled={state.gameRunning}
-                loading={state.applyOverrideMutation.isPending}
+                onClick={() => state.requestApplyPreset(override)}
+                disabled={
+                  state.gameRunning ||
+                  state.applyOverrideMutation.isPending ||
+                  (pending != null && pending.name !== override.name)
+                }
+                loading={state.applyingPresetName === override.name}
               >
                 {t("apply")}
               </Button>

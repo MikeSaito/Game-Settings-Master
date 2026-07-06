@@ -3,9 +3,13 @@ mod exe;
 mod guard;
 mod paths;
 mod profile;
+mod semantic_validation;
 mod trust;
 
 pub(crate) use custom_changes::validate_custom_changes_payload;
+pub(crate) use semantic_validation::{
+    validate_custom_changes_semantics, SemanticValidationContext,
+};
 pub(crate) use exe::{resolve_trusted_close_exe_name, resolve_write_exe_name};
 pub(crate) use guard::{
     ensure_all_targets_writable, guard_config_dir_for_read, guard_config_dir_for_write,

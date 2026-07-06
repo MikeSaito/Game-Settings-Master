@@ -26,7 +26,7 @@
     "Other": "Other"
   },
   "noGame": {
-    "title": "Editor — select a game",
+    "title": "Editor: select a game",
     "desc": "Open the library and select a game with a config to view and edit its parameters."
   },
   "noConfig": {
@@ -39,10 +39,14 @@
     "aria": "Editor mode",
     "basic": "Basic",
     "advanced": "Advanced",
+    "extra": "Extra ini",
     "backups": "Backups",
-    "basicHint": "GameUserSettings — like the in-game menu",
-    "advancedHint": "Engine.ini and CVars — for experienced users",
+    "presets": "Presets",
+    "basicHint": "GameUserSettings: like the in-game menu",
+    "advancedHint": "Engine.ini and CVars: for experienced users",
     "backupsHint": "Ini snapshots before apply and rollback",
+    "extraHint": "Input.ini and DeviceProfiles.ini: read-only",
+    "presetsHint": "Saved setting bundles",
     "scalability": "Basic",
     "engine": "Advanced",
     "engineBadge": "Expert"
@@ -51,9 +55,14 @@
     "basicTitle": "Basic settings",
     "advancedTitle": "Advanced settings",
     "backupsTitle": "Backups",
-    "basicBody": "Settings like in the game — resolution, quality, sg.*. Writes only to GameUserSettings.ini.",
+    "extraTitle": "Extra ini files",
+    "presetsTitle": "Saved presets",
+    "basicBody": "“In game file” keys were in ini when you opened the game: edit values only, not removable. Catalog extras use Add/Remove from ini.",
     "advancedBody": "Fine engine tuning. May create or change Engine.ini / Scalability.ini. For experienced users.",
     "backupsBody": "Automatic ini snapshots stored locally by the app. Restore or reset to a clean config.",
+    "extraBody": "Input.ini and DeviceProfiles.ini from the game config folder. Read-only: editing via GSM is not supported yet.",
+    "presetsBody": "Presets saved from the editor. Import, export, apply to the game config, and delete.",
+    "extraBodyShort": "Input.ini / DeviceProfiles.ini: browse and search.",
     "basicSafe": "GameUserSettings.ini only",
     "advancedFiles": "Engine.ini / Scalability.ini"
   },
@@ -86,8 +95,13 @@
     "title": "Ini parameters (Engine / Scalability / Game)",
     "addToIni": "Add to ini",
     "removeFromIni": "Remove from ini",
-    "before": "Use “Add to ini” and “Remove from ini” to control whether a line exists in the file — the key is written or removed after “Apply”. Currently in ini: {{on}} of {{total}}.",
+    "before": "Use “Add to ini” and “Remove from ini” to control whether a line exists in the file: the key is written or removed after “Apply”. Currently in ini: {{on}} of {{total}}.",
     "short": "In ini: {{on}} of {{total}}."
+  },
+  "gusIni": {
+    "short": "Extra in ini: {{on}}/{{total}}",
+    "notInIni": "not in ini",
+    "willAdd": "will be added"
   },
   "categoryNav": "Parameter categories",
   "loadingParams": "Loading parameters…",
@@ -118,7 +132,7 @@
   "gameRunningTitle": "Game is running",
   "gameRunningInline": "Applying changes is disabled while the game is running.",
   "errors": {
-    "noChanges": "No changes — enable Engine.ini parameters or change values."
+    "noChanges": "No changes: enable Engine.ini parameters or change values."
   },
   "applied": "Applied {{count}} edits · backup {{backupId}}. Restart the game.",
   "presetSaved": "Preset “{{name}}” saved.",
@@ -171,6 +185,7 @@
   "resetTo": "↺ {{label}}: {{value}}",
   "currentOption": "{{value}} (current)",
   "inIni": "In ini",
+  "iniShipped": "in game file",
   "notInIni": "Not in ini",
   "service": "Service",
   "conflict": {
@@ -185,6 +200,14 @@
     "resolved": "Removed conflicting r.* overrides; {{sg}} unchanged. Apply to write ini."
   },
   "inPractice": "In practice: ",
+  "detailPane": {
+    "hint": "Hover a parameter in the list on the left: its description will appear on the right."
+  },
+  "valueDemo": {
+    "title": "What it looks like",
+    "frameGenOn": "Interpolated frames",
+    "frameGenOff": "Real frames only"
+  },
   "recommendedValues": "Recommended values: ",
   "tierHintLabel": "UE preset tier values",
   "inGameMenu": "Look in the game menu: ",
@@ -217,6 +240,43 @@
     "delete": "Delete",
     "importInvalid": "Could not read preset file (.uesm-preset.json).",
     "imported": "Preset “{{name}}” imported.",
-    "empty": "No saved presets yet — save current edits or import a JSON file."
+    "empty": "No saved presets yet: save current edits or import a JSON file.",
+    "applyConfirmTitle": "Apply preset “{{name}}”",
+    "applyConfirm": "Apply preset",
+    "applyCancel": "Cancel"
+  },
+  "validation": {
+    "errorsTitle": "Fix before apply",
+    "warningsTitle": "Warnings",
+    "acknowledgeWarnings": "I understand the risks: apply with warnings",
+    "applyBlocked": "Validation errors: apply is blocked.",
+    "confirmWarnings": "Acknowledge warnings below to apply.",
+    "versionMismatch": "{{key}} is not available in UE {{version}}",
+    "sgExceedsLimit": "{{key}}={{value}} exceeds sg limit (max {{max}})",
+    "limitsPending": "Scalability limits are still loading: wait before applying",
+    "gpuPending": "GPU info is still loading: wait before applying Ray Tracing changes",
+    "sgRConflict": "sg/r conflict: {{sg}} overlaps manual r.* overrides",
+    "valueBelowMin": "{{key}}={{value}} is below minimum {{min}}",
+    "valueAboveMax": "{{key}}={{value}} is above maximum {{max}}",
+    "shippedKeyRemoval": "{{key}} cannot be removed: it was in the game ini when you opened the editor",
+    "combo": {
+      "rtLowShadows": "Ray Tracing enabled with low sg.ShadowQuality ({{shadows}}): artifacts or FPS drops possible",
+      "rtNoHardware": "Ray Tracing enabled but GPU does not support RT in UE",
+      "rtGpuUnknown": "Could not detect GPU: Ray Tracing may not work on your graphics card",
+      "engineScalabilityDup": "{{key}} in both Engine.ini and Scalability.ini: last write wins",
+      "streamingTexture": "Large r.Streaming.PoolSize ({{pool}}) with low sg.TextureQuality ({{texture}}): VRAM pressure"
+    }
+  },
+  "extra": {
+    "loading": "Loading ini…",
+    "emptyTitle": "No Input.ini / DeviceProfiles.ini",
+    "emptyDesc": "These files were not found in the game config folder.",
+    "search": "Search extra ini",
+    "searchPlaceholder": "Key, section, value…",
+    "colFile": "File",
+    "colSection": "Section",
+    "noSearch": "No matches",
+    "noRows": "Files are empty",
+    "readOnlyHint": "Read-only. Changes to these files are not supported in GSM yet."
   }
 }

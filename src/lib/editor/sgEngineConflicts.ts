@@ -2,8 +2,10 @@ import {
   engineParamId,
   isEngineEnabled,
   isEngineToggleable,
+  isIniMembershipToggleable,
   paramId,
 } from "./engineParams";
+import { EMPTY_INI_SNAPSHOT } from "./iniSnapshot";
 import type { GameParameter } from "@/lib/core/types";
 
 const ENGINE_INI_FILES = new Set(["Engine.ini", "Scalability.ini", "Game.ini"]);
@@ -105,13 +107,16 @@ function isREngineOverride(
   param: GameParameter,
   pendingKeys: Set<string>,
   engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string>,
 ): boolean {
   const key = param.key.toLowerCase();
   if (!key.startsWith("r.")) return false;
   if (!ENGINE_INI_FILES.has(param.file)) return false;
   if (pendingKeys.has(key)) return true;
   if (isEngineToggleable(param)) {
-    return isEngineEnabled(param, engineEnabled) && param.present_in_ini;
+    return (
+      isEngineEnabled(param, engineEnabled, shippedIniKeys) && param.present_in_ini
+    );
   }
   return param.present_in_ini && param.value.trim() !== "";
 }
@@ -161,6 +166,7 @@ export function analyzeSgEngineConflictGroups(
   params: GameParameter[],
   pendingKeys: Set<string>,
   engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): SgEngineConflictGroup[] {
   const byKey = paramsByKey(params);
   const groups: SgEngineConflictGroup[] = [];
@@ -179,7 +185,9 @@ export function analyzeSgEngineConflictGroups(
     const conflictingRParams: GameParameter[] = [];
     for (const rKey of related) {
       for (const rParam of byKey.get(rKey) ?? []) {
-        if (!isREngineOverride(rParam, pendingKeys, engineEnabled)) continue;
+        if (!isREngineOverride(rParam, pendingKeys, engineEnabled, shippedIniKeys)) {
+          continue;
+        }
         if (!conflictingRParams.some((p) => paramId(p) === paramId(rParam))) {
           conflictingRParams.push(rParam);
         }
@@ -213,6 +221,7 @@ export function resolveConflictKeepSg(
   params: GameParameter[],
   parameters: GameParameter[],
   engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): { params: GameParameter[]; engineEnabled: Set<string> } {
   const baselineByCatalogId = new Map(
     parameters.map((p) => [catalogParamId(p), p]),
@@ -221,14 +230,14 @@ export function resolveConflictKeepSg(
   const targetIds = new Set(group.conflictingRParams.map((p) => paramId(p)));
 
   for (const rParam of group.conflictingRParams) {
-    if (isEngineToggleable(rParam)) {
+    if (isIniMembershipToggleable(rParam, shippedIniKeys)) {
       nextEnabled.delete(engineParamId(rParam));
     }
   }
 
   const nextParams = params.map((p) => {
     if (!targetIds.has(paramId(p))) return p;
-    if (isEngineToggleable(p)) {
+    if (isIniMembershipToggleable(p, shippedIniKeys)) {
       const baseline = baselineByCatalogId.get(catalogParamId(p));
       if (!baseline) return p;
       return { ...p, value: baseline.value };
@@ -246,10 +255,16 @@ export function detectSgEngineConflicts(
   params: GameParameter[],
   pendingKeys: Set<string>,
   engineEnabled: Set<string>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ): Set<string> {
   const conflicts = new Set<string>();
 
-  for (const group of analyzeSgEngineConflictGroups(params, pendingKeys, engineEnabled)) {
+  for (const group of analyzeSgEngineConflictGroups(
+    params,
+    pendingKeys,
+    engineEnabled,
+    shippedIniKeys,
+  )) {
     conflicts.add(group.sgKey);
     for (const rParam of group.conflictingRParams) {
       conflicts.add(rParam.key.toLowerCase());

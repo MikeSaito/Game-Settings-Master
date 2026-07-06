@@ -148,12 +148,6 @@ function EditorFrame({
   game: GameProfile;
 }) {
   const { t } = useTranslation("advanced");
-  const pageTitle =
-    panel === "basic"
-      ? t("mode.basicTitle")
-      : panel === "advanced"
-        ? t("mode.advancedTitle")
-        : t("mode.backupsTitle");
   const knownCount = parameters.filter((p) => p.known).length;
   const categories = panel === "basic" ? screenshotCategoriesBasic : screenshotCategoriesAdvanced;
   const activeCategory = panel === "basic" ? "Scalability" : "Rendering";
@@ -181,10 +175,8 @@ function EditorFrame({
               />
               <section className="min-w-0 flex-1">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <h2 className="text-lg font-semibold text-[var(--color-text)]">{pageTitle}</h2>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      <Badge tone="info">
+                  <div className="flex flex-wrap gap-1.5">
+                    <Badge tone="info">
                         {game.engine_version
                           ? t("paramsForEngine", {
                               count: CATALOG_TOTAL,
@@ -201,7 +193,6 @@ function EditorFrame({
                           {t("engineIni.short", { on: 38, total: 142 })}
                         </Badge>
                       )}
-                    </div>
                   </div>
                 </div>
                 <ParameterList

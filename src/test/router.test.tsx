@@ -186,6 +186,7 @@ describe("router integration", () => {
     );
 
     expect(screen.getByRole("tab", { name: /backups|бекапы/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /presets|пресеты/i })).toBeInTheDocument();
   });
 
 });

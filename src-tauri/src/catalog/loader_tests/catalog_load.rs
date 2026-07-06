@@ -37,6 +37,7 @@ fn file_key_fallback_matches_engine_cvar() {
         "r.ViewDistanceScale",
         None,
         false,
+        None,
     );
     assert!(matched.is_some());
 }
@@ -52,8 +53,74 @@ fn by_key_matches_cvar_in_different_section() {
         "r.ViewDistanceScale",
         None,
         false,
+        None,
     );
     assert!(matched.is_some());
+}
+
+#[test]
+fn game_overlay_does_not_shadow_key_hints() {
+    let catalog = load_parameter_catalog_for_family(None);
+    let index = build_catalog_index(catalog, false);
+    let matched = lookup_entry(
+        &index,
+        "GameUserSettings.ini",
+        "/Script/ExampleGame.ExampleSettings",
+        "DLSSMode",
+        None,
+        false,
+        None,
+    );
+    assert!(
+        matches!(matched, Some(crate::catalog::types::CatalogMatch::Hint(_))),
+        "generic GUS key must use key_hints, not game overlay by_key"
+    );
+}
+
+#[test]
+fn game_overlay_entries_carry_slug_from_filename() {
+    let catalog = load_parameter_catalog_for_family(None);
+    assert!(
+        catalog
+            .iter()
+            .any(|e| e.key == "DLSSMode" && e.overlay_slug.as_deref() == Some("subnautica2")),
+        "subnautica2.json entries must be tagged with overlay slug"
+    );
+}
+
+#[test]
+fn game_overlay_lookup_requires_matching_game_id() {
+    let catalog = load_parameter_catalog_for_family(None);
+    let index = build_catalog_index(catalog, false);
+    let section = "/script/subnautica2.s2gameusersettings";
+
+    let generic = lookup_entry(
+        &index,
+        "GameUserSettings.ini",
+        section,
+        "DLSSMode",
+        None,
+        false,
+        None,
+    );
+    assert!(
+        !matches!(generic, Some(crate::catalog::types::CatalogMatch::Entry(_))),
+        "overlay entry must not match without game_id"
+    );
+
+    let matched = lookup_entry(
+        &index,
+        "GameUserSettings.ini",
+        section,
+        "DLSSMode",
+        None,
+        false,
+        Some("epic-Subnautica2"),
+    );
+    assert!(
+        matches!(matched, Some(crate::catalog::types::CatalogMatch::Entry(_))),
+        "overlay entry must match epic-Subnautica2"
+    );
 }
 
 #[test]

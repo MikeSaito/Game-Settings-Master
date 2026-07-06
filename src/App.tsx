@@ -8,9 +8,11 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { UpdateGate } from "@/components/app/UpdateGate";
 import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { RouteLoading } from "@/components/app/RouteLoading";
+import { EmptyState } from "@/components/ds/Feedback";
 import { useCrashReporting } from "@/hooks/app/useCrashReporting";
 import { AppShell } from "@/components/layout/AppShell";
 import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
@@ -27,6 +29,7 @@ import {
   tabFromPathname,
 } from "@/lib/routing";
 import { queryClient, type GameProfile } from "@/lib/core";
+import { Gamepad2 } from "lucide-react";
 
 const AdvancedEditor = lazy(() =>
   import("@/pages/AdvancedEditor").then((module) => ({
@@ -39,19 +42,35 @@ const GameLibrary = lazy(() =>
   })),
 );
 
-function GameEditorPage({
+export function GameEditorPage({
   games,
   gamesLoading,
 }: {
   games: GameProfile[];
   gamesLoading: boolean;
 }) {
+  const { t } = useTranslation("library");
+  const navigate = useNavigate();
   const { gameId = "" } = useParams();
   const id = decodeURIComponent(gameId);
   const game = games.find((g) => g.id === id) ?? null;
+
+  useEffect(() => {
+    if (!gamesLoading && games.length > 0 && !game) {
+      navigate(libraryPath(), { replace: true });
+    }
+  }, [game, games.length, gamesLoading, navigate]);
+
   if (!game) {
     if (gamesLoading) return <RouteLoading />;
-    return null;
+    return (
+      <EmptyState
+        icon={Gamepad2}
+        title={t("gameNotFound.title")}
+        description={t("gameNotFound.desc")}
+        className="py-16"
+      />
+    );
   }
   return <AdvancedEditor game={game} />;
 }

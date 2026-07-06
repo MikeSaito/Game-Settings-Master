@@ -26,7 +26,7 @@ export function Alert({
   className?: string;
 }) {
   return (
-    <div className={cn("flex gap-2 rounded-[var(--radius-control)] border px-3 py-2 text-sm", tones[tone], className)}>
+    <div className={cn("flex gap-2 rounded-[var(--radius-control)] border px-3 py-2.5 text-base", tones[tone], className)}>
       <Icon size={16} className="mt-0.5 shrink-0" />
       <div className="min-w-0">
         {title && <div className="font-semibold text-[var(--color-text)]">{title}</div>}
@@ -58,7 +58,7 @@ export function EmptyState({
       </div>
       <h2 className="text-base font-semibold text-[var(--color-text)]">{title}</h2>
       {description && (
-        <p className="mt-2 max-w-md text-sm text-[var(--color-text-muted)]">{description}</p>
+        <p className="mt-2 max-w-md text-base text-[var(--color-text-muted)]">{description}</p>
       )}
       {(primaryAction || secondaryAction) && (
         <div className="mt-5 flex flex-wrap justify-center gap-2">

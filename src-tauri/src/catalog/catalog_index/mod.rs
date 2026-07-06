@@ -2,6 +2,7 @@ mod build;
 mod cache;
 mod load;
 mod lookup;
+mod loose_match;
 
 pub(crate) use build::catalog_id;
 pub(crate) use cache::get_or_build_catalog_index;

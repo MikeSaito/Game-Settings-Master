@@ -3,6 +3,8 @@ import {
   ALL_CATEGORY,
   buildCategoryList,
   countEngineStats,
+  countGusIniStats,
+  EMPTY_INI_SNAPSHOT,
   engineParamId,
   filterParamsByCategory,
   filterParamsBySearch,
@@ -37,11 +39,13 @@ interface FilterOptions {
   filterMode: EditorFilterMode;
   deferredSearch: string;
   gpu: GpuCapabilities | undefined;
+  shippedIniKeys: ReadonlySet<string>;
 }
 
 export function useEditorParamDraft(
   normalizedParameters: GameParameter[],
   paramsDirtyRef: MutableRefObject<boolean>,
+  shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
 ) {
   const [params, setParams] = useState<GameParameter[]>([]);
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
@@ -54,7 +58,7 @@ export function useEditorParamDraft(
     );
 
     setEngineEnabled((current) => {
-      const next = initialEngineEnabledKeys(normalizedParameters);
+      const next = initialEngineEnabledKeys(normalizedParameters, shippedIniKeys);
       if (
         current.size === next.size &&
         [...current].every((key) => next.has(key))
@@ -63,7 +67,7 @@ export function useEditorParamDraft(
       }
       return next;
     });
-  }, [normalizedParameters, paramsDirtyRef]);
+  }, [normalizedParameters, paramsDirtyRef, shippedIniKeys]);
 
   return { params, setParams, engineEnabled, setEngineEnabled };
 }
@@ -77,6 +81,7 @@ export function useEditorFilteredParams({
   engineEnabled,
   activeCategory,
   parameters,
+  shippedIniKeys,
 }: FilterOptions & {
   params: GameParameter[];
   engineEnabled: Set<string>;
@@ -121,8 +126,13 @@ export function useEditorFilteredParams({
   );
 
   const engineStats = useMemo(
-    () => countEngineStats(panelParams, engineEnabled),
-    [panelParams, engineEnabled],
+    () => countEngineStats(panelParams, engineEnabled, shippedIniKeys),
+    [panelParams, engineEnabled, shippedIniKeys],
+  );
+
+  const gusIniStats = useMemo(
+    () => countGusIniStats(panelParams, engineEnabled, shippedIniKeys),
+    [panelParams, engineEnabled, shippedIniKeys],
   );
 
   const catalogStats = useMemo(() => {
@@ -144,6 +154,7 @@ export function useEditorFilteredParams({
     categories,
     filteredParams,
     engineStats,
+    gusIniStats,
     catalogStats,
     editableCategories,
     engineParamId,

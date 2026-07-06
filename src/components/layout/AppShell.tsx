@@ -18,6 +18,7 @@ export function AppShell({ selectedGame, children }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const tab = tabFromPathname(location.pathname);
   const showGameChrome = tab !== "library" && !!selectedGame;
+  const isEditorWorkspace = tab === "advanced" && !!selectedGame;
 
   const closeSettings = () => {
     setSettingsOpen(false);
@@ -31,8 +32,22 @@ export function AppShell({ selectedGame, children }: Props) {
           <GameContextBar game={selectedGame} />
         </header>
       )}
-      <div className="relative z-0 min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <div className="mx-auto max-w-[1400px] px-4 py-4">{children}</div>
+      <div
+        className={
+          isEditorWorkspace
+            ? "relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden"
+            : "relative z-0 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        }
+      >
+        <div
+          className={
+            isEditorWorkspace
+              ? "mx-auto flex min-h-0 w-full flex-1 flex-col px-4 py-3"
+              : "mx-auto max-w-[1400px] px-4 py-4"
+          }
+        >
+          {children}
+        </div>
         <SettingsPanel open={settingsOpen} onClose={closeSettings} scoped />
       </div>
     </>

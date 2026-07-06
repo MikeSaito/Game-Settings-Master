@@ -50,7 +50,7 @@ export function EditorSidebar({
   }, [onSearchChange, search]);
 
   return (
-    <Panel className="w-60 shrink-0 self-start overflow-hidden p-3 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-11rem)]">
+    <Panel className="flex h-full min-h-0 w-60 shrink-0 flex-col overflow-hidden p-3">
       <div className="space-y-3">
         <Input
           id="advanced-search"
@@ -68,11 +68,11 @@ export function EditorSidebar({
             label: t(`filter.${mode}`),
           }))}
           className="w-full flex-col gap-1"
-          segmentClassName="w-full whitespace-normal px-2 py-1.5 text-[11px] leading-tight"
+          segmentClassName="w-full whitespace-normal px-2 py-1.5 text-xs leading-tight"
         />
       </div>
 
-      <nav className="mt-3 h-[calc(100%-120px)] overflow-y-auto pr-1" aria-label={t("categoryNav")}>
+      <nav className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1" aria-label={t("categoryNav")}>
         {categories.map(({ cat, count }) => {
           const active = activeCategory === cat;
           return (
@@ -88,7 +88,7 @@ export function EditorSidebar({
               )}
             >
               <span className="truncate">{t(`category.${cat}`, { defaultValue: cat })}</span>
-              <span className="ml-2 rounded bg-[var(--color-bg)] px-1.5 py-0.5 font-mono text-[11px] text-[var(--color-text-faint)]">
+              <span className="ml-2 rounded bg-[var(--color-bg)] px-1.5 py-0.5 font-mono text-xs text-[var(--color-text-faint)]">
                 {count}
               </span>
             </button>

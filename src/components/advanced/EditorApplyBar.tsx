@@ -1,6 +1,7 @@
 import { Save, Trash2, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
+import { canApplyPlan } from "@/lib/editor/validation";
 import { Button } from "@/components/ds/Button";
 import { Input } from "@/components/ds/Field";
 
@@ -20,18 +21,31 @@ export function EditorApplyBar({ state }: Props) {
     breakdown.engine > 0 ? t("changeBreakdown.engine", { count: breakdown.engine }) : null,
   ].filter(Boolean);
 
+  const { blockingErrors, needsWarningAck, allowed: validationAllowed } = canApplyPlan(
+    state.validationIssues,
+    state.applyWarningsAcknowledged,
+  );
+  const applyBlocked = state.gameRunning || !hasChanges || !validationAllowed;
+  const saveBlocked = state.gameRunning || !hasChanges || blockingErrors;
+
   return (
-    <div className="sticky bottom-3 z-10 mt-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-[var(--shadow-panel)]">
+    <div className="mt-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-[var(--shadow-panel)]">
       <div className="flex flex-wrap items-center gap-2">
         <div className="min-w-[160px] flex-1">
-          <div className="text-xs font-semibold text-[var(--color-text)]">
+          <div className="text-sm font-semibold text-[var(--color-text)]">
             {t("changesCount", { count: state.pendingChangesCount })}
           </div>
           {parts.length > 0 && (
-            <div className="text-xs text-[var(--color-text-muted)]">{parts.join(" · ")}</div>
+            <div className="text-sm text-[var(--color-text-muted)]">{parts.join(" · ")}</div>
+          )}
+          {blockingErrors && (
+            <div className="text-sm text-[var(--color-danger)]">{t("validation.applyBlocked")}</div>
+          )}
+          {needsWarningAck && (
+            <div className="text-sm text-[var(--color-warning)]">{t("validation.confirmWarnings")}</div>
           )}
           {state.gameRunning && (
-            <div className="text-xs text-[var(--color-warning)]">{t("gameRunningInline")}</div>
+            <div className="text-sm text-[var(--color-warning)]">{t("gameRunningInline")}</div>
           )}
         </div>
         <div className="w-48">
@@ -54,7 +68,8 @@ export function EditorApplyBar({ state }: Props) {
           icon={<Save size={15} />}
           onClick={() => state.saveOverrideMutation.mutate()}
           loading={state.saveOverrideMutation.isPending}
-          disabled={!hasChanges}
+          disabled={saveBlocked}
+          title={blockingErrors ? t("validation.applyBlocked") : undefined}
         >
           {t("savePreset")}
         </Button>
@@ -63,7 +78,14 @@ export function EditorApplyBar({ state }: Props) {
           icon={<Zap size={15} />}
           onClick={() => state.applyCustomMutation.mutate()}
           loading={state.applyCustomMutation.isPending}
-          disabled={state.gameRunning || !hasChanges}
+          disabled={applyBlocked}
+          title={
+            blockingErrors
+              ? t("validation.applyBlocked")
+              : needsWarningAck
+                ? t("validation.confirmWarnings")
+                : undefined
+          }
         >
           {applyLabel}
         </Button>

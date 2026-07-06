@@ -1,4 +1,5 @@
 use crate::catalog::humanize::{is_hidden_ue_manual_key, is_ue5_only_catalog_key};
+use crate::catalog::overlay::overlay_slug_from_catalog_filename;
 use crate::catalog::types::{
     parse_reference_index_json, KeyHintEntry, ParameterCatalogEntry, ReferenceEntry,
 };
@@ -48,7 +49,13 @@ fn load_bundled_parameter_catalog(is_ue4: bool) -> Vec<ParameterCatalogEntry> {
             if !should_load_catalog_file(name, is_ue4) {
                 continue;
             }
-            entries.extend(filter_catalog_entries(parse_catalog_file(&path), is_ue4));
+            let overlay_slug = overlay_slug_from_catalog_filename(name);
+            for mut entry in filter_catalog_entries(parse_catalog_file(&path), is_ue4) {
+                if overlay_slug.is_some() {
+                    entry.overlay_slug = overlay_slug.clone();
+                }
+                entries.push(entry);
+            }
         }
     }
 

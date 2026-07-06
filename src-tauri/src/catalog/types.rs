@@ -53,6 +53,9 @@ pub struct ParameterCatalogEntry {
     pub recommended: Option<String>,
     #[serde(default)]
     pub catalog_recommended: bool,
+    /// Set when loaded from a per-game overlay JSON (e.g. `subnautica2.json`). Not serialized.
+    #[serde(default, skip)]
+    pub overlay_slug: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]

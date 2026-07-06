@@ -25,6 +25,11 @@ export const OVERRIDE_INI_FILES = [
 export type ConfigIniFile = (typeof CONFIG_INI_FILES)[number];
 export type OverrideIniFile = (typeof OVERRIDE_INI_FILES)[number];
 
+/** Read-only ini files shown on the Extra tab (not in the parameter catalog). */
+export const EXTRA_INI_FILES = ["Input.ini", "DeviceProfiles.ini"] as const;
+
+export type ExtraIniFile = (typeof EXTRA_INI_FILES)[number];
+
 /** Human-readable list for UI copy (no GameUserSettings.ini). */
 export const OVERRIDE_INI_FILES_LABEL = OVERRIDE_INI_FILES.join(", ");
 

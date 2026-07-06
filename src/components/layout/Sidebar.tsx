@@ -32,10 +32,10 @@ export function Sidebar({ active, selectedGame }: Props) {
             className="shrink-0 rounded-md"
           />
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-[var(--color-text)]">
+            <div className="truncate text-base font-semibold text-[var(--color-text)]">
               Game Settings Master
             </div>
-            <div className="mt-0.5 text-xs text-muted">UE 4 · UE 5</div>
+            <div className="mt-0.5 text-sm text-muted">UE 4 · UE 5</div>
           </div>
         </div>
       </div>
@@ -67,8 +67,8 @@ export function Sidebar({ active, selectedGame }: Props) {
                 <Icon size={17} />
               </span>
               <span>
-                <span className="block text-sm font-medium">{label}</span>
-                <span className="block text-xs text-muted">{desc}</span>
+                <span className="block text-base font-medium">{label}</span>
+                <span className="block text-sm text-muted">{desc}</span>
               </span>
             </Link>
           );

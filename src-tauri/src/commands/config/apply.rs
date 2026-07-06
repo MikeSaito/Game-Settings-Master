@@ -1,5 +1,6 @@
 use crate::commands::helpers::{
-    guard_config_dir_for_write, resolve_write_exe_name, validate_custom_changes_payload,
+    find_profile_by_id, guard_config_dir_for_write, resolve_write_exe_name,
+    validate_custom_changes_payload, validate_custom_changes_semantics, SemanticValidationContext,
 };
 use crate::core::app_error::AppInvokeError;
 use crate::core::models::{ApplyResult, CustomChanges};
@@ -16,11 +17,27 @@ pub fn apply_custom_cmd(
     exe_name: Option<String>,
     game_id: Option<String>,
     engine_family: Option<String>,
+    engine_version: Option<String>,
+    warnings_acknowledged: Option<bool>,
 ) -> Result<ApplyResult, AppInvokeError> {
     guard_config_dir_for_write(game_id.as_deref(), &config_dir)?;
     let resolved_exe = resolve_write_exe_name(exe_name.as_deref(), game_id.as_deref())?;
     let path = validate_config_dir(&config_dir)?;
     validate_custom_changes_payload(&changes, &path)?;
+    let install_dir = game_id
+        .as_deref()
+        .and_then(|id| find_profile_by_id(id).ok().flatten())
+        .map(|profile| profile.install_dir);
+    validate_custom_changes_semantics(
+        &changes,
+        SemanticValidationContext {
+            engine_family: engine_family.as_deref(),
+            engine_version: engine_version.as_deref(),
+            config_path: &path,
+            install_dir: install_dir.as_deref(),
+            warnings_acknowledged: warnings_acknowledged.unwrap_or(false),
+        },
+    )?;
     ensure_config_writable(&path, resolved_exe.as_deref())?;
 
     let hints = platform_hints_for_game(game_id.as_deref(), engine_family.as_deref());

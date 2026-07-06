@@ -7,6 +7,7 @@ pub(crate) fn derive_catalog_recommended(entry: &ParameterCatalogEntry) -> bool 
     if entry.key.starts_with("sg.")
         || entry.category == "Scalability"
         || entry.category == "Display"
+        || entry.category == "Rendering"
     {
         return true;
     }

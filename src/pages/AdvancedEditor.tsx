@@ -1,8 +1,10 @@
 import { AlertTriangle, SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EditorApplyBar } from "@/components/advanced/EditorApplyBar";
+import { ApplyValidationPanel } from "@/components/advanced/ApplyValidationPanel";
 import { EditorModeBar } from "@/components/advanced/EditorModeBar";
 import { EditorSidebar } from "@/components/advanced/EditorSidebar";
+import { ExtraIniPanel } from "@/components/advanced/ExtraIniPanel";
 import { ParameterList } from "@/components/advanced/ParameterList";
 import { SavedPresetsPanel } from "@/components/advanced/SavedPresetsPanel";
 import { SgEngineConflictPanel } from "@/components/advanced/SgEngineConflictPanel";
@@ -44,26 +46,46 @@ export function AdvancedEditor({ game }: Props) {
   }
 
   const gpuHint = state.gpu ? gpuFilterHint(state.gpu) : null;
-  const pageTitle =
-    state.panel === "basic"
-      ? t("mode.basicTitle")
-      : state.panel === "advanced"
-        ? t("mode.advancedTitle")
-        : t("mode.backupsTitle");
 
   return (
-    <div>
-      <EditorModeBar
-        gameId={game.id}
-        panel={state.panel}
-        onPanelChange={state.setPanel}
-        engineStats={state.engineStats}
-      />
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="shrink-0">
+        <EditorModeBar
+          gameId={game.id}
+          panel={state.panel}
+          onPanelChange={state.setPanel}
+          engineStats={state.engineStats}
+          showExtraTab={state.extraIniAvailable}
+        />
+      </div>
 
       {state.panel === "backups" ? (
-        <BackupsPanel game={game} />
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <BackupsPanel game={game} />
+        </div>
+      ) : state.panel === "extra" ? (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <ExtraIniPanel gameConfig={state.gameConfig} loading={state.gameConfigLoading} />
+        </div>
+      ) : state.panel === "presets" ? (
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
+          {state.gameRunning && (
+            <Alert tone="warning" icon={AlertTriangle} title={t("gameRunningTitle")}>
+              {t("gameRunningInline")}
+            </Alert>
+          )}
+          {state.message && (
+            <Alert tone="success">{state.message}</Alert>
+          )}
+          {state.applyError && (
+            <Alert tone="danger" title={t("errorTitle")}>
+              {state.applyError}
+            </Alert>
+          )}
+          <SavedPresetsPanel state={state} variant="page" />
+        </div>
       ) : (
-        <div className="flex gap-4">
+        <div className="flex min-h-0 flex-1 gap-4">
           <EditorSidebar
             search={state.search}
             onSearchChange={state.setSearch}
@@ -74,11 +96,9 @@ export function AdvancedEditor({ game }: Props) {
             onFilterModeChange={state.setFilterMode}
           />
 
-          <section className="min-w-0 flex-1">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 className="text-lg font-semibold text-[var(--color-text)]">{pageTitle}</h2>
-                <div className="mt-1 flex flex-wrap gap-1.5">
+          <section className="flex min-h-0 min-w-0 flex-1 flex-col">
+            <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap gap-1.5">
                   <Badge tone="info">
                     {game.engine_version
                       ? t("paramsForEngine", {
@@ -96,6 +116,14 @@ export function AdvancedEditor({ game }: Props) {
                       {t("scalabilityLimits", { max: state.limits.global_max })}
                     </Badge>
                   )}
+                  {state.panel === "basic" && state.gusIniStats.total > 0 && (
+                    <Badge tone="warning">
+                      {t("gusIni.short", {
+                        on: state.gusIniStats.on,
+                        total: state.gusIniStats.total,
+                      })}
+                    </Badge>
+                  )}
                   {state.panel === "advanced" && state.engineStats.total > 0 && (
                     <Badge tone="warning">
                       {t("engineIni.short", {
@@ -104,7 +132,6 @@ export function AdvancedEditor({ game }: Props) {
                       })}
                     </Badge>
                   )}
-                </div>
               </div>
               {gpuHint && (
                 <Badge tone="info" className="max-w-xl" title={gpuHint}>
@@ -112,6 +139,14 @@ export function AdvancedEditor({ game }: Props) {
                 </Badge>
               )}
             </div>
+
+            {state.validationIssues.length > 0 && (
+              <ApplyValidationPanel
+                issues={state.validationIssues}
+                warningsAcknowledged={state.applyWarningsAcknowledged}
+                onWarningsAcknowledgedChange={state.setApplyWarningsAcknowledged}
+              />
+            )}
 
             {state.conflictGroups.length > 0 && (
               <SgEngineConflictPanel
@@ -138,19 +173,24 @@ export function AdvancedEditor({ game }: Props) {
             )}
 
             <ParameterList
+              className="min-h-0 flex-1"
               filteredParams={state.filteredParams}
               search={state.search}
               parametersLoading={state.parametersLoading}
               gpu={state.gpu}
               engineEnabled={state.engineEnabled}
-              showEngineToggle={state.panel === "advanced"}
+              showEngineToggle
+              gusIniToggleOnly={state.panel === "basic"}
+              shippedIniKeys={state.shippedIniKeys}
               pendingConflictKeys={state.pendingConflictKeys}
+              comboWarningsByKey={state.comboWarningsByKey}
               onUpdateParam={state.updateParam}
               onToggleEngineParam={state.toggleEngineParam}
             />
 
-            <EditorApplyBar state={state} />
-            <SavedPresetsPanel state={state} />
+            <div className="mt-3 shrink-0">
+              <EditorApplyBar state={state} />
+            </div>
           </section>
         </div>
       )}

@@ -1,5 +1,6 @@
 use super::catalog_index::{catalog_id, should_include_catalog_entry};
 use super::localize::is_stub_description;
+use super::overlay::entry_applies_to_game;
 use super::parameter_build::{catalog_default_value, entry_to_parameter, reference_to_parameter};
 use super::types::CatalogIndex;
 use super::types::{ParameterCatalogEntry, ReferenceEntry};
@@ -29,15 +30,10 @@ fn should_inject_curated_catalog_entry(entry: &ParameterCatalogEntry, is_ue4: bo
     let Some(file) = entry.file.as_deref() else {
         return false;
     };
-    match file {
-        "Engine.ini" | "Scalability.ini" => true,
-        "GameUserSettings.ini" => {
-            entry.key.starts_with("sg.")
-                || entry.category == "Scalability"
-                || entry.category == "Display"
-        }
-        _ => false,
-    }
+    matches!(
+        file,
+        "Engine.ini" | "Scalability.ini" | "GameUserSettings.ini"
+    )
 }
 
 fn should_inject_reference_entry(_reference: &ReferenceEntry) -> bool {
@@ -58,9 +54,13 @@ pub(crate) fn inject_catalog_and_reference_parameters(
     index: &CatalogIndex,
     is_ue4: bool,
     game_semver: Option<UeSemver>,
+    game_id: Option<&str>,
 ) {
     for (full_id, entry) in &index.by_full_id {
         if seen_ids.contains_key(full_id) {
+            continue;
+        }
+        if !entry_applies_to_game(entry, game_id) {
             continue;
         }
         if !should_inject_curated_catalog_entry(entry, is_ue4) {

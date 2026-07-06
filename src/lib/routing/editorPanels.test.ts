@@ -266,6 +266,11 @@ describe("defaultFilterMode", () => {
 
   it("keeps backups on a non-empty neutral mode", () => {
     expect(defaultFilterMode("backups")).toBe("recommended");
+    expect(defaultFilterMode("presets")).toBe("recommended");
+  });
+
+  it("returns no params for presets panel", () => {
+    expect(filterParamsByPanel([], "presets")).toEqual([]);
   });
 });
 

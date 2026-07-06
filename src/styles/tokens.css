@@ -2,6 +2,12 @@
   --font-sans: "IBM Plex Sans", "Geist", "Segoe UI", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "Geist Mono", "Cascadia Mono", ui-monospace, monospace;
 
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+
   --color-bg: #0f0e0c;
   --color-bg-soft: #171611;
   --color-surface: #211f19;
@@ -33,6 +39,7 @@
   --shadow-panel: 0 18px 60px rgba(0, 0, 0, 0.24);
   --shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
   --focus-ring: 0 0 0 3px var(--color-accent-ring);
+  --app-font-base: 16px;
   --app-font-scale: 1;
   --scrollbar-thumb: var(--color-border-strong);
   --scrollbar-thumb-hover: var(--color-text-faint);

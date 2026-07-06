@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
 import { ParameterList } from "@/components/advanced/ParameterList";
@@ -70,6 +70,32 @@ describe("AdvancedEditor integration", () => {
     expect(scrollEls.length).toBeGreaterThan(0);
     const param0Els = await screen.findAllByText("Parameter 0");
     expect(param0Els.length).toBeGreaterThan(0);
+  });
+
+  it("shows parameter description in the side detail pane on hover", async () => {
+    renderAdvancedEditor();
+    expect(screen.getByTestId("parameter-list-details")).toHaveTextContent(
+      /Наведите курсор на параметр|Hover a parameter/i,
+    );
+
+    const virtualList = await screen.findByTestId("parameter-list-virtual");
+    const row = within(virtualList).getAllByTestId("parameter-row")[0];
+    fireEvent.mouseOver(row);
+
+    expect(screen.getByTestId("parameter-list-details")).toHaveTextContent(
+      "Description for parameter 0",
+    );
+  });
+
+  it("shows parameter description in the side detail pane on focus", async () => {
+    renderAdvancedEditor();
+    const virtualList = await screen.findByTestId("parameter-list-virtual");
+    const row = within(virtualList).getAllByTestId("parameter-row")[0];
+    fireEvent.focus(row.querySelector("button") ?? row);
+
+    expect(screen.getByTestId("parameter-list-details")).toHaveTextContent(
+      "Description for parameter 0",
+    );
   });
 
   it("virtualizes 400+ parameter rows for full catalog", async () => {

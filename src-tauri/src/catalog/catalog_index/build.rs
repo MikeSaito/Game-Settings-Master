@@ -1,4 +1,5 @@
 use super::load::{load_key_hints, load_reference_index};
+use super::loose_match::allows_loose_section_match;
 use crate::catalog::types::{CatalogIndex, ParameterCatalogEntry};
 use std::collections::HashMap;
 
@@ -14,10 +15,14 @@ pub(crate) fn build_catalog_index(
         if let (Some(file), Some(section)) = (&entry.file, &entry.section) {
             let full_id = catalog_id(file, section, &entry.key);
             by_full_id.insert(full_id, entry.clone());
-            let file_key = format!("{}::{}", file.to_lowercase(), entry.key.to_lowercase());
-            by_file_key.entry(file_key).or_insert(entry.clone());
+            if allows_loose_section_match(&entry) {
+                let file_key = format!("{}::{}", file.to_lowercase(), entry.key.to_lowercase());
+                by_file_key.entry(file_key).or_insert(entry.clone());
+            }
         }
-        by_key.entry(entry.key.to_lowercase()).or_insert(entry);
+        if allows_loose_section_match(&entry) {
+            by_key.entry(entry.key.to_lowercase()).or_insert(entry);
+        }
     }
 
     CatalogIndex {

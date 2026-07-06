@@ -10,7 +10,7 @@ import type {
 } from "@/lib/core";
 import { OVERRIDE_INI_FILES } from "@/lib/ini/configFiles";
 import { testGame } from "@/test/fixtures/gameProfile";
-import { createE2eParameters } from "@/e2e/parameters";
+import { createE2eParametersForMode, readE2eFixtureMode } from "@/e2e/parameters";
 
 const e2eGpu: GpuCapabilities = {
   vendor: "nvidia",
@@ -30,7 +30,7 @@ function cloneParams(source: GameParameter[]): GameParameter[] {
   return source.map((param) => ({ ...param }));
 }
 
-let parameters = cloneParams(createE2eParameters());
+let parameters = cloneParams(createE2eParametersForMode(readE2eFixtureMode()));
 let backups: BackupInfo[] = [];
 const snapshots = new Map<string, Map<string, string>>();
 
@@ -138,7 +138,7 @@ function createBackup(changedFiles: string[]): string {
 }
 
 export function resetE2eMockState(): void {
-  parameters = cloneParams(createE2eParameters());
+  parameters = cloneParams(createE2eParametersForMode(readE2eFixtureMode()));
   backups = [];
   snapshots.clear();
 }

@@ -43,7 +43,9 @@ export default defineConfig(async () => ({
   server: {
     port: e2eMode ? 1434 : screenshotMode ? 1433 : 1420,
     strictPort: true,
-    host: host || false,
+    // Explicit IPv4 loopback — Vite's `host: false` can bind [::1] only on Windows,
+    // which breaks Cursor browser / tools that resolve localhost to 127.0.0.1.
+    host: host || "127.0.0.1",
     hmr: host
       ? {
           protocol: "ws",

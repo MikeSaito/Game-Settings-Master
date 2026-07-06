@@ -1,6 +1,7 @@
 use super::custom_changes::MAX_CUSTOM_CHANGES_JSON_BYTES;
 use super::{
     guard_config_dir_for_read, guard_config_dir_for_write, validate_custom_changes_payload,
+    validate_custom_changes_semantics, SemanticValidationContext,
 };
 use crate::core::models::CustomChanges;
 use std::collections::HashMap;
@@ -60,4 +61,31 @@ fn validate_custom_changes_rejects_ini_injection() {
         removals: HashMap::new(),
     };
     assert!(validate_custom_changes_payload(&changes, dir.path()).is_err());
+}
+
+#[test]
+fn validate_custom_changes_semantics_rejects_sg_above_limit() {
+    let dir = TempDir::new().unwrap();
+    fs::write(dir.path().join("GameUserSettings.ini"), b"[ScalabilityGroups]\n").unwrap();
+    let changes = CustomChanges {
+        files: HashMap::from([(
+            "GameUserSettings.ini".to_string(),
+            HashMap::from([(
+                "ScalabilityGroups".to_string(),
+                HashMap::from([("sg.ViewDistanceQuality".to_string(), "9".to_string())]),
+            )]),
+        )]),
+        removals: HashMap::new(),
+    };
+    let result = validate_custom_changes_semantics(
+        &changes,
+        SemanticValidationContext {
+            engine_family: Some("ue5"),
+            engine_version: Some("5.4"),
+            config_path: dir.path(),
+            install_dir: None,
+            warnings_acknowledged: false,
+        },
+    );
+    assert!(result.is_err());
 }

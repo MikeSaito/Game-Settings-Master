@@ -16,7 +16,8 @@
         "width": 1440,
         "height": 900,
         "minWidth": 1200,
-        "minHeight": 750
+        "minHeight": 750,
+        "maximized": true
       }
     ],
     "security": {

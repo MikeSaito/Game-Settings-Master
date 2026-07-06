@@ -69,5 +69,9 @@
     "noGames": "No UE games found",
     "tryAnother": "Try another name or add a game manually.",
     "scanOrAddPrefix": "Click Scan or Add to point at an Unreal Engine install folder (Shipping.exe)."
+  },
+  "gameNotFound": {
+    "title": "Game not found",
+    "desc": "This game is no longer in the library. Returning to the library…"
   }
 }

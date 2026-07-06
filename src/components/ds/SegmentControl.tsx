@@ -14,6 +14,8 @@ interface Props<T extends string> {
   ariaLabel?: string;
   className?: string;
   segmentClassName?: string;
+  /** When true, each segment sizes to its label instead of sharing width equally. */
+  sizeToContent?: boolean;
 }
 
 export function SegmentControl<T extends string>({
@@ -23,6 +25,7 @@ export function SegmentControl<T extends string>({
   ariaLabel,
   className,
   segmentClassName,
+  sizeToContent = false,
 }: Props<T>) {
   return (
     <div
@@ -44,7 +47,8 @@ export function SegmentControl<T extends string>({
             disabled={option.disabled}
             onClick={() => onChange(option.value)}
             className={cn(
-              "min-h-8 min-w-0 flex-1 whitespace-nowrap rounded-[7px] px-2 py-1 text-center text-xs font-semibold leading-tight transition disabled:cursor-not-allowed disabled:opacity-45",
+              "min-h-9 whitespace-nowrap rounded-[7px] py-1.5 text-center text-sm font-semibold leading-tight transition disabled:cursor-not-allowed disabled:opacity-45",
+              sizeToContent ? "flex-none shrink-0 px-3 sm:px-4" : "min-w-0 flex-1 px-2",
               segmentClassName,
               active
                 ? "bg-[var(--color-accent-soft)] text-[var(--color-text)] ring-1 ring-[var(--color-accent)]/55 shadow-[var(--shadow-subtle)]"

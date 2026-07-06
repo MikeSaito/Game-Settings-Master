@@ -6,13 +6,11 @@ on:
     paths-ignore:
       - "docs/**"
       - "**/*.md"
-      - "landing/**"
       - "SECURITY.md"
   pull_request:
     paths-ignore:
       - "docs/**"
       - "**/*.md"
-      - "landing/**"
       - "SECURITY.md"
 
 concurrency:
@@ -59,6 +57,12 @@ jobs:
         shell: pwsh
         run: powershell -ExecutionPolicy Bypass -File scripts/verify-types-sync.ps1
 
+      - name: Verify validation index in sync
+        run: npm run validation:index:check
+
+      - name: Verify i18n key parity
+        run: npm run i18n:parity
+
       - name: Rust release compile check
         working-directory: src-tauri
         run: cargo check --release
@@ -77,3 +81,33 @@ jobs:
 
       - name: Catalog builder tests
         run: npm run catalog:test
+
+      - name: Tauri bundle smoke (no installer)
+        run: npx tauri build --no-bundle
+
+  landing-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: landing/package-lock.json
+
+      - name: Read app version
+        id: app_version
+        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+
+      - name: Install & build landing
+        working-directory: landing
+        env:
+          VITE_BASE_PATH: /
+          VITE_SITE_URL: https://gsm-tool.com
+          VITE_GITHUB_REPO: ${{ github.repository }}
+          VITE_APP_VERSION: ${{ steps.app_version.outputs.version }}
+          VITE_YANDEX_METRIKA_ID: "110097894"
+        run: |
+          npm ci
+          npm run build

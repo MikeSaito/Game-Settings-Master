@@ -7,7 +7,7 @@ interface VirtualizerOptions {
   overscan?: number;
 }
 
-/** Lightweight stub for screenshot builds — row height must match ParameterList ROW_ESTIMATE_PX (74). */
+/** Lightweight stub for screenshot builds — row height must match ParameterList ROW_ESTIMATE_PX (96). */
 export function useVirtualizer({ count, estimateSize = () => 74 }: VirtualizerOptions) {
   const rowHeight = estimateSize();
 

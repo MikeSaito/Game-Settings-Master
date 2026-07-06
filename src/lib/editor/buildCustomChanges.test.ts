@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildCustomChanges } from "./buildCustomChanges";
+import { initialEngineEnabledKeys } from "./engineParams";
+import { buildIniSnapshot } from "./iniSnapshot";
 import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 
 function param(
@@ -37,6 +39,7 @@ describe("buildCustomChanges", () => {
       param({ key: "sg.ShadowQuality", value: "2" }),
       param({ key: "sg.TextureQuality", value: "3" }),
     ];
+    const shipped = buildIniSnapshot(baseline);
     const edited = [
       param({ key: "sg.ShadowQuality", value: "4" }),
       param({ key: "sg.TextureQuality", value: "3" }),
@@ -45,8 +48,10 @@ describe("buildCustomChanges", () => {
       edited,
       baseline,
       undefined,
-      new Set(),
+      initialEngineEnabledKeys(baseline, shipped),
       new Set(["Scalability"]),
+      undefined,
+      shipped,
     );
     const gus = files["GameUserSettings.ini"];
     expect(gus).toBeDefined();
@@ -110,11 +115,12 @@ describe("buildCustomChanges", () => {
       supports_dlss_fg: false,
       supports_ray_tracing: true,
     };
-    const baseline = [
+    const fullBaseline = [
       param({ key: "UpscalingMethod", value: "U_DLSS", category: "GameSpecific" }),
       param({ key: "DLSSMode", value: "Quality", category: "GameSpecific" }),
       param({ key: "UpscalingFrameGeneration", value: "1", category: "GameSpecific" }),
     ];
+    const shipped = buildIniSnapshot(fullBaseline);
     const edited = [
       param({ key: "UpscalingMethod", value: "U_FSR", category: "GameSpecific" }),
       param({ key: "DLSSMode", value: "Quality", category: "GameSpecific" }),
@@ -123,10 +129,12 @@ describe("buildCustomChanges", () => {
 
     const { files } = buildCustomChanges(
       edited,
-      baseline,
+      fullBaseline,
       noFrameGenerationGpu,
-      new Set(),
+      initialEngineEnabledKeys(fullBaseline, shipped),
       new Set(["GameSpecific"]),
+      undefined,
+      shipped,
     );
 
     const section = Object.values(files["GameUserSettings.ini"] ?? {})[0];
@@ -180,5 +188,75 @@ describe("buildCustomChanges", () => {
     expect(removals["Scalability.ini"]?.["[ShadowQuality@3]"]).toContain(
       "r.ShadowQuality",
     );
+  });
+
+  it("does not remove shipped GUS keys from ini", () => {
+    const baseline = [
+      param({
+        key: "bUseVSync",
+        section: "/Script/Engine.GameUserSettings",
+        category: "Display",
+        value: "True",
+        present_in_ini: true,
+      }),
+    ];
+    const shipped = buildIniSnapshot(baseline);
+    const { removals } = buildCustomChanges(
+      baseline,
+      baseline,
+      undefined,
+      new Set(),
+      new Set(["Display"]),
+      "basic",
+      shipped,
+    );
+    expect(Object.keys(removals)).toHaveLength(0);
+  });
+
+  it("removes optional GUS keys when toggled off", () => {
+    const baseline = [
+      param({
+        key: "bUseVSync",
+        section: "/Script/Engine.GameUserSettings",
+        category: "Display",
+        value: "True",
+        present_in_ini: true,
+      }),
+    ];
+    const shipped = new Set<string>();
+    const { removals } = buildCustomChanges(
+      baseline,
+      baseline,
+      undefined,
+      new Set(),
+      new Set(["Display"]),
+      "basic",
+      shipped,
+    );
+    expect(removals["GameUserSettings.ini"]?.["[/Script/Engine.GameUserSettings]"]).toContain(
+      "bUseVSync",
+    );
+  });
+
+  it("writes GUS catalog extra when toggled on even if value matches catalog default", () => {
+    const baseline = [
+      param({
+        key: "sg.ViewDistanceQuality",
+        value: "3",
+        present_in_ini: false,
+        catalog_recommended: true,
+      }),
+    ];
+    const enabled = new Set(["GameUserSettings.ini::sg.ViewDistanceQuality"]);
+    const { files } = buildCustomChanges(
+      baseline,
+      baseline,
+      undefined,
+      enabled,
+      new Set(["Scalability"]),
+      "basic",
+    );
+    const section = Object.values(files["GameUserSettings.ini"] ?? {})[0];
+    expect(section?.["sg.ViewDistanceQuality"]).toBe("3");
   });
 });

@@ -26,7 +26,7 @@
     "Other": "Прочее"
   },
   "noGame": {
-    "title": "Редактор — выберите игру",
+    "title": "Редактор: выберите игру",
     "desc": "Откройте библиотеку и выберите игру с конфигурацией для просмотра и редактирования параметров."
   },
   "noConfig": {
@@ -39,10 +39,14 @@
     "aria": "Режим редактора",
     "basic": "Базовое",
     "advanced": "Расширенное",
+    "extra": "Доп. ini",
     "backups": "Бэкапы",
-    "basicHint": "Пользовательские настройки — как в меню игры",
-    "advancedHint": "Параметры движка и консольные переменные — для опытных",
+    "presets": "Пресеты",
+    "basicHint": "Пользовательские настройки: как в меню игры",
+    "advancedHint": "Параметры движка и консольные переменные: для опытных",
     "backupsHint": "Снимки конфигов перед применением и откат",
+    "extraHint": "Input.ini и DeviceProfiles.ini: только просмотр",
+    "presetsHint": "Сохранённые наборы настроек",
     "scalability": "Базовое",
     "engine": "Расширенное",
     "engineBadge": "Эксперт"
@@ -51,9 +55,14 @@
     "basicTitle": "Базовые настройки",
     "advancedTitle": "Расширенные настройки",
     "backupsTitle": "Бэкапы",
-    "basicBody": "Настройки как в игре — разрешение, качество, sg.*. Записываются только в GameUserSettings.ini.",
+    "extraTitle": "Дополнительные ini",
+    "presetsTitle": "Сохранённые пресеты",
+    "basicBody": "Ключи «в файле игры» были в ini при открытии: их нельзя удалить, только изменить значение. Доп. из каталога: «Добавить/Удалить из ini».",
     "advancedBody": "Тонкая настройка движка. Может создать или изменить Engine.ini / Scalability.ini. Для опытных пользователей.",
     "backupsBody": "Автоматические снимки конфигов хранятся локально в данных приложения. Восстановление и сброс к чистой конфигурации.",
+    "extraBody": "Input.ini и DeviceProfiles.ini из папки конфигурации игры. Только чтение: редактирование через расширенный режим не поддерживается.",
+    "presetsBody": "Пресеты, сохранённые из редактора. Импорт, экспорт, применение к конфигурации игры и удаление.",
+    "extraBodyShort": "Input.ini / DeviceProfiles.ini: просмотр и поиск.",
     "basicSafe": "Только GameUserSettings.ini",
     "advancedFiles": "Engine.ini / Scalability.ini"
   },
@@ -97,6 +106,11 @@
     "before": "Кнопки «Добавить в ini» и «Удалить из ini» управляют наличием строки в файле: после «Применить» ключ будет записан или удалён. Сейчас в ini: {{on}} из {{total}}.",
     "short": "В ini: {{on}} из {{total}}."
   },
+  "gusIni": {
+    "short": "Доп. в ini: {{on}}/{{total}}",
+    "notInIni": "нет в ini",
+    "willAdd": "будет добавлено"
+  },
   "categoryNav": "Категории параметров",
   "loadingParams": "Загрузка параметров…",
   "emptyFiltered": {
@@ -134,7 +148,7 @@
   "gameRunningTitle": "Игра запущена",
   "gameRunningInline": "Применение отключено, пока игра запущена.",
   "errors": {
-    "noChanges": "Нет изменений — включите параметры Engine.ini или измените значения."
+    "noChanges": "Нет изменений: включите параметры Engine.ini или измените значения."
   },
   "applied": "Применено {{count}} правок · резервная копия {{backupId}}. Перезапустите игру.",
   "presetSaved": "Пресет «{{name}}» сохранён.",
@@ -187,6 +201,7 @@
   "resetTo": "↺ {{label}}: {{value}}",
   "currentOption": "{{value}} (текущее)",
   "inIni": "В ini",
+  "iniShipped": "в файле игры",
   "notInIni": "Нет в ini",
   "service": "Служебный",
   "conflict": {
@@ -203,6 +218,14 @@
     "resolved": "Конфликтующие r.* сняты; {{sg}} без изменений. Нажмите «Применить» для записи в ini."
   },
   "inPractice": "На практике: ",
+  "detailPane": {
+    "hint": "Наведите курсор на параметр в списке слева: описание появится справа."
+  },
+  "valueDemo": {
+    "title": "Как выглядит",
+    "frameGenOn": "Интерполяция кадров",
+    "frameGenOff": "Только реальные кадры"
+  },
   "recommendedValues": "Рекомендуемые значения: ",
   "tierHintLabel": "Значения по пресетам UE",
   "inGameMenu": "В меню игры ищите: ",
@@ -237,6 +260,43 @@
     "delete": "Удалить",
     "importInvalid": "Не удалось прочитать файл пресета (.uesm-preset.json).",
     "imported": "Пресет «{{name}}» импортирован.",
-    "empty": "Нет сохранённых пресетов — сохраните текущие правки или импортируйте JSON."
+    "empty": "Нет сохранённых пресетов: сохраните текущие правки или импортируйте JSON.",
+    "applyConfirmTitle": "Применить пресет «{{name}}»",
+    "applyConfirm": "Применить пресет",
+    "applyCancel": "Отмена"
+  },
+  "validation": {
+    "errorsTitle": "Исправьте перед применением",
+    "warningsTitle": "Предупреждения",
+    "acknowledgeWarnings": "Понимаю риски: применить с предупреждениями",
+    "applyBlocked": "Есть ошибки валидации: применение заблокировано.",
+    "confirmWarnings": "Подтвердите предупреждения ниже, чтобы применить.",
+    "versionMismatch": "{{key}} недоступен для UE {{version}}",
+    "sgExceedsLimit": "{{key}}={{value}} выше лимита sg (макс. {{max}})",
+    "limitsPending": "Лимиты sg ещё загружаются: подождите перед применением",
+    "gpuPending": "Данные GPU ещё загружаются: подождите перед применением с Ray Tracing",
+    "sgRConflict": "Конфликт sg/r: {{sg}} перекрывается ручным r.*",
+    "valueBelowMin": "{{key}}={{value}} ниже минимума {{min}}",
+    "valueAboveMax": "{{key}}={{value}} выше максимума {{max}}",
+    "shippedKeyRemoval": "{{key}} нельзя удалить: ключ был в ini игры при открытии",
+    "combo": {
+      "rtLowShadows": "Ray Tracing включён при низком sg.ShadowQuality ({{shadows}}): возможны артефакты или просадка FPS",
+      "rtNoHardware": "Ray Tracing включён, но GPU не поддерживает RT в UE",
+      "rtGpuUnknown": "Не удалось определить GPU: Ray Tracing может не работать на вашей видеокарте",
+      "engineScalabilityDup": "{{key}} одновременно в Engine.ini и Scalability.ini: победит последний записанный",
+      "streamingTexture": "Большой r.Streaming.PoolSize ({{pool}}) при низком sg.TextureQuality ({{texture}}): риск нехватки VRAM"
+    }
+  },
+  "extra": {
+    "loading": "Загрузка ini…",
+    "emptyTitle": "Нет Input.ini / DeviceProfiles.ini",
+    "emptyDesc": "В папке конфигурации игры эти файлы не найдены.",
+    "search": "Поиск по доп. ini",
+    "searchPlaceholder": "Ключ, секция, значение…",
+    "colFile": "Файл",
+    "colSection": "Секция",
+    "noSearch": "Ничего не найдено",
+    "noRows": "Файлы пусты",
+    "readOnlyHint": "Только просмотр. Изменения в этих файлах через GSM пока не поддерживаются."
   }
 }

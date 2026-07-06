@@ -19,13 +19,13 @@ export function SectionHeader({ step, title, description, hint, className }: Pro
               {step}
             </span>
           )}
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">
+          <h3 className="text-base font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">
             {title}
           </h3>
         </div>
-        {description && <p className="mt-1 text-sm text-muted">{description}</p>}
+        {description && <p className="mt-1 text-base text-muted">{description}</p>}
       </div>
-      {hint && <div className="text-sm text-muted">{hint}</div>}
+      {hint && <div className="text-base text-muted">{hint}</div>}
     </div>
   );
 }

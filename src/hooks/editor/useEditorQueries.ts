@@ -6,12 +6,14 @@ import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { useGameRunning } from "@/hooks/game/useGameRunning";
 import { useRunningExeName } from "@/hooks/game/useRunningExeName";
 import {
+  getGameConfig,
   getGameOverrides,
   getGameParameters,
   getGpuInfo,
   getScalabilityLimits,
 } from "@/lib/api";
 import { normalizeParameterCategories } from "@/lib/editor";
+import { EXTRA_INI_FILES } from "@/lib/ini/configFiles";
 import type { GameOverride, GameParameter, GameProfile } from "@/lib/core";
 
 const FOCUS_DISK_REFRESH_MS = 60_000;
@@ -58,11 +60,13 @@ export function useEditorQueries(game: GameProfile | null) {
     [parameters],
   );
 
-  const { data: limits } = useQuery({
+  const { data: limits, isLoading: limitsIsLoading, isFetching: limitsIsFetching } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir, game?.id],
     queryFn: () => getScalabilityLimits(configDir, game!.id, game!.install_dir),
     enabled: queriesEnabled && !!game,
   });
+
+  const limitsLoading = (limitsIsLoading || limitsIsFetching) && limits === undefined;
 
   const { data: overrides = EMPTY_OVERRIDES } = useQuery({
     queryKey: ["overrides", game?.id],
@@ -70,12 +74,31 @@ export function useEditorQueries(game: GameProfile | null) {
     enabled: overridesEnabled,
   });
 
-  const { data: gpu } = useQuery({
+  const { data: gpu, isLoading: gpuIsLoading, isFetching: gpuIsFetching, isFetched: gpuIsFetched } = useQuery({
     queryKey: ["gpu"],
     queryFn: getGpuInfo,
     enabled: gpuEnabled,
     staleTime: 300_000,
   });
+
+  const gpuLoading = gpuEnabled && !gpuIsFetched && (gpuIsLoading || gpuIsFetching);
+  const gpuUnavailable = gpuEnabled && gpuIsFetched && gpu === undefined;
+
+  const { data: gameConfig, isLoading: gameConfigIsLoading, isFetching: gameConfigIsFetching, isFetched: gameConfigIsFetched } = useQuery({
+    queryKey: ["game-config", configDir, game?.id, game?.engine_family],
+    queryFn: () => getGameConfig(configDir, game!.id, game!.engine_family),
+    enabled: queriesEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnMount: false,
+  });
+
+  const gameConfigLoading =
+    queriesEnabled && !gameConfigIsFetched && (gameConfigIsLoading || gameConfigIsFetching);
+
+  const extraIniAvailable = useMemo(
+    () => !!gameConfig?.files && EXTRA_INI_FILES.some((file) => file in gameConfig.files),
+    [gameConfig],
+  );
 
   const windowFocused = useAppWindowFocused();
   const lastDiskRefreshRef = useRef(0);
@@ -122,8 +145,15 @@ export function useEditorQueries(game: GameProfile | null) {
     parametersLoading,
     normalizedParameters,
     limits,
+    limitsLoading,
     overrides,
     gpu,
+    gpuLoading,
+    gpuUnavailable,
+    gameConfig,
+    gameConfigLoading,
+    gameConfigFetched: gameConfigIsFetched,
+    extraIniAvailable,
     paramsDirtyRef,
   };
 }

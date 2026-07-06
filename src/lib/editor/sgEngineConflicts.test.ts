@@ -337,4 +337,29 @@ describe("detectSgEngineConflicts", () => {
     ];
     expect(detectSgEngineConflicts(params, new Set(), new Set()).size).toBe(0);
   });
+
+  it("detects e2e fixture shadow conflict", async () => {
+    const { createE2eParameters } = await import("@/e2e/parameters");
+    const { initialEngineEnabledKeys } = await import("./engineParams");
+    const params = createE2eParameters();
+    expect(params.some((p) => p.key === "r.ShadowQuality")).toBe(true);
+    const groups = analyzeSgEngineConflictGroups(
+      params,
+      new Set(),
+      initialEngineEnabledKeys(params),
+    );
+    expect(groups.some((g) => g.sgKey === "sg.shadowquality")).toBe(true);
+  });
+
+  it("detects e2e fixture shadow conflict with shipped ini snapshot", async () => {
+    const { createE2eParameters } = await import("@/e2e/parameters");
+    const { initialEngineEnabledKeys } = await import("./engineParams");
+    const { buildIniSnapshot } = await import("./iniSnapshot");
+    const params = createE2eParameters();
+    const shipped = buildIniSnapshot(params);
+    const engineEnabled = initialEngineEnabledKeys(params, shipped);
+    expect(engineEnabled.size).toBe(0);
+    const groups = analyzeSgEngineConflictGroups(params, new Set(), engineEnabled, shipped);
+    expect(groups.some((g) => g.sgKey === "sg.shadowquality")).toBe(true);
+  });
 });

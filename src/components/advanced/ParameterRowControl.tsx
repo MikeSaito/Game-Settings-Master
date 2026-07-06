@@ -85,7 +85,7 @@ export function ParameterRowControl({
       <Select
         value={known ? param.value : opts[0]?.value}
         onChange={(event) => onChange(event.target.value)}
-        className="max-w-[220px] font-mono text-xs"
+        className="max-w-[220px] font-mono text-sm"
       >
         {!known && <option value={param.value}>{t("currentOption", { value: param.value })}</option>}
         {opts.map((option) => (

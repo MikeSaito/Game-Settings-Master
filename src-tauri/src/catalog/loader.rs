@@ -19,7 +19,7 @@ use super::version::parse_ue_semver;
 
 pub fn get_game_parameters(
     config_dir: &Path,
-    _game_id: Option<&str>,
+    game_id: Option<&str>,
     install_dir: Option<&Path>,
     engine_family: Option<&str>,
     engine_version: Option<&str>,
@@ -46,19 +46,26 @@ pub fn get_game_parameters(
         let data = ini_to_data(&ini);
         for (section, entries) in data {
             for (key, value) in entries {
-                let parameter =
-                    match lookup_entry(&index, file, &section, &key, game_semver, is_ue4) {
-                        Some(CatalogMatch::Entry(entry)) => Some(entry_to_parameter(
-                            entry, &key, &section, file, &value, true, true,
-                        )),
-                        Some(CatalogMatch::Reference(reference)) => Some(reference_to_parameter(
-                            reference, &key, &section, file, &value, true,
-                        )),
-                        Some(CatalogMatch::Hint(hint)) => {
-                            Some(hint_to_parameter(hint, &key, &section, file, &value))
-                        }
-                        None => unknown_ue_parameter(&key, &section, file, &value),
-                    };
+                let parameter = match lookup_entry(
+                    &index,
+                    file,
+                    &section,
+                    &key,
+                    game_semver,
+                    is_ue4,
+                    game_id,
+                ) {
+                    Some(CatalogMatch::Entry(entry)) => Some(entry_to_parameter(
+                        entry, &key, &section, file, &value, true, true,
+                    )),
+                    Some(CatalogMatch::Reference(reference)) => Some(reference_to_parameter(
+                        reference, &key, &section, file, &value, true,
+                    )),
+                    Some(CatalogMatch::Hint(hint)) => {
+                        Some(hint_to_parameter(hint, &key, &section, file, &value))
+                    }
+                    None => unknown_ue_parameter(&key, &section, file, &value),
+                };
                 if let Some(parameter) = parameter {
                     mark_parameter_seen(&mut seen_ids, &mut seen_file_keys, file, &section, &key);
                     parameters.push(parameter);
@@ -74,6 +81,7 @@ pub fn get_game_parameters(
         &index,
         is_ue4,
         game_semver,
+        game_id,
     );
 
     parameters.sort_by(|a, b| {
@@ -83,7 +91,7 @@ pub fn get_game_parameters(
             .then(a.key.cmp(&b.key))
     });
 
-    dedupe_parameters_by_file_key(&mut parameters, &index, game_semver, is_ue4);
+    dedupe_parameters_by_file_key(&mut parameters, &index, game_semver, is_ue4, game_id);
 
     let limits = detect_scalability_limits(install_dir, Some(config_dir));
     for param in &mut parameters {
