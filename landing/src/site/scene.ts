@@ -1,74 +1,79 @@
 import { assetPath } from "../lib/site";
 
-type Cover = { sx: number; sy: number; sw: number; sh: number };
+type HeroTier = "high" | "ultra" | "low";
 
-function cover(img: HTMLImageElement, w: number, h: number): Cover {
-  const ir = img.naturalWidth / img.naturalHeight;
-  const vr = w / h;
-  if (ir > vr) {
-    const sh = img.naturalHeight;
-    const sw = sh * vr;
-    return { sx: (img.naturalWidth - sw) * 0.5, sy: 0, sw, sh };
+/** Подбирает файл с достаточным разрешением без лишнего upscale. */
+function pickHeroTier(widthPx: number): HeroTier {
+  if (widthPx <= 520) return "high";
+  if (widthPx <= 1024) return "ultra";
+  return "low";
+}
+
+function paintNoise(tile: HTMLCanvasElement): void {
+  const ctx = tile.getContext("2d");
+  if (!ctx) return;
+  const { width, height } = tile;
+  const data = ctx.createImageData(width, height);
+  const buf = data.data;
+  for (let i = 0; i < buf.length; i += 4) {
+    const v = (Math.random() * 255) | 0;
+    buf[i] = v;
+    buf[i + 1] = v;
+    buf[i + 2] = v;
+    buf[i + 3] = 255;
   }
-  const sw = img.naturalWidth;
-  const sh = sw / vr;
-  return { sx: 0, sy: (img.naturalHeight - sh) * 0.38, sw, sh };
+  ctx.putImageData(data, 0, 0);
 }
 
-function paint(ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: number, h: number) {
-  const c = cover(img, w, h);
-  ctx.clearRect(0, 0, w, h);
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(img, c.sx, c.sy, c.sw, c.sh, 0, 0, w, h);
-
-  const v = ctx.createRadialGradient(w * 0.5, h * 0.35, h * 0.1, w * 0.5, h * 0.5, h * 0.95);
-  v.addColorStop(0, "rgba(8,7,6,0)");
-  v.addColorStop(1, "rgba(8,7,6,0.28)");
-  ctx.fillStyle = v;
-  ctx.fillRect(0, 0, w, h);
-}
-
-export function mountScene(): () => void {
+export function mountScene(host: HTMLElement): { root: HTMLElement; cleanup: () => void } {
   const root = document.createElement("div");
   root.className = "scene";
   root.setAttribute("aria-hidden", "true");
-  root.innerHTML = `<canvas></canvas><div class="scene__grain"></div><div class="scene__fade"></div>`;
-  document.body.prepend(root);
 
-  const canvas = root.querySelector("canvas")!;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return () => root.remove();
+  const bg = document.createElement("img");
+  bg.className = "scene__bg";
+  bg.alt = "";
+  bg.decoding = "async";
+  bg.setAttribute("fetchpriority", "high");
 
-  const img = new Image();
-  img.src = assetPath("hero/quality-ultra.webp");
-  img.decoding = "async";
+  const grain = document.createElement("div");
+  grain.className = "scene__grain";
+  const noise = document.createElement("canvas");
+  noise.width = 128;
+  noise.height = 128;
+  paintNoise(noise);
+  grain.style.backgroundImage = `url(${noise.toDataURL("image/png")})`;
 
+  const fade = document.createElement("div");
+  fade.className = "scene__fade";
+
+  root.append(bg, grain, fade);
+  host.prepend(root);
+
+  let tier: HeroTier | null = null;
   let raf = 0;
-  const resize = () => {
+
+  const syncSrc = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (img.complete && img.naturalWidth) paint(ctx, img, w, h);
+    const next = pickHeroTier(Math.ceil(window.innerWidth * dpr));
+    if (next === tier) return;
+    tier = next;
+    bg.src = assetPath(`hero/quality-${next}.webp`);
   };
 
-  const onLoad = () => {
+  const onResize = () => {
     cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(resize);
+    raf = requestAnimationFrame(syncSrc);
   };
 
-  img.addEventListener("load", onLoad);
-  window.addEventListener("resize", onLoad, { passive: true });
-  if (img.complete) onLoad();
+  window.addEventListener("resize", onResize, { passive: true });
+  syncSrc();
 
-  return () => {
+  const cleanup = () => {
     cancelAnimationFrame(raf);
-    window.removeEventListener("resize", onLoad);
+    window.removeEventListener("resize", onResize);
     root.remove();
   };
+
+  return { root, cleanup };
 }

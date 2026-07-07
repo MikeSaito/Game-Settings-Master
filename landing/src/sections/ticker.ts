@@ -15,7 +15,7 @@ function measure(tags: string[]): number {
   return w;
 }
 
-export function buildTicker(t: LocaleStrings): HTMLElement {
+export function buildTicker(t: LocaleStrings): { el: HTMLElement; cleanup: () => void } {
   const el = document.createElement("div");
   el.className = "ticker";
   el.setAttribute("aria-hidden", "true");
@@ -23,6 +23,7 @@ export function buildTicker(t: LocaleStrings): HTMLElement {
   const track = document.createElement("div");
   track.className = "ticker__track";
 
+  let raf = 0;
   const sync = () => {
     const w = measure(t.engineTags);
     const reps = Math.max(2, Math.ceil((window.innerWidth * 1.3) / Math.max(w, 1)));
@@ -44,8 +45,20 @@ export function buildTicker(t: LocaleStrings): HTMLElement {
     track.style.setProperty("--dur", `${Math.max(26, Math.min(55, tags.length * 2.5))}s`);
   };
 
+  const onResize = () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(sync);
+  };
+
   sync();
-  window.addEventListener("resize", sync, { passive: true });
+  window.addEventListener("resize", onResize, { passive: true });
   el.append(track);
-  return el;
+
+  return {
+    el,
+    cleanup: () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+    },
+  };
 }
