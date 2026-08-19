@@ -88,7 +88,7 @@ fn validate_config_dir_trust_profile(
     let hints = platform_hints_for_game(Some(game_id), Some(&trusted.engine_family));
     let provided_reconciled = reconcile_config_dir(&provided, &hints);
 
-    let expected = resolve_expected_config_dir(game_id, &trusted, &hints)?;
+    let expected = resolve_expected_config_dir(game_id, trusted, &hints)?;
 
     match expected {
         Some(exp) => {
