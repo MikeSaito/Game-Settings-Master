@@ -11,7 +11,7 @@ export const githubRepo =
 export const githubUrl = `https://github.com/${githubRepo}`;
 
 /** Прямая ссылка на установщик в GitHub Releases (latest). */
-const DEFAULT_APP_VERSION = "1.0.5";
+const DEFAULT_APP_VERSION = "1.0.6";
 
 function resolveAppVersion(): string {
   const raw = import.meta.env.VITE_APP_VERSION?.trim();
