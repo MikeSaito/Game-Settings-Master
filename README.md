@@ -5,143 +5,80 @@
 <h1 align="center">Game Settings Master</h1>
 
 <p align="center">
-  <a href="README.md">Русский</a> ·
-  <a href="README.en.md">English</a> ·
-  <a href="https://gsm-tool.com/">Сайт</a> ·
+  <a href="README.md">English</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="https://gsm-tool.com/en/">Website</a> ·
   <a href="https://t.me/game_settings_master">Telegram</a> ·
-  <a href="https://www.donationalerts.com/r/mike_saito">Поддержать</a>
+  <a href="https://www.donationalerts.com/r/mike_saito">Donate</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/MikeSaito/Game-Settings-Master/actions/workflows/ci.yml"><img src="https://github.com/MikeSaito/Game-Settings-Master/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/badge/release-v1.0.5-b87a14?style=flat-square" alt="v1.0.5"></a>
+  <a href="https://github.com/MikeSaito/Game-Settings-Master/releases"><img src="https://img.shields.io/github/v/release/MikeSaito/Game-Settings-Master?style=flat-square&label=release" alt="Release"></a>
   <img src="https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT">
   <a href="https://gsm-tool.com/"><img src="https://img.shields.io/badge/site-gsm--tool.com-b87a14?style=flat-square" alt="gsm-tool.com"></a>
 </p>
 
 <p align="center">
-  <strong>Редактор ini для игр на Unreal Engine</strong><br>
-  GameUserSettings и Engine.ini в одном окне — с подсказками, бэкапами и фильтрами под вашу видеокарту.
+  <strong>Ini editor for Unreal Engine games</strong><br>
+  Edit GameUserSettings and Engine.ini in one place — with hints, backups, and filters matched to your GPU.
 </p>
 
 <p align="center">
-  <code>UE 4.27</code> · <code>UE 5.8</code> · <code>Steam</code> · <code>Epic</code> · <code>DLSS</code> · <code>FSR</code>
+  <code>UE 4.27–5.8</code> · <code>Steam</code> · <code>Epic</code> · <code>DLSS</code> · <code>FSR</code>
 </p>
 
 ---
 
-## Скриншоты
+## Screenshots
 
 <p align="center">
-  <img src="landing/public/screenshots/ru/library.png" width="420" alt="Библиотека игр">
+  <img src="landing/public/screenshots/en/library.png" width="420" alt="Game library">
   &nbsp;&nbsp;
-  <img src="landing/public/screenshots/ru/editor-basic.png" width="420" alt="Редактор Basic">
+  <img src="landing/public/screenshots/en/editor-basic.png" width="420" alt="Basic editor">
 </p>
 
 <p align="center">
-  <img src="landing/public/screenshots/ru/editor-advanced.png" width="420" alt="Редактор Advanced">
+  <img src="landing/public/screenshots/en/editor-advanced.png" width="420" alt="Advanced editor">
   &nbsp;&nbsp;
-  <img src="landing/public/screenshots/ru/backups.png" width="420" alt="Резервные копии">
+  <img src="landing/public/screenshots/en/backups.png" width="420" alt="Backups">
 </p>
 
 ---
 
-## Возможности
+## What it does
+
+**Game library** — scans Steam and Epic libraries, supports manual games, finds config folders, and shows engine info and cover art.
+
+**Basic editor** — GameUserSettings.ini: scalability presets, resolution, window mode, VSync — the same knobs you see in-game.
+
+**Advanced editor** — Engine.ini CVars with descriptions, warnings, tier hints, and a Recommended filter for your setup.
+
+**Backups** — automatic snapshot before every apply; restore the previous state in one click.
+
+**Built-in reference** — parameter hints in English and Russian, tuned to the game’s Unreal Engine version.
+
+**GPU-aware UI** — DLSS, FSR, ray tracing, and frame generation options appear only when your graphics card supports them.
+
+---
+
+## Download
+
+Free · Windows · MIT · open source
 
 | | |
 |---|---|
-| **Библиотека игр** | Сканирование Steam и Epic, ручное добавление. Приложение находит папку конфигов и показывает контекст игры — движок, пути, обложку. |
-| **Basic / Advanced** | **Basic** — GameUserSettings.ini: sg.*, разрешение, окно, VSync — как в меню игры. **Advanced** — Engine.ini и CVars с tier-подсказками, предупреждениями и фильтром «Рекомендуемые». |
-| **Резервные копии** | Снимок конфигов перед каждым применением. Откат к предыдущему состоянию в один клик. |
-| **Каталог параметров** | **767** справочных ключей (UE 4.27–5.8), **115** ручных описаний RU/EN, tier A/B overlays. Подмешивание ключей по версии движка игры. |
-| **Фильтры под GPU** | DLSS, FSR, трассировка и Frame Generation показываются только если видеокарта поддерживает. |
+| Latest release | [**Download for Windows**](https://github.com/MikeSaito/Game-Settings-Master/releases/latest) |
+| Website | [gsm-tool.com](https://gsm-tool.com/en/) |
 
----
+### First launch (SmartScreen)
 
-## Скачать
+The installer is not commercially signed. Windows may show a blue SmartScreen prompt — this is normal for independent software.
 
-**Windows · бесплатно · MIT · без подписи издателя**
+1. Click **More info**
+2. Click **Run anyway**
 
-| | |
-|---|---|
-| Установщик | [**Game-Settings-Master_1.0.5_x64-setup.exe**](https://github.com/MikeSaito/Game-Settings-Master/releases/latest/download/Game-Settings-Master_1.0.5_x64-setup.exe) |
-| Релизы | [github.com/MikeSaito/Game-Settings-Master/releases](https://github.com/MikeSaito/Game-Settings-Master/releases) |
-| Сайт | [gsm-tool.com](https://gsm-tool.com/) |
-
-### Первый запуск (SmartScreen)
-
-Сборка без коммерческой подписи — Windows может показать синее предупреждение. Для indie-софта это нормально.
-
-1. **Подробнее**
-2. **Выполнить в любом случае**
-
-После первого запуска Windows обычно больше не спрашивает. Исходники открыты — можно проверить сборку самостоятельно.
-
----
-
-## Разработка
-
-### Требования
-
-Node.js 20+ · Rust (stable) + MSVC · Python 3.10+ (сборка каталога UE)
-
-### Быстрый старт
-
-```powershell
-npm ci
-powershell -File scripts/install-githooks.ps1
-
-npm run tauri dev     # desktop (Vite + Tauri)
-npm test              # Vitest
-npm run build         # production frontend
-npm run landing:dev   # лендинг gsm-tool.com
-```
-
-После изменения IPC DTO в Rust: `npm run types:gen`
-
-### Структура
-
-```
-src/                      React SPA (@/ → src/)
-src-tauri/src/            Rust: commands, ini, discovery, catalog
-landing/                  сайт gsm-tool.com (GitHub Pages)
-tools/ue-catalog-builder/ Python pipeline каталога UE
-docs/                     ARCHITECTURE, parameter-sources, epic-clone-setup
-```
-
-Подробная карта модулей — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-
-### Каталог UE (кратко)
-
-| Слой | Счётчик |
-|------|---------|
-| Справочный индекс | **767** ключей (UE 4.27–5.8) |
-| Ручные описания | **115** ключей RU+EN |
-| Tier A / B overlays | **748** / **150** |
-
-Пересборка: [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) · [`docs/parameter-sources.md`](docs/parameter-sources.md) · актуальные цифры в `src-tauri/catalog/generated/merge_stats.json`
-
-### Проверка перед PR
-
-```powershell
-npm test
-npm run build
-cd src-tauri; cargo test
-python tools/ue-catalog-builder/test_build.py
-npm run landing:build
-```
-
----
-
-## Документация
-
-| Файл | Содержание |
-|------|------------|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Структура кода и границы модулей |
-| [`docs/parameter-sources.md`](docs/parameter-sources.md) | Откуда берутся описания параметров |
-| [`docs/epic-clone-setup.md`](docs/epic-clone-setup.md) | Клон Epic UE и пересборка каталога |
-| [`tools/ue-catalog-builder/README.md`](tools/ue-catalog-builder/README.md) | Python pipeline |
+After the first successful launch, Windows usually stops showing the warning.
 
 ---
 
