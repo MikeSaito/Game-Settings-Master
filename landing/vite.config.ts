@@ -2,6 +2,7 @@ import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 
+const rootDir = import.meta.dirname;
 const base = process.env.VITE_BASE_PATH ?? "/";
 const siteUrl = (process.env.VITE_SITE_URL ?? "https://gsm-tool.com").replace(/\/$/, "");
 const lastmod = new Date().toISOString().slice(0, 10);
@@ -37,7 +38,7 @@ function enRoutePlugin(): Plugin {
       });
     },
     closeBundle() {
-      const outDir = resolve(__dirname, "dist");
+      const outDir = resolve(rootDir, "dist");
       const enHtml = resolve(outDir, "en.html");
       if (!existsSync(enHtml)) {
         return;
@@ -201,7 +202,7 @@ function emitSeoFiles(): Plugin {
   return {
     name: "emit-seo-files",
     closeBundle() {
-      const outDir = resolve(__dirname, "dist");
+      const outDir = resolve(rootDir, "dist");
 
       writeFileSync(
         resolve(outDir, "sitemap.xml"),
@@ -235,8 +236,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html"),
-        en: resolve(__dirname, "en.html"),
+        main: resolve(rootDir, "index.html"),
+        en: resolve(rootDir, "en.html"),
       },
     },
   },

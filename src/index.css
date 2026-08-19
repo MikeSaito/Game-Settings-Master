@@ -1,4 +1,9 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "./";
+@source not "./**/*.test.{ts,tsx}";
+@source not "./test/**";
+@source not "./e2e/**";
+@source not "./screenshot/**";
 @import "./styles/tokens.css";
 
 :root {

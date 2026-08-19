@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
+const rootDir = import.meta.dirname;
 const appVersion = JSON.parse(
   readFileSync(new URL("./package.json", import.meta.url), "utf8"),
 ).version as string;
@@ -14,8 +15,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@shared": path.resolve(__dirname, "shared"),
+      "@": path.resolve(rootDir, "src"),
+      "@shared": path.resolve(rootDir, "shared"),
     },
   },
   test: {

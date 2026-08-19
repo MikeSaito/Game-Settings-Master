@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
+const rootDir = import.meta.dirname;
 const host = process.env.TAURI_DEV_HOST;
 const screenshotMode = process.env.GSM_SCREENSHOT === "1";
 const e2eMode = process.env.GSM_E2E === "1";
@@ -18,23 +19,23 @@ export default defineConfig(async () => ({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@shared": path.resolve(__dirname, "shared"),
+      "@": path.resolve(rootDir, "src"),
+      "@shared": path.resolve(rootDir, "shared"),
       ...(screenshotMode || e2eMode
         ? {
             "@tanstack/react-virtual": path.resolve(
-              __dirname,
+              rootDir,
               "src/screenshot/mockReactVirtual.ts",
             ),
           }
         : {}),
       ...(e2eMode
         ? {
-            "@tauri-apps/api/core": path.resolve(__dirname, "src/e2e/tauriCoreMock.ts"),
-            "@tauri-apps/api/window": path.resolve(__dirname, "src/e2e/tauriWindowMock.ts"),
-            "@tauri-apps/plugin-process": path.resolve(__dirname, "src/e2e/tauriProcessMock.ts"),
-            "@tauri-apps/plugin-updater": path.resolve(__dirname, "src/e2e/tauriUpdaterMock.ts"),
-            "@tauri-apps/plugin-dialog": path.resolve(__dirname, "src/e2e/tauriDialogMock.ts"),
+            "@tauri-apps/api/core": path.resolve(rootDir, "src/e2e/tauriCoreMock.ts"),
+            "@tauri-apps/api/window": path.resolve(rootDir, "src/e2e/tauriWindowMock.ts"),
+            "@tauri-apps/plugin-process": path.resolve(rootDir, "src/e2e/tauriProcessMock.ts"),
+            "@tauri-apps/plugin-updater": path.resolve(rootDir, "src/e2e/tauriUpdaterMock.ts"),
+            "@tauri-apps/plugin-dialog": path.resolve(rootDir, "src/e2e/tauriDialogMock.ts"),
           }
         : {}),
     },
@@ -58,11 +59,20 @@ export default defineConfig(async () => ({
     },
   },
   build: {
+    rolldownOptions: {
+      checks: {
+        pluginTimings: false,
+      },
+    },
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, "index.html"),
-        screenshot: path.resolve(__dirname, "screenshot.html"),
-        e2e: path.resolve(__dirname, "e2e.html"),
+        main: path.resolve(rootDir, "index.html"),
+        ...(screenshotMode || e2eMode
+          ? {
+              screenshot: path.resolve(rootDir, "screenshot.html"),
+              e2e: path.resolve(rootDir, "e2e.html"),
+            }
+          : {}),
       },
     },
   },
