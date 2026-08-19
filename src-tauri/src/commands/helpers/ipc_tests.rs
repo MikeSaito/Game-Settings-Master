@@ -3,7 +3,8 @@ use super::{
     guard_config_dir_for_read, guard_config_dir_for_write, validate_custom_changes_payload,
     validate_custom_changes_semantics, SemanticValidationContext,
 };
-use crate::core::models::CustomChanges;
+use crate::core::models::{CustomChanges, GameProfile};
+use crate::profiles::{remove_profile, save_profile};
 use std::collections::HashMap;
 use std::fs;
 use tempfile::TempDir;
@@ -27,6 +28,55 @@ fn guard_with_game_id_requires_known_profile() {
     fs::write(config.join("GameUserSettings.ini"), b"[x]").unwrap();
     let path = config.to_string_lossy();
     assert!(guard_config_dir_for_write(Some("steam-999999999"), path.as_ref()).is_err());
+}
+
+#[test]
+fn guard_rejects_arbitrary_config_dir_when_expected_unknown() {
+    let foreign = TempDir::new().unwrap();
+    let foreign_config = foreign
+        .path()
+        .join("Saved")
+        .join("Config")
+        .join("Windows");
+    fs::create_dir_all(&foreign_config).unwrap();
+    fs::write(foreign_config.join("GameUserSettings.ini"), b"[x]").unwrap();
+
+    let game_id = format!("ipc-guard-unknown-{}", uuid::Uuid::new_v4());
+    let trusted_install = std::env::current_dir()
+        .expect("cwd")
+        .join("target")
+        .join(format!("test-guard-{game_id}"));
+    fs::create_dir_all(&trusted_install).expect("trusted install dir");
+
+    let profile = GameProfile {
+        id: game_id.clone(),
+        name: "Guard Test".to_string(),
+        source: "manual".to_string(),
+        install_dir: trusted_install.to_string_lossy().to_string(),
+        config_dir: None,
+        exe_name: None,
+        is_ue: true,
+        possible_ue: false,
+        cover_url: None,
+        custom_cover: None,
+        build_id: None,
+        engine_family: "unknown".to_string(),
+        engine_version: None,
+    };
+    save_profile(&profile).expect("save profile for guard test");
+
+    let path = foreign_config.to_string_lossy();
+    assert!(
+        guard_config_dir_for_read(Some(&game_id), path.as_ref()).is_err(),
+        "read guard must reject config_dir when expected path is unknown"
+    );
+    assert!(
+        guard_config_dir_for_write(Some(&game_id), path.as_ref()).is_err(),
+        "write guard must reject config_dir when expected path is unknown"
+    );
+
+    remove_profile(&game_id).expect("cleanup guard test profile");
+    let _ = fs::remove_dir_all(trusted_install);
 }
 
 #[test]

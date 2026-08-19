@@ -1,4 +1,4 @@
-use crate::commands::helpers::validate_config_dir_for_game;
+use crate::commands::helpers::validate_initial_config_dir_for_game;
 use crate::core::app_error::{AppError, AppInvokeError};
 use crate::core::models::GameProfile;
 use crate::discovery::cached_scan_all_games;
@@ -53,6 +53,6 @@ pub fn set_game_config_dir(
     config_dir: String,
 ) -> Result<GameProfile, AppInvokeError> {
     crate::profiles::ensure_known_game_id(&game_id)?;
-    validate_config_dir_for_game(&game_id, &config_dir)?;
+    validate_initial_config_dir_for_game(&game_id, &config_dir)?;
     update_game_profile_config_dir(&game_id, &config_dir)
 }
