@@ -1,7 +1,9 @@
 use crate::core::app_error::{AppError, AppInvokeError};
+use crate::core::models::GameProfile;
+use crate::discovery::known_games::{known_app_id_for_game, known_config_dir};
 use crate::discovery::platform_hints_for_game;
 use crate::ini::paths::{resolve_config_dir_from_path, validate_config_dir};
-use crate::ini::platform::reconcile_config_dir;
+use crate::ini::platform::{reconcile_config_dir, PlatformHints};
 use std::path::{Path, PathBuf};
 
 use super::profile::{find_profile_by_id, normalize_path_cmp};
@@ -59,21 +61,12 @@ pub(crate) fn validate_config_dir_for_game(
     let provided = validate_config_dir(config_dir)?;
     let hints = platform_hints_for_game(Some(game_id), Some(&trusted.engine_family));
     let provided_reconciled = reconcile_config_dir(&provided, &hints);
-    let expected = if let Some(saved) = trusted
-        .config_dir
-        .as_deref()
-        .filter(|s| !s.trim().is_empty())
-    {
-        reconcile_config_dir(&validate_config_dir(saved)?, &hints)
-    } else if let Some(from_install) = resolve_config_dir_from_path(Path::new(&trusted.install_dir))
-    {
-        reconcile_config_dir(&from_install, &hints)
-    } else {
-        return Err(AppError::validation(crate::i18n::t(
-            "Не удалось определить ожидаемый config_dir для игры — укажите папку конфигурации вручную",
-            "Could not determine the expected config_dir for the game — specify the config folder manually",
-        )));
+
+    let Some(expected) = resolve_expected_config_dir(game_id, &trusted, &hints) else {
+        // Auto-detection impossible (e.g. AppData folder differs from game name) — trust manual pick.
+        return Ok(());
     };
+
     if normalize_path_cmp(&expected.to_string_lossy())
         != normalize_path_cmp(&provided_reconciled.to_string_lossy())
     {
@@ -84,3 +77,36 @@ pub(crate) fn validate_config_dir_for_game(
     }
     Ok(())
 }
+
+fn resolve_expected_config_dir(
+    game_id: &str,
+    trusted: &GameProfile,
+    hints: &PlatformHints,
+) -> Option<PathBuf> {
+    if let Some(saved) = trusted
+        .config_dir
+        .as_deref()
+        .filter(|s| !s.trim().is_empty())
+    {
+        return validate_config_dir(saved)
+            .ok()
+            .map(|path| reconcile_config_dir(&path, hints));
+    }
+
+    if let Some(from_install) = resolve_config_dir_from_path(Path::new(&trusted.install_dir)) {
+        return Some(reconcile_config_dir(&from_install, hints));
+    }
+
+    let app_id = known_app_id_for_game(game_id).or_else(|| {
+        game_id
+            .strip_prefix("steam-")
+            .or_else(|| game_id.strip_prefix("epic-"))
+            .map(str::to_string)
+    })?;
+
+    known_config_dir(&app_id).map(|path| reconcile_config_dir(&path, hints))
+}
+
+#[cfg(test)]
+#[path = "trust_tests.rs"]
+mod tests;

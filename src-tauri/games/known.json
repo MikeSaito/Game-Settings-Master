@@ -11,5 +11,11 @@
     "config_platform": "Windows",
     "engine_family": "ue5",
     "epic_app_names": ["Subnautica2"]
+  },
+  "1623730": {
+    "name": "Palworld",
+    "local_app_folder": "Pal",
+    "config_platform": "Windows",
+    "engine_family": "ue5"
   }
 }

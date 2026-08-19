@@ -28,6 +28,36 @@ fn epic_subnautica_not_confused_with_subnautica2() {
 }
 
 #[test]
+fn palworld_known_dir_resolves_pal_folder() {
+    let _guard = localappdata_lock().lock().unwrap();
+    let temp = TempDir::new().unwrap();
+    let platform = temp
+        .path()
+        .join("Pal")
+        .join("Saved")
+        .join("Config")
+        .join("Windows");
+    std::fs::create_dir_all(&platform).unwrap();
+    std::fs::write(
+        platform.join("GameUserSettings.ini"),
+        "[ScalabilityGroups]\n",
+    )
+    .unwrap();
+
+    let previous = std::env::var("LOCALAPPDATA").ok();
+    unsafe { std::env::set_var("LOCALAPPDATA", temp.path()) };
+
+    let resolved = known_config_dir("1623730").expect("Palworld config path");
+    assert!(resolved.ends_with("Pal\\Saved\\Config\\Windows"));
+
+    if let Some(prev) = previous {
+        unsafe { std::env::set_var("LOCALAPPDATA", prev) };
+    } else {
+        unsafe { std::env::remove_var("LOCALAPPDATA") };
+    }
+}
+
+#[test]
 fn pubg_known_dir_without_gus() {
     let _guard = localappdata_lock().lock().unwrap();
     let temp = TempDir::new().unwrap();
