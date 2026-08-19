@@ -17,10 +17,7 @@ pub(crate) use profile::{find_profile_by_id, normalize_path_cmp};
 pub(crate) use semantic_validation::{
     validate_custom_changes_semantics, SemanticValidationContext,
 };
-pub(crate) use trust::{
-    validate_initial_config_dir_for_game,
-    validate_install_dir_for_game,
-};
+pub(crate) use trust::{validate_initial_config_dir_for_game, validate_install_dir_for_game};
 
 #[cfg(test)]
 #[path = "ipc_tests.rs"]

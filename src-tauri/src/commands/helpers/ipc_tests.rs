@@ -33,11 +33,7 @@ fn guard_with_game_id_requires_known_profile() {
 #[test]
 fn guard_rejects_arbitrary_config_dir_when_expected_unknown() {
     let foreign = TempDir::new().unwrap();
-    let foreign_config = foreign
-        .path()
-        .join("Saved")
-        .join("Config")
-        .join("Windows");
+    let foreign_config = foreign.path().join("Saved").join("Config").join("Windows");
     fs::create_dir_all(&foreign_config).unwrap();
     fs::write(foreign_config.join("GameUserSettings.ini"), b"[x]").unwrap();
 

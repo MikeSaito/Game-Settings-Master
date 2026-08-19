@@ -1,6 +1,4 @@
-use super::{
-    resolve_expected_config_dir, validate_config_dir_trust_profile,
-};
+use super::{resolve_expected_config_dir, validate_config_dir_trust_profile};
 use crate::core::models::GameProfile;
 use crate::discovery::platform_hints_for_game;
 use std::fs;
@@ -50,11 +48,9 @@ fn resolve_expected_uses_known_local_app_folder_for_palworld() {
 fn resolve_expected_none_when_no_saved_install_or_known_mapping() {
     let profile = sample_profile("steam-999001");
     let hints = platform_hints_for_game(Some(&profile.id), Some(&profile.engine_family));
-    assert!(
-        resolve_expected_config_dir(&profile.id, &profile, &hints)
-            .expect("resolve")
-            .is_none()
-    );
+    assert!(resolve_expected_config_dir(&profile.id, &profile, &hints)
+        .expect("resolve")
+        .is_none());
 }
 
 #[test]
@@ -70,7 +66,10 @@ fn initial_config_allows_manual_when_expected_unknown() {
         platform.to_str().expect("platform path"),
         true,
     );
-    assert!(result.is_ok(), "manual initial config should pass: {result:?}");
+    assert!(
+        result.is_ok(),
+        "manual initial config should pass: {result:?}"
+    );
 }
 
 #[test]
@@ -86,7 +85,10 @@ fn guard_rejects_manual_when_expected_unknown() {
         platform.to_str().expect("platform path"),
         false,
     );
-    assert!(result.is_err(), "strict guard should reject unassigned config");
+    assert!(
+        result.is_err(),
+        "strict guard should reject unassigned config"
+    );
 }
 
 fn sample_profile(id: &str) -> GameProfile {

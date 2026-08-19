@@ -131,13 +131,12 @@ fn resolve_expected_config_dir(
         return Ok(Some(reconcile_config_dir(&from_install, hints)));
     }
 
-    let app_id = match known_app_id_for_game(game_id)
-        .or_else(|| {
-            game_id
-                .strip_prefix("steam-")
-                .or_else(|| game_id.strip_prefix("epic-"))
-                .map(str::to_string)
-        }) {
+    let app_id = match known_app_id_for_game(game_id).or_else(|| {
+        game_id
+            .strip_prefix("steam-")
+            .or_else(|| game_id.strip_prefix("epic-"))
+            .map(str::to_string)
+    }) {
         Some(id) => id,
         None => return Ok(None),
     };
