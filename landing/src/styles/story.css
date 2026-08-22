@@ -1,0 +1,491 @@
+/* Сцены скролл-кина */
+
+.story__scenes {
+  position: relative;
+}
+
+.scene {
+  position: relative;
+}
+
+.scene__pin {
+  position: relative;
+  width: 100%;
+  max-width: 1220px;
+  min-height: 100dvh;
+  margin-inline: auto;
+  padding: calc(var(--chrome-h) + 1.5rem) var(--deck-pad) 2.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.scene--center .scene__pin {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-content: center;
+  text-align: center;
+  gap: 1.75rem;
+}
+
+.scene__copy {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+  min-width: 0;
+}
+
+.scene--center .scene__copy {
+  justify-items: center;
+}
+
+.scene__kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.scene__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.8vw, 2.9rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.scene__text {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+}
+
+.scene__stage {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.scene__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  margin: 0;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+
+.scene__hint.is-animated {
+  animation: hint-bob 2.2s ease-in-out infinite;
+}
+
+/* Старт: заголовок, CTA и полный вид приложения */
+
+.hero__cta {
+  margin-top: 0.35rem;
+}
+
+.scene--hero .mock {
+  /* Фиксированная высота: окно и подсказка скролла целиком в первом экране. */
+  height: clamp(340px, 56vh, 520px);
+  min-height: 0;
+  animation: hero-rise 0.7s var(--ease) 0.1s both;
+}
+
+/* Сцена: сканирование */
+
+.scan {
+  position: relative;
+}
+
+.scan__icon {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m);
+  background: rgba(15, 14, 12, 0.78);
+  z-index: 2;
+}
+
+.scan__icon img {
+  width: 56px;
+  height: 56px;
+}
+
+.scan__icon span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.scan__win {
+  position: relative;
+  border-radius: var(--radius-l);
+  box-shadow:
+    0 0 calc(var(--glow, 0) * 46px) rgba(217, 154, 43, 0.28),
+    var(--shadow);
+}
+
+.scan__beam {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: 0;
+  height: 72px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(217, 154, 43, 0.28) 42%,
+    rgba(239, 179, 71, 0.85) 50%,
+    rgba(217, 154, 43, 0.28) 58%,
+    transparent
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.scan__counter {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  z-index: 4;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  background: rgba(15, 14, 12, 0.85);
+  border: 1px solid var(--accent-ring);
+  border-radius: 999px;
+}
+
+.scan__status {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.75rem;
+  z-index: 4;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Сцена: бэкап */
+
+.backup {
+  position: relative;
+}
+
+.backup__win {
+  position: relative;
+}
+
+.backup__fly {
+  position: absolute;
+  top: 9%;
+  right: 7%;
+  z-index: 5;
+  padding: 0.45rem 0.7rem 0.45rem 1.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+
+.backup__fly::before {
+  content: "";
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 11px;
+  height: 13px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+}
+
+.mock__backup--new {
+  position: relative;
+}
+
+.backup__badge {
+  position: absolute;
+  top: -0.6rem;
+  right: 0.6rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #10240f;
+  background: var(--success);
+}
+
+.backup__shield {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+}
+
+.backup__shield-body {
+  fill: rgba(118, 200, 147, 0.15);
+  stroke: var(--success);
+  stroke-width: 2.5;
+}
+
+.backup__shield-check {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Сцена: Basic и Advanced */
+
+.modes {
+  position: relative;
+}
+
+.modes__win {
+  position: relative;
+}
+
+.modes__fps,
+.modes__ue {
+  position: absolute;
+  top: 0.6rem;
+  z-index: 4;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(15, 14, 12, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.modes__fps {
+  right: 0.75rem;
+}
+
+.modes__fps b {
+  color: var(--success);
+}
+
+.modes__ue {
+  right: 6.5rem;
+  color: var(--accent);
+  border-color: var(--accent-ring);
+}
+
+.modes__fps.is-on,
+.modes__ue.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.modes__tip {
+  position: absolute;
+  right: 1rem;
+  bottom: 3.4rem;
+  z-index: 4;
+  margin: 0;
+  max-width: 240px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.75rem;
+  color: var(--text);
+  background: var(--surface-raised);
+  border: 1px solid var(--accent-ring);
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.modes__tip.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+/* Сцена: финал */
+
+.final {
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  width: 100%;
+}
+
+.final__monitor {
+  width: min(560px, 100%);
+  perspective: 900px;
+}
+
+.final__screen {
+  border: 8px solid #211f19;
+  border-radius: 14px;
+  background: var(--bg-soft);
+  overflow: hidden;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(217, 154, 43, 0.12);
+}
+
+.final__screen .mock {
+  min-height: 0;
+  height: 280px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.final__stand {
+  position: relative;
+  width: 130px;
+  height: 34px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #2a271f, #171611);
+  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+}
+
+.final__stand::after {
+  content: "";
+  position: absolute;
+  left: -24px;
+  right: -24px;
+  bottom: -6px;
+  height: 6px;
+  border-radius: 3px;
+  background: #2a271f;
+}
+
+.final__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.final__badges li {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--accent-ring);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.final__tagline {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Десктопные сцены: моки демонстрационные, управляются скроллом.
+   Блокируем указатель и внутренний скролл, чтобы колесо мыши не
+   перехватывалось .mock__main во время пиннинга. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .scene__stage .mock {
+    pointer-events: none;
+  }
+
+  .scene__stage .mock__main {
+    overflow: hidden;
+  }
+}
+
+/* Монитор в финале декоративен всегда, включая фолбэк. */
+.final__screen .mock {
+  pointer-events: none;
+}
+
+.final__screen .mock__main {
+  overflow: hidden;
+}
+
+/* Фолбэк: мобильные и reduced-motion */
+
+.story--fallback [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+.story--fallback [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.story--fallback .scene__hint,
+.story--fallback .scan__icon,
+.story--fallback .scan__beam,
+.story--fallback .scan__status,
+.story--fallback .scan__counter,
+.story--fallback .backup__fly,
+.story--fallback .modes__fps,
+.story--fallback .modes__ue,
+.story--fallback .modes__tip {
+  display: none;
+}
+
+@media (max-width: 899.98px) {
+  .scene__pin {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    align-content: start;
+    gap: 1.25rem;
+    padding-top: calc(var(--chrome-h) + 2.25rem);
+    padding-bottom: 2rem;
+  }
+
+  .scene__copy {
+    order: 1;
+  }
+
+  .scene__stage {
+    order: 2;
+  }
+
+  .final__screen .mock {
+    height: 240px;
+  }
+}

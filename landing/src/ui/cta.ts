@@ -2,9 +2,9 @@ import { githubUrl } from "../lib/site";
 import type { LocaleStrings } from "../i18n/types";
 import { showDownloadModal } from "./downloadModal";
 
-export function makeActions(t: LocaleStrings, variant: "hero" | "download" = "hero"): HTMLElement {
+export function makeActions(t: LocaleStrings): HTMLElement {
   const wrap = document.createElement("div");
-  wrap.className = variant === "hero" ? "actions gate__actions" : "actions acquire__actions";
+  wrap.className = "actions";
 
   const dl = document.createElement("button");
   dl.type = "button";

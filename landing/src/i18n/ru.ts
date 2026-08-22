@@ -7,135 +7,352 @@ export const ru: LocaleStrings = {
   meta: {
     title: "Game Settings Master – редактор конфигов Unreal Engine",
     description:
-      "Редактор GameUserSettings.ini и Engine.ini для игр на Unreal Engine. Бэкапы, подсказки по версии UE, фильтры DLSS/FSR под видеокарту.",
+      "Интерактивная презентация редактора GameUserSettings.ini и Engine.ini: библиотека игр, Basic/Advanced, бэкапы, фильтры DLSS/FSR.",
     keywords:
       "настройки игр, Unreal Engine, UE4, UE5, DLSS, FSR, редактор конфигов, ini",
     ogLocale: "ru_RU",
   },
-  nav: {
-    features: "Возможности",
-    modes: "Режимы",
-    faq: "Вопросы",
+  chrome: {
+    aria: "Скролл-презентация",
+    langLabel: "Язык",
+    ru: "RU",
+    en: "EN",
     download: "Скачать",
-    aria: "Навигация",
   },
-  hero: {
-    kicker: "Редактор ini для Unreal Engine",
-    title: "Настройки игр",
-    titleAccent: "под контролем",
-    subtitle:
-      "GameUserSettings и Engine.ini в одном окне. Бэкап перед применением, подсказки по версии UE, фильтры DLSS и FSR под вашу видеокарту.",
-    shotAlt: "Редактор Game Settings Master – режим Basic",
-    sceneCredit:
-      "Фон — концепт-рендер из серии визуальных референсов, не сборка на движке. © автор проекта.",
+  story: {
+    scrollHint: "Листайте вниз",
+    hero: {
+      kicker: "Редактор конфигов Unreal Engine",
+      title: "Все настройки игр Unreal Engine в одном окне",
+      text: "Библиотека находит игры сама. Basic как меню игры, Advanced с CVars, бэкапы перед каждой записью.",
+    },
+    scan: {
+      kicker: "01 · Сканирование",
+      title: "Игры на Unreal Engine найдутся сами",
+      text: "Steam, Epic и ручные пути. Версия движка определяется сразу.",
+      scanning: "Сканирование дисков…",
+      counter: (found: number) => {
+        const mod10 = found % 10;
+        const mod100 = found % 100;
+        const word =
+          mod10 === 1 && mod100 !== 11
+            ? "игра"
+            : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)
+              ? "игры"
+              : "игр";
+        return `Найдено: ${found} ${word}`;
+      },
+    },
+    backup: {
+      kicker: "02 · Бэкапы",
+      title: "Сломать игру невозможно",
+      text: "Снимок конфигов перед каждой записью. Откат в один клик.",
+      badge: "backup_success",
+      now: "только что",
+    },
+    modes: {
+      kicker: "03 · Basic и Advanced",
+      title: "От простых тумблеров до глубокого твикинга",
+      text: "Basic как меню игры. Advanced: CVars с подсказками под версию UE.",
+      fps: "FPS",
+      tooltip: "UE 5.3: параметр поддерживается",
+    },
+    final: {
+      kicker: "04 · Установка",
+      title: "Забудь про Блокнот",
+      text: "Бесплатно, open source, без аккаунта. Исходники на GitHub.",
+      tagline: "Настраивай как профи",
+      badges: ["Бесплатно", "Open source", "Без аккаунта"],
+    },
+    flow: {
+      faqTitle: "Частые вопросы",
+    },
   },
-  engineTags: [
-    "UE 4.27",
-    "UE 5.8",
-    "GameUserSettings.ini",
-    "Engine.ini",
-    "DLSS",
-    "FSR",
-    "Nanite",
-    "Lumen",
-    "Steam",
-    "Epic",
-  ],
-  basicAdvanced: {
-    title: "Basic и Advanced",
-    text: "Переключайтесь между игровыми настройками и CVars движка – интерфейс подстраивается под задачу.",
-    basic: {
-      label: "Basic",
-      title: "GameUserSettings",
-      text: "То, что обычно в меню игры: качество, разрешение, окно, VSync.",
-      bullets: ["sg.*", "разрешение и режим окна", "VSync, лимит FPS"],
+  mock: {
+    windowTitle: "Game Settings Master",
+    navLibrary: "Библиотека",
+    navEditor: "Редактор",
+    navSettings: "Настройки",
+    search: "Поиск или название для ручного добавления…",
+    scan: "Сканировать",
+    add: "Добавить",
+    libTitle: "Библиотека игр",
+    libSubtitle: "Steam · Epic · Unreal Engine · ручное добавление",
+    badgeTotal: (n: number) => `${n} всего`,
+    badgeConfig: (n: number) => `${n} с конфигом`,
+    badgeUe: (n: number) => `${n} UE`,
+    badgeCover: (n: number) => `${n} с обложкой`,
+    configOk: "Конфиг готов",
+    configMissing: "Нужен конфиг",
+    select: "Выбрать",
+    cover: "Обложка",
+    sourceSteam: "Steam",
+    sourceEpic: "Epic",
+    sourceManual: "Вручную",
+    ctxPlay: "Играть",
+    ctxConfig: "Конфиг",
+    tabs: {
+      basic: "Базовое",
+      advanced: "Расширенное",
+      presets: "Пресеты",
+      backups: "Бэкапы",
     },
-    advanced: {
-      label: "Advanced",
-      title: "Engine.ini / CVars",
-      text: "Низкоуровневые параметры движка с предупреждениями и снимком конфигов перед записью.",
-      bullets: ["r.* и другие CVars", "подсказки по версии UE", "откат через бэкап"],
+    basicHint: "Пользовательские настройки: как в меню игры",
+    advancedHint: "Параметры движка и консольные переменные: для опытных",
+    backupsHint: "Снимки конфигов перед применением и откат",
+    basicSafe: "Только GameUserSettings.ini",
+    advancedWarn: "Engine.ini: экспертные переменные могут конфликтовать с настройками игры.",
+    paramsForEngine: "725 параметров для UE 5.0",
+    known: "6 в справочнике",
+    sgLimits: "sg макс. 3 · масштаб 25–200%",
+    engineShort: "В ini: 38 из 142.",
+    changes: (n: number) => {
+      const mod10 = n % 10;
+      const mod100 = n % 100;
+      const word =
+        mod10 === 1 && mod100 !== 11
+          ? "изменение"
+          : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)
+            ? "изменения"
+            : "изменений";
+      return `${n} ${word}`;
     },
-  },
-  features: [
-    {
-      id: "library",
-      step: "01",
-      title: "Библиотека игр",
-      text: "Сканирование Steam и Epic, ручное добавление. Приложение находит папку с конфигами и показывает контекст игры – движок, пути, обложку.",
-      shot: "screenshots/ru/library.png",
+    discard: "Сбросить",
+    applyBasic: "Применить в пользовательские настройки",
+    applyAdvanced: "Применить (движок / масштабируемость)",
+    inIni: "В ini",
+    removeFromIni: "Удалить из ini",
+    detail: {
+      title: "Детали параметра",
+      key: "r.DLSS.Enable",
+      current: ["Текущее значение", "1"],
+      type: ["Тип", "Boolean"],
+      range: ["Диапазон", "0..1"],
+      tier: "Tier A",
+      desc: "DLSS-апскейлинг через Engine.ini: меньше нагрузка на GPU, выше FPS.",
+      compat: ["Совместимость", "UE 5.0+"],
     },
-    {
-      id: "editor",
-      step: "02",
-      title: "Редактор Basic / Advanced",
-      text: "Понятные ползунки и переключатели для GameUserSettings. Расширенный режим – для CVars с tier-подсказками, предупреждениями и бэкапом.",
-      shot: "screenshots/ru/editor-basic.png",
-      reverse: true,
+    backupsCount: (n: number) => {
+      const mod10 = n % 10;
+      const mod100 = n % 100;
+      const word =
+        mod10 === 1 && mod100 !== 11
+          ? "копия"
+          : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)
+            ? "копии"
+            : "копий";
+      return `${n} ${word}`;
     },
-    {
-      id: "backup",
-      step: "03",
-      title: "Резервные копии",
-      text: "Снимок конфигов перед каждым применением. Экспериментируйте с ini и откатывайтесь к предыдущей версии в один клик.",
-      shot: "screenshots/ru/backups.png",
-      reverse: true,
-    },
-  ],
-  faq: {
-    title: "Частые вопросы",
-    items: [
+    howTitle: "Как это работает",
+    howBody:
+      "Перед каждым применением пресета или ручных правок создаётся снимок ini-файлов в локальной папке данных приложения.",
+    listTitle: "Список резервных копий",
+    listDesc: "Новые сверху.",
+    restore: "Восстановить",
+    gpu: "RTX 4070",
+    newBackupId: "2026-08-22_20-15-04",
+    games: [
       {
-        question: "Почему SmartScreen предупреждает при запуске?",
-        paragraphs: [
-          "Windows Defender SmartScreen проверяет, подписан ли файл известным издателем. Game Settings Master распространяется как бесплатная сборка без коммерческого сертификата подписи кода – для независимых проектов это обычная ситуация, а не признак вредоносного ПО.",
-          "При первом запуске Windows может показать синее окно «Система Windows защитила ваш компьютер». Нажмите «Подробнее», затем «Выполнить в любом случае». Исходный код приложения открыт на GitHub – вы можете проверить, из чего собран релиз.",
-          "После успешного первого запуска Windows часто запоминает файл и больше не показывает предупреждение. Часть поддержки проекта идёт на получение подписи издателя – тогда предупреждение исчезнет и для новых пользователей.",
-        ],
+        id: "g1",
+        name: "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+        source: "steam",
+        engine: "UE 5",
+        version: "5.0",
+        ok: true,
+        fav: true,
+        path: "C:\\Games\\Stalker2",
+        config: "C:\\Games\\Stalker2\\Saved\\Config\\Windows",
+        hue: 38,
       },
       {
-        question: "Basic режим безопасен?",
-        paragraphs: [
-          "Basic редактирует GameUserSettings.ini – тот же файл, с которым работает меню настроек внутри игры. Параметры sg.* (Scalability Groups) отвечают за качество текстур, теней, эффектов и другие пресеты, которые игрок обычно меняет ползунками в меню.",
-          "Режим Basic не трогает Engine.ini и низкоуровневые CVars. Риск «сломать» игру здесь сопоставим с обычными настройками в лаунчере или внутриигровом меню – вы меняете те же значения, только удобнее и с контекстом.",
-          "Перед каждым применением создаётся резервная копия конфигов. Если результат не устроил, откатите изменения в разделе бэкапов без ручного поиска файлов в папке Saved.",
-        ],
+        id: "g2",
+        name: "Black Myth: Wukong",
+        source: "steam",
+        engine: "UE 5",
+        version: "5.0",
+        ok: true,
+        path: "C:\\Games\\Wukong",
+        config: "C:\\Games\\Wukong\\Saved\\Config\\Windows",
+        hue: 14,
       },
       {
-        question: "Что такое Engine.ini?",
-        paragraphs: [
-          "Engine.ini – конфигурационный файл Unreal Engine в папке Saved/Config. В нём хранятся CVars (консольные переменные): r.*, лимиты рендера, отключение функций и другие низкоуровневые настройки, которых нет в игровом меню.",
-          "Игра может также использовать Scalability.ini и Game.ini – в режиме Advanced показываются параметры из всех этих файлов. Часть значений дублирует sg.* из GameUserSettings, но на уровне движка – приложение предупреждает о таких пересечениях.",
-          "Правки в Advanced мощнее, но требуют понимания последствий: некорректные значения могут ухудшить стабильность, FPS или картинку. Используйте подсказки к параметрам и всегда делайте бэкап перед экспериментами.",
-        ],
+        id: "g3",
+        name: "Fortnite",
+        source: "epic",
+        engine: "UE 5",
+        version: "5.1",
+        ok: true,
+        path: "C:\\Games\\Fortnite",
+        config: "C:\\Games\\Fortnite\\Saved\\Config\\Windows",
+        hue: 262,
       },
       {
-        question: "Можно откатить изменения?",
-        paragraphs: [
-          "Да. Перед записью в ini приложение сохраняет снимок текущих конфигов с датой и временем – отдельно для GameUserSettings.ini, Engine.ini и связанных файлов.",
-          "В редакторе откройте вкладку бэкапов, выберите нужную точку и восстановите файлы. Конфиги вернутся к состоянию на момент снимка, без ручного копирования из папки Saved.",
-          "Можно применить настройки, запустить игру и откатиться, если FPS или стабильность изменились не в лучшую сторону. Каждое новое применение создаёт новый бэкап – старые точки не перезаписываются автоматически.",
-        ],
+        id: "g4",
+        name: "The Finals",
+        source: "steam",
+        engine: "UE 5",
+        version: "5.2",
+        ok: true,
+        path: "D:\\Steam\\TheFinals",
+        config: "D:\\Steam\\TheFinals\\Saved\\Config\\Windows",
+        hue: 352,
       },
       {
-        question: "UE4 и UE5 отличаются в подсказках?",
-        paragraphs: [
-          "Unreal Engine 4 и 5 имеют разный набор CVars, значения по умолчанию и поведение отдельных параметров. Приложение определяет версию движка игры и показывает подсказки, актуальные для этой версии.",
-          "Опции вроде Nanite, Lumen или настроек, появившихся в UE 5.4+, не будут предлагаться для игры на UE 4.27. Tier-подсказки (приоритет и риск) тоже учитывают контекст версии – то, что безопасно в одной ветке UE, может быть рискованным в другой.",
-          "Если версию определить не удалось, редактор всё равно покажет найденные в ini параметры и позволит их редактировать – но без привязки к конкретной ветке движка.",
-        ],
+        id: "g5",
+        name: "Satisfactory",
+        source: "steam",
+        engine: "UE 5",
+        version: "5.3",
+        ok: true,
+        path: "D:\\Steam\\Satisfactory",
+        config: "D:\\Steam\\Satisfactory\\Saved\\Config\\Windows",
+        hue: 24,
+      },
+      {
+        id: "g6",
+        name: "Palworld",
+        source: "steam",
+        engine: "UE 5",
+        version: "5.1",
+        ok: false,
+        path: "D:\\Steam\\Palworld",
+        config: "",
+        hue: 190,
+      },
+    ],
+    basicParams: [
+      {
+        key: "sg.ResolutionQuality",
+        title: "Масштаб разрешения",
+        value: "62",
+        kind: "slider",
+        min: 25,
+        max: 200,
+        demoTo: "100",
+        demoAt: 0,
+      },
+      {
+        key: "sg.TextureQuality",
+        title: "Качество текстур",
+        value: "Эпик",
+        kind: "select",
+        options: ["Низкое", "Среднее", "Высокое", "Эпик"],
+        demoTo: "Высокое",
+        demoAt: 0.45,
+      },
+      {
+        key: "sg.ShadowQuality",
+        title: "Качество теней",
+        value: "Среднее",
+        kind: "select",
+        options: ["Низкое", "Среднее", "Высокое", "Эпик"],
+      },
+      {
+        key: "FullscreenMode",
+        title: "Режим окна",
+        value: "Без рамки",
+        kind: "select",
+        options: ["Полный экран", "Без рамки", "Оконный"],
+      },
+      {
+        key: "bUseVSync",
+        title: "VSync",
+        value: "True",
+        kind: "toggle",
+        demoTo: "False",
+        demoAt: 0.75,
+      },
+    ],
+    advancedParams: [
+      {
+        key: "r.DLSS.Enable",
+        title: "DLSS",
+        value: "1",
+        kind: "toggle",
+        tier: "Tier A",
+      },
+      {
+        key: "r.RayTracing",
+        title: "Ray Tracing",
+        value: "1",
+        kind: "toggle",
+        tier: "Tier B",
+        warning: "Влияет на FPS",
+      },
+      {
+        key: "r.Lumen.Reflections.Allow",
+        title: "Lumen Reflections",
+        value: "1",
+        kind: "toggle",
+        tier: "Tier B",
+      },
+      {
+        key: "r.Shadow.Virtual.Enable",
+        title: "Virtual Shadow Maps",
+        value: "1",
+        kind: "toggle",
+        tier: "Tier B",
+      },
+      {
+        key: "r.Nanite.MaxPixelsPerEdge",
+        title: "Nanite Max Pixels",
+        value: "1.0",
+        kind: "cvar",
+        tier: "Tier A",
+      },
+      {
+        key: "r.TSR.History.ScreenPercentage",
+        title: "TSR Screen Percentage",
+        value: "100",
+        kind: "cvar",
+        hint: "UE 5",
+      },
+    ],
+    backups: [
+      {
+        id: "2026-06-26_14-32-01",
+        label: "26.06.2026, 14:32",
+        files: ["GameUserSettings.ini", "Engine.ini", "Scalability.ini"],
+      },
+      {
+        id: "2026-06-25_09-18-44",
+        label: "25.06.2026, 09:18",
+        files: ["GameUserSettings.ini", "Engine.ini"],
+      },
+      {
+        id: "2026-06-24_21-05-12",
+        label: "24.06.2026, 21:05",
+        files: ["GameUserSettings.ini"],
       },
     ],
   },
+  faq: [
+    {
+      question: "Почему SmartScreen предупреждает?",
+      paragraphs: [
+        "Сборка без коммерческой подписи кода; для indie это обычно. Нажмите «Подробнее», затем «Выполнить в любом случае». Исходники открыты на GitHub.",
+      ],
+    },
+    {
+      question: "Basic безопасен?",
+      paragraphs: [
+        "Basic правит GameUserSettings.ini, тот же файл, что и меню игры. Engine.ini не трогается. Перед применением создаётся бэкап.",
+      ],
+    },
+    {
+      question: "Можно откатить?",
+      paragraphs: [
+        "Да. Каждый apply сохраняет снимок. В разделе бэкапов выберите точку и восстановите конфиги.",
+      ],
+    },
+  ],
   download: {
-    title: "Скачать Game Settings Master",
-    subtitle: "Windows · бесплатно · без подписи издателя",
     button: "Скачать для Windows",
     githubButton: "Исходники на GitHub",
     smartScreen: {
       title: "Первый запуск в Windows",
       intro:
-        "Приложение без коммерческой подписи – SmartScreen может показать предупреждение. Для indie-софта это нормально.",
+        "Приложение без коммерческой подписи. SmartScreen может показать предупреждение. Для indie-софта это нормально.",
       step1: "Нажмите «Подробнее»",
       step2: "Затем «Выполнить в любом случае»",
       note: "После первого запуска Windows обычно больше не спрашивает.",
@@ -152,10 +369,5 @@ export const ru: LocaleStrings = {
     version: (v: string) => `Game Settings Master v${v}`,
     donateLink: "Поддержать проект",
     telegramLink: "Telegram",
-  },
-  localeSwitch: {
-    label: "Язык",
-    ru: "RU",
-    en: "EN",
   },
 };

@@ -6,9 +6,15 @@ function start(): void {
   maybeRedirectToEnglishHome();
 
   const t = getLocale();
-  document.documentElement.lang = t.lang;
+  document.documentElement.lang = t.htmlLang;
+  document.title = t.meta.title;
 
-  initSite(t);
+  const cleanup = initSite(t);
+
+  if (import.meta.hot) {
+    import.meta.hot.accept();
+    import.meta.hot.dispose(() => cleanup());
+  }
 }
 
 start();

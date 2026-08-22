@@ -47,8 +47,8 @@ export function maybeRedirectToEnglishHome(): void {
   const target = joinBase("en/");
   const targetPath = new URL(target, window.location.origin).pathname;
   if (window.location.pathname !== targetPath) {
-    window.location.replace(target);
+    window.location.replace(`${target}${window.location.search}${window.location.hash}`);
   }
 }
 
-export type { LocaleStrings, FeatureStrings } from "./types";
+export type { LocaleStrings } from "./types";

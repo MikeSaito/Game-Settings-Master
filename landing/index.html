@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game Settings Master – редактор конфигов Unreal Engine</title>
-    <meta name="theme-color" content="#11110f" />
+    <meta name="theme-color" content="#0f0e0c" />
     <meta
       name="description"
-      content="Редактор GameUserSettings.ini и Engine.ini для игр на Unreal Engine. Бэкапы, подсказки по версии UE, режимы Basic и Advanced."
+      content="Интерактивная презентация редактора GameUserSettings.ini и Engine.ini: библиотека игр, Basic/Advanced, бэкапы, фильтры DLSS/FSR."
     />
     <meta
       name="keywords"
@@ -30,7 +30,7 @@
     <meta property="og:title" content="Game Settings Master – редактор конфигов Unreal Engine" />
     <meta
       property="og:description"
-      content="Редактор GameUserSettings.ini и Engine.ini для игр на Unreal Engine. Бэкапы и подсказки по версии UE."
+      content="Интерактивная презентация редактора GameUserSettings.ini и Engine.ini для Unreal Engine."
     />
     <meta property="og:image" content="https://gsm-tool.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -40,7 +40,7 @@
     <meta name="twitter:title" content="Game Settings Master" />
     <meta
       name="twitter:description"
-      content="Редактор ini для игр на Unreal Engine: Basic, Advanced, бэкапы."
+      content="Интерактивная презентация: Basic, Advanced, бэкапы для UE."
     />
     <meta name="twitter:image" content="https://gsm-tool.com/og-image.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
@@ -49,7 +49,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <script type="application/ld+json">
@@ -62,13 +62,19 @@
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Windows",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Редактор GameUserSettings.ini и Engine.ini для игр на Unreal Engine с бэкапами и подсказками.",
+        "description": "Интерактивная презентация редактора GameUserSettings.ini и Engine.ini для Unreal Engine.",
         "sameAs": ["https://github.com/MikeSaito/Game-Settings-Master"]
       }
     </script>
   </head>
   <body>
     <div id="app"></div>
+    <noscript>
+      <div style="max-width: 34rem; margin: 20vh auto; padding: 0 1rem; text-align: center; color: #faf6ec; font-family: system-ui, sans-serif;">
+        <p>Game Settings Master: редактор конфигов Unreal Engine с автопоиском игр, бэкапами и подсказками по версии UE. Для интерактивной презентации включите JavaScript.</p>
+        <p><a style="color: #d99a2b;" href="https://github.com/MikeSaito/Game-Settings-Master/releases/latest">Скачать для Windows</a></p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

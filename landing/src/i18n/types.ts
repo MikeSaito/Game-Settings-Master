@@ -1,29 +1,47 @@
-export interface FeatureStrings {
-  id: string;
-  step: string;
-  title: string;
-  text: string;
-  shot: string;
-  reverse?: boolean;
-}
-
-export interface BasicAdvancedColumnStrings {
-  label: string;
-  title: string;
-  text: string;
-  bullets: string[];
-}
-
-export interface BasicAdvancedStrings {
-  title: string;
-  text: string;
-  basic: BasicAdvancedColumnStrings;
-  advanced: BasicAdvancedColumnStrings;
-}
-
 export interface FaqStrings {
   question: string;
   paragraphs: string[];
+}
+
+export interface MockGame {
+  id: string;
+  name: string;
+  source: "steam" | "epic" | "manual";
+  engine: string;
+  version: string;
+  ok: boolean;
+  fav?: boolean;
+  path: string;
+  config: string;
+  hue: number;
+}
+
+export interface MockParam {
+  key: string;
+  title: string;
+  value: string;
+  kind: "slider" | "toggle" | "select" | "cvar";
+  min?: number;
+  max?: number;
+  options?: string[];
+  tier?: string;
+  warning?: string;
+  hint?: string;
+  /** Цель и порог прогресса сцены modes: контрол приводится к demoTo после demoAt. */
+  demoTo?: string;
+  demoAt?: number;
+}
+
+export interface MockBackup {
+  id: string;
+  label: string;
+  files: string[];
+}
+
+export interface StorySceneText {
+  kicker: string;
+  title: string;
+  text: string;
 }
 
 export interface LocaleStrings {
@@ -36,31 +54,105 @@ export interface LocaleStrings {
     keywords: string;
     ogLocale: string;
   };
-  nav: {
-    features: string;
-    modes: string;
-    faq: string;
-    download: string;
+  chrome: {
     aria: string;
+    langLabel: string;
+    ru: string;
+    en: string;
+    download: string;
   };
-  hero: {
-    kicker: string;
-    title: string;
-    titleAccent: string;
-    subtitle: string;
-    shotAlt: string;
-    sceneCredit: string;
+  story: {
+    scrollHint: string;
+    hero: StorySceneText;
+    scan: StorySceneText & {
+      scanning: string;
+      counter: (found: number) => string;
+    };
+    backup: StorySceneText & {
+      badge: string;
+      now: string;
+    };
+    modes: StorySceneText & {
+      fps: string;
+      tooltip: string;
+    };
+    final: StorySceneText & {
+      tagline: string;
+      badges: string[];
+    };
+    flow: {
+      faqTitle: string;
+    };
   };
-  engineTags: string[];
-  basicAdvanced: BasicAdvancedStrings;
-  features: FeatureStrings[];
-  faq: {
-    title: string;
-    items: FaqStrings[];
+  mock: {
+    windowTitle: string;
+    navLibrary: string;
+    navEditor: string;
+    navSettings: string;
+    search: string;
+    scan: string;
+    add: string;
+    libTitle: string;
+    libSubtitle: string;
+    badgeTotal: (n: number) => string;
+    badgeConfig: (n: number) => string;
+    badgeUe: (n: number) => string;
+    badgeCover: (n: number) => string;
+    configOk: string;
+    configMissing: string;
+    select: string;
+    cover: string;
+    sourceSteam: string;
+    sourceEpic: string;
+    sourceManual: string;
+    ctxPlay: string;
+    ctxConfig: string;
+    tabs: {
+      basic: string;
+      advanced: string;
+      presets: string;
+      backups: string;
+    };
+    basicHint: string;
+    advancedHint: string;
+    backupsHint: string;
+    basicSafe: string;
+    advancedWarn: string;
+    paramsForEngine: string;
+    known: string;
+    sgLimits: string;
+    engineShort: string;
+    changes: (n: number) => string;
+    discard: string;
+    applyBasic: string;
+    applyAdvanced: string;
+    inIni: string;
+    removeFromIni: string;
+    detail: {
+      title: string;
+      key: string;
+      current: [string, string];
+      type: [string, string];
+      range: [string, string];
+      tier: string;
+      desc: string;
+      compat: [string, string];
+    };
+    backupsCount: (n: number) => string;
+    howTitle: string;
+    howBody: string;
+    listTitle: string;
+    listDesc: string;
+    restore: string;
+    gpu: string;
+    newBackupId: string;
+    games: MockGame[];
+    basicParams: MockParam[];
+    advancedParams: MockParam[];
+    backups: MockBackup[];
   };
+  faq: FaqStrings[];
   download: {
-    title: string;
-    subtitle: string;
     button: string;
     githubButton: string;
     smartScreen: {
@@ -73,19 +165,14 @@ export interface LocaleStrings {
       cancel: string;
     };
   };
-  footer: {
-    version: (v: string) => string;
-    donateLink: string;
-    telegramLink: string;
-  };
   donate: {
     title: string;
     text: string;
     button: string;
   };
-  localeSwitch: {
-    label: string;
-    ru: string;
-    en: string;
+  footer: {
+    version: (v: string) => string;
+    donateLink: string;
+    telegramLink: string;
   };
 }
