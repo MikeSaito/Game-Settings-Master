@@ -18,7 +18,7 @@ fn merge_preserves_unknown_keys() {
 
 #[test]
 fn new_ini_inherits_utf16_from_gus() {
-    use crate::ini::encoding::{write_text, IniEncoding};
+    use crate::ini::encoding::{read_text, write_text, IniEncoding};
     use std::fs;
 
     let dir = tempfile::tempdir().unwrap();
@@ -44,12 +44,8 @@ fn new_ini_inherits_utf16_from_gus() {
         bytes.starts_with(&[0xFF, 0xFE]),
         "Engine.ini must inherit UTF-16 LE"
     );
-    let content = String::from_utf16_lossy(
-        &bytes[2..]
-            .chunks_exact(2)
-            .map(|c| u16::from_le_bytes([c[0], c[1]]))
-            .collect::<Vec<_>>(),
-    );
+    let (content, encoding) = read_text(&engine).unwrap();
+    assert_eq!(encoding, IniEncoding::Utf16Le);
     assert!(content.contains("r.ViewDistanceScale=1.55"), "{content}");
 }
 

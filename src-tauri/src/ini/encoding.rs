@@ -34,9 +34,10 @@ fn encoding_from_bytes(bytes: &[u8]) -> IniEncoding {
 
 fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
     if bytes.starts_with(&[0xFF, 0xFE]) {
-        let units: Vec<u16> = bytes[2..]
-            .chunks_exact(2)
-            .map(|chunk| u16::from_le_bytes([chunk[0], chunk[1]]))
+        let (chunks, _) = bytes[2..].as_chunks::<2>();
+        let units: Vec<u16> = chunks
+            .iter()
+            .map(|chunk| u16::from_le_bytes(*chunk))
             .collect();
         Ok((String::from_utf16_lossy(&units), IniEncoding::Utf16Le))
     } else if bytes.starts_with(&[0xFE, 0xFF]) {
