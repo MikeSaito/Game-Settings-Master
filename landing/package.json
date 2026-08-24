@@ -15,7 +15,7 @@
     "@emnapi/runtime": "^2.0.0-alpha.3",
     "playwright": "^1.62.1",
     "typescript": "~7.0.2",
-    "vite": "^8.2.1"
+    "vite": "^8.2.2"
   },
   "overrides": {
     "esbuild": "^0.28.1",
