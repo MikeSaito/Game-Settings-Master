@@ -18,28 +18,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  frontend:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
         with:
-          node-version: "22"
+          node-version: "22.22.2"
           cache: npm
-
-      - uses: dtolnay/rust-toolchain@stable
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
 
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - name: Install frontend dependencies
-        run: npm ci
+      - run: npm ci
+
+      - name: Verify generated files and package alignment
+        run: |
+          npm run validation:index:check
+          npm run i18n:parity
+          npm run tauri:versions:check
+
+      - name: Build and test frontend
+        run: |
+          npm run build
+          npm test
+
+      - name: Catalog builder tests
+        run: npm run catalog:test
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests
+        run: npm run e2e
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
 
       - name: Rust format check
         working-directory: src-tauri
@@ -47,42 +73,37 @@ jobs:
 
       - name: Rust clippy
         working-directory: src-tauri
-        run: cargo clippy -- -D warnings
+        run: cargo clippy --locked -- -D warnings
 
       - name: Rust tests
         working-directory: src-tauri
-        run: cargo test
+        run: cargo test --locked
 
       - name: Verify TypeScript bindings in sync
         shell: pwsh
-        run: powershell -ExecutionPolicy Bypass -File scripts/verify-types-sync.ps1
+        run: ./scripts/verify-types-sync.ps1
 
-      - name: Verify validation index in sync
-        run: npm run validation:index:check
+  tauri-smoke:
+    if: github.event_name == 'push'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
 
-      - name: Verify i18n key parity
-        run: npm run i18n:parity
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.22.2"
+          cache: npm
 
-      - name: Rust release compile check
-        working-directory: src-tauri
-        run: cargo check --release
+      - uses: dtolnay/rust-toolchain@stable
 
-      - name: Frontend build
-        run: npm run build
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          shared-key: tauri-release
 
-      - name: Frontend unit tests
-        run: npm test
+      - run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install chromium
-
-      - name: E2E tests
-        run: npm run e2e
-
-      - name: Catalog builder tests
-        run: npm run catalog:test
-
-      - name: Tauri bundle smoke (no installer)
+      - name: Tauri bundle smoke
         run: npx tauri build --no-bundle
 
   landing-build:
@@ -92,7 +113,7 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: "22"
+          node-version: "22.22.2"
           cache: npm
           cache-dependency-path: landing/package-lock.json
 
@@ -107,7 +128,7 @@ jobs:
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Install & build landing
+      - name: Install and build landing
         working-directory: landing
         env:
           VITE_BASE_PATH: /
