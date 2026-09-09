@@ -1,4 +1,10 @@
 version: 2
+multi-ecosystem-groups:
+  tauri:
+    schedule:
+      interval: weekly
+      day: monday
+
 updates:
   - package-ecosystem: npm
     directory: /
@@ -6,16 +12,23 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "@tauri-apps/*"
     groups:
       npm-production:
         patterns:
           - "@tanstack/*"
-          - "@tauri-apps/*"
           - "react*"
           - "i18next*"
         update-types:
           - minor
           - patch
+
+  - package-ecosystem: npm
+    directory: /
+    patterns:
+      - "@tauri-apps/*"
+    multi-ecosystem-group: tauri
 
   - package-ecosystem: npm
     directory: /landing
@@ -30,6 +43,18 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: tauri
+      - dependency-name: tauri-build
+      - dependency-name: "tauri-plugin-*"
+
+  - package-ecosystem: cargo
+    directory: /src-tauri
+    patterns:
+      - tauri
+      - tauri-build
+      - "tauri-plugin-*"
+    multi-ecosystem-group: tauri
 
   - package-ecosystem: github-actions
     directory: /
