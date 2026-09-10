@@ -1,6 +1,6 @@
 [package]
 name = "ue-settings-master"
-version = "1.0.6"
+version = "1.0.7"
 description = "UE Settings Master — мастер настроек для игр Unreal Engine"
 authors = ["Mike Saito <chigikovden@gmail.com>"]
 license = "MIT"
@@ -25,6 +25,7 @@ tauri-specta = { version = "2.0.0-rc.25", features = ["derive", "typescript"] }
 chrono = { version = "0.4", features = ["serde"] }
 walkdir = "2"
 regex = "1"
+sha2 = "0.10"
 dirs = "7"
 indexmap = { version = "2", features = ["serde"] }
 uuid = { version = "1", features = ["v4"] }

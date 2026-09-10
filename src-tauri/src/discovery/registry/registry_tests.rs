@@ -4,13 +4,19 @@ use super::cache::{
 };
 use super::lookup::find_game_by_id;
 use crate::core::models::GameProfile;
-use crate::profiles::{remove_profile, save_profile};
+use crate::profiles::{remove_profile, save_profile, use_test_app_data_dir};
 use std::path::PathBuf;
 use std::sync::Mutex;
 use std::time::SystemTime;
 
 /// Registry tests share `GAME_SCAN_CACHE` / `SCAN_COUNTER`; run one at a time.
 static REGISTRY_TEST_LOCK: Mutex<()> = Mutex::new(());
+
+fn registry_test_lock() -> std::sync::MutexGuard<'static, ()> {
+    REGISTRY_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
 
 fn test_profile(id: &str, install_dir: &str) -> GameProfile {
     GameProfile {
@@ -32,15 +38,15 @@ fn test_profile(id: &str, install_dir: &str) -> GameProfile {
 
 #[test]
 fn cache_hit_within_ttl_avoids_rescan() {
-    let _lock = REGISTRY_TEST_LOCK.lock().expect("registry test lock");
+    let _lock = registry_test_lock();
     reset_scan_counter();
     invalidate_game_scan_cache();
 
-    force_refresh_scan_all_games();
+    force_refresh_scan_all_games().unwrap();
     assert!(is_cache_valid());
     let after_first = scan_call_count();
 
-    let _ = cached_scan_all_games();
+    let _ = cached_scan_all_games().unwrap();
     assert!(is_cache_valid());
     assert_eq!(
         scan_call_count(),
@@ -51,8 +57,8 @@ fn cache_hit_within_ttl_avoids_rescan() {
 
 #[test]
 fn invalidate_clears_cache() {
-    let _lock = REGISTRY_TEST_LOCK.lock().expect("registry test lock");
-    force_refresh_scan_all_games();
+    let _lock = registry_test_lock();
+    force_refresh_scan_all_games().unwrap();
     assert!(is_cache_valid());
     invalidate_game_scan_cache();
     assert!(!is_cache_valid());
@@ -60,11 +66,11 @@ fn invalidate_clears_cache() {
 
 #[test]
 fn mtime_change_triggers_rescan_within_ttl() {
-    let _lock = REGISTRY_TEST_LOCK.lock().expect("registry test lock");
+    let _lock = registry_test_lock();
     reset_scan_counter();
     invalidate_game_scan_cache();
 
-    force_refresh_scan_all_games();
+    force_refresh_scan_all_games().unwrap();
     let after_first = scan_call_count();
 
     patch_steam_mtime_for_test(
@@ -72,7 +78,7 @@ fn mtime_change_triggers_rescan_within_ttl() {
         SystemTime::UNIX_EPOCH,
     );
 
-    let _ = cached_scan_all_games();
+    let _ = cached_scan_all_games().unwrap();
     assert!(
         scan_call_count() > after_first,
         "mtime change should bypass TTL cache"
@@ -81,7 +87,9 @@ fn mtime_change_triggers_rescan_within_ttl() {
 
 #[test]
 fn find_game_by_id_uses_saved_without_scan() {
-    let _lock = REGISTRY_TEST_LOCK.lock().expect("registry test lock");
+    let _lock = registry_test_lock();
+    let data = tempfile::tempdir().unwrap();
+    let _storage = use_test_app_data_dir(data.path());
     let install = std::env::current_dir()
         .expect("cwd")
         .join("target")

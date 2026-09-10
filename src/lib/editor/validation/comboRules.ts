@@ -36,17 +36,44 @@ function collectPendingValues(
   return map;
 }
 
-function keysInFile(
-  files: Record<string, Record<string, Record<string, string>>>,
+function removedKeysInFile(
+  removals: Record<string, Record<string, string[]>> | undefined,
   file: string,
 ): Set<string> {
   const keys = new Set<string>();
-  const sections = files[file];
+  const sections = removals?.[file];
   if (!sections) return keys;
   for (const entries of Object.values(sections)) {
-    for (const key of Object.keys(entries)) keys.add(key.toLowerCase());
+    for (const key of entries) keys.add(key.toLowerCase());
   }
   return keys;
+}
+
+function effectiveKeysInFile(ctx: ComboRuleContext, file: string): Set<string> {
+  const removed = removedKeysInFile(ctx.removals, file);
+  const keys = new Set(
+    ctx.params
+      .filter((param) => param.file === file && param.present_in_ini)
+      .map((param) => param.key.toLowerCase())
+      .filter((key) => !removed.has(key)),
+  );
+  const sections = ctx.files[file];
+  if (sections) {
+    for (const entries of Object.values(sections)) {
+      for (const key of Object.keys(entries)) keys.add(key.toLowerCase());
+    }
+  }
+  return keys;
+}
+
+function pendingKeysInFile(ctx: ComboRuleContext, file: string): Set<string> {
+  const sections = ctx.files[file];
+  if (!sections) return new Set();
+  return new Set(
+    Object.values(sections).flatMap((entries) =>
+      Object.keys(entries).map((key) => key.toLowerCase()),
+    ),
+  );
 }
 
 export interface ComboRuleContext {
@@ -58,6 +85,7 @@ export interface ComboRuleContext {
   engineEnabled: Set<string>;
   shippedIniKeys?: ReadonlySet<string>;
   files: Record<string, Record<string, Record<string, string>>>;
+  removals?: Record<string, Record<string, string[]>>;
 }
 
 /** Value that will be active after apply — respects engine ini toggles. */
@@ -72,6 +100,7 @@ function activeApplyValue(
 
   for (const param of ctx.params) {
     if (param.key.toLowerCase() !== lower) continue;
+    if (removedKeysInFile(ctx.removals, param.file).has(lower)) continue;
     if (!shouldIncludeInApply(param, ctx.engineEnabled, ctx.shippedIniKeys ?? EMPTY_INI_SNAPSHOT)) continue;
     const value = param.value.trim();
     if (!value) continue;
@@ -80,9 +109,6 @@ function activeApplyValue(
   return null;
 }
 
-/**
- * Engine CVars scoped to the current panel apply (pending writes, or unchanged ini on advanced).
- */
 function engineCvarApplyValue(
   ctx: ComboRuleContext,
   key: string,
@@ -91,7 +117,6 @@ function engineCvarApplyValue(
   const lower = key.toLowerCase();
   const pending = pendingValues.get(lower);
   if (pending != null) return pending;
-  if (ctx.panel !== "advanced") return null;
   return activeApplyValue(ctx, key, pendingValues);
 }
 
@@ -107,11 +132,15 @@ function engineCvarActiveInApply(
 export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const pendingValues = collectPendingValues(ctx.files);
-  const engineKeys = keysInFile(ctx.files, "Engine.ini");
-  const scalabilityKeys = keysInFile(ctx.files, "Scalability.ini");
+  const engineKeys = effectiveKeysInFile(ctx, "Engine.ini");
+  const scalabilityKeys = effectiveKeysInFile(ctx, "Scalability.ini");
+  const duplicateCandidates = new Set([
+    ...pendingKeysInFile(ctx, "Engine.ini"),
+    ...pendingKeysInFile(ctx, "Scalability.ini"),
+  ]);
 
-  for (const key of engineKeys) {
-    if (scalabilityKeys.has(key)) {
+  for (const key of duplicateCandidates) {
+    if (engineKeys.has(key) && scalabilityKeys.has(key)) {
       issues.push({
         code: "combo_engine_scalability_dup",
         severity: "warning",
@@ -125,8 +154,10 @@ export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
   const rtOn = RT_CVAR_KEYS.some((key) =>
     engineCvarActiveInApply(ctx, key, pendingValues),
   );
+  const rtChanged = RT_CVAR_KEYS.some((key) => pendingValues.has(key));
+  const shadowsChanged = pendingValues.has("sg.shadowquality");
 
-  if (rtOn) {
+  if (rtOn && (rtChanged || shadowsChanged)) {
     const shadowVal = activeApplyValue(ctx, "sg.ShadowQuality", pendingValues);
     if (shadowVal && isLowQuality(shadowVal, 4)) {
       issues.push({
@@ -138,19 +169,19 @@ export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
       });
     }
 
-    if (ctx.gpuPending) {
+    if (rtChanged && ctx.gpuPending) {
       issues.push({
         code: "combo_gpu_pending",
         severity: "error",
         i18nKey: "validation.gpuPending",
       });
-    } else if (ctx.gpuUnavailable) {
+    } else if (rtChanged && ctx.gpuUnavailable) {
       issues.push({
         code: "combo_rt_gpu_unknown",
         severity: "warning",
         i18nKey: "validation.combo.rtGpuUnknown",
       });
-    } else if (ctx.gpu && !ctx.gpu.supports_ray_tracing) {
+    } else if (rtChanged && ctx.gpu && !ctx.gpu.supports_ray_tracing) {
       issues.push({
         code: "combo_rt_no_hw",
         severity: "warning",
@@ -162,6 +193,7 @@ export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
   const textureVal = activeApplyValue(ctx, "sg.TextureQuality", pendingValues);
   const poolVal = engineCvarApplyValue(ctx, "r.Streaming.PoolSize", pendingValues);
   if (
+    (pendingValues.has("sg.texturequality") || pendingValues.has("r.streaming.poolsize")) &&
     textureVal &&
     isLowQuality(textureVal, 4) &&
     poolVal &&

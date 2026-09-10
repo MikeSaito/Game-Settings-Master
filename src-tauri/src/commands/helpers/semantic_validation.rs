@@ -58,7 +58,7 @@ fn collect_semantic_issues(
     let index = get_or_build_catalog_index(ctx.engine_family);
     let limits = detect_scalability_limits(ctx.install_dir.map(Path::new), Some(ctx.config_path));
     let gpu = detect_gpu();
-    let pending_values = collect_pending_values(&changes.files);
+    let effective_state = load_effective_ini_keys(ctx.config_path, changes);
 
     let mut issues = Vec::new();
     issues.extend(check_version_and_sg_limits(
@@ -68,8 +68,8 @@ fn collect_semantic_issues(
         is_ue4,
         &limits,
     ));
-    issues.extend(check_combo_rules(&changes.files, &pending_values, &gpu));
-    issues.extend(check_sg_r_conflicts(ctx.config_path, changes));
+    issues.extend(check_combo_rules(&effective_state, &changes.files, &gpu));
+    issues.extend(check_sg_r_conflicts(&effective_state));
     issues.extend(check_shipped_gus_removals(
         ctx.config_path,
         &changes.removals,
@@ -333,8 +333,7 @@ fn load_effective_ini_keys(config_path: &Path, changes: &CustomChanges) -> Effec
     state
 }
 
-fn check_sg_r_conflicts(config_path: &Path, changes: &CustomChanges) -> Vec<SemanticIssue> {
-    let state = load_effective_ini_keys(config_path, changes);
+fn check_sg_r_conflicts(state: &EffectiveIniKeys) -> Vec<SemanticIssue> {
     let Some(gus_keys) = state.get(GUS_INI) else {
         return Vec::new();
     };
@@ -431,47 +430,53 @@ fn check_sg_limit(key: &str, value: &str, limits: &ScalabilityLimits) -> Option<
     }
 }
 
+fn effective_engine_value<'a>(state: &'a EffectiveIniKeys, key: &str) -> Option<&'a str> {
+    ENGINE_INI_FILES
+        .iter()
+        .filter_map(|file| state.get(*file))
+        .find_map(|values| values.get(key).map(String::as_str))
+}
+
 fn collect_pending_values(
     files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
 ) -> HashMap<String, String> {
-    let mut map = HashMap::new();
-    for sections in files.values() {
-        for entries in sections.values() {
-            for (key, value) in entries {
-                map.insert(key.to_lowercase(), value.clone());
-            }
-        }
-    }
-    map
+    files
+        .values()
+        .flat_map(|sections| sections.values())
+        .flat_map(|entries| entries.iter())
+        .map(|(key, value)| (key.to_ascii_lowercase(), value.clone()))
+        .collect()
 }
 
-fn keys_in_file(
+fn pending_keys_in_file(
     files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
     file: &str,
 ) -> HashSet<String> {
-    let mut keys = HashSet::new();
-    let Some(sections) = files.get(file) else {
-        return keys;
-    };
-    for entries in sections.values() {
-        for key in entries.keys() {
-            keys.insert(key.to_lowercase());
-        }
-    }
-    keys
+    files
+        .get(file)
+        .into_iter()
+        .flat_map(|sections| sections.values())
+        .flat_map(|entries| entries.keys())
+        .map(|key| key.to_ascii_lowercase())
+        .collect()
 }
 
 fn check_combo_rules(
-    files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
-    pending_values: &HashMap<String, String>,
+    state: &EffectiveIniKeys,
+    pending_files: &HashMap<String, HashMap<String, HashMap<String, String>>>,
     gpu: &GpuCapabilities,
 ) -> Vec<SemanticIssue> {
     let mut issues = Vec::new();
-    let engine_keys = keys_in_file(files, "Engine.ini");
-    let scalability_keys = keys_in_file(files, "Scalability.ini");
+    let engine_keys = state.get("Engine.ini");
+    let scalability_keys = state.get("Scalability.ini");
+    let pending_engine_keys = pending_keys_in_file(pending_files, "Engine.ini");
+    let pending_scalability_keys = pending_keys_in_file(pending_files, "Scalability.ini");
+    let pending_values = collect_pending_values(pending_files);
 
-    for key in &engine_keys {
-        if scalability_keys.contains(key) {
+    for key in pending_engine_keys.union(&pending_scalability_keys) {
+        if engine_keys.is_some_and(|keys| keys.contains_key(key))
+            && scalability_keys.is_some_and(|keys| keys.contains_key(key))
+        {
             issues.push(SemanticIssue {
                 code: "combo_engine_scalability_dup",
                 severity: IssueSeverity::Warning,
@@ -486,14 +491,20 @@ fn check_combo_rules(
     }
 
     let rt_on = RT_CVAR_KEYS.iter().any(|key| {
-        pending_values
-            .get(&key.to_lowercase())
-            .map(|value| is_truthy_cvar(value))
+        effective_engine_value(state, key)
+            .map(is_truthy_cvar)
             .unwrap_or(false)
     });
+    let rt_changed = RT_CVAR_KEYS
+        .iter()
+        .any(|key| pending_values.contains_key(*key));
+    let shadows_changed = pending_values.contains_key("sg.shadowquality");
 
-    if rt_on {
-        if let Some(shadow_val) = pending_values.get("sg.shadowquality") {
+    if rt_on && (rt_changed || shadows_changed) {
+        if let Some(shadow_val) = state
+            .get(GUS_INI)
+            .and_then(|values| values.get("sg.shadowquality"))
+        {
             if is_low_quality(shadow_val, 4) {
                 issues.push(SemanticIssue {
                     code: "combo_rt_shadows",
@@ -508,7 +519,7 @@ fn check_combo_rules(
             }
         }
 
-        if !gpu.supports_ray_tracing {
+        if rt_changed && !gpu.supports_ray_tracing {
             issues.push(SemanticIssue {
                 code: "combo_rt_no_hw",
                 severity: IssueSeverity::Warning,
@@ -518,23 +529,29 @@ fn check_combo_rules(
         }
     }
 
-    if let (Some(texture_val), Some(pool_val)) = (
-        pending_values.get("sg.texturequality"),
-        pending_values.get("r.streaming.poolsize"),
-    ) {
-        if is_low_quality(texture_val, 4) {
-            if let Ok(pool) = pool_val.trim().parse::<f64>() {
-                if pool.is_finite() && pool > 3000.0 {
-                    issues.push(SemanticIssue {
-                        code: "combo_streaming_texture",
-                        severity: IssueSeverity::Warning,
-                        message_ru: format!(
-                            "Большой r.Streaming.PoolSize ({pool_val}) при низком sg.TextureQuality ({texture_val})"
-                        ),
-                        message_en: format!(
-                            "Large r.Streaming.PoolSize ({pool_val}) with low sg.TextureQuality ({texture_val})"
-                        ),
-                    });
+    let streaming_combo_changed = pending_values.contains_key("sg.texturequality")
+        || pending_values.contains_key("r.streaming.poolsize");
+    if streaming_combo_changed {
+        if let (Some(texture_val), Some(pool_val)) = (
+            state
+                .get(GUS_INI)
+                .and_then(|values| values.get("sg.texturequality")),
+            effective_engine_value(state, "r.streaming.poolsize"),
+        ) {
+            if is_low_quality(texture_val, 4) {
+                if let Ok(pool) = pool_val.trim().parse::<f64>() {
+                    if pool.is_finite() && pool > 3000.0 {
+                        issues.push(SemanticIssue {
+                            code: "combo_streaming_texture",
+                            severity: IssueSeverity::Warning,
+                            message_ru: format!(
+                                "Большой r.Streaming.PoolSize ({pool_val}) при низком sg.TextureQuality ({texture_val})"
+                            ),
+                            message_en: format!(
+                                "Large r.Streaming.PoolSize ({pool_val}) with low sg.TextureQuality ({texture_val})"
+                            ),
+                        });
+                    }
                 }
             }
         }
@@ -648,6 +665,34 @@ mod tests {
         let mut validation_ctx = ctx(dir.path(), Some("ue5"), Some("5.4"));
         validation_ctx.warnings_acknowledged = true;
         assert!(validate_custom_changes_semantics(&changes, validation_ctx).is_ok());
+    }
+
+    #[test]
+    fn combo_rules_validate_the_effective_post_apply_state() {
+        invalidate_catalog_cache();
+        let dir = TempDir::new().unwrap();
+        std::fs::write(
+            dir.path().join("GameUserSettings.ini"),
+            "[ScalabilityGroups]\nsg.TextureQuality=0\n",
+        )
+        .unwrap();
+        let changes = CustomChanges {
+            files: HashMap::from([(
+                "Engine.ini".to_string(),
+                HashMap::from([(
+                    "SystemSettings".to_string(),
+                    HashMap::from([("r.Streaming.PoolSize".to_string(), "4096".to_string())]),
+                )]),
+            )]),
+            removals: HashMap::new(),
+        };
+
+        let result =
+            validate_custom_changes_semantics(&changes, ctx(dir.path(), Some("ue5"), Some("5.4")));
+        assert!(
+            result.is_err(),
+            "disk values must participate in combo validation"
+        );
     }
 
     #[test]

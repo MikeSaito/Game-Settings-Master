@@ -5,15 +5,10 @@ use crate::fs_util::{
     is_allowed_restore_filename, is_safe_backup_id, read_file_bytes, write_file_bytes,
 };
 
-use super::paths::{backup_store_dir, legacy_backup_root};
+use super::paths::{backup_store_dir, legacy_backup_root, legacy_hashed_backup_store_dir};
 
 /// Moves snapshots from `.uesm-backups` next to config into `%LocalAppData%/ue-settings-master/backups/`.
 pub(crate) fn migrate_legacy_backups(config_dir: &Path) -> Result<(), String> {
-    let legacy_root = legacy_backup_root(config_dir);
-    if !legacy_root.exists() {
-        return Ok(());
-    }
-
     let store = backup_store_dir(config_dir);
     fs::create_dir_all(&store).map_err(|e| {
         crate::i18n::t(
@@ -22,7 +17,16 @@ pub(crate) fn migrate_legacy_backups(config_dir: &Path) -> Result<(), String> {
         )
     })?;
 
-    for entry in fs::read_dir(&legacy_root).map_err(|e| e.to_string())? {
+    let old_hashed_store = legacy_hashed_backup_store_dir(config_dir);
+    migrate_backup_root(&old_hashed_store, &store)?;
+    migrate_backup_root(&legacy_backup_root(config_dir), &store)
+}
+
+fn migrate_backup_root(source_root: &Path, store: &Path) -> Result<(), String> {
+    if !source_root.exists() || source_root == store {
+        return Ok(());
+    }
+    for entry in fs::read_dir(source_root).map_err(|e| e.to_string())? {
         let entry = entry.map_err(|e| e.to_string())?;
         if !entry.file_type().map_err(|e| e.to_string())?.is_dir() {
             continue;
@@ -33,23 +37,25 @@ pub(crate) fn migrate_legacy_backups(config_dir: &Path) -> Result<(), String> {
         }
 
         let src = entry.path();
-        let dest = store.join(&id);
+        let mut dest = store.join(&id);
         if dest.exists() {
-            fs::remove_dir_all(&src).map_err(|e| e.to_string())?;
-            continue;
+            dest = store.join(format!("{id}_{}", uuid::Uuid::new_v4().simple()));
         }
 
-        copy_backup_dir(&src, &dest)?;
+        if let Err(error) = copy_backup_dir(&src, &dest) {
+            let _ = fs::remove_dir_all(&dest);
+            return Err(error);
+        }
         fs::remove_dir_all(&src).map_err(|e| e.to_string())?;
     }
 
-    if legacy_root.exists() {
-        let empty = fs::read_dir(&legacy_root)
+    if source_root.exists() {
+        let empty = fs::read_dir(source_root)
             .map_err(|e| e.to_string())?
             .next()
             .is_none();
         if empty {
-            let _ = fs::remove_dir(&legacy_root);
+            let _ = fs::remove_dir(source_root);
         }
     }
 

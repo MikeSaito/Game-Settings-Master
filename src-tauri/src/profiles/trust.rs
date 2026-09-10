@@ -6,11 +6,45 @@ fn is_disposable_install_path(path: &Path) -> bool {
     let Ok(canonical) = path.canonicalize() else {
         return true;
     };
-    let lower = canonical.to_string_lossy().to_lowercase();
-    lower.contains("\\temp\\")
-        || lower.contains("/temp/")
-        || lower.contains("\\tmp\\")
-        || lower.contains("/tmp/")
+    temporary_roots()
+        .iter()
+        .any(|root| path_is_within(&canonical, root))
+}
+
+fn temporary_roots() -> Vec<PathBuf> {
+    let mut roots = vec![std::env::temp_dir()];
+    roots.extend(
+        ["TEMP", "TMP"]
+            .into_iter()
+            .filter_map(|name| std::env::var_os(name).map(PathBuf::from)),
+    );
+    roots
+        .into_iter()
+        .filter_map(|root| root.canonicalize().ok())
+        .collect()
+}
+
+fn path_is_within(path: &Path, root: &Path) -> bool {
+    #[cfg(windows)]
+    {
+        let normalize = |value: &Path| {
+            value
+                .to_string_lossy()
+                .replace('/', "\\")
+                .trim_end_matches('\\')
+                .to_lowercase()
+        };
+        let path = normalize(path);
+        let root = normalize(root);
+        path == root
+            || path
+                .strip_prefix(&root)
+                .is_some_and(|rest| rest.starts_with('\\'))
+    }
+    #[cfg(not(windows))]
+    {
+        path.starts_with(root)
+    }
 }
 
 /// Profiles saved by unit tests (cargo test) or with a dead install_dir.
@@ -118,5 +152,34 @@ pub fn ensure_known_game_id(game_id: &str) -> Result<(), String> {
             &format!("Игра '{id}' не найдена в сохранённых профилях или результате сканирования"),
             &format!("Game '{id}' was not found in saved profiles or scan results"),
         ))
+    }
+}
+
+#[cfg(test)]
+mod path_tests {
+    use super::is_disposable_install_path;
+
+    #[test]
+    fn rejects_actual_temporary_directory() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(is_disposable_install_path(dir.path()));
+    }
+
+    #[test]
+    fn allows_regular_directory_named_temp() {
+        let dir = std::env::current_dir()
+            .unwrap()
+            .join("target")
+            .join("profile-path-tests")
+            .join("Temp")
+            .join(uuid::Uuid::new_v4().to_string());
+        std::fs::create_dir_all(&dir).unwrap();
+        assert!(!is_disposable_install_path(&dir));
+        let _ = std::fs::remove_dir_all(
+            std::env::current_dir()
+                .unwrap()
+                .join("target")
+                .join("profile-path-tests"),
+        );
     }
 }

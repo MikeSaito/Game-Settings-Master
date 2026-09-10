@@ -7,5 +7,4 @@ export * from "./paramSelectOptions";
 export * from "./paramDependencies/index";
 export * from "./sgEngineConflicts";
 export * from "./buildCustomChanges";
-export * from "./lastPreset";
 export * from "./validation";

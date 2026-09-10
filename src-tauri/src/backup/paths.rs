@@ -1,3 +1,4 @@
+use sha2::{Digest, Sha256};
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
@@ -13,19 +14,60 @@ pub(crate) const INI_FILES: [&str; 6] = ALLOWED_CONFIG_INI_FILES;
 pub use crate::fs_util::OVERRIDE_INI_FILES;
 
 pub fn backup_store_dir(config_dir: &Path) -> PathBuf {
-    let canonical = config_dir
-        .canonicalize()
-        .unwrap_or_else(|_| config_dir.to_path_buf());
+    backup_base_dir().join(stable_config_id(config_dir))
+}
+
+pub(crate) fn legacy_hashed_backup_store_dir(config_dir: &Path) -> PathBuf {
+    let canonical = canonical_backup_path(config_dir);
 
     let mut hasher = DefaultHasher::new();
     canonical.to_string_lossy().hash(&mut hasher);
     let id = format!("{:016x}", hasher.finish());
 
+    backup_base_dir().join(id)
+}
+
+fn stable_config_id(config_dir: &Path) -> String {
+    let canonical = canonical_backup_path(config_dir);
+    let mut normalized = canonical.to_string_lossy().replace('/', "\\");
+    while normalized.ends_with('\\') {
+        normalized.pop();
+    }
+    #[cfg(windows)]
+    normalized.make_ascii_lowercase();
+
+    let digest = Sha256::digest(normalized.as_bytes());
+    let hex = digest[..16]
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect::<String>();
+    format!("v2-{hex}")
+}
+
+fn canonical_backup_path(config_dir: &Path) -> PathBuf {
+    config_dir.canonicalize().unwrap_or_else(|_| {
+        if config_dir.is_absolute() {
+            config_dir.to_path_buf()
+        } else {
+            std::env::current_dir()
+                .map(|cwd| cwd.join(config_dir))
+                .unwrap_or_else(|_| config_dir.to_path_buf())
+        }
+    })
+}
+
+fn backup_base_dir() -> PathBuf {
+    #[cfg(test)]
+    return std::env::current_dir()
+        .unwrap_or_else(|_| PathBuf::from("."))
+        .join("target")
+        .join("test-backups");
+
+    #[cfg(not(test))]
     dirs::data_local_dir()
         .unwrap_or_else(|| PathBuf::from("."))
         .join("ue-settings-master")
         .join("backups")
-        .join(id)
 }
 
 pub(crate) fn legacy_backup_root(config_dir: &Path) -> PathBuf {

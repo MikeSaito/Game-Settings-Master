@@ -9,10 +9,25 @@ use crate::fs_util::{
 use super::migrate::migrate_legacy_backups;
 use super::paths::{backup_store_dir, INI_FILES};
 
+pub(crate) fn new_backup_id() -> String {
+    format!(
+        "{}_{}",
+        Local::now().format("%Y%m%d_%H%M%S"),
+        uuid::Uuid::new_v4().simple()
+    )
+}
+
 pub fn backup_all_targets(targets: &[PathBuf]) -> Result<String, String> {
-    let shared_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    let shared_id = new_backup_id();
+    let mut completed: Vec<PathBuf> = Vec::new();
     for target in targets {
-        backup_config_dir(target, Some(&shared_id))?;
+        if let Err(error) = backup_config_dir(target, Some(&shared_id)) {
+            for previous in completed {
+                let _ = fs::remove_dir_all(backup_store_dir(&previous).join(&shared_id));
+            }
+            return Err(error);
+        }
+        completed.push(target.clone());
     }
     Ok(shared_id.to_string())
 }
@@ -36,30 +51,37 @@ pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<S
             }
             id.to_string()
         }
-        None => Local::now().format("%Y%m%d_%H%M%S").to_string(),
+        None => new_backup_id(),
     };
     let backup_path = backup_root.join(&backup_id);
-    fs::create_dir_all(&backup_path).map_err(|e| {
+    fs::create_dir(&backup_path).map_err(|e| {
         crate::i18n::t(
             &format!("Не удалось создать backup: {e}"),
             &format!("Failed to create backup: {e}"),
         )
     })?;
 
-    for file in INI_FILES {
-        let src = config_dir.join(file);
-        if !src.exists() {
-            continue;
+    let copy_result = (|| -> Result<(), String> {
+        for file in INI_FILES {
+            let src = config_dir.join(file);
+            if !src.exists() {
+                continue;
+            }
+            ensure_safe_child_file(config_dir, &src)?;
+            let dst = backup_path.join(file);
+            let bytes = read_file_bytes(&src)?;
+            write_file_bytes(&dst, &bytes).map_err(|e| {
+                crate::i18n::t(
+                    &format!("Не удалось сохранить backup {file}: {e}"),
+                    &format!("Failed to save backup {file}: {e}"),
+                )
+            })?;
         }
-        ensure_safe_child_file(config_dir, &src)?;
-        let dst = backup_path.join(file);
-        let bytes = read_file_bytes(&src)?;
-        write_file_bytes(&dst, &bytes).map_err(|e| {
-            crate::i18n::t(
-                &format!("Не удалось сохранить backup {file}: {e}"),
-                &format!("Failed to save backup {file}: {e}"),
-            )
-        })?;
+        Ok(())
+    })();
+    if let Err(error) = copy_result {
+        let _ = fs::remove_dir_all(&backup_path);
+        return Err(error);
     }
 
     Ok(backup_id)

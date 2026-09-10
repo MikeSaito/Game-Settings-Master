@@ -23,7 +23,7 @@ pub fn import_game_cover_cmd(
     }
     let custom_cover = import_custom_cover(&game_id, &PathBuf::from(image_path))?;
 
-    let mut games = cached_scan_all_games().as_ref().clone();
+    let mut games = cached_scan_all_games()?.as_ref().clone();
     let saved = load_saved_profiles()?;
 
     for saved_game in saved {

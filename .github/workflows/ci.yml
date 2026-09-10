@@ -54,7 +54,7 @@ jobs:
       - name: E2E tests
         run: npm run e2e
 
-  build-windows:
+  rust-quality:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
@@ -66,6 +66,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
+          save-if: ${{ github.event_name == 'push' }}
 
       - name: Rust format check
         working-directory: src-tauri
@@ -74,6 +75,18 @@ jobs:
       - name: Rust clippy
         working-directory: src-tauri
         run: cargo clippy --locked -- -D warnings
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          save-if: ${{ github.event_name == 'push' }}
 
       - name: Rust tests
         working-directory: src-tauri

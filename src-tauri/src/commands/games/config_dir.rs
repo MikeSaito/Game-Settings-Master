@@ -30,7 +30,7 @@ pub fn update_game_profile_config_dir(
         return Ok(game.clone());
     }
 
-    let mut from_scan = cached_scan_all_games().as_ref().clone();
+    let mut from_scan = cached_scan_all_games()?.as_ref().clone();
     if let Some(game) = from_scan.iter_mut().find(|g| g.id == game_id) {
         if game.config_dir.as_deref() == Some(canonical.as_str()) {
             save_profile(game)?;

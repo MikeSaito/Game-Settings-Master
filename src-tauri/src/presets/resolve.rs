@@ -11,24 +11,34 @@ fn is_game_user_settings_section(section: &str) -> bool {
     section.eq_ignore_ascii_case("/Script/Engine.GameUserSettings")
 }
 
-fn enrich_game_user_settings_resolution(
-    mapped: &mut IndexMap<String, String>,
-    width: u32,
-    height: u32,
-) {
-    let w = width.to_string();
-    let h = height.to_string();
-    for (key, val) in [
-        ("ResolutionSizeX", &w),
-        ("ResolutionSizeY", &h),
-        ("DesiredScreenWidth", &w),
-        ("DesiredScreenHeight", &h),
-        ("LastUserConfirmedResolutionSizeX", &w),
-        ("LastUserConfirmedResolutionSizeY", &h),
-        ("LastUserConfirmedDesiredScreenWidth", &w),
-        ("LastUserConfirmedDesiredScreenHeight", &h),
-    ] {
-        mapped.insert(key.to_string(), (*val).clone());
+fn enrich_game_user_settings_resolution(mapped: &mut IndexMap<String, String>) {
+    let width = mapped
+        .iter()
+        .find(|(key, _)| key.eq_ignore_ascii_case("ResolutionSizeX"))
+        .map(|(_, value)| value.clone());
+    let height = mapped
+        .iter()
+        .find(|(key, _)| key.eq_ignore_ascii_case("ResolutionSizeY"))
+        .map(|(_, value)| value.clone());
+    if let Some(w) = width {
+        for key in [
+            "ResolutionSizeX",
+            "DesiredScreenWidth",
+            "LastUserConfirmedResolutionSizeX",
+            "LastUserConfirmedDesiredScreenWidth",
+        ] {
+            mapped.insert(key.to_string(), w.clone());
+        }
+    }
+    if let Some(h) = height {
+        for key in [
+            "ResolutionSizeY",
+            "DesiredScreenHeight",
+            "LastUserConfirmedResolutionSizeY",
+            "LastUserConfirmedDesiredScreenHeight",
+        ] {
+            mapped.insert(key.to_string(), h.clone());
+        }
     }
 }
 
@@ -72,7 +82,7 @@ pub(crate) fn resolve_sections(
             mapped.insert(key.clone(), resolved);
         }
         if is_game_user_settings_section(&section_name) {
-            enrich_game_user_settings_resolution(&mut mapped, width, height);
+            enrich_game_user_settings_resolution(&mut mapped);
         }
         if !mapped.is_empty() {
             merge_section_updates(&mut result, section_name, mapped);

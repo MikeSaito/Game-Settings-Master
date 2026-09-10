@@ -11,7 +11,7 @@ use std::path::PathBuf;
 #[tauri::command]
 pub fn scan_games() -> Result<Vec<GameProfile>, AppInvokeError> {
     let _ = prune_stale_saved_profiles();
-    let mut games = force_refresh_scan_all_games().as_ref().clone();
+    let mut games = force_refresh_scan_all_games()?.as_ref().clone();
     let saved = load_saved_profiles()?;
 
     for saved_game in saved {

@@ -4,6 +4,7 @@ use super::trust::{
     ensure_known_game_id, is_stale_saved_profile, resolve_trusted_profile, validate_profile_paths,
 };
 use crate::core::models::{GameOverride, GameProfile};
+use crate::profiles::use_test_app_data_dir;
 
 #[test]
 fn validate_profile_rejects_missing_install() {
@@ -47,6 +48,8 @@ fn resolve_trusted_profile_rejects_unknown_game() {
 
 #[test]
 fn ensure_known_game_id_rejects_unknown() {
+    let data = tempfile::tempdir().unwrap();
+    let _storage = use_test_app_data_dir(data.path());
     assert!(ensure_known_game_id("steam-999999999").is_err());
 }
 
@@ -57,6 +60,8 @@ fn ensure_known_game_id_rejects_oversized_id() {
 
 #[test]
 fn resolve_trusted_profile_rejects_forged_install_dir() {
+    let data = tempfile::tempdir().unwrap();
+    let _storage = use_test_app_data_dir(data.path());
     let forged_install = tempfile::tempdir().expect("forged install");
     let game_id = format!("ipc-security-{}", uuid::Uuid::new_v4());
     let trusted_install = std::env::current_dir()

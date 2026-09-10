@@ -268,6 +268,7 @@ export function validateIniChanges(
       engineEnabled: ctx.engineEnabled,
       shippedIniKeys: ctx.shippedIniKeys,
       files,
+      removals,
     }),
   );
 

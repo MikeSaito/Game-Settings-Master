@@ -1,4 +1,3 @@
-use chrono::Local;
 use std::fs;
 use std::path::Path;
 
@@ -6,7 +5,7 @@ use crate::fs_util::ensure_safe_child_file;
 
 use super::paths::OVERRIDE_INI_FILES;
 use super::restore::rollback_apply_snapshot;
-use super::snapshot::backup_config_dir;
+use super::snapshot::{backup_config_dir, new_backup_id};
 
 fn reset_config_overrides(config_dir: &Path) -> Result<Vec<String>, String> {
     let mut deleted = Vec::new();
@@ -44,7 +43,7 @@ pub fn reset_config_all_targets(
 ) -> Result<(String, Vec<String>), String> {
     let path = crate::ini::platform::reconcile_config_dir(primary_config_dir, hints);
     let targets = crate::ini::platform::apply_target_dirs(&path, hints);
-    let shared_id = Local::now().format("%Y%m%d_%H%M%S").to_string();
+    let shared_id = new_backup_id();
     for target in &targets {
         backup_config_dir(target, Some(&shared_id))?;
     }

@@ -6,6 +6,37 @@ use std::fs;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
+#[cfg(test)]
+thread_local! {
+    static TEST_LOCAL_APP_DATA: std::cell::RefCell<Option<PathBuf>> = const { std::cell::RefCell::new(None) };
+}
+
+#[cfg(test)]
+pub(crate) struct TestLocalAppDataGuard {
+    previous: Option<PathBuf>,
+}
+
+#[cfg(test)]
+impl Drop for TestLocalAppDataGuard {
+    fn drop(&mut self) {
+        TEST_LOCAL_APP_DATA.with(|slot| *slot.borrow_mut() = self.previous.take());
+    }
+}
+
+#[cfg(test)]
+pub(crate) fn use_test_local_app_data_dir(path: impl Into<PathBuf>) -> TestLocalAppDataGuard {
+    let previous = TEST_LOCAL_APP_DATA.with(|slot| slot.borrow_mut().replace(path.into()));
+    TestLocalAppDataGuard { previous }
+}
+
+fn local_app_data_dir() -> Option<PathBuf> {
+    #[cfg(test)]
+    if let Some(path) = TEST_LOCAL_APP_DATA.with(|slot| slot.borrow().clone()) {
+        return Some(path);
+    }
+    std::env::var_os("LOCALAPPDATA").map(PathBuf::from)
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct KnownGameEntry {
     #[serde(default, rename = "name")]
@@ -69,8 +100,7 @@ pub fn known_config_dir(app_id: &str) -> Option<PathBuf> {
     let known = load_known_games();
     let entry = known.get(app_id)?;
 
-    let local = std::env::var("LOCALAPPDATA").ok()?;
-    let config_root = PathBuf::from(local)
+    let config_root = local_app_data_dir()?
         .join(&entry.local_app_folder)
         .join("Saved")
         .join("Config");

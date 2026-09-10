@@ -1,11 +1,5 @@
-use super::{known_app_id_for_game, known_config_dir};
-use std::sync::{Mutex, OnceLock};
+use super::{known_app_id_for_game, known_config_dir, use_test_local_app_data_dir};
 use tempfile::TempDir;
-
-fn localappdata_lock() -> &'static Mutex<()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(()))
-}
 
 #[test]
 fn epic_subnautica_resolves_to_steam_app_id() {
@@ -29,8 +23,8 @@ fn epic_subnautica_not_confused_with_subnautica2() {
 
 #[test]
 fn palworld_known_dir_resolves_pal_folder() {
-    let _guard = localappdata_lock().lock().unwrap();
     let temp = TempDir::new().unwrap();
+    let _local_app_data = use_test_local_app_data_dir(temp.path());
     let platform = temp
         .path()
         .join("Pal")
@@ -44,23 +38,14 @@ fn palworld_known_dir_resolves_pal_folder() {
     )
     .unwrap();
 
-    let previous = std::env::var("LOCALAPPDATA").ok();
-    unsafe { std::env::set_var("LOCALAPPDATA", temp.path()) };
-
     let resolved = known_config_dir("1623730").expect("Palworld config path");
     assert!(resolved.ends_with("Pal\\Saved\\Config\\Windows"));
-
-    if let Some(prev) = previous {
-        unsafe { std::env::set_var("LOCALAPPDATA", prev) };
-    } else {
-        unsafe { std::env::remove_var("LOCALAPPDATA") };
-    }
 }
 
 #[test]
 fn pubg_known_dir_without_gus() {
-    let _guard = localappdata_lock().lock().unwrap();
     let temp = TempDir::new().unwrap();
+    let _local_app_data = use_test_local_app_data_dir(temp.path());
     let platform = temp
         .path()
         .join("TslGame")
@@ -69,15 +54,6 @@ fn pubg_known_dir_without_gus() {
         .join("WindowsNoEditor");
     std::fs::create_dir_all(&platform).unwrap();
 
-    let previous = std::env::var("LOCALAPPDATA").ok();
-    unsafe { std::env::set_var("LOCALAPPDATA", temp.path()) };
-
     let resolved = known_config_dir("578080").expect("PUBG config path");
     assert!(resolved.ends_with("WindowsNoEditor"));
-
-    if let Some(prev) = previous {
-        unsafe { std::env::set_var("LOCALAPPDATA", prev) };
-    } else {
-        unsafe { std::env::remove_var("LOCALAPPDATA") };
-    }
 }

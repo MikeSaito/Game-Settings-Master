@@ -9,7 +9,7 @@ use crate::profiles::{
 #[tauri::command]
 pub fn save_game_profile(profile: GameProfile) -> Result<(), AppInvokeError> {
     let saved_exists = load_saved_profiles()?.iter().any(|g| g.id == profile.id);
-    let scanned = cached_scan_all_games();
+    let scanned = cached_scan_all_games()?;
     let scanned_exists = scanned.iter().any(|g| g.id == profile.id);
     if saved_exists || scanned_exists {
         let trusted = resolve_trusted_profile(&profile)?;

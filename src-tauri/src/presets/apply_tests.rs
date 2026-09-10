@@ -7,7 +7,10 @@ use std::fs;
 fn game_user_settings_gets_full_resolution_fields() {
     let sections = std::collections::HashMap::from([(
         "[/Script/Engine.GameUserSettings]".to_string(),
-        std::collections::HashMap::from([("ResolutionSizeX".to_string(), "{{width}}".to_string())]),
+        std::collections::HashMap::from([
+            ("ResolutionSizeX".to_string(), "{{width}}".to_string()),
+            ("ResolutionSizeY".to_string(), "{{height}}".to_string()),
+        ]),
     )]);
     let resolved = resolve_sections(&sections, 2560, 1440);
     let gus = resolved
@@ -119,6 +122,12 @@ fn custom_apply_writes_game_user_settings_bool_to_script_section() {
         "got: {gus}"
     );
     assert!(gus.contains("bUseVSync=True"), "got: {gus}");
+    assert!(gus.contains("ResolutionSizeX=1280"), "got: {gus}");
+    assert!(gus.contains("ResolutionSizeY=720"), "got: {gus}");
+    assert!(
+        !gus.contains("2560"),
+        "unrelated apply changed resolution: {gus}"
+    );
 }
 
 #[test]
