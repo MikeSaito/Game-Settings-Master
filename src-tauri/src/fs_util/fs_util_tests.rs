@@ -25,6 +25,25 @@ fn atomic_write_roundtrip() {
     assert_eq!(read_file_bytes(&path).unwrap(), b"v2");
 }
 
+#[cfg(windows)]
+#[test]
+fn failed_atomic_replace_preserves_the_original_file() {
+    use std::os::windows::fs::OpenOptionsExt;
+    use windows_sys::Win32::Storage::FileSystem::FILE_SHARE_READ;
+
+    let dir = TempDir::new().unwrap();
+    let path = dir.path().join("locked.json");
+    std::fs::write(&path, b"original").unwrap();
+    let _lock = std::fs::OpenOptions::new()
+        .read(true)
+        .share_mode(FILE_SHARE_READ)
+        .open(&path)
+        .unwrap();
+
+    assert!(write_file_bytes_opts(&path, b"replacement", true).is_err());
+    assert_eq!(read_file_bytes(&path).unwrap(), b"original");
+}
+
 #[test]
 fn rejects_traversal_in_pack_ini_path() {
     let secret = TempDir::new().unwrap();

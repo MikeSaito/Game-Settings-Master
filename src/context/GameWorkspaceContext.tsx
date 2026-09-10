@@ -9,14 +9,12 @@ import {
   type ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { getGameConfig } from "@/lib/api";
-import { formatPresetLabel, getLastPreset } from "@/lib/editor";
 import { isUserOnlyConfig } from "@/lib/ini/configFiles";
 import type { AppTab, GameProfile } from "@/lib/core";
 
-export type PresetMode = "user" | "selected" | "applied";
+export type PresetMode = "user" | "selected" | "configured";
 
 export interface WorkspacePreset {
   label: string;
@@ -58,13 +56,9 @@ export function GameWorkspaceProvider({ game, activeTab, children }: ProviderPro
       if (userOnlyMode) {
         return { label: t("workspaceUser"), mode: "user" };
       }
-      const last = getLastPreset(game.id);
-      if (last) {
-        return { label: formatPresetLabel(last.presetId), mode: "applied" };
-      }
-      return { label: t("workspaceApplied"), mode: "applied" };
+      return { label: t("workspaceApplied"), mode: "configured" };
     },
-    [game.id, t],
+    [t],
   );
 
   useEffect(() => {
@@ -91,9 +85,7 @@ export function GameWorkspaceProvider({ game, activeTab, children }: ProviderPro
 }
 
 export function presetBadgeText(preset: WorkspacePreset): string {
-  if (preset.mode === "user") return preset.label;
-  if (preset.mode === "selected") return preset.label;
-  return i18n.t("common:workspaceAppliedPrefix", { label: preset.label });
+  return preset.label;
 }
 
 export function useGameWorkspace() {

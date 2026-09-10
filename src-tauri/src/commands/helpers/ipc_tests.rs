@@ -4,7 +4,7 @@ use super::{
     validate_custom_changes_semantics, SemanticValidationContext,
 };
 use crate::core::models::{CustomChanges, GameProfile};
-use crate::profiles::{remove_profile, save_profile};
+use crate::profiles::{remove_profile, save_profile, use_test_app_data_dir};
 use std::collections::HashMap;
 use std::fs;
 use tempfile::TempDir;
@@ -22,6 +22,8 @@ fn guard_without_game_id_rejects_ue_config() {
 
 #[test]
 fn guard_with_game_id_requires_known_profile() {
+    let data = TempDir::new().unwrap();
+    let _storage = use_test_app_data_dir(data.path());
     let dir = TempDir::new().unwrap();
     let config = dir.path().join("Saved").join("Config").join("Windows");
     fs::create_dir_all(&config).unwrap();
@@ -32,6 +34,8 @@ fn guard_with_game_id_requires_known_profile() {
 
 #[test]
 fn guard_rejects_arbitrary_config_dir_when_expected_unknown() {
+    let data = TempDir::new().unwrap();
+    let _storage = use_test_app_data_dir(data.path());
     let foreign = TempDir::new().unwrap();
     let foreign_config = foreign.path().join("Saved").join("Config").join("Windows");
     fs::create_dir_all(&foreign_config).unwrap();

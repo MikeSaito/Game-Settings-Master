@@ -53,7 +53,7 @@ pub fn apply_game_override(
     guard_config_dir_for_write(Some(&override_def.game_id), &config_dir)?;
     let path = validate_config_dir(&config_dir)?;
     let path_key = normalize_path_cmp(&path.to_string_lossy());
-    let scanned = cached_scan_all_games();
+    let scanned = cached_scan_all_games()?;
     let matched_game_id = load_saved_profiles()?
         .into_iter()
         .chain(scanned.iter().cloned())

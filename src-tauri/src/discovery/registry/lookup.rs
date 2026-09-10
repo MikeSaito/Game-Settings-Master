@@ -10,7 +10,7 @@ pub fn find_game_by_id(game_id: &str) -> Result<Option<GameProfile>, String> {
     if let Some(profile) = saved.into_iter().find(|g| g.id == game_id) {
         return Ok(Some(profile));
     }
-    Ok(cached_scan_all_games()
+    Ok(cached_scan_all_games()?
         .iter()
         .find(|g| g.id == game_id)
         .cloned())

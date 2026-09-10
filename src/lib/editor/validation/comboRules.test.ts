@@ -71,6 +71,56 @@ describe("evaluateComboRules", () => {
     expect(issues.some((i) => i.code === "combo_rt_shadows")).toBe(true);
   });
 
+  it("uses existing ini values when validating a pending combo", () => {
+    const texture = param({ key: "sg.TextureQuality", value: "0" });
+    const pool = param({
+      key: "r.Streaming.PoolSize",
+      file: "Engine.ini",
+      section: "SystemSettings",
+      value: "1024",
+      category: "Textures",
+      present_in_ini: true,
+    });
+    const shipped = buildIniSnapshot([texture, pool]);
+    const issues = evaluateComboRules({
+      panel: "advanced",
+      params: [texture, pool],
+      gpu: undefined,
+      engineEnabled: new Set([engineParamId(pool)]),
+      shippedIniKeys: shipped,
+      files: {
+        "Engine.ini": { "[SystemSettings]": { "r.Streaming.PoolSize": "4096" } },
+      },
+    });
+    expect(issues.some((i) => i.code === "combo_streaming_texture")).toBe(true);
+  });
+
+  it("keeps an active value when an identically named key is removed from another file", () => {
+    const texture = param({ key: "sg.TextureQuality", value: "0" });
+    const pool = param({
+      key: "r.Streaming.PoolSize",
+      file: "Engine.ini",
+      section: "SystemSettings",
+      value: "4096",
+      category: "Textures",
+    });
+    const shipped = buildIniSnapshot([texture, pool]);
+    const issues = evaluateComboRules({
+      panel: "advanced",
+      params: [texture, pool],
+      gpu: undefined,
+      engineEnabled: new Set([engineParamId(pool)]),
+      shippedIniKeys: shipped,
+      files: {
+        "Engine.ini": { "[SystemSettings]": { "r.Streaming.PoolSize": "4096" } },
+      },
+      removals: {
+        "Scalability.ini": { "[TextureQuality@0]": ["sg.TextureQuality"] },
+      },
+    });
+    expect(issues.some((i) => i.code === "combo_streaming_texture")).toBe(true);
+  });
+
   it("ignores RT draft values when engine toggle is off", () => {
     const rtParam = param({
       key: "r.RayTracing",

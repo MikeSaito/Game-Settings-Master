@@ -104,10 +104,15 @@ jobs:
           $tag = "v$version"
           $repo = "${{ github.repository }}"
           $downloadUrl = "https://github.com/$repo/releases/download/$tag/$setupName"
+          $releaseNotes = if (Test-Path "docs/release-v$version.md") {
+            Get-Content "docs/release-v$version.md" -Raw
+          } else {
+            ""
+          }
 
           $latest = [ordered]@{
             version   = $version
-            notes     = ""
+            notes     = $releaseNotes
             pub_date  = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
             platforms = [ordered]@{
               "windows-x86_64" = [ordered]@{
@@ -129,7 +134,11 @@ jobs:
         run: |
           $version = "${{ env.VERSION }}"
           $setupName = "${{ env.SETUP_NAME }}"
-          $body = @"
+          $notesPath = "docs/release-v$version.md"
+          if (Test-Path $notesPath) {
+            $body = Get-Content $notesPath -Raw
+          } else {
+            $body = @"
           Game Settings Master v$version
           Windows · бесплатно · без подписи издателя
 
@@ -141,6 +150,7 @@ jobs:
 
           Сайт: https://gsm-tool.com/
           "@
+          }
 
           $utf8NoBom = New-Object System.Text.UTF8Encoding $false
           [System.IO.File]::WriteAllText("$PWD/release-notes.md", $body.Trim(), $utf8NoBom)

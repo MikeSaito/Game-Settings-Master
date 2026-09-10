@@ -60,17 +60,32 @@ pub fn pick_platform_config_dir(config_root: &Path, hints: &PlatformHints) -> Op
     }
 
     let order = platform_preference_order(hints.engine_family.as_deref());
-    for name in order {
-        if let Some(found) = with_gus.iter().find(|p| ends_with_platform(p, name)) {
-            return Some(found.clone());
-        }
-    }
-
-    with_gus
+    let newest = with_gus
         .iter()
         .filter_map(|p| gus_modified(p).map(|t| (p.clone(), t)))
-        .max_by_key(|(_, t)| *t)
-        .map(|(p, _)| p)
+        .max_by(|(path_a, time_a), (path_b, time_b)| {
+            time_a
+                .cmp(time_b)
+                .then_with(|| preference_rank(path_b, order).cmp(&preference_rank(path_a, order)))
+        })
+        .map(|(p, _)| p);
+    if newest.is_some() {
+        return newest;
+    }
+
+    order.iter().find_map(|name| {
+        with_gus
+            .iter()
+            .find(|p| ends_with_platform(p, name))
+            .cloned()
+    })
+}
+
+fn preference_rank(path: &Path, order: &[&str]) -> usize {
+    order
+        .iter()
+        .position(|name| ends_with_platform(path, name))
+        .unwrap_or(usize::MAX)
 }
 
 fn platform_preference_order(engine_family: Option<&str>) -> &'static [&'static str] {
@@ -82,7 +97,7 @@ fn platform_preference_order(engine_family: Option<&str>) -> &'static [&'static 
     }
 }
 
-/// Where to write presets: all platform folders with GUS when there are several.
+/// Where to write presets: only the platform folder currently used by the game.
 pub fn apply_target_dirs(config_dir: &Path, hints: &PlatformHints) -> Vec<PathBuf> {
     let Some(root) = config_root_from_platform_dir(config_dir) else {
         return vec![config_dir.to_path_buf()];
@@ -94,15 +109,7 @@ pub fn apply_target_dirs(config_dir: &Path, hints: &PlatformHints) -> Vec<PathBu
     if with_gus.len() == 1 {
         return vec![with_gus[0].clone()];
     }
-    let primary =
-        pick_platform_config_dir(&root, hints).unwrap_or_else(|| config_dir.to_path_buf());
-    let mut targets: Vec<PathBuf> = with_gus;
-    targets.sort();
-    targets.dedup();
-    if !targets.iter().any(|p| p == &primary) {
-        targets.insert(0, primary);
-    }
-    targets
+    vec![pick_platform_config_dir(&root, hints).unwrap_or_else(|| config_dir.to_path_buf())]
 }
 
 /// If the saved path is stale (another platform is newer) — return the current one.

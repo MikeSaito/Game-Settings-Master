@@ -15,7 +15,6 @@
   "gpuDlssFg": "DLSS + генерация кадров",
   "gpuDlss": "DLSS",
   "gpuFsrTsr": "FSR / TSR",
-  "workspaceAppliedPrefix": "Применён: {{label}}",
   "paramSentinel": "−1 · автоматически (по умолчанию движка)",
   "gpuFilterAmd": "Видеокарта {{name}}: DLSS недоступен: редактор скроет DLSS и предложит FSR 3.",
   "gpuFilterIntel": "Видеокарта {{name}}: DLSS недоступен: редактор скроет DLSS и предложит FSR или TSR.",

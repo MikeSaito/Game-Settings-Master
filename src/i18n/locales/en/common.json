@@ -15,7 +15,6 @@
   "gpuDlssFg": "DLSS + FG",
   "gpuDlss": "DLSS",
   "gpuFsrTsr": "FSR / TSR",
-  "workspaceAppliedPrefix": "Applied: {{label}}",
   "paramSentinel": "−1 · automatic (engine default)",
   "gpuFilterAmd": "GPU {{name}}: DLSS unavailable: editor hides DLSS and suggests FSR 3.",
   "gpuFilterIntel": "GPU {{name}}: DLSS unavailable: editor hides DLSS and suggests FSR or TSR.",

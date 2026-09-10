@@ -19,7 +19,7 @@ static GAME_SCAN_CACHE: Mutex<Option<GameScanCache>> = Mutex::new(None);
 #[cfg(test)]
 static SCAN_COUNTER: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 
-fn perform_scan() -> Vec<GameProfile> {
+fn perform_scan() -> Result<Vec<GameProfile>, String> {
     #[cfg(test)]
     SCAN_COUNTER.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
     scan_all_games()
@@ -32,8 +32,8 @@ pub fn invalidate_game_scan_cache() {
 }
 
 /// Force a fresh Steam/Epic scan and update the cache.
-pub fn force_refresh_scan_all_games() -> Arc<Vec<GameProfile>> {
-    let games = perform_scan();
+pub fn force_refresh_scan_all_games() -> Result<Arc<Vec<GameProfile>>, String> {
+    let games = perform_scan()?;
     let mtime_snapshot = DiscoveryMtimeSnapshot::collect();
     let arc = Arc::new(games);
     if let Ok(mut guard) = GAME_SCAN_CACHE.lock() {
@@ -43,11 +43,11 @@ pub fn force_refresh_scan_all_games() -> Arc<Vec<GameProfile>> {
             mtime_snapshot,
         });
     }
-    arc
+    Ok(arc)
 }
 
 /// Return cached discovery results when still within TTL and library mtimes unchanged.
-pub fn cached_scan_all_games() -> Arc<Vec<GameProfile>> {
+pub fn cached_scan_all_games() -> Result<Arc<Vec<GameProfile>>, String> {
     let snapshot = GAME_SCAN_CACHE.lock().ok().and_then(|guard| {
         guard.as_ref().map(|cache| {
             (
@@ -60,7 +60,7 @@ pub fn cached_scan_all_games() -> Arc<Vec<GameProfile>> {
 
     if let Some((games, scanned_at, mtime_snapshot)) = snapshot {
         if scanned_at.elapsed() < GAME_SCAN_CACHE_TTL && !discovery_mtime_changed(&mtime_snapshot) {
-            return games;
+            return Ok(games);
         }
     }
     force_refresh_scan_all_games()

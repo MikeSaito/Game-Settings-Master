@@ -1,14 +1,9 @@
 use super::{resolve_expected_config_dir, validate_config_dir_trust_profile};
 use crate::core::models::GameProfile;
+use crate::discovery::known_games::use_test_local_app_data_dir;
 use crate::discovery::platform_hints_for_game;
 use std::fs;
-use std::sync::{Mutex, OnceLock};
 use tempfile::TempDir;
-
-fn localappdata_lock() -> &'static Mutex<()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(()))
-}
 
 fn write_gus(dir: &std::path::Path) {
     fs::create_dir_all(dir).unwrap();
@@ -17,8 +12,8 @@ fn write_gus(dir: &std::path::Path) {
 
 #[test]
 fn resolve_expected_uses_known_local_app_folder_for_palworld() {
-    let _guard = localappdata_lock().lock().unwrap();
     let temp = TempDir::new().unwrap();
+    let _local_app_data = use_test_local_app_data_dir(temp.path());
     let platform = temp
         .path()
         .join("Pal")
@@ -27,21 +22,12 @@ fn resolve_expected_uses_known_local_app_folder_for_palworld() {
         .join("Windows");
     write_gus(&platform);
 
-    let previous = std::env::var("LOCALAPPDATA").ok();
-    unsafe { std::env::set_var("LOCALAPPDATA", temp.path()) };
-
     let profile = sample_profile("steam-1623730");
     let hints = platform_hints_for_game(Some(&profile.id), Some(&profile.engine_family));
     let expected = resolve_expected_config_dir(&profile.id, &profile, &hints)
         .expect("resolve")
         .expect("expected");
     assert!(expected.ends_with("Pal\\Saved\\Config\\Windows"));
-
-    if let Some(prev) = previous {
-        unsafe { std::env::set_var("LOCALAPPDATA", prev) };
-    } else {
-        unsafe { std::env::remove_var("LOCALAPPDATA") };
-    }
 }
 
 #[test]

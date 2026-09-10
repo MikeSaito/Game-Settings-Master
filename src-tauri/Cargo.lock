@@ -4176,7 +4176,7 @@ checksum = "b6f5e870be6c3b371b77fe0ee0bafb859fa4964b4404c27de1d380043c4dda20"
 
 [[package]]
 name = "ue-settings-master"
-version = "1.0.6"
+version = "1.0.7"
 dependencies = [
  "chrono",
  "dirs 7.0.0",
@@ -4185,6 +4185,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
+ "sha2",
  "specta",
  "specta-serde",
  "specta-typescript",
