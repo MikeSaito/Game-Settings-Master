@@ -11,9 +11,9 @@
     "capture-screenshots": "node scripts/capture-screenshots.mjs"
   },
   "devDependencies": {
-    "@emnapi/core": "^2.0.0-alpha.4",
-    "@emnapi/runtime": "^2.0.0-alpha.4",
-    "playwright": "^1.62.1",
+    "@emnapi/core": "^2.0.0-alpha.5",
+    "@emnapi/runtime": "^2.0.0-alpha.5",
+    "playwright": "^1.63.0",
     "typescript": "~7.0.2",
     "vite": "^8.2.2"
   },
