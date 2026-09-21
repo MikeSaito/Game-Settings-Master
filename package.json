@@ -29,8 +29,8 @@
     "updater:build": "powershell -ExecutionPolicy Bypass -File scripts/build-signed.ps1"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.102.8",
-    "@tanstack/react-virtual": "^3.14.12",
+    "@tanstack/react-query": "^5.103.1",
+    "@tanstack/react-virtual": "^3.14.13",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.7.3",
     "@tauri-apps/plugin-process": "^2.3.1",
@@ -40,8 +40,8 @@
     "lucide-react": "^1.44.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-i18next": "^17.0.13",
-    "react-router-dom": "^7.18.3"
+    "react-i18next": "^17.0.14",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
