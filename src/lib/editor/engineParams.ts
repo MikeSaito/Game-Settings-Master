@@ -1,5 +1,5 @@
 import type { GameParameter } from "@/lib/core/types";
-import { EMPTY_INI_SNAPSHOT, isIniShippedKey } from "./iniSnapshot";
+import { EMPTY_INI_SNAPSHOT, iniSnapshotKey, isIniShippedKey } from "./iniSnapshot";
 
 export const ENGINE_INI = "Engine.ini";
 
@@ -17,9 +17,9 @@ export const ENGINE_CATEGORIES = new Set([
   "PostProcess",
 ]);
 
-/** Unique id for ini membership toggle (`file::key`). */
-export function engineParamId(p: Pick<GameParameter, "file" | "key">): string {
-  return `${p.file}::${p.key}`;
+/** A toggle belongs to a single file, section and key. */
+export function engineParamId(p: Pick<GameParameter, "file" | "section" | "key">): string {
+  return iniSnapshotKey(p);
 }
 
 export function paramId(p: Pick<GameParameter, "file" | "section" | "key">): string {

@@ -94,6 +94,14 @@ pub fn list_backups(config_dir: &Path) -> Result<Vec<(String, String, Vec<String
     Ok(backups)
 }
 
+pub fn list_backups_for_platform(
+    config_dir: &Path,
+    hints: &crate::ini::platform::PlatformHints,
+) -> Result<Vec<(String, String, Vec<String>)>, String> {
+    let active = crate::ini::platform::reconcile_config_dir(config_dir, hints);
+    list_backups(&active)
+}
+
 fn list_backups_in(backup_root: &Path) -> Result<Vec<(String, String, Vec<String>)>, String> {
     if !backup_root.exists() {
         return Ok(Vec::new());

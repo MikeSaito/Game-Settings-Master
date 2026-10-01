@@ -7,6 +7,7 @@ import {
   saveGameOverride,
 } from "@/lib/api";
 import { buildCustomChanges } from "@/lib/editor";
+import type { AppliedDraft } from "@/lib/editor/rebaseDraft";
 import { assertApplyPlanAllowed, assertPresetStorable, validateOverridePlan } from "@/lib/editor/validation";
 import type { ValidationIssue } from "@/lib/editor/validation";
 import { invalidateGameWorkspace } from "@/lib/game/invalidateGameWorkspace";
@@ -40,7 +41,7 @@ interface Options {
   activeGameIdRef: MutableRefObject<string | undefined>;
   setMessage: (message: string | undefined) => void;
   setApplyError: (error: string | undefined) => void;
-  onApplied: () => void;
+  onApplied: (submitted: AppliedDraft) => void;
   onPresetApplied?: () => void;
   onPresetApplyStart?: (name: string) => void;
   onPresetApplyEnd?: () => void;
@@ -113,19 +114,25 @@ export function useEditorMutations(options: Options) {
         game?.engine_version,
         options.applyWarningsAcknowledged,
       );
-      return { result, snapshot };
+      return {
+        result,
+        snapshot,
+        submitted: { params: options.params, engineEnabled: new Set(options.engineEnabled), changes: { files, removals } },
+      };
     },
     onMutate: () => setApplyError(undefined),
-    onSuccess: ({ result, snapshot }) => {
+    onSuccess: ({ result, snapshot, submitted }) => {
+      if (activeGameIdRef.current === snapshot.gameId && configDir === snapshot.configDir) {
+        onApplied(submitted);
+      }
+      invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
       if (activeGameIdRef.current !== snapshot.gameId) return;
-      onApplied();
       setMessage(
         t("applied", {
           count: result.diff.length,
           backupId: result.backup_id,
         }),
       );
-      invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
@@ -172,10 +179,10 @@ export function useEditorMutations(options: Options) {
       onPresetApplyStart?.(override.name);
     },
     onSuccess: ({ result, snapshot }) => {
+      invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
       if (activeGameIdRef.current !== snapshot.gameId) return;
       onPresetApplied?.();
       setMessage(t("presetApplied", { backupId: result.backup_id }));
-      invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
     onSettled: () => onPresetApplyEnd?.(),

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildCustomChanges } from "./buildCustomChanges";
-import { initialEngineEnabledKeys } from "./engineParams";
+import { engineParamId, initialEngineEnabledKeys } from "./engineParams";
 import { buildIniSnapshot } from "./iniSnapshot";
 import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 
@@ -165,7 +165,7 @@ describe("buildCustomChanges", () => {
     );
   });
 
-  it("includes engine removals when applying from basic panel", () => {
+  it("does not remove advanced keys when applying the basic panel", () => {
     const baseline = [
       param({
         key: "r.ShadowQuality",
@@ -185,9 +185,7 @@ describe("buildCustomChanges", () => {
       "basic",
     );
     expect(Object.keys(files)).toHaveLength(0);
-    expect(removals["Scalability.ini"]?.["[ShadowQuality@3]"]).toContain(
-      "r.ShadowQuality",
-    );
+    expect(removals).toEqual({});
   });
 
   it("does not remove shipped GUS keys from ini", () => {
@@ -247,7 +245,7 @@ describe("buildCustomChanges", () => {
         catalog_recommended: true,
       }),
     ];
-    const enabled = new Set(["GameUserSettings.ini::sg.ViewDistanceQuality"]);
+    const enabled = new Set([engineParamId(baseline[0])]);
     const { files } = buildCustomChanges(
       baseline,
       baseline,
@@ -258,5 +256,22 @@ describe("buildCustomChanges", () => {
     );
     const section = Object.values(files["GameUserSettings.ini"] ?? {})[0];
     expect(section?.["sg.ViewDistanceQuality"]).toBe("3");
+  });
+
+  it("toggles identical keys in different scalability sections independently", () => {
+    const baseline = [
+      param({ key: "r.ShadowQuality", file: "Scalability.ini", section: "ShadowQuality@2", value: "3" }),
+      param({ key: "r.ShadowQuality", file: "Scalability.ini", section: "[ShadowQuality@3]", value: "5" }),
+    ];
+    const enabled = new Set([engineParamId(baseline[1])]);
+    const changes = buildCustomChanges(baseline, baseline, undefined, enabled, new Set(["Scalability"]), "advanced");
+    expect(changes.removals).toEqual({ "Scalability.ini": { "[ShadowQuality@2]": ["r.ShadowQuality"] } });
+  });
+
+  it("does not remove basic keys from advanced or non-editor panels", () => {
+    const baseline = [param({ key: "bUseVSync", value: "True" })];
+    for (const panel of ["advanced", "extra", "backups", "presets"] as const) {
+      expect(buildCustomChanges(baseline, baseline, undefined, new Set(), new Set(["Scalability"]), panel)).toEqual({ files: {}, removals: {} });
+    }
   });
 });

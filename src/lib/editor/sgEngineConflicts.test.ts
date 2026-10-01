@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { engineParamId } from "./engineParams";
 import type { GameParameter } from "@/lib/core/types";
 import {
   collectPendingKeys,
@@ -107,7 +108,7 @@ describe("analyzeSgEngineConflictGroups", () => {
         value: "4096",
       }),
     ];
-    const enabled = new Set(["Engine.ini::r.TextureStreamingPoolSize"]);
+    const enabled = new Set([engineParamId(param({ key: "r.TextureStreamingPoolSize" }))]);
     expect(analyzeSgEngineConflictGroups(params, new Set(), enabled)).toHaveLength(0);
   });
 
@@ -128,7 +129,7 @@ describe("analyzeSgEngineConflictGroups", () => {
         value: "4096",
       }),
     ];
-    const enabled = new Set(["Engine.ini::r.Shadow.MaxResolution"]);
+    const enabled = new Set([engineParamId(param({ key: "r.Shadow.MaxResolution" }))]);
     const groups = analyzeSgEngineConflictGroups(params, new Set(), enabled);
     expect(groups).toHaveLength(1);
     expect(groups[0]?.conflictingRParams.map((p) => p.key)).toContain("r.Shadow.MaxResolution");
@@ -151,7 +152,7 @@ describe("analyzeSgEngineConflictGroups", () => {
         value: "5",
       }),
     ];
-    const groups = analyzeSgEngineConflictGroups(params, new Set(), new Set(["Engine.ini::r.ShadowQuality"]));
+    const groups = analyzeSgEngineConflictGroups(params, new Set(), new Set([engineParamId(param({ key: "r.ShadowQuality" }))]));
     expect(groups).toHaveLength(1);
     expect(groups[0]?.sgKey).toBe("sg.shadowquality");
     expect(groups[0]?.tierPreview?.cvars).toEqual([{ key: "r.ShadowQuality", value: "2" }]);
@@ -180,14 +181,14 @@ describe("resolveConflictKeepSg", () => {
       conflictingRParams: [draft],
       tierPreview: null,
     };
-    const enabled = new Set(["Engine.ini::r.ShadowQuality"]);
+    const enabled = new Set([engineParamId(param({ key: "r.ShadowQuality" }))]);
     const { params: nextParams, engineEnabled } = resolveConflictKeepSg(
       group,
       [draft],
       [baseline],
       enabled,
     );
-    expect(engineEnabled.has("Engine.ini::r.ShadowQuality")).toBe(false);
+    expect(engineEnabled.has(engineParamId(param({ key: "r.ShadowQuality" })))).toBe(false);
     expect(nextParams[0]?.value).toBe("5");
   });
 
@@ -212,14 +213,14 @@ describe("resolveConflictKeepSg", () => {
       conflictingRParams: [draft],
       tierPreview: null,
     };
-    const enabled = new Set(["Scalability.ini::r.ShadowQuality"]);
+    const enabled = new Set([engineParamId(baseline)]);
     const { params: nextParams, engineEnabled } = resolveConflictKeepSg(
       group,
       [draft],
       [baseline],
       enabled,
     );
-    expect(engineEnabled.has("Scalability.ini::r.ShadowQuality")).toBe(false);
+    expect(engineEnabled.has(engineParamId(baseline))).toBe(false);
     expect(nextParams[0]?.value).toBe("5");
   });
 
@@ -268,7 +269,7 @@ describe("detectSgEngineConflicts", () => {
         value: "5",
       }),
     ];
-    const conflicts = detectSgEngineConflicts(params, new Set(), new Set(["Engine.ini::r.ShadowQuality"]));
+    const conflicts = detectSgEngineConflicts(params, new Set(), new Set([engineParamId(param({ key: "r.ShadowQuality" }))]));
     expect(conflicts.has("sg.shadowquality")).toBe(true);
     expect(conflicts.has("r.shadowquality")).toBe(true);
   });
@@ -289,7 +290,7 @@ describe("detectSgEngineConflicts", () => {
         value: "4096",
       }),
     ];
-    const enabled = new Set(["Engine.ini::r.Shadow.MaxResolution"]);
+    const enabled = new Set([engineParamId(param({ key: "r.Shadow.MaxResolution" }))]);
     const conflicts = detectSgEngineConflicts(params, new Set(), enabled);
     expect(conflicts.has("r.shadow.maxresolution")).toBe(true);
   });

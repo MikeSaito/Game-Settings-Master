@@ -27,7 +27,7 @@ test.describe("editor workflow", () => {
     await expect(page.getByText(/Backup .* restored/i)).toBeVisible();
   });
 
-  test("resolve sg/r conflict and apply from basic", async ({ page }) => {
+  test("resolve sg/r conflict and apply engine removals from advanced", async ({ page }) => {
     await useE2eFixtureMode(page, "conflict");
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
@@ -37,9 +37,31 @@ test.describe("editor workflow", () => {
     await page.getByRole("button", { name: /Reset r\.\*, keep sg\.ShadowQuality/i }).click();
     await expect(page.getByText(/Removed conflicting r\.\* overrides/i)).toBeVisible();
 
-    await page.getByRole("button", { name: "Apply to GameUserSettings" }).click();
+    await expect(page.getByRole("button", { name: "Apply to GameUserSettings" })).toBeDisabled();
+    await page.getByRole("tab", { name: "Advanced", exact: true }).click();
+    await page.getByRole("button", { name: "Apply (Engine / Scalability)", exact: true }).click();
     await expect(page.getByText(/Applied .* edits · backup/i)).toBeVisible();
     await expect(page.getByText("sg.* and r.* overlap")).toHaveCount(0);
+  });
+
+  test("applying basic preserves the advanced draft", async ({ page }) => {
+    await useE2eFixtureMode(page, "conflict");
+    await page.goto("/e2e.html");
+    await page.getByRole("button", { name: "Select" }).click();
+    await page.getByRole("tab", { name: "Advanced", exact: true }).click();
+    const engineRow = page.getByTestId("parameter-row").filter({ hasText: "r.Shadow.MaxResolution" });
+    await engineRow.getByRole("spinbutton").fill("2048");
+    await page.getByRole("tab", { name: "Basic", exact: true }).click();
+    const vsyncRow = page.getByTestId("parameter-row").filter({ hasText: "VSync" });
+    await vsyncRow.getByRole("switch").click();
+    await page.getByRole("checkbox").check();
+    await page.getByRole("button", { name: "Apply to GameUserSettings" }).click();
+    await expect(page.getByText(/Applied .* edits · backup/i)).toBeVisible();
+    await page.getByRole("tab", { name: "Advanced", exact: true }).click();
+    await expect(engineRow.getByRole("spinbutton")).toHaveValue("2048");
+    await page.getByRole("checkbox").check();
+    await page.getByRole("button", { name: "Apply (Engine / Scalability)", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Apply (Engine / Scalability)", exact: true })).toBeDisabled();
   });
 
   test("reset override ini from backups", async ({ page }) => {
