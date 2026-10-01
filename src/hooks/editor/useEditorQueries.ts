@@ -51,7 +51,8 @@ export function useEditorQueries(game: GameProfile | null) {
     staleTime: 5 * 60_000,
     refetchOnMount: false,
     placeholderData: (previousData, previousQuery) =>
-      previousQuery?.queryKey?.[2] === game?.id ? previousData : undefined,
+      previousQuery?.queryKey?.[2] === game?.id && previousQuery?.queryKey?.[1] === configDir
+        ? previousData : undefined,
   });
 
   const parametersLoading = (isLoading || isFetching) && parameters.length === 0;

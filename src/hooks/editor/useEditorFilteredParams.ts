@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, type MutableRefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
+import { baselineAfterApply, rebaseParameterDraft, type AppliedDraft } from "@/lib/editor/rebaseDraft";
 import {
   ALL_CATEGORY,
   buildCategoryList,
@@ -46,30 +47,42 @@ export function useEditorParamDraft(
   normalizedParameters: GameParameter[],
   paramsDirtyRef: MutableRefObject<boolean>,
   shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
+  scope = "",
 ) {
   const [params, setParams] = useState<GameParameter[]>([]);
   const [engineEnabled, setEngineEnabled] = useState<Set<string>>(new Set());
+  const baselineRef = useRef<GameParameter[]>([]);
+  const scopeRef = useRef(scope);
+  const draftRef = useRef({ params, engineEnabled });
+  draftRef.current = { params, engineEnabled };
 
   useEffect(() => {
-    if (paramsDirtyRef.current) return;
+    if (scopeRef.current !== scope || !paramsDirtyRef.current) {
+      setParams(normalizedParameters);
+      setEngineEnabled(initialEngineEnabledKeys(normalizedParameters, shippedIniKeys));
+      paramsDirtyRef.current = false;
+    } else {
+      const rebased = rebaseParameterDraft(
+        draftRef.current.params,
+        baselineRef.current,
+        normalizedParameters,
+        draftRef.current.engineEnabled,
+        shippedIniKeys,
+      );
+      setParams(rebased.params);
+      setEngineEnabled(rebased.engineEnabled);
+      paramsDirtyRef.current = rebased.dirty;
+    }
+    baselineRef.current = normalizedParameters;
+    scopeRef.current = scope;
+  }, [normalizedParameters, paramsDirtyRef, shippedIniKeys, scope]);
 
-    setParams((current) =>
-      current === normalizedParameters ? current : normalizedParameters,
-    );
+  const recordAppliedDraft = (submitted: AppliedDraft) => {
+    baselineRef.current = baselineAfterApply(baselineRef.current, submitted, shippedIniKeys);
+    paramsDirtyRef.current = true;
+  };
 
-    setEngineEnabled((current) => {
-      const next = initialEngineEnabledKeys(normalizedParameters, shippedIniKeys);
-      if (
-        current.size === next.size &&
-        [...current].every((key) => next.has(key))
-      ) {
-        return current;
-      }
-      return next;
-    });
-  }, [normalizedParameters, paramsDirtyRef, shippedIniKeys]);
-
-  return { params, setParams, engineEnabled, setEngineEnabled };
+  return { params, setParams, engineEnabled, setEngineEnabled, recordAppliedDraft };
 }
 
 export function useEditorFilteredParams({

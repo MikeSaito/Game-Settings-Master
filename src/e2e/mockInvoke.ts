@@ -9,6 +9,7 @@ import type {
   ScalabilityLimits,
 } from "@/lib/core";
 import { OVERRIDE_INI_FILES } from "@/lib/ini/configFiles";
+import { iniSnapshotKeyFromParts } from "@/lib/editor/iniSnapshot";
 import { testGame } from "@/test/fixtures/gameProfile";
 import { createE2eParametersForMode, readE2eFixtureMode } from "@/e2e/parameters";
 
@@ -36,6 +37,10 @@ const snapshots = new Map<string, Map<string, string>>();
 
 function paramKey(param: GameParameter): string {
   return `${param.file}::${param.section}::${param.key}`;
+}
+
+function paramIniKey(param: GameParameter): string {
+  return iniSnapshotKeyFromParts(param.file, param.section, param.key);
 }
 
 function nextBackupId(): string {
@@ -80,7 +85,7 @@ function applyChanges(
     for (const [section, keys] of Object.entries(sections)) {
       for (const [key, newValue] of Object.entries(keys)) {
         const param = parameters.find(
-          (row) => row.file === file && row.section === section && row.key === key,
+          (row) => paramIniKey(row) === iniSnapshotKeyFromParts(file, section, key),
         );
         if (!param) continue;
         const oldValue = param.value;
@@ -108,7 +113,7 @@ function applyRemovals(
     for (const [section, keys] of Object.entries(sections)) {
       for (const key of keys) {
         const param = parameters.find(
-          (row) => row.file === file && row.section === section && row.key === key,
+          (row) => paramIniKey(row) === iniSnapshotKeyFromParts(file, section, key),
         );
         if (!param || !param.present_in_ini) continue;
         diff.push({

@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import type { GameParameter } from "@/lib/core";
-import { buildIniSnapshot, iniSnapshotKey, iniSnapshotKeyFromParts, isIniShippedKey } from "./iniSnapshot";
+import { buildIniSnapshot, iniSnapshotKey, iniSnapshotKeyFromParts, isIniShippedKey, loadOrCreateIniSnapshot } from "./iniSnapshot";
 import { isIniMembershipToggleable } from "./engineParams";
 
 function param(overrides: Partial<GameParameter>): GameParameter {
@@ -33,6 +33,31 @@ function param(overrides: Partial<GameParameter>): GameParameter {
 }
 
 describe("iniSnapshot", () => {
+  beforeEach(() => localStorage.clear());
+
+  it("keeps added keys removable after reopening the editor", () => {
+    const original = param({});
+    const added = param({ key: "bUseVSync", present_in_ini: false });
+    loadOrCreateIniSnapshot("game", "C:/Saved/Config/Windows", [original, added]);
+    const afterApply = { ...added, present_in_ini: true };
+    const reopened = loadOrCreateIniSnapshot("game", "c:\\saved\\config\\windows\\", [original, afterApply]);
+    expect(isIniMembershipToggleable(afterApply, reopened)).toBe(true);
+    expect(isIniMembershipToggleable(original, reopened)).toBe(false);
+  });
+
+  it("isolates baselines by game and config directory", () => {
+    const added = param({ present_in_ini: false });
+    loadOrCreateIniSnapshot("game", "C:/A", [added]);
+    const present = { ...added, present_in_ini: true };
+    expect(isIniMembershipToggleable(present, loadOrCreateIniSnapshot("other", "C:/A", [present]))).toBe(false);
+    expect(isIniMembershipToggleable(present, loadOrCreateIniSnapshot("game", "C:/B", [present]))).toBe(false);
+  });
+
+  it("recovers a malformed persisted baseline", () => {
+    loadOrCreateIniSnapshot("game", "C:/A", [param({})]);
+    localStorage.setItem(localStorage.key(0)!, "invalid json");
+    expect(loadOrCreateIniSnapshot("game", "C:/A", [param({})]).size).toBe(1);
+  });
   it("captures only present_in_ini keys", () => {
     const items = [
       param({ key: "sg.ShadowQuality", present_in_ini: true }),

@@ -90,7 +90,9 @@ export function buildCustomChanges(
     reconciled.map((p) => [catalogParamId(p), p]),
   );
 
-  for (const p of parameters) {
+  const removalParams = panel ? filterParamsByPanel(parameters, panel) : parameters;
+  for (const p of removalParams) {
+    if (!editableCategories.has(p.category)) continue;
     if (!p.present_in_ini) continue;
     const draft = draftByCatalogId.get(catalogParamId(p));
     if (!draft) continue;

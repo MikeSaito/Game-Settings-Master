@@ -1,8 +1,10 @@
 use super::helpers::{
-    ensure_all_targets_writable, guard_config_dir_for_read, guard_config_dir_for_write,
-    guard_write_context, resolve_write_exe_name,
+    ensure_all_targets_writable, find_profile_by_id, guard_config_dir_for_read,
+    guard_config_dir_for_write, guard_write_context, resolve_write_exe_name,
 };
-use crate::backup::{list_backups, restore_backup_all_targets};
+use crate::backup::{
+    list_backups_for_platform, resolve_backup_config_dir, restore_backup_all_targets,
+};
 use crate::core::app_error::AppInvokeError;
 use crate::core::models::{BackupInfo, ConfigResetResult};
 use crate::discovery::platform_hints_for_game;
@@ -16,7 +18,16 @@ pub fn list_backups_cmd(
 ) -> Result<Vec<BackupInfo>, AppInvokeError> {
     guard_config_dir_for_read(game_id.as_deref(), &config_dir)?;
     let path = validate_config_dir(&config_dir)?;
-    let backups = list_backups(&path)?;
+    let profile = game_id
+        .as_deref()
+        .map(find_profile_by_id)
+        .transpose()?
+        .flatten();
+    let hints = platform_hints_for_game(
+        game_id.as_deref(),
+        profile.as_ref().map(|game| game.engine_family.as_str()),
+    );
+    let backups = list_backups_for_platform(&path, &hints)?;
     Ok(backups
         .into_iter()
         .map(|(id, created_at, files)| BackupInfo {
@@ -42,8 +53,9 @@ pub fn restore_backup_cmd(
     ensure_config_writable(&path, resolved_exe.as_deref())?;
 
     let hints = platform_hints_for_game(game_id.as_deref(), engine_family.as_deref());
-    ensure_all_targets_writable(&path, &hints, resolved_exe.as_deref())?;
-    Ok(restore_backup_all_targets(&path, &backup_id, &hints)?)
+    let source = resolve_backup_config_dir(&path, &backup_id, &hints)?;
+    ensure_config_writable(&source, resolved_exe.as_deref())?;
+    Ok(restore_backup_all_targets(&source, &backup_id, &hints)?)
 }
 
 #[tauri::command]

@@ -50,6 +50,70 @@ fn generated_backup_ids_are_unique() {
 }
 
 #[test]
+fn backups_are_listed_for_the_active_platform_even_with_a_stale_profile_path() {
+    let tmp = tempfile::tempdir().unwrap();
+    let stale = tmp.path().join("WindowsNoEditor");
+    let active = tmp.path().join("Windows");
+    for dir in [&stale, &active] {
+        fs::create_dir_all(dir).unwrap();
+        fs::write(dir.join("GameUserSettings.ini"), b"[Settings]\n").unwrap();
+    }
+    let id = backup_config_dir(&active, None).unwrap();
+    let hints = crate::ini::platform::PlatformHints {
+        config_platform: Some("Windows".into()),
+        ..Default::default()
+    };
+    let listed = super::snapshot::list_backups_for_platform(&stale, &hints).unwrap();
+    assert_eq!(listed.len(), 1);
+    assert_eq!(listed[0].0, id);
+    fs::write(
+        active.join("GameUserSettings.ini"),
+        b"[Settings]\nChanged=1\n",
+    )
+    .unwrap();
+    super::restore::restore_backup_all_targets(&stale, &id, &hints).unwrap();
+    assert_eq!(
+        fs::read(active.join("GameUserSettings.ini")).unwrap(),
+        b"[Settings]\n"
+    );
+}
+
+#[test]
+fn restore_uses_the_snapshot_origin_when_the_active_platform_changes() {
+    let tmp = tempfile::tempdir().unwrap();
+    let origin = tmp.path().join("Windows");
+    let other = tmp.path().join("WindowsNoEditor");
+    for dir in [&origin, &other] {
+        fs::create_dir_all(dir).unwrap();
+        fs::write(
+            dir.join("GameUserSettings.ini"),
+            b"[Settings]\nOriginal=1\n",
+        )
+        .unwrap();
+    }
+    let id = backup_config_dir(&origin, None).unwrap();
+    let hints = crate::ini::platform::PlatformHints {
+        config_platform: Some("WindowsNoEditor".into()),
+        ..Default::default()
+    };
+    fs::write(
+        origin.join("GameUserSettings.ini"),
+        b"[Settings]\nChanged=1\n",
+    )
+    .unwrap();
+    fs::write(other.join("GameUserSettings.ini"), b"[Settings]\nOther=1\n").unwrap();
+    super::restore::restore_backup_all_targets(&origin, &id, &hints).unwrap();
+    assert_eq!(
+        fs::read(origin.join("GameUserSettings.ini")).unwrap(),
+        b"[Settings]\nOriginal=1\n"
+    );
+    assert_eq!(
+        fs::read(other.join("GameUserSettings.ini")).unwrap(),
+        b"[Settings]\nOther=1\n"
+    );
+}
+
+#[test]
 fn backup_rejects_an_existing_snapshot_id() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let config = tmp.path();

@@ -98,8 +98,10 @@ pub fn restore_backup_all_targets(
     backup_id: &str,
     hints: &crate::ini::platform::PlatformHints,
 ) -> Result<Vec<String>, String> {
-    let path = crate::ini::platform::reconcile_config_dir(primary_config_dir, hints);
-    let targets = crate::ini::platform::apply_target_dirs(&path, hints);
+    // The active platform can change between listing and restoring. Never move a
+    // snapshot into a different platform: restore it to its original directory.
+    let source = resolve_backup_config_dir(primary_config_dir, backup_id, hints)?;
+    let targets = vec![source];
 
     let mut pre_snapshots: Vec<(std::path::PathBuf, String)> = Vec::new();
     for target in &targets {
@@ -131,6 +133,35 @@ pub fn restore_backup_all_targets(
     all_restored.sort();
     all_restored.dedup();
     Ok(all_restored)
+}
+
+pub fn resolve_backup_config_dir(
+    config_dir: &Path,
+    backup_id: &str,
+    hints: &crate::ini::platform::PlatformHints,
+) -> Result<std::path::PathBuf, String> {
+    if !crate::fs_util::is_safe_backup_id(backup_id) {
+        return resolve_backup_path(config_dir, backup_id).map(|_| config_dir.to_path_buf());
+    }
+    let active = crate::ini::platform::reconcile_config_dir(config_dir, hints);
+    let mut candidates = vec![active, config_dir.to_path_buf()];
+    if let Some(root) = config_dir.parent() {
+        candidates.extend(
+            crate::ini::platform::PLATFORM_DIRS
+                .iter()
+                .map(|name| root.join(name)),
+        );
+    }
+    let mut checked = HashSet::new();
+    for candidate in candidates {
+        if candidate.is_dir()
+            && checked.insert(candidate.clone())
+            && resolve_backup_path(&candidate, backup_id).is_ok()
+        {
+            return Ok(candidate);
+        }
+    }
+    resolve_backup_path(config_dir, backup_id).map(|_| config_dir.to_path_buf())
 }
 
 /// Apply rollback: deletes override ini created by apply, then restores the snapshot.

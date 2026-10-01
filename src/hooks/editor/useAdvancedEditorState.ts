@@ -16,7 +16,7 @@ import {
   applyParamDependencies,
   analyzeSgEngineConflictGroups,
   buildCustomChanges,
-  buildIniSnapshot,
+  loadOrCreateIniSnapshot,
   EMPTY_INI_SNAPSHOT,
   collectPendingKeys,
   comboIssuesForKey,
@@ -89,20 +89,25 @@ export function useAdvancedEditorState(game: GameProfile | null) {
       shippedIniSnapshotCacheRef.current = EMPTY_INI_SNAPSHOT;
       return EMPTY_INI_SNAPSHOT;
     }
+    const snapshotScope = JSON.stringify([game.id, configDir]);
+    if (shippedIniSnapshotGameRef.current !== snapshotScope) {
+      shippedIniSnapshotCacheRef.current = EMPTY_INI_SNAPSHOT;
+    }
     if (parametersLoading || normalizedParameters.length === 0) {
       return shippedIniSnapshotCacheRef.current;
     }
-    if (shippedIniSnapshotGameRef.current !== game.id) {
-      shippedIniSnapshotGameRef.current = game.id;
-      shippedIniSnapshotCacheRef.current = buildIniSnapshot(normalizedParameters);
+    if (shippedIniSnapshotGameRef.current !== snapshotScope) {
+      shippedIniSnapshotGameRef.current = snapshotScope;
+      shippedIniSnapshotCacheRef.current = loadOrCreateIniSnapshot(game.id, configDir, normalizedParameters);
     }
     return shippedIniSnapshotCacheRef.current;
-  }, [game?.id, normalizedParameters, parametersLoading]);
+  }, [game?.id, configDir, normalizedParameters, parametersLoading]);
 
-  const { params, setParams, engineEnabled, setEngineEnabled } = useEditorParamDraft(
+  const { params, setParams, engineEnabled, setEngineEnabled, recordAppliedDraft } = useEditorParamDraft(
     normalizedParameters,
     paramsDirtyRef,
     shippedIniKeys,
+    JSON.stringify([game?.id, configDir]),
   );
 
   const {
@@ -410,9 +415,7 @@ export function useAdvancedEditorState(game: GameProfile | null) {
     activeGameIdRef,
     setMessage,
     setApplyError,
-    onApplied: () => {
-      paramsDirtyRef.current = false;
-    },
+    onApplied: recordAppliedDraft,
     onPresetApplied: () => {
       setPendingPresetApply(null);
       setPresetApplyWarningsAcknowledged(false);

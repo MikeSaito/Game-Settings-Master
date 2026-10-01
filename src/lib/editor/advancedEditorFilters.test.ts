@@ -12,6 +12,7 @@ import {
   filterParamsByMode,
 } from "@/lib/routing/editorPanels";
 import type { GameParameter } from "@/lib/core/types";
+import { engineParamId } from "./engineParams";
 
 function param(
   overrides: Partial<GameParameter> & Pick<GameParameter, "key" | "category">,
@@ -90,7 +91,7 @@ describe("filterParamsByCategoryAndSearch", () => {
       param({ key: "r.Fog", category: "Rendering", file: "Engine.ini", title: "Fog" }),
       param({ key: "r.Bloom", category: "Rendering", file: "Engine.ini", title: "Bloom" }),
     ];
-    const enabled = new Set(["Engine.ini::r.Fog"]);
+    const enabled = new Set([engineParamId(items[0])]);
 
     expect(sortParamsForEngineCategory(items, "Display", enabled)).toBe(items);
     expect(sortParamsForEngineCategory(items, "Rendering", enabled).map((p) => p.key)).toEqual([
