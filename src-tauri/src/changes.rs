@@ -171,7 +171,7 @@ fn gpu_fingerprint(gpu: &crate::gpu::GpuCapabilities) -> String {
     )
 }
 
-fn check_game_stopped(exe: Option<&str>) -> Result<(), AppInvokeError> {
+pub(crate) fn check_game_stopped(exe: Option<&str>) -> Result<(), AppInvokeError> {
     if let Some(exe) = exe {
         if crate::fs_util::is_exe_running_uncached(exe) {
             return Err(crate::core::app_error::running_game_ini_blocked(exe));

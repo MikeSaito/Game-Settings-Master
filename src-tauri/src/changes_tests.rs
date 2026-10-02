@@ -651,6 +651,39 @@ fn metadata_failure_reports_successful_config_write_with_warning() {
 }
 
 #[test]
+fn named_snapshot_preserves_source_bytes_timestamps_and_readonly_attributes() {
+    let fixture = Fixture::new();
+    let gus = fixture.dir().join("GameUserSettings.ini");
+    let before = std::fs::read(&gus).unwrap();
+    let modified = std::fs::metadata(&gus).unwrap().modified().unwrap();
+    let mut permissions = std::fs::metadata(&gus).unwrap().permissions();
+    permissions.set_readonly(true);
+    std::fs::set_permissions(&gus, permissions).unwrap();
+    let id = crate::commands::snapshots::create_snapshot(
+        fixture.profile.id.clone(),
+        fixture.profile.config_dir.clone().unwrap(),
+        "Named".into(),
+    )
+    .unwrap();
+    assert_eq!(std::fs::read(&gus).unwrap(), before);
+    assert_eq!(
+        std::fs::metadata(&gus).unwrap().modified().unwrap(),
+        modified
+    );
+    assert!(std::fs::metadata(&gus).unwrap().permissions().readonly());
+    assert_eq!(
+        std::fs::read(
+            crate::backup::paths::resolve_backup_path(&fixture.dir(), &id)
+                .unwrap()
+                .join("GameUserSettings.ini")
+        )
+        .unwrap(),
+        before
+    );
+    crate::fs_util::clear_readonly(&gus);
+}
+
+#[test]
 fn resolution_rows_are_linked_at_backend_selection_boundary() {
     let fixture = Fixture::new();
     let mut request = fixture.request();

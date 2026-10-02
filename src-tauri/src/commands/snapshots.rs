@@ -31,7 +31,7 @@ pub fn create_snapshot(
         return Err(AppError::validation("Invalid snapshot name"));
     }
     let exe = crate::commands::helpers::resolve_write_exe_name(None, Some(&game_id))?;
-    crate::fs_util::ensure_config_writable(&dir, exe.as_deref())?;
+    crate::changes::check_game_stopped(exe.as_deref())?;
     let id = crate::backup::backup_config_dir(&dir, None)?;
     crate::backup::metadata::write(&dir, &id, Some(name.trim().into()), Some(game_id))?;
     Ok(id)

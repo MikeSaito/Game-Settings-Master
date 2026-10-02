@@ -96,7 +96,7 @@ Input occurrence identity, unknown GPU capabilities and discovery failure isolat
 Browser scenarios cover normal application/restore plus GPU selection, Input
 partial application, named snapshots, legacy preset import and Russian UI.
 
-Local validation on 2026-10-02: 235 Rust tests passed (one hardware-session test
+Local validation on 2026-10-02: 236 Rust tests passed (one hardware-session test
 is intentionally ignored by the normal suite), 200 TypeScript tests and 13
 Playwright scenarios passed. Catalog builder tests (12), frontend production
 build, Clippy with warnings denied, Rust formatting, locale parity, generated
