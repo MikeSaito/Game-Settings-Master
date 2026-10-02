@@ -13,7 +13,7 @@ pub use path_safety::{
     is_safe_ini_value, normalize_ini_section_name, path_within_root, safe_child_path,
     ALLOWED_CONFIG_INI_FILES, OVERRIDE_INI_FILES,
 };
-pub use process::{is_exe_running, kill_exe};
+pub use process::{is_exe_running, is_exe_running_uncached, kill_exe};
 
 #[cfg(test)]
 #[path = "fs_util_tests.rs"]

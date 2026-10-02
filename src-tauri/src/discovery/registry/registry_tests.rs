@@ -20,6 +20,9 @@ fn registry_test_lock() -> std::sync::MutexGuard<'static, ()> {
 
 fn test_profile(id: &str, install_dir: &str) -> GameProfile {
     GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: id.to_string(),
         name: "Registry Test".to_string(),
         source: "manual".to_string(),

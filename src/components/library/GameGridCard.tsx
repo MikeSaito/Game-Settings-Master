@@ -25,6 +25,8 @@ interface Props {
 const sourceLabels: Record<string, string> = {
   steam: "Steam",
   epic: "Epic",
+  gog: "GOG",
+  xbox: "Xbox / Game Pass",
 };
 
 export function GameGridCard({
@@ -52,16 +54,24 @@ export function GameGridCard({
   const chips = (
     <div className="flex flex-wrap gap-1.5">
       <Badge tone="neutral">
-        {game.source === "manual" ? t("source.manual") : sourceLabels[game.source] ?? game.source}
+        {game.source === "manual"
+          ? t("source.manual")
+          : (sourceLabels[game.source] ?? game.source)}
       </Badge>
       {game.is_ue ? (
         <Badge tone="accent">
-          {game.engine_family === "ue4" ? "UE 4" : game.engine_family === "ue5" ? "UE 5" : "Unreal"}
+          {game.engine_family === "ue4"
+            ? "UE 4"
+            : game.engine_family === "ue5"
+              ? "UE 5"
+              : "Unreal"}
         </Badge>
       ) : (
         <Badge tone="warning">{t("card.engineUnknown")}</Badge>
       )}
-      {game.is_ue && game.possible_ue && <Badge tone="info">{t("card.probablyUe")}</Badge>}
+      {game.is_ue && game.possible_ue && (
+        <Badge tone="info">{t("card.probablyUe")}</Badge>
+      )}
       <Badge tone={game.config_dir ? "success" : "warning"}>
         {game.config_dir ? t("card.configOk") : t("card.configMissing")}
       </Badge>
@@ -71,7 +81,12 @@ export function GameGridCard({
   const actions = (
     <div className="flex flex-wrap items-center gap-1.5">
       {canOpen ? (
-        <Button size="sm" variant="primary" icon={<FolderOpen size={14} />} onClick={() => onSelect(game)}>
+        <Button
+          size="sm"
+          variant="primary"
+          icon={<FolderOpen size={14} />}
+          onClick={() => onSelect(game)}
+        >
           {t("card.select")}
         </Button>
       ) : canPickConfig ? (
@@ -123,7 +138,9 @@ export function GameGridCard({
       <article
         className={cn(
           "grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-[var(--radius-panel)] border bg-[var(--color-surface)] p-2 transition hover:border-[var(--color-border-strong)] md:grid-cols-[44px_minmax(0,1fr)_auto]",
-          selected ? "border-[var(--color-accent)]" : "border-[var(--color-border)]",
+          selected
+            ? "border-[var(--color-accent)]"
+            : "border-[var(--color-border)]",
         )}
       >
         <button
@@ -132,7 +149,12 @@ export function GameGridCard({
           disabled={!handlePrimaryAction}
           className="text-left disabled:cursor-default"
         >
-          <GameCover game={game} aspect="square" selected={selected} className="h-11 w-11" />
+          <GameCover
+            game={game}
+            aspect="square"
+            selected={selected}
+            className="h-11 w-11"
+          />
         </button>
         <button
           type="button"
@@ -140,7 +162,9 @@ export function GameGridCard({
           disabled={!handlePrimaryAction}
           className="min-w-0 text-left disabled:cursor-default"
         >
-          <div className="truncate font-semibold text-[var(--color-text)]">{game.name}</div>
+          <div className="truncate font-semibold text-[var(--color-text)]">
+            {game.name}
+          </div>
           <div className="mt-1 truncate font-mono text-xs text-[var(--color-text-faint)]">
             {game.install_dir}
           </div>
@@ -157,7 +181,9 @@ export function GameGridCard({
     <article
       className={cn(
         "group overflow-hidden rounded-[var(--radius-panel)] border bg-[var(--color-surface)] transition hover:-translate-y-0.5 hover:border-[var(--color-border-strong)]",
-        selected ? "border-[var(--color-accent)] shadow-[0_0_0_1px_var(--color-accent-ring)]" : "border-[var(--color-border)]",
+        selected
+          ? "border-[var(--color-accent)] shadow-[0_0_0_1px_var(--color-accent-ring)]"
+          : "border-[var(--color-border)]",
       )}
     >
       <button
@@ -166,9 +192,16 @@ export function GameGridCard({
         disabled={!handlePrimaryAction}
         className="block w-full text-left disabled:cursor-default"
       >
-        <GameCover game={game} aspect="header" selected={selected} className="rounded-none" />
+        <GameCover
+          game={game}
+          aspect="header"
+          selected={selected}
+          className="rounded-none"
+        />
         <div className="p-3">
-          <div className="truncate font-semibold text-[var(--color-text)]">{game.name}</div>
+          <div className="truncate font-semibold text-[var(--color-text)]">
+            {game.name}
+          </div>
           <div className="mt-2">{chips}</div>
           <p className="mt-2 truncate font-mono text-xs text-[var(--color-text-faint)]">
             {game.install_dir}

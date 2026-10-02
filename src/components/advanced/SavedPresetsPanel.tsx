@@ -1,11 +1,15 @@
 import { Download, Trash2, Upload, Zap } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApplyValidationPanel } from "@/components/advanced/ApplyValidationPanel";
 import type { AdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
 import { canApplyPlan } from "@/lib/editor/validation";
 import type { GameOverride } from "@/lib/core";
 import { Button } from "@/components/ds/Button";
+import {
+  parsePreset,
+  presetCompatibility,
+} from "@/lib/editor/presetCompatibility";
 
 interface Props {
   state: AdvancedEditorState;
@@ -29,19 +33,12 @@ function downloadPresetJson(override: GameOverride) {
   URL.revokeObjectURL(url);
 }
 
-function parseImportedPreset(raw: string, gameId: string): GameOverride | null {
-  const data = JSON.parse(raw) as Partial<GameOverride>;
-  if (!data.name || typeof data.name !== "string" || !data.files) return null;
-  return {
-    game_id: gameId,
-    name: data.name.trim(),
-    files: data.files,
-    removals: data.removals,
-  };
-}
-
 export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
   const { t } = useTranslation("advanced");
+  const { t: ti } = useTranslation("improvements");
+  const [imported, setImported] = useState<GameOverride>();
+  const [importAck, setImportAck] = useState(false);
+  const [legacyImport, setLegacyImport] = useState(false);
   const importRef = useRef<HTMLInputElement>(null);
   const pending = state.pendingPresetApply;
   const presetGate = canApplyPlan(
@@ -53,16 +50,26 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
     if (!state.game?.id) return;
     try {
       const text = await file.text();
-      const preset = parseImportedPreset(text, state.game.id);
+      const preset = parsePreset(text, state.game.id);
       if (!preset) {
         state.setApplyError(t("presets.importInvalid"));
         return;
       }
-      await state.importOverrideMutation.mutateAsync(preset);
+      setImported(preset);
+      setImportAck(false);
+      setLegacyImport(!JSON.parse(text).metadata);
     } catch {
       state.setApplyError(t("presets.importInvalid"));
     }
   };
+
+  const importWarnings =
+    imported && state.game
+      ? [
+          ...presetCompatibility(imported, state.game, state.gpu),
+          ...(legacyImport ? [ti("presets.legacy")] : []),
+        ]
+      : [];
 
   return (
     <section
@@ -73,7 +80,9 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
       }
     >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-[var(--color-text)]">{t("savedPresets")}</h3>
+        <h3 className="text-sm font-semibold text-[var(--color-text)]">
+          {t("savedPresets")}
+        </h3>
         <div className="flex gap-2">
           <Button
             variant="ghost"
@@ -106,7 +115,9 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
           <ApplyValidationPanel
             issues={state.presetApplyIssues}
             warningsAcknowledged={state.presetApplyWarningsAcknowledged}
-            onWarningsAcknowledgedChange={state.setPresetApplyWarningsAcknowledged}
+            onWarningsAcknowledgedChange={
+              state.setPresetApplyWarningsAcknowledged
+            }
           />
           <div className="flex flex-wrap gap-2">
             <Button
@@ -130,9 +141,50 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
         </div>
       )}
 
+      {imported && state.game && imported.game_id === state.game.id && (
+        <div className="my-3 space-y-2 rounded border border-[var(--color-border)] p-3">
+          <h4>{ti("presets.importPreview", { name: imported.name })}</h4>
+          <p>{imported.metadata?.description}</p>
+          {importWarnings.map((warning) => (
+            <p key={warning} className="text-[var(--color-warning)]">
+              {warning}
+            </p>
+          ))}
+          {importWarnings.length > 0 && (
+            <label>
+              <input
+                type="checkbox"
+                checked={importAck}
+                onChange={(event) => setImportAck(event.target.checked)}
+              />{" "}
+              {ti("preview.ack")}
+            </label>
+          )}
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => setImported(undefined)}>
+              {ti("cancel")}
+            </Button>
+            <Button
+              disabled={importWarnings.length > 0 && !importAck}
+              loading={state.importOverrideMutation.isPending}
+              onClick={() =>
+                void state.importOverrideMutation
+                  .mutateAsync(imported)
+                  .then(() => setImported(undefined))
+                  .catch(() => {})
+              }
+            >
+              {ti("presets.confirmImport")}
+            </Button>
+          </div>
+        </div>
+      )}
+
       <ul className="space-y-1.5">
         {state.overrides.length === 0 && (
-          <li className="px-1 py-2 text-xs text-[var(--color-text-muted)]">{t("presets.empty")}</li>
+          <li className="px-1 py-2 text-xs text-[var(--color-text-muted)]">
+            {t("presets.empty")}
+          </li>
         )}
         {state.overrides.map((override) => (
           <li
@@ -141,6 +193,11 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
           >
             <span className="min-w-0 truncate text-sm text-[var(--color-text-secondary)]">
               {override.name}
+              {override.metadata?.description && (
+                <small className="block whitespace-normal text-[var(--color-text-muted)]">
+                  {override.metadata.description}
+                </small>
+              )}
             </span>
             <div className="flex shrink-0 gap-1">
               <Button

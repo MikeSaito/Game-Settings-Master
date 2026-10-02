@@ -1,24 +1,23 @@
 import i18n from "@/i18n";
 import type { GpuCapabilities, GameParameter } from "@/lib/core/types";
 
-/** Parameters fully hidden without DLSS/RTX support. */
-const NVIDIA_ONLY_KEYS = new Set([
+/** Hardware constraints; game plugins are validated independently. */
+const HARDWARE_FILTERED_KEYS = new Set([
   "DLSSMode",
   "DLSSQualityMode",
   "ResolutionScaleDLSS",
-  "UpscalingFrameGeneration",
   "r.RayTracing",
   "r.RayTracing.Shadows",
 ]);
 
-export function isParamVisible(param: GameParameter, gpu: GpuCapabilities | undefined): boolean {
-  if (!gpu) return true;
-  if (NVIDIA_ONLY_KEYS.has(param.key)) {
-    if (param.key === "UpscalingFrameGeneration") {
-      return gpu.supports_dlss_fg;
-    }
+export function isParamVisible(
+  param: GameParameter,
+  gpu: GpuCapabilities | undefined,
+): boolean {
+  if (!gpu || gpu.vendor === "unknown") return true;
+  if (HARDWARE_FILTERED_KEYS.has(param.key)) {
     if (param.key === "r.RayTracing" || param.key === "r.RayTracing.Shadows") {
-      return gpu.supports_ray_tracing;
+      return gpu.ray_tracing_status === "unknown" || gpu.supports_ray_tracing;
     }
     return gpu.supports_dlss;
   }
@@ -29,10 +28,20 @@ export function filterSelectOptions(
   param: GameParameter,
   gpu: GpuCapabilities | undefined,
 ): string[] | null {
-  if (!gpu?.supports_dlss && param.key === "AntiAliasingType") {
+  if (
+    gpu &&
+    gpu.vendor !== "unknown" &&
+    !gpu.supports_dlss &&
+    param.key === "AntiAliasingType"
+  ) {
     return ["AAM_None", "AAM_FXAA", "AAM_TemporalAA", "AAM_TSR"];
   }
-  if (!gpu?.supports_dlss && param.key === "UpscalingMethod") {
+  if (
+    gpu &&
+    gpu.vendor !== "unknown" &&
+    !gpu.supports_dlss &&
+    param.key === "UpscalingMethod"
+  ) {
     return ["U_None", "U_FSR", "U_TSR"];
   }
   return null;

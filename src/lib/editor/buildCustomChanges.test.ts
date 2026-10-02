@@ -34,6 +34,31 @@ function param(
 }
 
 describe("buildCustomChanges", () => {
+  it("full profiles include unchanged editable values and empty strings while excluding opaque data", () => {
+    const draft = [
+      param({ key: "CustomName", value: "", value_type: "string" }),
+      param({ key: "sg.ShadowQuality", value: "3" }),
+      param({
+        key: "Opaque",
+        value: "(a,b)",
+        value_type: "opaque",
+        editable: false,
+      }),
+    ];
+    const shipped = buildIniSnapshot(draft);
+    const changes = buildCustomChanges(
+      draft,
+      [],
+      undefined,
+      initialEngineEnabledKeys(draft, shipped),
+      new Set(["Scalability"]),
+      undefined,
+      shipped,
+    );
+    expect(
+      changes.files["GameUserSettings.ini"]["[ScalabilityGroups]"],
+    ).toEqual({ CustomName: "", "sg.ShadowQuality": "3" });
+  });
   it("includes only changed editable parameters", () => {
     const baseline = [
       param({ key: "sg.ShadowQuality", value: "2" }),
@@ -116,15 +141,31 @@ describe("buildCustomChanges", () => {
       supports_ray_tracing: true,
     };
     const fullBaseline = [
-      param({ key: "UpscalingMethod", value: "U_DLSS", category: "GameSpecific" }),
+      param({
+        key: "UpscalingMethod",
+        value: "U_DLSS",
+        category: "GameSpecific",
+      }),
       param({ key: "DLSSMode", value: "Quality", category: "GameSpecific" }),
-      param({ key: "UpscalingFrameGeneration", value: "1", category: "GameSpecific" }),
+      param({
+        key: "UpscalingFrameGeneration",
+        value: "1",
+        category: "GameSpecific",
+      }),
     ];
     const shipped = buildIniSnapshot(fullBaseline);
     const edited = [
-      param({ key: "UpscalingMethod", value: "U_FSR", category: "GameSpecific" }),
+      param({
+        key: "UpscalingMethod",
+        value: "U_FSR",
+        category: "GameSpecific",
+      }),
       param({ key: "DLSSMode", value: "Quality", category: "GameSpecific" }),
-      param({ key: "UpscalingFrameGeneration", value: "1", category: "GameSpecific" }),
+      param({
+        key: "UpscalingFrameGeneration",
+        value: "1",
+        category: "GameSpecific",
+      }),
     ];
 
     const { files } = buildCustomChanges(
@@ -231,9 +272,9 @@ describe("buildCustomChanges", () => {
       "basic",
       shipped,
     );
-    expect(removals["GameUserSettings.ini"]?.["[/Script/Engine.GameUserSettings]"]).toContain(
-      "bUseVSync",
-    );
+    expect(
+      removals["GameUserSettings.ini"]?.["[/Script/Engine.GameUserSettings]"],
+    ).toContain("bUseVSync");
   });
 
   it("writes GUS catalog extra when toggled on even if value matches catalog default", () => {
@@ -260,18 +301,46 @@ describe("buildCustomChanges", () => {
 
   it("toggles identical keys in different scalability sections independently", () => {
     const baseline = [
-      param({ key: "r.ShadowQuality", file: "Scalability.ini", section: "ShadowQuality@2", value: "3" }),
-      param({ key: "r.ShadowQuality", file: "Scalability.ini", section: "[ShadowQuality@3]", value: "5" }),
+      param({
+        key: "r.ShadowQuality",
+        file: "Scalability.ini",
+        section: "ShadowQuality@2",
+        value: "3",
+      }),
+      param({
+        key: "r.ShadowQuality",
+        file: "Scalability.ini",
+        section: "[ShadowQuality@3]",
+        value: "5",
+      }),
     ];
     const enabled = new Set([engineParamId(baseline[1])]);
-    const changes = buildCustomChanges(baseline, baseline, undefined, enabled, new Set(["Scalability"]), "advanced");
-    expect(changes.removals).toEqual({ "Scalability.ini": { "[ShadowQuality@2]": ["r.ShadowQuality"] } });
+    const changes = buildCustomChanges(
+      baseline,
+      baseline,
+      undefined,
+      enabled,
+      new Set(["Scalability"]),
+      "advanced",
+    );
+    expect(changes.removals).toEqual({
+      "Scalability.ini": { "[ShadowQuality@2]": ["r.ShadowQuality"] },
+    });
   });
 
   it("does not remove basic keys from advanced or non-editor panels", () => {
     const baseline = [param({ key: "bUseVSync", value: "True" })];
     for (const panel of ["advanced", "extra", "backups", "presets"] as const) {
-      expect(buildCustomChanges(baseline, baseline, undefined, new Set(), new Set(["Scalability"]), panel)).toEqual({ files: {}, removals: {} });
+      expect(
+        buildCustomChanges(
+          baseline,
+          baseline,
+          undefined,
+          new Set(),
+          new Set(["Scalability"]),
+          panel,
+        ),
+      ).toEqual({ files: {}, removals: {} });
     }
   });
 });

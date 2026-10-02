@@ -30,7 +30,11 @@ export function useEditorQueries(game: GameProfile | null) {
   const gpuEnabled = useBackgroundSafeEnabled();
   const paramsDirtyRef = useRef(false);
 
-  const { data: parameters = EMPTY_PARAMETERS, isLoading, isFetching } = useQuery({
+  const {
+    data: parameters = EMPTY_PARAMETERS,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: [
       "parameters",
       configDir,
@@ -51,23 +55,31 @@ export function useEditorQueries(game: GameProfile | null) {
     staleTime: 5 * 60_000,
     refetchOnMount: false,
     placeholderData: (previousData, previousQuery) =>
-      previousQuery?.queryKey?.[2] === game?.id && previousQuery?.queryKey?.[1] === configDir
-        ? previousData : undefined,
+      previousQuery?.queryKey?.[2] === game?.id &&
+      previousQuery?.queryKey?.[1] === configDir
+        ? previousData
+        : undefined,
   });
 
-  const parametersLoading = (isLoading || isFetching) && parameters.length === 0;
+  const parametersLoading =
+    (isLoading || isFetching) && parameters.length === 0;
   const normalizedParameters = useMemo(
     () => normalizeParameterCategories(parameters),
     [parameters],
   );
 
-  const { data: limits, isLoading: limitsIsLoading, isFetching: limitsIsFetching } = useQuery({
+  const {
+    data: limits,
+    isLoading: limitsIsLoading,
+    isFetching: limitsIsFetching,
+  } = useQuery({
     queryKey: ["limits", configDir, game?.install_dir, game?.id],
     queryFn: () => getScalabilityLimits(configDir, game!.id, game!.install_dir),
     enabled: queriesEnabled && !!game,
   });
 
-  const limitsLoading = (limitsIsLoading || limitsIsFetching) && limits === undefined;
+  const limitsLoading =
+    (limitsIsLoading || limitsIsFetching) && limits === undefined;
 
   const { data: overrides = EMPTY_OVERRIDES } = useQuery({
     queryKey: ["overrides", game?.id],
@@ -75,17 +87,28 @@ export function useEditorQueries(game: GameProfile | null) {
     enabled: overridesEnabled,
   });
 
-  const { data: gpu, isLoading: gpuIsLoading, isFetching: gpuIsFetching, isFetched: gpuIsFetched } = useQuery({
-    queryKey: ["gpu"],
-    queryFn: getGpuInfo,
+  const {
+    data: gpu,
+    isLoading: gpuIsLoading,
+    isFetching: gpuIsFetching,
+    isFetched: gpuIsFetched,
+  } = useQuery({
+    queryKey: ["gpu", game?.id],
+    queryFn: () => getGpuInfo(game?.id),
     enabled: gpuEnabled,
     staleTime: 300_000,
   });
 
-  const gpuLoading = gpuEnabled && !gpuIsFetched && (gpuIsLoading || gpuIsFetching);
+  const gpuLoading =
+    gpuEnabled && !gpuIsFetched && (gpuIsLoading || gpuIsFetching);
   const gpuUnavailable = gpuEnabled && gpuIsFetched && gpu === undefined;
 
-  const { data: gameConfig, isLoading: gameConfigIsLoading, isFetching: gameConfigIsFetching, isFetched: gameConfigIsFetched } = useQuery({
+  const {
+    data: gameConfig,
+    isLoading: gameConfigIsLoading,
+    isFetching: gameConfigIsFetching,
+    isFetched: gameConfigIsFetched,
+  } = useQuery({
     queryKey: ["game-config", configDir, game?.id, game?.engine_family],
     queryFn: () => getGameConfig(configDir, game!.id, game!.engine_family),
     enabled: queriesEnabled,
@@ -94,10 +117,14 @@ export function useEditorQueries(game: GameProfile | null) {
   });
 
   const gameConfigLoading =
-    queriesEnabled && !gameConfigIsFetched && (gameConfigIsLoading || gameConfigIsFetching);
+    queriesEnabled &&
+    !gameConfigIsFetched &&
+    (gameConfigIsLoading || gameConfigIsFetching);
 
   const extraIniAvailable = useMemo(
-    () => !!gameConfig?.files && EXTRA_INI_FILES.some((file) => file in gameConfig.files),
+    () =>
+      !!gameConfig?.files &&
+      EXTRA_INI_FILES.some((file) => file in gameConfig.files),
     [gameConfig],
   );
 
@@ -109,7 +136,8 @@ export function useEditorQueries(game: GameProfile | null) {
       if (!game?.id || !configDir) return;
       if (paramsDirtyRef.current) return;
       const now = Date.now();
-      if (!force && now - lastDiskRefreshRef.current < FOCUS_DISK_REFRESH_MS) return;
+      if (!force && now - lastDiskRefreshRef.current < FOCUS_DISK_REFRESH_MS)
+        return;
       lastDiskRefreshRef.current = now;
       void queryClient.invalidateQueries({
         queryKey: ["parameters", configDir, game.id],

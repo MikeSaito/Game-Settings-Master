@@ -15,6 +15,9 @@ import { gpuFilterHint } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
 import { BackupsPanel } from "@/components/backups";
 import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
+import { GameHardwarePanel } from "@/components/advanced/GameHardwarePanel";
+import { DiagnosticsPanel } from "@/components/advanced/DiagnosticsPanel";
+import { InputEditor } from "@/components/advanced/InputEditor";
 
 interface Props {
   game: GameProfile | null;
@@ -50,6 +53,8 @@ export function AdvancedEditor({ game }: Props) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="shrink-0">
+        <GameHardwarePanel game={game} gpu={state.gpu} />
+        <DiagnosticsPanel game={game} />
         <EditorModeBar
           gameId={game.id}
           panel={state.panel}
@@ -59,24 +64,33 @@ export function AdvancedEditor({ game }: Props) {
         />
       </div>
 
-      {state.panel === "backups" ? (
+      {state.panel === "input" ? (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <InputEditor key={game.id} game={game} running={state.gameRunning} />
+        </div>
+      ) : state.panel === "backups" ? (
         <div className="min-h-0 flex-1 overflow-y-auto">
           <BackupsPanel game={game} />
         </div>
       ) : state.panel === "extra" ? (
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <ExtraIniPanel gameConfig={state.gameConfig} loading={state.gameConfigLoading} />
+          <ExtraIniPanel
+            gameConfig={state.gameConfig}
+            loading={state.gameConfigLoading}
+          />
         </div>
       ) : state.panel === "presets" ? (
         <div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
           {state.gameRunning && (
-            <Alert tone="warning" icon={AlertTriangle} title={t("gameRunningTitle")}>
+            <Alert
+              tone="warning"
+              icon={AlertTriangle}
+              title={t("gameRunningTitle")}
+            >
               {t("gameRunningInline")}
             </Alert>
           )}
-          {state.message && (
-            <Alert tone="success">{state.message}</Alert>
-          )}
+          {state.message && <Alert tone="success">{state.message}</Alert>}
           {state.applyError && (
             <Alert tone="danger" title={t("errorTitle")}>
               {state.applyError}
@@ -99,39 +113,43 @@ export function AdvancedEditor({ game }: Props) {
           <section className="flex min-h-0 min-w-0 flex-1 flex-col">
             <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap gap-1.5">
-                  <Badge tone="info">
-                    {game.engine_version
-                      ? t("paramsForEngine", {
-                          count: state.catalogStats.total,
-                          version: game.engine_version,
-                        })
-                      : t("paramsCount", { count: state.catalogStats.total })}
+                <Badge tone="info">
+                  {game.engine_version
+                    ? t("paramsForEngine", {
+                        count: state.catalogStats.total,
+                        version: game.engine_version,
+                      })
+                    : t("paramsCount", { count: state.catalogStats.total })}
+                </Badge>
+                <Badge tone="success">
+                  {t("knownCount", { count: state.catalogStats.known })}
+                </Badge>
+                {state.catalogStats.unknown > 0 && (
+                  <Badge tone="warning">
+                    {t("unknownCount", { count: state.catalogStats.unknown })}
                   </Badge>
-                  <Badge tone="success">{t("knownCount", { count: state.catalogStats.known })}</Badge>
-                  {state.catalogStats.unknown > 0 && (
-                    <Badge tone="warning">{t("unknownCount", { count: state.catalogStats.unknown })}</Badge>
-                  )}
-                  {state.limits && state.panel === "basic" && (
-                    <Badge tone="accent">
-                      {t("scalabilityLimits", { max: state.limits.global_max })}
-                    </Badge>
-                  )}
-                  {state.panel === "basic" && state.gusIniStats.total > 0 && (
-                    <Badge tone="warning">
-                      {t("gusIni.short", {
-                        on: state.gusIniStats.on,
-                        total: state.gusIniStats.total,
-                      })}
-                    </Badge>
-                  )}
-                  {state.panel === "advanced" && state.engineStats.total > 0 && (
-                    <Badge tone="warning">
-                      {t("engineIni.short", {
-                        on: state.engineStats.on,
-                        total: state.engineStats.total,
-                      })}
-                    </Badge>
-                  )}
+                )}
+                {state.limits && state.panel === "basic" && (
+                  <Badge tone="accent">
+                    {t("scalabilityLimits", { max: state.limits.global_max })}
+                  </Badge>
+                )}
+                {state.panel === "basic" && state.gusIniStats.total > 0 && (
+                  <Badge tone="warning">
+                    {t("gusIni.short", {
+                      on: state.gusIniStats.on,
+                      total: state.gusIniStats.total,
+                    })}
+                  </Badge>
+                )}
+                {state.panel === "advanced" && state.engineStats.total > 0 && (
+                  <Badge tone="warning">
+                    {t("engineIni.short", {
+                      on: state.engineStats.on,
+                      total: state.engineStats.total,
+                    })}
+                  </Badge>
+                )}
               </div>
               {gpuHint && (
                 <Badge tone="info" className="max-w-xl" title={gpuHint}>
@@ -144,7 +162,9 @@ export function AdvancedEditor({ game }: Props) {
               <ApplyValidationPanel
                 issues={state.validationIssues}
                 warningsAcknowledged={state.applyWarningsAcknowledged}
-                onWarningsAcknowledgedChange={state.setApplyWarningsAcknowledged}
+                onWarningsAcknowledgedChange={
+                  state.setApplyWarningsAcknowledged
+                }
               />
             )}
 
@@ -156,7 +176,12 @@ export function AdvancedEditor({ game }: Props) {
             )}
 
             {state.gameRunning && (
-              <Alert tone="warning" icon={AlertTriangle} className="mb-3" title={t("gameRunningTitle")}>
+              <Alert
+                tone="warning"
+                icon={AlertTriangle}
+                className="mb-3"
+                title={t("gameRunningTitle")}
+              >
                 {t("gameRunningInline")}
               </Alert>
             )}

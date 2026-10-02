@@ -2,9 +2,10 @@ use crate::catalog::{
     get_or_build_catalog_index, parse_ue_semver, reference_applies_to_version, CatalogIndex,
     UeSemver,
 };
+#[cfg(test)]
 use crate::core::app_error::{AppError, AppInvokeError};
 use crate::core::models::CustomChanges;
-use crate::gpu::{detect_gpu, GpuCapabilities};
+use crate::gpu::GpuCapabilities;
 use crate::ini::parser::read_ini_file;
 use crate::scalability::{
     detect_scalability_limits, is_scalability_quality_index, ScalabilityLimits,
@@ -21,26 +22,29 @@ const RT_CVAR_KEYS: &[&str] = &[
 ];
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum IssueSeverity {
+pub(crate) enum IssueSeverity {
     Error,
     Warning,
 }
 
-struct SemanticIssue {
-    code: &'static str,
-    severity: IssueSeverity,
-    message_ru: String,
-    message_en: String,
+pub(crate) struct SemanticIssue {
+    pub code: &'static str,
+    pub severity: IssueSeverity,
+    pub message_ru: String,
+    pub message_en: String,
 }
 
 pub struct SemanticValidationContext<'a> {
+    pub selected_gpu: Option<&'a GpuCapabilities>,
     pub engine_family: Option<&'a str>,
     pub engine_version: Option<&'a str>,
     pub config_path: &'a Path,
     pub install_dir: Option<&'a str>,
+    #[cfg(test)]
     pub warnings_acknowledged: bool,
 }
 
+#[cfg(test)]
 pub fn validate_custom_changes_semantics(
     changes: &CustomChanges,
     ctx: SemanticValidationContext<'_>,
@@ -49,7 +53,7 @@ pub fn validate_custom_changes_semantics(
     gate_apply(issues, ctx.warnings_acknowledged)
 }
 
-fn collect_semantic_issues(
+pub(crate) fn collect_semantic_issues(
     changes: &CustomChanges,
     ctx: &SemanticValidationContext<'_>,
 ) -> Vec<SemanticIssue> {
@@ -57,7 +61,10 @@ fn collect_semantic_issues(
     let game_version = ctx.engine_version.and_then(parse_ue_semver);
     let index = get_or_build_catalog_index(ctx.engine_family);
     let limits = detect_scalability_limits(ctx.install_dir.map(Path::new), Some(ctx.config_path));
-    let gpu = detect_gpu();
+    let gpu = ctx
+        .selected_gpu
+        .cloned()
+        .unwrap_or_else(|| crate::gpu::for_install(ctx.install_dir));
     let effective_state = load_effective_ini_keys(ctx.config_path, changes);
 
     let mut issues = Vec::new();
@@ -77,6 +84,7 @@ fn collect_semantic_issues(
     dedupe_issues(issues)
 }
 
+#[cfg(test)]
 fn gate_apply(
     issues: Vec<SemanticIssue>,
     warnings_acknowledged: bool,
@@ -519,7 +527,14 @@ fn check_combo_rules(
             }
         }
 
-        if rt_changed && !gpu.supports_ray_tracing {
+        if rt_changed && gpu.ray_tracing_status.as_deref() == Some("unknown") {
+            issues.push(SemanticIssue {
+                code: "combo_rt_gpu_unknown",
+                severity: IssueSeverity::Warning,
+                message_ru: "Не удалось определить аппаратную поддержку RT выбранной GPU".into(),
+                message_en: "Unable to determine hardware RT support for the selected GPU".into(),
+            });
+        } else if rt_changed && !gpu.supports_ray_tracing {
             issues.push(SemanticIssue {
                 code: "combo_rt_no_hw",
                 severity: IssueSeverity::Warning,
@@ -597,6 +612,7 @@ mod tests {
         engine_version: Option<&'a str>,
     ) -> SemanticValidationContext<'a> {
         SemanticValidationContext {
+            selected_gpu: None,
             engine_family,
             engine_version,
             config_path,

@@ -84,7 +84,14 @@ fn validate_config_dir_trust_profile(
     config_dir: &str,
     allow_manual_if_unknown: bool,
 ) -> Result<(), AppInvokeError> {
-    let provided = validate_config_dir(config_dir)?;
+    let provided = if allow_manual_if_unknown {
+        validate_config_dir(config_dir)?
+    } else {
+        let hints = platform_hints_for_game(Some(game_id), Some(&trusted.engine_family));
+        crate::ini::paths::inspect_config_dir(
+            &reconcile_config_dir(Path::new(config_dir), &hints).to_string_lossy(),
+        )?
+    };
     let hints = platform_hints_for_game(Some(game_id), Some(&trusted.engine_family));
     let provided_reconciled = reconcile_config_dir(&provided, &hints);
 
@@ -123,8 +130,10 @@ fn resolve_expected_config_dir(
         .as_deref()
         .filter(|s| !s.trim().is_empty())
     {
-        let path = validate_config_dir(saved).map_err(AppError::validation)?;
-        return Ok(Some(reconcile_config_dir(&path, hints)));
+        let active = reconcile_config_dir(Path::new(saved), hints);
+        let path = crate::ini::paths::inspect_config_dir(&active.to_string_lossy())
+            .map_err(AppError::validation)?;
+        return Ok(Some(path));
     }
 
     if let Some(from_install) = resolve_config_dir_from_path(Path::new(&trusted.install_dir)) {

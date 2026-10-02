@@ -2,8 +2,9 @@ mod backups;
 mod config;
 mod crash_report;
 mod games;
-mod helpers;
+pub(crate) mod helpers;
 mod launch;
+pub(crate) mod snapshots;
 mod system;
 
 pub use backups::{list_backups_cmd, reset_config_to_user_cmd, restore_backup_cmd};

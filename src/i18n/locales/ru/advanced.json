@@ -49,7 +49,9 @@
     "presetsHint": "Сохранённые наборы настроек",
     "scalability": "Базовое",
     "engine": "Расширенное",
-    "engineBadge": "Эксперт"
+    "engineBadge": "Эксперт",
+    "input": "Управление",
+    "inputHint": "Клавиши, мышь и контроллер"
   },
   "mode": {
     "basicTitle": "Базовые настройки",
@@ -64,7 +66,8 @@
     "presetsBody": "Пресеты, сохранённые из редактора. Импорт, экспорт, применение к конфигурации игры и удаление.",
     "extraBodyShort": "Input.ini / DeviceProfiles.ini: просмотр и поиск.",
     "basicSafe": "Только GameUserSettings.ini",
-    "advancedFiles": "Engine.ini / Scalability.ini"
+    "advancedFiles": "Engine.ini / Scalability.ini",
+    "inputBody": "Классические привязки Input.ini с предпросмотром изменений."
   },
   "engineWarning": {
     "title": "Режим для опытных пользователей",

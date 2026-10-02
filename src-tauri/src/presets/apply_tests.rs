@@ -1,5 +1,5 @@
 use super::apply_dir::apply_changes_to_dir;
-use super::apply_targets::apply_custom_to_dir;
+use super::apply_dir::apply_custom_to_dir;
 use crate::presets::resolve::resolve_sections;
 use std::fs;
 

@@ -77,6 +77,9 @@ pub(crate) fn parse_epic_manifest(path: &Path) -> Option<GameProfile> {
     .map(|p| p.to_string_lossy().to_string());
 
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: format!("epic-{app_name}"),
         name: display_name,
         source: "epic".to_string(),

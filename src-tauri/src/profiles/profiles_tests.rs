@@ -9,6 +9,9 @@ use crate::profiles::use_test_app_data_dir;
 #[test]
 fn validate_profile_rejects_missing_install() {
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: "test".to_string(),
         name: "Test".to_string(),
         source: "manual".to_string(),
@@ -29,6 +32,9 @@ fn validate_profile_rejects_missing_install() {
 #[test]
 fn resolve_trusted_profile_rejects_unknown_game() {
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: "test".to_string(),
         name: "Test".to_string(),
         source: "manual".to_string(),
@@ -71,6 +77,9 @@ fn resolve_trusted_profile_rejects_forged_install_dir() {
     std::fs::create_dir_all(&trusted_install).expect("trusted install dir");
 
     let trusted = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: game_id.clone(),
         name: "Trusted".to_string(),
         source: "manual".to_string(),
@@ -88,6 +97,9 @@ fn resolve_trusted_profile_rejects_forged_install_dir() {
     save_profile(&trusted).expect("save trusted profile");
 
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: game_id.clone(),
         name: "Forged".to_string(),
         source: "manual".to_string(),
@@ -102,6 +114,9 @@ fn resolve_trusted_profile_rejects_forged_install_dir() {
 #[test]
 fn stale_saved_profile_flags_ipc_security_test_ids() {
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: "ipc-security-deadbeef".to_string(),
         name: "Trusted".to_string(),
         source: "manual".to_string(),
@@ -122,6 +137,9 @@ fn stale_saved_profile_flags_ipc_security_test_ids() {
 #[test]
 fn override_rejects_ini_injection_payload() {
     let override_def = GameOverride {
+        metadata: None,
+        input_updates: None,
+
         game_id: "steam-1962700".to_string(),
         name: "bad".to_string(),
         files: std::collections::HashMap::from([(

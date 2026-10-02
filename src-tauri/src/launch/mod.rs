@@ -1,4 +1,5 @@
 mod epic;
+pub(crate) mod executable;
 mod steam;
 mod types;
 mod url;
@@ -13,10 +14,22 @@ use epic::{find_epic_app_name_for_install, launch_epic_profile};
 use steam::{find_steam_app_id_for_install, launch_steam_profile};
 
 pub fn launch_game(profile: &GameProfile) -> Result<LaunchResult, String> {
+    if let Some(target) = &profile.launch_target {
+        return match target.kind.as_str() {
+            "exe" => executable::launch_exe(profile, &target.value),
+            "package" if profile.source == "xbox" => executable::launch_package(&target.value),
+            _ => Err("Unsupported launch target".into()),
+        };
+    }
     match profile.source.as_str() {
         "steam" => launch_steam_profile(profile),
         "epic" => launch_epic_profile(profile),
         "manual" => launch_manual_profile(profile),
+        "gog" => launch_selected_executable(profile),
+        "xbox" => Err(crate::i18n::t(
+            "Для установки Xbox недоступна зарегистрированная цель запуска",
+            "No registered launch target is available for this Xbox installation",
+        )),
         other => Err(crate::i18n::t(
             &format!("Запуск через магазин не поддерживается для источника «{other}»"),
             &format!("Store launch is not supported for source «{other}»"),
@@ -31,9 +44,17 @@ fn launch_manual_profile(profile: &GameProfile) -> Result<LaunchResult, String> 
     if let Some(app_name) = find_epic_app_name_for_install(&profile.install_dir) {
         return launch_epic_app_name(&app_name);
     }
+    launch_selected_executable(profile)
+}
+
+fn launch_selected_executable(profile: &GameProfile) -> Result<LaunchResult, String> {
+    let files = executable::list_game_executables(profile.id.clone())?;
+    if files.len() == 1 {
+        return executable::launch_exe(profile, &files[0]);
+    }
     Err(crate::i18n::t(
-        "Не удалось определить лаунчер. Добавьте игру через сканирование Steam/Epic или укажите папку из steamapps/common.",
-        "Could not determine launcher. Add the game via Steam/Epic scan or point to a folder under steamapps/common.",
+        "Выберите игровой EXE в параметрах запуска",
+        "Select the game EXE in launch options",
     ))
 }
 

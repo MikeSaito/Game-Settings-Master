@@ -138,6 +138,19 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
     Ok(resolved)
 }
 
+/// Only for directories whose ownership has already been checked against a game.
+/// Inspection and snapshot recovery must work when GameUserSettings.ini is missing.
+pub(crate) fn inspect_config_dir(config_dir: &str) -> Result<PathBuf, String> {
+    let path = PathBuf::from(config_dir.trim());
+    if !path.is_dir() {
+        return Err(crate::i18n::t(
+            "Папка конфигурации недоступна",
+            "Config directory is unavailable",
+        ));
+    }
+    path.canonicalize().map_err(|error| error.to_string())
+}
+
 fn ue_path_has_saved_segment(path: &Path) -> bool {
     path.components()
         .any(|c| matches!(c, Component::Normal(s) if s.eq_ignore_ascii_case("Saved")))

@@ -79,6 +79,9 @@ fn guard_rejects_manual_when_expected_unknown() {
 
 fn sample_profile(id: &str) -> GameProfile {
     GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: id.to_string(),
         name: "Test Game".to_string(),
         source: "manual".to_string(),

@@ -93,6 +93,7 @@ pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>,
     Ok(restored)
 }
 
+#[cfg(test)]
 pub fn restore_backup_all_targets(
     primary_config_dir: &Path,
     backup_id: &str,

@@ -6,6 +6,7 @@ mod epic;
 pub mod known_games;
 mod manual;
 mod mtime_snapshot;
+pub(crate) mod other_stores;
 mod registry;
 mod scan_all;
 mod steam;
@@ -25,7 +26,7 @@ pub use registry::{
     invalidate_game_scan_cache,
 };
 pub use scan_all::scan_all_games;
-pub use ue_detect::{detect_unreal_engine, is_non_game_install, UeDetectResult};
+pub use ue_detect::{detect_unreal_engine, find_executables, is_non_game_install, UeDetectResult};
 pub use ue_version::enrich_engine_version;
 
 #[cfg(test)]

@@ -11,6 +11,8 @@ export type AppInvokeError = {
 export type ApplyResult = ApplyResult_Serialize | ApplyResult_Deserialize;
 
 export type ApplyResult_Deserialize = {
+	post_apply_warning?: string | null,
+	applied_input_lines?: number[] | null,
 	backup_id: string,
 	changed_files: string[],
 	diff: ConfigDiffEntry[],
@@ -19,6 +21,8 @@ export type ApplyResult_Deserialize = {
 };
 
 export type ApplyResult_Serialize = {
+	post_apply_warning?: string | null,
+	applied_input_lines?: number[] | null,
 	backup_id: string,
 	changed_files: string[],
 	diff: ConfigDiffEntry[],
@@ -26,10 +30,39 @@ export type ApplyResult_Serialize = {
 	effective_config_dir?: string | null,
 };
 
-export type BackupInfo = {
+export type BackupInfo = BackupInfo_Serialize | BackupInfo_Deserialize;
+
+export type BackupInfo_Deserialize = {
+	name?: string | null,
+	source_dir?: string | null,
 	id: string,
 	created_at: string,
 	files: string[],
+};
+
+export type BackupInfo_Serialize = {
+	name?: string | null,
+	source_dir?: string | null,
+	id: string,
+	created_at: string,
+	files: string[],
+};
+
+export type ChangeIssue = {
+	code: string,
+	severity: string,
+	message: string,
+};
+
+export type ChangeOperation = {
+	id: string,
+	group: string,
+	file: string,
+	section: string,
+	key: string,
+	before: string | null,
+	after: string | null,
+	kind: string,
 };
 
 export type ConfigDiffEntry = {
@@ -67,16 +100,44 @@ export type CrashReportPayload = {
 	app_version: string,
 };
 
+export type CustomChanges = {
+	files: { [key in string]: { [key in string]: { [key in string]: string } } },
+	removals?: { [key in string]: { [key in string]: string[] } },
+};
+
+export type DiagnosticReport = {
+	game_id: string,
+	config_dir: string,
+	expected_dir: string,
+	status: string,
+	changes: ChangeOperation[],
+	checked_at: string,
+	message: string | null,
+};
+
 export type GameConfig = {
 	config_dir: string,
 	files: { [key in string]: IniFileData },
 };
 
-export type GameOverride = {
+export type GameOverride = GameOverride_Serialize | GameOverride_Deserialize;
+
+export type GameOverride_Deserialize = {
+	metadata?: PresetMetadata | null,
+	input_updates?: InputUpdate_Deserialize[] | null,
 	game_id: string,
 	name: string,
 	files: { [key in string]: { [key in string]: { [key in string]: string } } },
 	removals?: { [key in string]: { [key in string]: string[] } },
+};
+
+export type GameOverride_Serialize = {
+	metadata?: PresetMetadata | null,
+	input_updates?: InputUpdate_Serialize[] | null,
+	game_id: string,
+	name: string,
+	files: { [key in string]: { [key in string]: { [key in string]: string } } },
+	removals: { [key in string]: { [key in string]: string[] } },
 };
 
 export type GameParameter = {
@@ -116,7 +177,11 @@ export type GameParameter = {
 	description_quality?: string | null,
 };
 
-export type GameProfile = {
+export type GameProfile = GameProfile_Serialize | GameProfile_Deserialize;
+
+export type GameProfile_Deserialize = {
+	gpu_adapter_id?: string | null,
+	launch_target?: LaunchTarget_Deserialize | null,
 	id: string,
 	name: string,
 	source: string,
@@ -132,7 +197,48 @@ export type GameProfile = {
 	engine_version?: string | null,
 };
 
-export type GpuCapabilities = {
+export type GameProfile_Serialize = {
+	gpu_adapter_id?: string | null,
+	launch_target?: LaunchTarget_Serialize | null,
+	id: string,
+	name: string,
+	source: string,
+	install_dir: string,
+	config_dir: string | null,
+	exe_name: string | null,
+	is_ue: boolean,
+	possible_ue: boolean,
+	cover_url: string | null,
+	custom_cover: string | null,
+	build_id: string | null,
+	engine_family: string,
+	engine_version: string | null,
+};
+
+export type GpuCapabilities = GpuCapabilities_Serialize | GpuCapabilities_Deserialize;
+
+export type GpuCapabilities_Deserialize = {
+	adapter_id?: string | null,
+	dedicated_memory_mb?: number | null,
+	shared_memory_mb?: number | null,
+	ray_tracing_status?: string | null,
+	selection_warning?: string | null,
+	name: string,
+	vendor: GpuVendor,
+	/**  DLSS / DLAA — GeForce RTX 20 series and newer (Tensor Cores). */
+	supports_dlss: boolean,
+	/**  DLSS Frame Generation — RTX 40 series and newer. */
+	supports_dlss_fg: boolean,
+	/**  Hardware ray tracing in UE — GeForce RTX 20+. */
+	supports_ray_tracing: boolean,
+};
+
+export type GpuCapabilities_Serialize = {
+	adapter_id?: string | null,
+	dedicated_memory_mb?: number | null,
+	shared_memory_mb?: number | null,
+	ray_tracing_status?: string | null,
+	selection_warning?: string | null,
 	name: string,
 	vendor: GpuVendor,
 	/**  DLSS / DLAA — GeForce RTX 20 series and newer (Tensor Cores). */
@@ -149,6 +255,38 @@ export type IniFileData = {
 	sections: { [key in string]: { [key in string]: string } },
 };
 
+export type InputDocument = {
+	revision: string,
+	entries: InputEntry[],
+};
+
+export type InputEntry = {
+	id: string,
+	line: number,
+	key: string,
+	value: string,
+	fields: { [key in string]: string },
+	axis_properties?: { [key in string]: string } | null,
+	editable: boolean,
+	reason: string | null,
+};
+
+export type InputUpdate = InputUpdate_Serialize | InputUpdate_Deserialize;
+
+export type InputUpdate_Deserialize = {
+	id?: string | null,
+	line: number,
+	expected: string,
+	value: string,
+};
+
+export type InputUpdate_Serialize = {
+	id?: string | null,
+	line: number,
+	expected: string,
+	value: string,
+};
+
 export type LaunchResult = LaunchResult_Serialize | LaunchResult_Deserialize;
 
 export type LaunchResult_Deserialize = {
@@ -163,9 +301,72 @@ export type LaunchResult_Serialize = {
 	warning?: string | null,
 };
 
+export type LaunchTarget = LaunchTarget_Serialize | LaunchTarget_Deserialize;
+
+export type LaunchTarget_Deserialize = {
+	working_dir?: string | null,
+	kind: string,
+	value: string,
+};
+
+export type LaunchTarget_Serialize = {
+	working_dir?: string | null,
+	kind: string,
+	value: string,
+};
+
 export type ParameterOption = {
 	value: string,
 	label: string,
+};
+
+export type PrepareRequest = PrepareRequest_Serialize | PrepareRequest_Deserialize;
+
+export type PrepareRequest_Deserialize = {
+	game_id: string,
+	config_dir: string,
+	changes?: CustomChanges,
+	backup_id?: string | null,
+	restore_files?: string[],
+	input_updates?: InputUpdate_Deserialize[],
+	input_revision?: string | null,
+	restore_origin_backup_id?: string | null,
+	preset_metadata?: PresetMetadata | null,
+};
+
+export type PrepareRequest_Serialize = {
+	game_id: string,
+	config_dir: string,
+	changes: CustomChanges,
+	backup_id: string | null,
+	restore_files: string[],
+	input_updates: InputUpdate_Serialize[],
+	input_revision: string | null,
+	restore_origin_backup_id: string | null,
+	preset_metadata: PresetMetadata | null,
+};
+
+export type PreparedChanges = {
+	id: string,
+	game_id: string,
+	config_dir: string,
+	operations: ChangeOperation[],
+	issues: ChangeIssue[],
+	revisions: { [key in string]: string | null },
+};
+
+export type PresetMetadata = {
+	format_version?: number,
+	mode?: string,
+	description?: string,
+	source_game_id?: string,
+	source_game_name?: string,
+	game_build?: string | null,
+	engine_family?: string | null,
+	engine_version?: string | null,
+	gpu_vendor?: string | null,
+	min_dedicated_memory_mb?: number | null,
+	requires_ray_tracing?: boolean,
 };
 
 export type ScalabilityLimits = {

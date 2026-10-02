@@ -6,7 +6,13 @@ export function invalidateGameWorkspace(
   configDir: string,
   gameId: string,
 ): void {
-  void queryClient.invalidateQueries({ queryKey: ["backups", configDir, gameId] });
-  void queryClient.invalidateQueries({ queryKey: ["parameters", configDir, gameId] });
+  void queryClient.invalidateQueries({
+    queryKey: ["backups", configDir, gameId],
+  });
+  void queryClient.invalidateQueries({
+    queryKey: ["parameters", configDir, gameId],
+  });
   void queryClient.invalidateQueries({ queryKey: ["game-config"] });
+  void queryClient.invalidateQueries({ queryKey: ["input-document", gameId] });
+  void queryClient.invalidateQueries({ queryKey: ["diagnostic", gameId] });
 }

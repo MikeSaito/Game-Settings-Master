@@ -1,6 +1,7 @@
 import type { GameParameter } from "@/lib/core/types";
 
-export type EditorPanel = "basic" | "advanced" | "extra" | "backups" | "presets";
+export type EditorPanel =
+  "basic" | "advanced" | "extra" | "backups" | "presets" | "input";
 
 /** Parameter list filter mode in the editor sidebar. */
 export type EditorFilterMode = "recommended" | "full" | "ini_only";
@@ -19,13 +20,17 @@ function matchesSearch(p: GameParameter, q: string): boolean {
 function normalizePanel(raw: string | null): EditorPanel | null {
   if (raw === "basic" || raw === "scalability") return "basic";
   if (raw === "advanced" || raw === "engine") return "advanced";
-  if (raw === "extra" || raw === "input") return "extra";
+  if (raw === "extra") return "extra";
+  if (raw === "input") return "input";
   if (raw === "backups") return "backups";
   if (raw === "presets" || raw === "preset") return "presets";
   return null;
 }
 
-function normalizeFilterMode(raw: string | null, panel: EditorPanel): EditorFilterMode | null {
+function normalizeFilterMode(
+  raw: string | null,
+  panel: EditorPanel,
+): EditorFilterMode | null {
   if (raw === "recommended" || raw === "full" || raw === "ini_only") return raw;
   if (raw === "1") return "recommended";
   if (raw === "0") return panel === "advanced" ? "full" : "ini_only";
@@ -42,7 +47,13 @@ export function filterParamsByPanel(
   params: GameParameter[],
   panel: EditorPanel,
 ): GameParameter[] {
-  if (panel === "backups" || panel === "extra" || panel === "presets") return [];
+  if (
+    panel === "backups" ||
+    panel === "extra" ||
+    panel === "presets" ||
+    panel === "input"
+  )
+    return [];
   return params.filter((p) => panelForParameter(p) === panel);
 }
 
@@ -74,7 +85,9 @@ export function filterParamsByMode(
     case "ini_only":
       return params.filter((p) => p.present_in_ini || searchMatch(p));
     case "recommended":
-      return params.filter((p) => isRecommendedParam(p, panel) || searchMatch(p));
+      return params.filter(
+        (p) => isRecommendedParam(p, panel) || searchMatch(p),
+      );
     case "full":
       return params.filter((p) => searchMatch(p) || true);
     default:
@@ -83,12 +96,24 @@ export function filterParamsByMode(
 }
 
 export function defaultFilterMode(panel: EditorPanel): EditorFilterMode {
-  if (panel === "backups" || panel === "extra" || panel === "presets") return "recommended";
+  if (
+    panel === "backups" ||
+    panel === "extra" ||
+    panel === "presets" ||
+    panel === "input"
+  )
+    return "recommended";
   return "ini_only";
 }
 
 export function defaultCategoryForPanel(panel: EditorPanel): string {
-  if (panel === "backups" || panel === "extra" || panel === "presets") return "All";
+  if (
+    panel === "backups" ||
+    panel === "extra" ||
+    panel === "presets" ||
+    panel === "input"
+  )
+    return "All";
   return panel === "basic" ? "Scalability" : "Rendering";
 }
 
@@ -109,7 +134,9 @@ export function engineWarningAckKey(gameId: string): string {
 
 export function readStoredPanel(gameId: string): EditorPanel | null {
   try {
-    const stored = normalizePanel(sessionStorage.getItem(panelStorageKey(gameId)));
+    const stored = normalizePanel(
+      sessionStorage.getItem(panelStorageKey(gameId)),
+    );
     if (stored) return stored;
     const legacyKey = `${LEGACY_PANEL_PREFIX}${gameId}`;
     const legacy = normalizePanel(sessionStorage.getItem(legacyKey));
@@ -168,8 +195,6 @@ export function writeStoredFilterMode(
 
 export function panelFromHash(hash = ""): EditorPanel | null {
   const raw =
-    hash ||
-    (typeof window !== "undefined" ? window.location.hash : "");
+    hash || (typeof window !== "undefined" ? window.location.hash : "");
   return normalizePanel(raw.replace(/^#/, "").toLowerCase());
 }
-

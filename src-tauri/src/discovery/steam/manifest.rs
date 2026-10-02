@@ -53,6 +53,9 @@ pub(crate) fn parse_steam_manifest(
     .map(|p| p.to_string_lossy().to_string());
 
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: format!("steam-{app_id}"),
         name,
         source: "steam".to_string(),

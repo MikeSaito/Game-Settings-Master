@@ -19,6 +19,35 @@ const amdGpu: GpuCapabilities = {
 };
 
 describe("isParamVisible", () => {
+  it("shows ray tracing on AMD and Intel with confirmed hardware support", () => {
+    for (const vendor of ["amd", "intel"] as const) {
+      expect(
+        isParamVisible(
+          { key: "r.RayTracing" } as Parameters<typeof isParamVisible>[0],
+          {
+            ...amdGpu,
+            vendor,
+            supports_ray_tracing: true,
+            ray_tracing_status: "supported",
+          },
+        ),
+      ).toBe(true);
+    }
+  });
+  it("keeps unknown capabilities visible without claiming support", () => {
+    expect(
+      isParamVisible(
+        { key: "r.RayTracing" } as Parameters<typeof isParamVisible>[0],
+        { ...amdGpu, ray_tracing_status: "unknown" },
+      ),
+    ).toBe(true);
+    expect(
+      isParamVisible(
+        { key: "DLSSMode" } as Parameters<typeof isParamVisible>[0],
+        { ...amdGpu, vendor: "unknown" },
+      ),
+    ).toBe(true);
+  });
   it("hides DLSS keys on AMD", () => {
     expect(
       isParamVisible(
@@ -37,14 +66,16 @@ describe("isParamVisible", () => {
     ).toBe(true);
   });
 
-  it("hides frame generation without DLSS FG", () => {
+  it("keeps generic frame generation visible without DLSS FG", () => {
     const noFg: GpuCapabilities = { ...rtxGpu, supports_dlss_fg: false };
     expect(
       isParamVisible(
-        { key: "UpscalingFrameGeneration" } as Parameters<typeof isParamVisible>[0],
+        { key: "UpscalingFrameGeneration" } as Parameters<
+          typeof isParamVisible
+        >[0],
         noFg,
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 
@@ -61,7 +92,9 @@ describe("filterSelectOptions", () => {
   it("returns null when no filtering needed", () => {
     expect(
       filterSelectOptions(
-        { key: "AntiAliasingType" } as Parameters<typeof filterSelectOptions>[0],
+        { key: "AntiAliasingType" } as Parameters<
+          typeof filterSelectOptions
+        >[0],
         rtxGpu,
       ),
     ).toBeNull();

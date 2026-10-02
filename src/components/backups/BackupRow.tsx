@@ -22,9 +22,11 @@ export function BackupRow({ backup, restoring, disabled, onRestore }: Props) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-[var(--color-text)]">
-              {formatBackupDate(backup.id)}
+              {backup.name ?? formatBackupDate(backup.id)}
             </span>
-            <span className="font-mono text-xs text-[var(--color-text-muted)]">{backup.id}</span>
+            <span className="font-mono text-xs text-[var(--color-text-muted)]">
+              {backup.id}
+            </span>
           </div>
           <div className="mt-1 flex flex-wrap gap-1.5">
             {backup.files.map((file) => (

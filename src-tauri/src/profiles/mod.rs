@@ -1,6 +1,6 @@
 mod overrides;
 mod persist;
-mod storage;
+pub(crate) mod storage;
 mod trust;
 
 pub use overrides::{

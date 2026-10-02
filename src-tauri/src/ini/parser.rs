@@ -100,6 +100,7 @@ pub fn ini_to_data(ini: &IniFile) -> HashMap<String, HashMap<String, String>> {
 }
 
 /// Ini value comparison: exact match or equivalent numbers (`2.2` == `2.200000`).
+#[cfg(test)]
 pub fn ini_values_equal(a: &str, b: &str) -> bool {
     if a == b {
         return true;
@@ -113,6 +114,7 @@ pub fn ini_values_equal(a: &str, b: &str) -> bool {
     }
 }
 
+#[cfg(test)]
 pub fn find_section_key<'a>(
     sections: &'a HashMap<String, HashMap<String, String>>,
     section: &str,

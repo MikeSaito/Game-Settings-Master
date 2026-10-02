@@ -37,7 +37,6 @@ fn config_platform_hint_overrides_ue5_default() {
     let hints = PlatformHints {
         engine_family: Some("ue5".to_string()),
         config_platform: Some("WinGDK".to_string()),
-        ..Default::default()
     };
     let picked = pick_platform_config_dir(root.path(), &hints).unwrap();
     assert!(ends_with_platform(&picked, "WinGDK"));

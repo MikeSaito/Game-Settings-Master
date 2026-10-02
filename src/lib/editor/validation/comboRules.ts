@@ -101,7 +101,14 @@ function activeApplyValue(
   for (const param of ctx.params) {
     if (param.key.toLowerCase() !== lower) continue;
     if (removedKeysInFile(ctx.removals, param.file).has(lower)) continue;
-    if (!shouldIncludeInApply(param, ctx.engineEnabled, ctx.shippedIniKeys ?? EMPTY_INI_SNAPSHOT)) continue;
+    if (
+      !shouldIncludeInApply(
+        param,
+        ctx.engineEnabled,
+        ctx.shippedIniKeys ?? EMPTY_INI_SNAPSHOT,
+      )
+    )
+      continue;
     const value = param.value.trim();
     if (!value) continue;
     return value;
@@ -175,7 +182,10 @@ export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
         severity: "error",
         i18nKey: "validation.gpuPending",
       });
-    } else if (rtChanged && ctx.gpuUnavailable) {
+    } else if (
+      rtChanged &&
+      (ctx.gpuUnavailable || ctx.gpu?.ray_tracing_status === "unknown")
+    ) {
       issues.push({
         code: "combo_rt_gpu_unknown",
         severity: "warning",
@@ -191,9 +201,14 @@ export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
   }
 
   const textureVal = activeApplyValue(ctx, "sg.TextureQuality", pendingValues);
-  const poolVal = engineCvarApplyValue(ctx, "r.Streaming.PoolSize", pendingValues);
+  const poolVal = engineCvarApplyValue(
+    ctx,
+    "r.Streaming.PoolSize",
+    pendingValues,
+  );
   if (
-    (pendingValues.has("sg.texturequality") || pendingValues.has("r.streaming.poolsize")) &&
+    (pendingValues.has("sg.texturequality") ||
+      pendingValues.has("r.streaming.poolsize")) &&
     textureVal &&
     isLowQuality(textureVal, 4) &&
     poolVal &&
@@ -218,15 +233,14 @@ export function comboIssuesForKey(
   const lower = paramKey.toLowerCase();
   return issues.filter((issue) => {
     if (issue.key?.toLowerCase() === lower) return true;
-    if (issue.code === "combo_rt_shadows" && lower === "sg.shadowquality") return true;
-    if (issue.code === "combo_rt_no_hw" && rtKeysForInline.has(lower)) return true;
+    if (issue.code === "combo_rt_shadows" && lower === "sg.shadowquality")
+      return true;
+    if (issue.code === "combo_rt_no_hw" && rtKeysForInline.has(lower))
+      return true;
     return false;
   });
 }
 
-const rtKeysForInline = new Set([
-  ...RT_CVAR_KEYS,
-  "sg.shadowquality",
-]);
+const rtKeysForInline = new Set([...RT_CVAR_KEYS, "sg.shadowquality"]);
 
 export { ENGINE_SCALABILITY };

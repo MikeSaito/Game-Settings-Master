@@ -2,44 +2,165 @@ import { test, expect } from "@playwright/test";
 import { useE2eFixtureMode } from "./fixtures";
 
 test.describe("editor workflow", () => {
+  test("cancelling preview keeps the draft and creates no backup", async ({
+    page,
+  }) => {
+    await page.goto("/e2e.html");
+    await page.getByRole("button", { name: "Select" }).click();
+    const vsync = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "VSync" })
+      .getByRole("switch");
+    await vsync.click();
+    await page
+      .getByRole("button", { name: "Apply to GameUserSettings" })
+      .click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.screenshot({ path: "test-results/ue-preview-en.png", fullPage: true });
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Cancel", exact: true })
+      .click();
+    await expect(vsync).toHaveAttribute("aria-checked", "true");
+    await expect(
+      page.getByRole("button", { name: "Apply to GameUserSettings" }),
+    ).toBeEnabled();
+    await page.getByRole("tab", { name: "Backups" }).click();
+    await expect(
+      page.getByRole("button", { name: "Restore", exact: true }),
+    ).toHaveCount(0);
+  });
+
+  test("excluded changes remain in the draft after a partial apply", async ({
+    page,
+  }) => {
+    await page.goto("/e2e.html");
+    await page.getByRole("button", { name: "Select" }).click();
+    const texture = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "Texture Quality" });
+    await texture.locator('input[type="range"]').fill("1");
+    await page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "VSync" })
+      .getByRole("switch")
+      .click();
+    await page
+      .getByRole("button", { name: "Apply to GameUserSettings" })
+      .click();
+    await page
+      .getByRole("dialog")
+      .getByRole("checkbox", {
+        name: "GameUserSettings.ini: sg.TextureQuality",
+      })
+      .uncheck();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Confirm and apply" })
+      .click();
+    await expect(page.getByText(/Applied .* edits · backup/i)).toBeVisible();
+    await expect(texture.locator('input[type="range"]')).toHaveValue("1");
+    await expect(
+      page.getByRole("button", { name: "Apply to GameUserSettings" }),
+    ).toBeEnabled();
+    await page
+      .getByRole("button", { name: "Apply to GameUserSettings" })
+      .click();
+    await expect(page.getByRole("dialog").getByRole("checkbox")).toHaveCount(1);
+    await expect(
+      page
+        .getByRole("dialog")
+        .getByRole("checkbox", {
+          name: "GameUserSettings.ini: sg.TextureQuality",
+        }),
+    ).toBeChecked();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Cancel", exact: true })
+      .click();
+    await page.getByRole("tab", { name: "Backups" }).click();
+    await expect(
+      page.getByRole("button", { name: "Restore", exact: true }),
+    ).toHaveCount(1);
+  });
+
   test("scan → open game → apply basic → restore backup", async ({ page }) => {
     await page.goto("/e2e.html");
 
-    await expect(page.getByRole("heading", { name: "Game library" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Game library" }),
+    ).toBeVisible();
     await expect(page.getByText("Test UE Game")).toBeVisible();
 
     await page.getByRole("button", { name: "Select" }).click();
-    await expect(page.getByText("GameUserSettings: like the in-game menu")).toBeVisible();
+    await expect(
+      page.getByText("GameUserSettings: like the in-game menu"),
+    ).toBeVisible();
 
-    const vsyncRow = page.getByTestId("parameter-row").filter({ hasText: "VSync" });
+    const vsyncRow = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "VSync" });
     await expect(vsyncRow).toBeVisible();
     const vsyncSwitch = vsyncRow.getByRole("switch");
     await vsyncSwitch.click();
 
-    await page.getByRole("button", { name: "Apply to GameUserSettings" }).click();
+    await page
+      .getByRole("button", { name: "Apply to GameUserSettings" })
+      .click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Confirm and apply" })
+      .click();
     await expect(page.getByText(/Applied .* edits · backup/i)).toBeVisible();
 
     await page.getByRole("tab", { name: "Backups" }).click();
-    await expect(page.getByRole("heading", { name: "Backup list" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Restore" }).first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Backup list" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Restore" }).first(),
+    ).toBeVisible();
 
     await page.getByRole("button", { name: "Restore" }).first().click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Confirm and apply" })
+      .click();
     await expect(page.getByText(/Backup .* restored/i)).toBeVisible();
   });
 
-  test("resolve sg/r conflict and apply engine removals from advanced", async ({ page }) => {
+  test("resolve sg/r conflict and apply engine removals from advanced", async ({
+    page,
+  }) => {
     await useE2eFixtureMode(page, "conflict");
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
-    await expect(page.getByText("GameUserSettings: like the in-game menu")).toBeVisible();
+    await expect(
+      page.getByText("GameUserSettings: like the in-game menu"),
+    ).toBeVisible();
 
     await expect(page.getByText("sg.* and r.* overlap")).toBeVisible();
-    await page.getByRole("button", { name: /Reset r\.\*, keep sg\.ShadowQuality/i }).click();
-    await expect(page.getByText(/Removed conflicting r\.\* overrides/i)).toBeVisible();
+    await page
+      .getByRole("button", { name: /Reset r\.\*, keep sg\.ShadowQuality/i })
+      .click();
+    await expect(
+      page.getByText(/Removed conflicting r\.\* overrides/i),
+    ).toBeVisible();
 
-    await expect(page.getByRole("button", { name: "Apply to GameUserSettings" })).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "Apply to GameUserSettings" }),
+    ).toBeDisabled();
     await page.getByRole("tab", { name: "Advanced", exact: true }).click();
-    await page.getByRole("button", { name: "Apply (Engine / Scalability)", exact: true }).click();
+    await page
+      .getByRole("button", {
+        name: "Apply (Engine / Scalability)",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Confirm and apply" })
+      .click();
     await expect(page.getByText(/Applied .* edits · backup/i)).toBeVisible();
     await expect(page.getByText("sg.* and r.* overlap")).toHaveCount(0);
   });
@@ -49,19 +170,43 @@ test.describe("editor workflow", () => {
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
     await page.getByRole("tab", { name: "Advanced", exact: true }).click();
-    const engineRow = page.getByTestId("parameter-row").filter({ hasText: "r.Shadow.MaxResolution" });
+    const engineRow = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "r.Shadow.MaxResolution" });
     await engineRow.getByRole("spinbutton").fill("2048");
     await page.getByRole("tab", { name: "Basic", exact: true }).click();
-    const vsyncRow = page.getByTestId("parameter-row").filter({ hasText: "VSync" });
+    const vsyncRow = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "VSync" });
     await vsyncRow.getByRole("switch").click();
     await page.getByRole("checkbox").check();
-    await page.getByRole("button", { name: "Apply to GameUserSettings" }).click();
+    await page
+      .getByRole("button", { name: "Apply to GameUserSettings" })
+      .click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Confirm and apply" })
+      .click();
     await expect(page.getByText(/Applied .* edits · backup/i)).toBeVisible();
     await page.getByRole("tab", { name: "Advanced", exact: true }).click();
     await expect(engineRow.getByRole("spinbutton")).toHaveValue("2048");
     await page.getByRole("checkbox").check();
-    await page.getByRole("button", { name: "Apply (Engine / Scalability)", exact: true }).click();
-    await expect(page.getByRole("button", { name: "Apply (Engine / Scalability)", exact: true })).toBeDisabled();
+    await page
+      .getByRole("button", {
+        name: "Apply (Engine / Scalability)",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Confirm and apply" })
+      .click();
+    await expect(
+      page.getByRole("button", {
+        name: "Apply (Engine / Scalability)",
+        exact: true,
+      }),
+    ).toBeDisabled();
   });
 
   test("reset override ini from backups", async ({ page }) => {
@@ -70,39 +215,59 @@ test.describe("editor workflow", () => {
     await page.getByRole("button", { name: "Select" }).click();
     await page.getByRole("tab", { name: "Backups" }).click();
 
-    await page.getByRole("button", { name: "Remove Engine / Scalability ini" }).click();
-    await page.getByRole("button", { name: "Yes, remove override ini" }).click();
-    await expect(page.getByText(/Override ini removed: Engine\.ini/i)).toBeVisible();
+    await page
+      .getByRole("button", { name: "Remove Engine / Scalability ini" })
+      .click();
+    await page
+      .getByRole("button", { name: "Yes, remove override ini" })
+      .click();
+    await expect(
+      page.getByText(/Override ini removed: Engine\.ini/i),
+    ).toBeVisible();
   });
 
   test("blocks apply when sg exceeds scalability limit", async ({ page }) => {
     await useE2eFixtureMode(page, "sg-limit");
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
-    await expect(page.getByText("GameUserSettings: like the in-game menu")).toBeVisible();
+    await expect(
+      page.getByText("GameUserSettings: like the in-game menu"),
+    ).toBeVisible();
 
-    const viewRow = page.getByTestId("parameter-row").filter({ hasText: "View Distance Quality" });
+    const viewRow = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "View Distance Quality" });
     await expect(viewRow).toBeVisible();
     const slider = viewRow.locator('input[type="range"]');
     await slider.fill("5");
 
     await expect(page.getByText("Fix before apply")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Apply to GameUserSettings" })).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "Apply to GameUserSettings" }),
+    ).toBeDisabled();
   });
 
   test("requires warning acknowledgement before apply", async ({ page }) => {
     await useE2eFixtureMode(page, "conflict");
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
-    await expect(page.getByText("GameUserSettings: like the in-game menu")).toBeVisible();
+    await expect(
+      page.getByText("GameUserSettings: like the in-game menu"),
+    ).toBeVisible();
 
-    const vsyncRow = page.getByTestId("parameter-row").filter({ hasText: "VSync" });
+    const vsyncRow = page
+      .getByTestId("parameter-row")
+      .filter({ hasText: "VSync" });
     await vsyncRow.getByRole("switch").click();
 
     await expect(page.getByText("sg.* and r.* overlap")).toBeVisible();
-    await expect(page.getByText("Acknowledge warnings below to apply.")).toBeVisible();
+    await expect(
+      page.getByText("Acknowledge warnings below to apply."),
+    ).toBeVisible();
 
-    const applyButton = page.getByRole("button", { name: "Apply to GameUserSettings" });
+    const applyButton = page.getByRole("button", {
+      name: "Apply to GameUserSettings",
+    });
     await expect(applyButton).toBeDisabled();
 
     await page.getByRole("checkbox").check();
