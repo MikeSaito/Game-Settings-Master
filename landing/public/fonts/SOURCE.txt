@@ -1,0 +1,2 @@
+IBM Plex fonts from https://github.com/IBM/plex, fetched 2026-10-03.
+Licensed under the SIL Open Font License in LICENSE.txt.

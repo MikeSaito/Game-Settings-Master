@@ -29,7 +29,7 @@ export default defineConfig(async () => ({
             ),
           }
         : {}),
-      ...(e2eMode
+      ...(e2eMode || screenshotMode
         ? {
             "@tauri-apps/api/core": path.resolve(rootDir, "src/e2e/tauriCoreMock.ts"),
             "@tauri-apps/api/window": path.resolve(rootDir, "src/e2e/tauriWindowMock.ts"),
@@ -37,6 +37,9 @@ export default defineConfig(async () => ({
             "@tauri-apps/plugin-updater": path.resolve(rootDir, "src/e2e/tauriUpdaterMock.ts"),
             "@tauri-apps/plugin-dialog": path.resolve(rootDir, "src/e2e/tauriDialogMock.ts"),
           }
+        : {}),
+      ...(screenshotMode
+        ? { "@tauri-apps/api/core": path.resolve(rootDir, "src/screenshot/featureCoreMock.ts") }
         : {}),
     },
   },

@@ -8,11 +8,13 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "capture-screenshots": "node scripts/capture-screenshots.mjs"
+    "capture-screenshots": "node scripts/capture-screenshots.mjs",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@emnapi/core": "^2.0.0-alpha.5",
     "@emnapi/runtime": "^2.0.0-alpha.5",
+    "@playwright/test": "^1.63.0",
     "playwright": "^1.63.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.1"
@@ -20,8 +22,5 @@
   "overrides": {
     "esbuild": "^0.28.1",
     "nanoid": "^3.3.18"
-  },
-  "dependencies": {
-    "gsap": "^3.15.0"
   }
 }
