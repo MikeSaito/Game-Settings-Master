@@ -1,10 +1,9 @@
-# Unreal Engine improvements — integration candidate
+# Unreal Engine improvements — version 1.3.0
 
-The `codex/ue-improvements` branch integrates the implementation planned for stable
-1.1, 1.2 and 1.3. Its version is **1.3.0-alpha.1** to distinguish test installers
-from stable 1.0.8. It is not a stable release and does not change the updater feed.
-Stable stage releases require the corresponding installation and hardware checks
-below; compatibility profiles, Enhanced Input and other engines remain deferred.
+Version **1.3.0** combines the implementation planned for stages 1.1, 1.2 and 1.3.
+Compatibility profiles, Enhanced Input and other engines remain deferred. The
+validation record below distinguishes automated and local hardware checks from
+installation and hardware scenarios that still need additional coverage.
 
 ## Implemented scope
 
@@ -85,7 +84,7 @@ Input.ini can be edited. Unknown fields remain intact. Inherited arrays without 
 known local reset, removal operations and entries superseded by later resets are
 read-only. Selected changes that would merge `+` entries are blocked. A simultaneous
 binding swap is validated as a complete selected set. Enhanced Input and game-specific
-binding schemes are outside this candidate.
+binding schemes are outside this release.
 
 The controls tab displays the resolved Input.ini path and distinguishes a missing
 file, an empty file (including whitespace/BOM only), and a file without classic
@@ -96,7 +95,7 @@ Editor headers, warnings and preset metadata have bounded scroll regions. Expand
 preset options keeps the save/apply controls within the available editor height,
 including short windows with large text and configuration conflict warnings.
 
-## Validation and stable release gates
+## Validation and remaining coverage
 
 Automated checks cover preview/commit equivalence, cancellation, exclusions,
 linked sets, stale files/profile/GPU, injected write failure, exact-byte restore,
@@ -115,7 +114,7 @@ The local Windows session confirmed enumeration and D3D12 ray tracing on an
 NVIDIA RTX 4060 Ti and integrated AMD Radeon. Intel selection/unknown capabilities
 are covered by fixtures; physical Intel hardware has not been checked.
 
-Before each stable stage release, record results for its applicable gates:
+The following installation and hardware scenarios still need additional validation:
 
 - Apply, exclusions, config rewrite after a real foreground/background game run,
   folder migration and partial/full restoration on actual supported game installs.
@@ -123,7 +122,7 @@ Before each stable stage release, record results for its applicable gates:
   feature checks, and dedicated/shared memory reporting.
 - Actual GOG/Xbox installations, inaccessible package locations, native package
   activation, multiple manual EXEs, and classical Input inheritance/array behavior.
-- Install the signed candidate and test upgrade from stable 1.0.8, preserving saved
+- Test installation and upgrade from 1.0.8, preserving saved
   profiles, presets, backups and metadata; validate updater signature and install.
 
 `Release app` accepts `validation_only=true` on a branch to build a signed updater
