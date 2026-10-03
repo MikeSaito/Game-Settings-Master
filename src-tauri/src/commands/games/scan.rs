@@ -31,6 +31,18 @@ pub fn scan_games() -> Result<Vec<GameProfile>, AppInvokeError> {
         }
 
         if let Some(existing) = games.iter_mut().find(|g| g.id == saved_game.id) {
+            existing.gpu_adapter_id = saved_game.gpu_adapter_id.clone();
+            existing.launch_target = saved_game
+                .launch_target
+                .clone()
+                .or(existing.launch_target.clone());
+            if saved_game
+                .launch_target
+                .as_ref()
+                .is_some_and(|target| target.kind == "exe")
+            {
+                existing.exe_name = saved_game.exe_name.clone();
+            }
             if existing.config_dir.is_none() {
                 existing.config_dir = saved_game.config_dir.clone();
             }
@@ -39,6 +51,19 @@ pub fn scan_games() -> Result<Vec<GameProfile>, AppInvokeError> {
             crate::discovery::normalize_install_dir(&g.install_dir)
                 == crate::discovery::normalize_install_dir(&saved_game.install_dir)
         }) {
+            existing.id = saved_game.id.clone();
+            existing.gpu_adapter_id = saved_game.gpu_adapter_id.clone();
+            existing.launch_target = saved_game
+                .launch_target
+                .clone()
+                .or(existing.launch_target.clone());
+            if saved_game
+                .launch_target
+                .as_ref()
+                .is_some_and(|target| target.kind == "exe")
+            {
+                existing.exe_name = saved_game.exe_name.clone();
+            }
             if existing.config_dir.is_none() {
                 existing.config_dir = saved_game.config_dir.clone();
             }

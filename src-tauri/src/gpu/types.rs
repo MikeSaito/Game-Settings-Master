@@ -11,6 +11,16 @@ pub enum GpuVendor {
 
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GpuCapabilities {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub adapter_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dedicated_memory_mb: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shared_memory_mb: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ray_tracing_status: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selection_warning: Option<String>,
     pub name: String,
     pub vendor: GpuVendor,
     /// DLSS / DLAA — GeForce RTX 20 series and newer (Tensor Cores).
@@ -32,6 +42,11 @@ impl GpuCapabilities {
         let supports_ray_tracing = supports_dlss;
 
         Self {
+            adapter_id: None,
+            dedicated_memory_mb: None,
+            shared_memory_mb: None,
+            ray_tracing_status: Some("unknown".into()),
+            selection_warning: None,
             name: name.trim().to_string(),
             vendor,
             supports_dlss,

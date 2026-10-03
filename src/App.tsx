@@ -1,4 +1,8 @@
-import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClientProvider,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Suspense, lazy, useEffect } from "react";
 import {
   Navigate,
@@ -10,6 +14,7 @@ import {
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { UpdateGate } from "@/components/app/UpdateGate";
+import { ChangesPreview } from "@/components/app/ChangesPreview";
 import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { RouteLoading } from "@/components/app/RouteLoading";
 import { EmptyState } from "@/components/ds/Feedback";
@@ -20,7 +25,11 @@ import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { useSelectedGame } from "@/hooks/game/useSelectedGame";
 import { scanGames } from "@/lib/api";
-import { prefetchGameWorkspace, isGameTabAvailable, resolveGameTabRoute } from "@/lib/game";
+import {
+  prefetchGameWorkspace,
+  isGameTabAvailable,
+  resolveGameTabRoute,
+} from "@/lib/game";
 import {
   gameTabPath,
   libraryPath,
@@ -110,9 +119,12 @@ export function AppContent() {
       if (isGameTabAvailable(game, gameRoute.tab)) {
         prefetchGameWorkspace(queryClient, game);
       } else {
-        navigate(gameTabPath(game.id, resolveGameTabRoute(game) ?? "advanced"), {
-          replace: true,
-        });
+        navigate(
+          gameTabPath(game.id, resolveGameTabRoute(game) ?? "advanced"),
+          {
+            replace: true,
+          },
+        );
       }
     }
   };
@@ -142,7 +154,9 @@ export function AppContent() {
             />
             <Route
               path="/game/:gameId/advanced"
-              element={<GameEditorPage games={games} gamesLoading={gamesLoading} />}
+              element={
+                <GameEditorPage games={games} gamesLoading={gamesLoading} />
+              }
             />
             <Route
               path="/game/:gameId/backups"
@@ -173,6 +187,7 @@ export default function App() {
         <AppSettingsProvider>
           <AppWindowFocusProvider>
             <AppContent />
+            <ChangesPreview />
           </AppWindowFocusProvider>
         </AppSettingsProvider>
       </UpdateGate>

@@ -63,6 +63,19 @@ pub fn is_stale_saved_profile(profile: &GameProfile) -> bool {
 }
 
 pub fn validate_profile_paths(profile: &GameProfile) -> Result<(), String> {
+    if let Some(target) = &profile.launch_target {
+        match target.kind.as_str() {
+            "exe" => {
+                crate::launch::executable::validate_executable(profile, &target.value)?;
+                crate::launch::executable::validate_working_dir(profile)?;
+            }
+            "package"
+                if profile.source == "xbox"
+                    && target.value.len() <= 512
+                    && target.value.contains('!') => {}
+            _ => return Err("Invalid launch target".into()),
+        }
+    }
     let install = PathBuf::from(profile.install_dir.trim());
     if profile.install_dir.trim().is_empty() {
         return Err(crate::i18n::t(

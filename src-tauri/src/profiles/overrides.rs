@@ -9,6 +9,43 @@ const MAX_OVERRIDES_JSON_BYTES: usize = 1024 * 1024;
 const MAX_SAVED_OVERRIDES: usize = 256;
 
 pub fn validate_override_bounds(override_def: &GameOverride) -> Result<(), String> {
+    if let Some(meta) = &override_def.metadata {
+        if meta.format_version != 2
+            || !matches!(meta.mode.as_str(), "changes" | "profile")
+            || meta.description.len() > 4096
+            || meta.source_game_id.len() > 128
+            || meta.source_game_name.len() > 256
+            || meta
+                .min_dedicated_memory_mb
+                .is_some_and(|value| value > 1024 * 1024)
+            || [&meta.game_build, &meta.engine_family, &meta.engine_version]
+                .iter()
+                .any(|value| value.as_ref().is_some_and(|value| value.len() > 256))
+            || meta.gpu_vendor.as_ref().is_some_and(|value| {
+                !matches!(value.as_str(), "nvidia" | "amd" | "intel" | "unknown")
+            })
+        {
+            return Err(crate::i18n::t(
+                "Недопустимые метаданные пресета или версия формата",
+                "Invalid preset metadata or format version",
+            ));
+        }
+    }
+    if let Some(updates) = &override_def.input_updates {
+        if updates.len() > 512
+            || updates.iter().any(|update| {
+                update.id.as_ref().is_some_and(|id| {
+                    id.len() > 128 || !id.chars().all(|ch| ch.is_ascii_hexdigit() || ch == ':')
+                }) || !crate::fs_util::is_safe_ini_value(&update.value)
+                    || !crate::fs_util::is_safe_ini_value(&update.expected)
+            })
+        {
+            return Err(crate::i18n::t(
+                "Недопустимые записи Input.ini",
+                "Invalid Input.ini entries",
+            ));
+        }
+    }
     if override_def.game_id.trim().is_empty() {
         return Err(crate::i18n::t(
             "game_id override не указан",

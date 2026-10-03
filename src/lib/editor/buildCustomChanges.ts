@@ -43,7 +43,9 @@ function setIniValue(
   fileSections[targetKey][key] = value;
 }
 
-function catalogParamId(p: Pick<GameParameter, "file" | "section" | "key">): string {
+function catalogParamId(
+  p: Pick<GameParameter, "file" | "section" | "key">,
+): string {
   return `${p.file.toLowerCase()}|${p.section.toLowerCase()}|${p.key.toLowerCase()}`;
 }
 
@@ -62,7 +64,9 @@ export function buildCustomChanges(
   const files: Record<string, Record<string, Record<string, string>>> = {};
   const removals: Record<string, Record<string, string[]>> = {};
   const reconciled = reconcileAllParams(params, gpu);
-  const writeParams = panel ? filterParamsByPanel(reconciled, panel) : reconciled;
+  const writeParams = panel
+    ? filterParamsByPanel(reconciled, panel)
+    : reconciled;
   const baselineByCatalogId = new Map(
     parameters.map((p) => [catalogParamId(p), p]),
   );
@@ -70,15 +74,17 @@ export function buildCustomChanges(
   for (const p of writeParams) {
     const baseline = baselineByCatalogId.get(catalogParamId(p));
     const value =
-      p.value.trim() || (isIniMembershipToggleable(p, shippedIniKeys) ? defaultValueFor(p) : "");
-    if (!value) continue;
+      p.value.trim() ||
+      (isIniMembershipToggleable(p, shippedIniKeys) ? defaultValueFor(p) : "");
+    if (!value && isIniMembershipToggleable(p, shippedIniKeys)) continue;
 
     const addingToIni =
       isIniMembershipToggleable(p, shippedIniKeys) &&
       isEngineEnabled(p, engineEnabled, shippedIniKeys) &&
       baseline != null &&
       !baseline.present_in_ini;
-    if (baseline && paramValuesEqual(value, baseline.value) && !addingToIni) continue;
+    if (baseline && paramValuesEqual(value, baseline.value) && !addingToIni)
+      continue;
     if (!isParamVisible(p, gpu) && !baseline) continue;
     if (!shouldIncludeInApply(p, engineEnabled, shippedIniKeys)) continue;
     if (!editableCategories.has(p.category)) continue;
@@ -90,7 +96,9 @@ export function buildCustomChanges(
     reconciled.map((p) => [catalogParamId(p), p]),
   );
 
-  const removalParams = panel ? filterParamsByPanel(parameters, panel) : parameters;
+  const removalParams = panel
+    ? filterParamsByPanel(parameters, panel)
+    : parameters;
   for (const p of removalParams) {
     if (!editableCategories.has(p.category)) continue;
     if (!p.present_in_ini) continue;

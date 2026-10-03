@@ -8,12 +8,23 @@ import {
 } from "@/lib/api";
 import { buildCustomChanges } from "@/lib/editor";
 import type { AppliedDraft } from "@/lib/editor/rebaseDraft";
-import { assertApplyPlanAllowed, assertPresetStorable, validateOverridePlan } from "@/lib/editor/validation";
+import {
+  assertApplyPlanAllowed,
+  assertPresetStorable,
+  validateOverridePlan,
+} from "@/lib/editor/validation";
 import type { ValidationIssue } from "@/lib/editor/validation";
 import { invalidateGameWorkspace } from "@/lib/game/invalidateGameWorkspace";
 import type { EditorPanel } from "@/lib/routing";
 import { formatInvokeError } from "@/lib/core";
-import type { GameOverride, GameParameter, GameProfile, GpuCapabilities, ScalabilityLimits } from "@/lib/core";
+import type {
+  GameOverride,
+  GameParameter,
+  GameProfile,
+  GpuCapabilities,
+  ScalabilityLimits,
+} from "@/lib/core";
+import type { PresetMetadata } from "@/lib/api/bindings";
 
 export interface ApplyOverrideInput {
   override: GameOverride;
@@ -101,7 +112,10 @@ export function useEditorMutations(options: Options) {
       );
       const snapshot = { gameId: game!.id, configDir };
       const { files, removals } = buildChanges(options);
-      if (Object.keys(files).length === 0 && Object.keys(removals).length === 0) {
+      if (
+        Object.keys(files).length === 0 &&
+        Object.keys(removals).length === 0
+      ) {
         throw new Error(t("errors.noChanges"));
       }
       const result = await applyCustom(
@@ -114,15 +128,45 @@ export function useEditorMutations(options: Options) {
         game?.engine_version,
         options.applyWarningsAcknowledged,
       );
+      // Only selected operations become the new baseline; excluded rows stay dirty.
+      const selectedChanges: typeof files = {};
+      const selectedRemovals: typeof removals = {};
+      for (const entry of result.diff) {
+        const normalize = (section: string) =>
+          section
+            .replace(/^\[|\]$/g, "")
+            .trim()
+            .toLowerCase();
+        const removed = Object.entries(removals[entry.file] ?? {}).some(
+          ([section, keys]) =>
+            normalize(section) === normalize(entry.section) &&
+            keys.some((key) => key.toLowerCase() === entry.key.toLowerCase()),
+        );
+        if (removed)
+          ((selectedRemovals[entry.file] ??= {})[entry.section] ??= []).push(
+            entry.key,
+          );
+        else
+          ((selectedChanges[entry.file] ??= {})[entry.section] ??= {})[
+            entry.key
+          ] = entry.new_value;
+      }
       return {
         result,
         snapshot,
-        submitted: { params: options.params, engineEnabled: new Set(options.engineEnabled), changes: { files, removals } },
+        submitted: {
+          params: options.params,
+          engineEnabled: new Set(options.engineEnabled),
+          changes: { files: selectedChanges, removals: selectedRemovals },
+        },
       };
     },
     onMutate: () => setApplyError(undefined),
     onSuccess: ({ result, snapshot, submitted }) => {
-      if (activeGameIdRef.current === snapshot.gameId && configDir === snapshot.configDir) {
+      if (
+        activeGameIdRef.current === snapshot.gameId &&
+        configDir === snapshot.configDir
+      ) {
         onApplied(submitted);
       }
       invalidateGameWorkspace(queryClient, snapshot.configDir, snapshot.gameId);
@@ -138,11 +182,46 @@ export function useEditorMutations(options: Options) {
   });
 
   const saveOverrideMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (metadata: PresetMetadata | void) => {
       assertPresetStorable(options.validationIssues, t);
       const snapshot = { gameId: game!.id, name: overrideName };
-      const { files, removals } = buildChanges(options);
+      const { files, removals } =
+        metadata?.mode === "profile"
+          ? {
+              ...buildCustomChanges(
+                options.params,
+                [],
+                options.gpu,
+                options.engineEnabled,
+                options.editableCategories,
+                undefined,
+                options.shippedIniKeys,
+              ),
+              removals: buildCustomChanges(
+                options.params,
+                options.parameters,
+                options.gpu,
+                options.engineEnabled,
+                options.editableCategories,
+                undefined,
+                options.shippedIniKeys,
+              ).removals,
+            }
+          : buildChanges(options);
       await saveGameOverride({
+        metadata: metadata ?? {
+          format_version: 2,
+          mode: "changes",
+          description: "",
+          source_game_id: game!.id,
+          source_game_name: game!.name,
+          game_build: game!.build_id ?? null,
+          engine_family: game!.engine_family ?? null,
+          engine_version: game!.engine_version ?? null,
+          gpu_vendor: null,
+          min_dedicated_memory_mb: null,
+          requires_ray_tracing: false,
+        },
         game_id: snapshot.gameId,
         name: snapshot.name,
         files,
@@ -152,17 +231,26 @@ export function useEditorMutations(options: Options) {
     },
     onSuccess: (snapshot) => {
       if (activeGameIdRef.current !== snapshot.gameId) return;
-      queryClient.invalidateQueries({ queryKey: ["overrides", snapshot.gameId] });
+      queryClient.invalidateQueries({
+        queryKey: ["overrides", snapshot.gameId],
+      });
       setMessage(t("presetSaved", { name: snapshot.name }));
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
 
   const applyOverrideMutation = useMutation({
-    mutationFn: async ({ override, warningsAcknowledged }: ApplyOverrideInput) => {
+    mutationFn: async ({
+      override,
+      warningsAcknowledged,
+    }: ApplyOverrideInput) => {
       const ctx = overrideValidationContext(options);
       if (ctx) {
-        const issues = validateOverridePlan(override.files, override.removals, ctx);
+        const issues = validateOverridePlan(
+          override.files,
+          override.removals,
+          ctx,
+        );
         assertApplyPlanAllowed(issues, warningsAcknowledged, t);
       }
       const snapshot = { gameId: game!.id, configDir };
@@ -193,7 +281,9 @@ export function useEditorMutations(options: Options) {
       deleteGameOverride(gameId, name),
     onSuccess: (_result, variables) => {
       if (activeGameIdRef.current !== variables.gameId) return;
-      queryClient.invalidateQueries({ queryKey: ["overrides", variables.gameId] });
+      queryClient.invalidateQueries({
+        queryKey: ["overrides", variables.gameId],
+      });
     },
     onError: (err) => setApplyError(formatInvokeError(err)),
   });
@@ -202,14 +292,20 @@ export function useEditorMutations(options: Options) {
     mutationFn: (override: GameOverride) => {
       const ctx = overrideValidationContext(options);
       if (ctx) {
-        const issues = validateOverridePlan(override.files, override.removals, ctx);
+        const issues = validateOverridePlan(
+          override.files,
+          override.removals,
+          ctx,
+        );
         assertPresetStorable(issues, t);
       }
       return saveGameOverride(override);
     },
     onSuccess: (_result, override) => {
       if (activeGameIdRef.current !== override.game_id) return;
-      queryClient.invalidateQueries({ queryKey: ["overrides", override.game_id] });
+      queryClient.invalidateQueries({
+        queryKey: ["overrides", override.game_id],
+      });
       setMessage(t("presets.imported", { name: override.name }));
     },
     onError: (err) => setApplyError(formatInvokeError(err)),

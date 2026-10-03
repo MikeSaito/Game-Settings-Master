@@ -49,7 +49,9 @@
     "presetsHint": "Saved setting bundles",
     "scalability": "Basic",
     "engine": "Advanced",
-    "engineBadge": "Expert"
+    "engineBadge": "Expert",
+    "input": "Controls",
+    "inputHint": "Keyboard, mouse and controller"
   },
   "mode": {
     "basicTitle": "Basic settings",
@@ -64,7 +66,8 @@
     "presetsBody": "Presets saved from the editor. Import, export, apply to the game config, and delete.",
     "extraBodyShort": "Input.ini / DeviceProfiles.ini: browse and search.",
     "basicSafe": "GameUserSettings.ini only",
-    "advancedFiles": "Engine.ini / Scalability.ini"
+    "advancedFiles": "Engine.ini / Scalability.ini",
+    "inputBody": "Classic Input.ini bindings with a changes preview."
   },
   "engineWarning": {
     "title": "Advanced users only",

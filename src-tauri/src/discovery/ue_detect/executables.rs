@@ -9,7 +9,10 @@ pub fn find_executables(install_dir: &Path) -> Vec<PathBuf> {
         .filter_map(|e| e.ok())
     {
         if entry.file_type().is_file()
-            && entry.path().extension().and_then(|e| e.to_str()) == Some("exe")
+            && entry
+                .path()
+                .extension()
+                .is_some_and(|extension| extension.eq_ignore_ascii_case("exe"))
         {
             let name = entry.file_name().to_string_lossy().to_lowercase();
             if !name.contains("uninstall")

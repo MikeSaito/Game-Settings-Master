@@ -11,6 +11,7 @@ import { gpuSummaryLabel } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
 import { Badge, Button } from "@/components/ds";
 import { GameCover } from "@/components/game/GameCover";
+import { GameLaunchOptions } from "@/components/game/GameLaunchOptions";
 
 interface Props {
   game: GameProfile;
@@ -19,18 +20,19 @@ interface Props {
 export function GameContextBar({ game }: Props) {
   const { t } = useTranslation("header");
   const gpuEnabled = useBackgroundSafeEnabled();
-  const [copyStatus, setCopyStatus] = useState<"copied" | "failed" | null>(null);
-  const configDir = game.config_dir;
-  const runningExeName = exeNameForRunningCheck(game.exe_name, undefined) ?? null;
-  const gameRunning = useGameRunning(runningExeName);
-  const { launchStatus, launchMutation, closeMutation, sessionRef } = useGameLaunch(
-    game,
-    runningExeName,
+  const [copyStatus, setCopyStatus] = useState<"copied" | "failed" | null>(
+    null,
   );
+  const configDir = game.config_dir;
+  const runningExeName =
+    exeNameForRunningCheck(game.exe_name, undefined) ?? null;
+  const gameRunning = useGameRunning(runningExeName);
+  const { launchStatus, launchMutation, closeMutation, sessionRef } =
+    useGameLaunch(game, runningExeName);
 
   const { data: gpu } = useQuery({
-    queryKey: ["gpu"],
-    queryFn: getGpuInfo,
+    queryKey: ["gpu", game.id],
+    queryFn: () => getGpuInfo(game.id),
     enabled: gpuEnabled,
     staleTime: 300_000,
   });
@@ -47,11 +49,22 @@ export function GameContextBar({ game }: Props) {
 
   return (
     <section className="relative z-40 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-bg-soft)] px-4 py-3 touch-manipulation">
+      {(game.source === "manual" ||
+        game.source === "gog" ||
+        game.source === "xbox") && (
+        <GameLaunchOptions key={game.id} game={game} />
+      )}
       <div className="flex flex-wrap items-center gap-3">
-        <GameCover game={game} aspect="square" className="h-12 w-12 shrink-0 rounded-[var(--radius-control)]" />
+        <GameCover
+          game={game}
+          aspect="square"
+          className="h-12 w-12 shrink-0 rounded-[var(--radius-control)]"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h1 className="truncate text-base font-semibold text-[var(--color-text)]">{game.name}</h1>
+            <h1 className="truncate text-base font-semibold text-[var(--color-text)]">
+              {game.name}
+            </h1>
             {game.is_ue ? (
               <Badge tone="accent">
                 {game.engine_family === "ue4"
@@ -63,12 +76,17 @@ export function GameContextBar({ game }: Props) {
             ) : (
               <Badge tone="warning">{t("badge.engineUnknown")}</Badge>
             )}
-            {game.engine_version && <Badge tone="neutral">{game.engine_version}</Badge>}
+            {game.engine_version && (
+              <Badge tone="neutral">{game.engine_version}</Badge>
+            )}
             <Badge tone={supportsIniPresets(game) ? "success" : "warning"}>
               {configDir ? t("badge.configOk") : t("badge.needConfig")}
             </Badge>
             {launchStatus && (
-              <Badge tone={launchStatus.tone} className="max-w-[240px] truncate">
+              <Badge
+                tone={launchStatus.tone}
+                className="max-w-[240px] truncate"
+              >
                 {launchStatus.text}
               </Badge>
             )}
@@ -76,7 +94,11 @@ export function GameContextBar({ game }: Props) {
         </div>
         <div className="ml-auto flex shrink-0 flex-wrap items-center gap-2">
           {gpu && (
-            <Badge tone="info" title={gpuSummaryLabel(gpu)} className="max-w-[200px] truncate">
+            <Badge
+              tone="info"
+              title={gpuSummaryLabel(gpu)}
+              className="max-w-[200px] truncate"
+            >
               <Cpu size={12} className="mr-1" />
               {gpuSummaryLabel(gpu)}
             </Badge>
@@ -125,11 +147,18 @@ export function GameContextBar({ game }: Props) {
               )}
             </>
           )}
-          {!configDir && <ExternalLink size={16} className="text-[var(--color-text-faint)]" />}
+          {!configDir && (
+            <ExternalLink
+              size={16}
+              className="text-[var(--color-text-faint)]"
+            />
+          )}
         </div>
       </div>
       <div className="mt-2 flex min-w-0 items-center gap-2 pl-[3.75rem] text-xs text-[var(--color-text-muted)]">
-        <span className="shrink-0 uppercase tracking-wide">{t("configLabel")}</span>
+        <span className="shrink-0 uppercase tracking-wide">
+          {t("configLabel")}
+        </span>
         <code className="truncate font-mono text-[var(--color-text-secondary)]">
           {configDir || t("noConfigPath")}
         </code>

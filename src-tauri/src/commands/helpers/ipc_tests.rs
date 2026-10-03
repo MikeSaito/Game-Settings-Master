@@ -49,6 +49,9 @@ fn guard_rejects_arbitrary_config_dir_when_expected_unknown() {
     fs::create_dir_all(&trusted_install).expect("trusted install dir");
 
     let profile = GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: game_id.clone(),
         name: "Guard Test".to_string(),
         source: "manual".to_string(),
@@ -134,6 +137,7 @@ fn validate_custom_changes_semantics_rejects_sg_above_limit() {
     let result = validate_custom_changes_semantics(
         &changes,
         SemanticValidationContext {
+            selected_gpu: None,
             engine_family: Some("ue5"),
             engine_version: Some("5.4"),
             config_path: dir.path(),

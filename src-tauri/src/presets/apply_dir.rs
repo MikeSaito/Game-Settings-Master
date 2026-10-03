@@ -95,3 +95,11 @@ pub fn apply_changes_to_dir(
 
     Ok((changed_files, diff))
 }
+pub(super) fn apply_custom_to_dir(
+    config_dir: &std::path::Path,
+    changes: &crate::core::models::CustomChanges,
+    width: u32,
+    height: u32,
+) -> Result<(Vec<String>, Vec<crate::core::models::ConfigDiffEntry>), String> {
+    apply_changes_to_dir(config_dir, &changes.files, &changes.removals, width, height)
+}

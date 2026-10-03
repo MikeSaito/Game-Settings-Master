@@ -28,6 +28,13 @@ pub fn normalize_install_dir(path: &str) -> String {
 }
 
 pub fn merge_game_profile(target: &mut GameProfile, other: &GameProfile) {
+    if target.gpu_adapter_id.is_none() {
+        target.gpu_adapter_id = other.gpu_adapter_id.clone();
+    }
+    if target.launch_target.is_none() && (target.source == other.source || other.source == "manual")
+    {
+        target.launch_target = other.launch_target.clone();
+    }
     if target.config_dir.is_none() {
         target.config_dir = other.config_dir.clone();
     }

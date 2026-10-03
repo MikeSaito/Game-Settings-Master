@@ -8,3 +8,9 @@ fn roundtrip_utf16_le() {
     assert_eq!(enc, IniEncoding::Utf16Le);
     assert_eq!(decoded, text);
 }
+
+#[test]
+fn rejects_truncated_and_invalid_utf16_without_replacing_bytes() {
+    assert!(decode_bytes(&[0xff, 0xfe, 0x41]).is_err());
+    assert!(decode_bytes(&[0xff, 0xfe, 0x00, 0xd8]).is_err());
+}

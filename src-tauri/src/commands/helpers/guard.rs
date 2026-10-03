@@ -4,36 +4,32 @@ use crate::ini::paths::validate_config_dir;
 use crate::ini::platform::{apply_target_dirs, reconcile_config_dir};
 use std::path::Path;
 
-use super::trust::{validate_config_dir_for_game, validate_install_dir_for_game};
-
-pub(crate) fn guard_write_context(
-    game_id: Option<&str>,
-    config_dir: &str,
-    install_dir: Option<&str>,
-) -> Result<(), AppInvokeError> {
-    guard_config_dir_for_write(game_id, config_dir)?;
-    if let (Some(gid), Some(install)) = (game_id, install_dir.filter(|s| !s.trim().is_empty())) {
-        validate_install_dir_for_game(gid, install)?;
-    }
-    Ok(())
-}
+use super::trust::validate_config_dir_for_game;
 
 pub(crate) fn guard_config_dir_for_read(
     game_id: Option<&str>,
     config_dir: &str,
 ) -> Result<(), AppInvokeError> {
-    guard_trusted_config_dir(game_id, config_dir)
+    guard_trusted_config_dir(game_id, config_dir, false)
 }
 
 pub(crate) fn guard_config_dir_for_write(
     game_id: Option<&str>,
     config_dir: &str,
 ) -> Result<(), AppInvokeError> {
-    guard_trusted_config_dir(game_id, config_dir)
+    guard_trusted_config_dir(game_id, config_dir, true)
 }
 
-fn guard_trusted_config_dir(game_id: Option<&str>, config_dir: &str) -> Result<(), AppInvokeError> {
-    let _path = validate_config_dir(config_dir)?;
+fn guard_trusted_config_dir(
+    game_id: Option<&str>,
+    config_dir: &str,
+    require_gus: bool,
+) -> Result<(), AppInvokeError> {
+    let _path = if require_gus {
+        validate_config_dir(config_dir)?
+    } else {
+        crate::ini::paths::inspect_config_dir(config_dir)?
+    };
     if let Some(gid) = game_id {
         validate_config_dir_for_game(gid, config_dir)?;
         return Ok(());

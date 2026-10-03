@@ -1,4 +1,6 @@
-use crate::fs_util::{read_file_bytes, write_file_bytes};
+use crate::fs_util::read_file_bytes;
+#[cfg(test)]
+use crate::fs_util::write_file_bytes;
 use std::path::Path;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -12,6 +14,7 @@ pub fn read_text(path: &Path) -> Result<(String, IniEncoding), String> {
     decode_bytes(&bytes)
 }
 
+#[cfg(test)]
 pub fn detect_encoding(path: &Path) -> IniEncoding {
     read_file_bytes(path)
         .ok()
@@ -19,11 +22,13 @@ pub fn detect_encoding(path: &Path) -> IniEncoding {
         .unwrap_or(IniEncoding::Utf8)
 }
 
+#[cfg(test)]
 pub fn write_text(path: &Path, content: &str, encoding: IniEncoding) -> Result<(), String> {
     let bytes = encode_bytes(content, encoding);
     write_file_bytes(path, &bytes)
 }
 
+#[cfg(test)]
 fn encoding_from_bytes(bytes: &[u8]) -> IniEncoding {
     if bytes.starts_with(&[0xFF, 0xFE]) {
         IniEncoding::Utf16Le
@@ -32,14 +37,24 @@ fn encoding_from_bytes(bytes: &[u8]) -> IniEncoding {
     }
 }
 
-fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
+pub(crate) fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
     if bytes.starts_with(&[0xFF, 0xFE]) {
-        let (chunks, _) = bytes[2..].as_chunks::<2>();
+        let (chunks, remainder) = bytes[2..].as_chunks::<2>();
+        if !remainder.is_empty() {
+            return Err(crate::i18n::t(
+                "Повреждён UTF-16 INI: нечётное число байтов",
+                "Invalid UTF-16 INI: odd byte count",
+            ));
+        }
         let units: Vec<u16> = chunks
             .iter()
             .map(|chunk| u16::from_le_bytes(*chunk))
             .collect();
-        Ok((String::from_utf16_lossy(&units), IniEncoding::Utf16Le))
+        Ok((
+            String::from_utf16(&units)
+                .map_err(|_| crate::i18n::t("Повреждён UTF-16 INI", "Invalid UTF-16 INI"))?,
+            IniEncoding::Utf16Le,
+        ))
     } else if bytes.starts_with(&[0xFE, 0xFF]) {
         Err(crate::i18n::t(
             "UTF-16 BE ini пока не поддерживается",
@@ -63,7 +78,7 @@ fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String> {
     }
 }
 
-fn encode_bytes(content: &str, encoding: IniEncoding) -> Vec<u8> {
+pub(crate) fn encode_bytes(content: &str, encoding: IniEncoding) -> Vec<u8> {
     match encoding {
         IniEncoding::Utf8 => content.as_bytes().to_vec(),
         IniEncoding::Utf16Le => {

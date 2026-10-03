@@ -4,6 +4,10 @@ use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GameProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gpu_adapter_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub launch_target: Option<LaunchTarget>,
     pub id: String,
     pub name: String,
     pub source: String,
@@ -51,6 +55,10 @@ pub struct ConfigDiffEntry {
 
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct ApplyResult {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub post_apply_warning: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub applied_input_lines: Option<Vec<u32>>,
     pub backup_id: String,
     pub changed_files: Vec<String>,
     pub diff: Vec<ConfigDiffEntry>,
@@ -61,6 +69,10 @@ pub struct ApplyResult {
 
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct BackupInfo {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source_dir: Option<String>,
     pub id: String,
     pub created_at: String,
     pub files: Vec<String>,
@@ -128,7 +140,7 @@ fn default_editable() -> bool {
     true
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, specta::Type)]
 pub struct CustomChanges {
     pub files: HashMap<String, HashMap<String, HashMap<String, String>>>,
     #[serde(default)]
@@ -142,6 +154,10 @@ pub struct SavedProfiles {
 
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
 pub struct GameOverride {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<PresetMetadata>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub input_updates: Option<Vec<crate::changes::InputUpdate>>,
     pub game_id: String,
     pub name: String,
     pub files: HashMap<String, HashMap<String, HashMap<String, String>>>,
@@ -152,6 +168,48 @@ pub struct GameOverride {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SavedOverrides {
     pub overrides: Vec<GameOverride>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct LaunchTarget {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub working_dir: Option<String>,
+    pub kind: String,
+    pub value: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+#[serde(default)]
+pub struct PresetMetadata {
+    pub format_version: u32,
+    pub mode: String,
+    pub description: String,
+    pub source_game_id: String,
+    pub source_game_name: String,
+    pub game_build: Option<String>,
+    pub engine_family: Option<String>,
+    pub engine_version: Option<String>,
+    pub gpu_vendor: Option<String>,
+    pub min_dedicated_memory_mb: Option<u32>,
+    pub requires_ray_tracing: bool,
+}
+
+impl Default for PresetMetadata {
+    fn default() -> Self {
+        Self {
+            format_version: 2,
+            mode: "changes".into(),
+            description: String::new(),
+            source_game_id: String::new(),
+            source_game_name: String::new(),
+            game_build: None,
+            engine_family: None,
+            engine_version: None,
+            gpu_vendor: None,
+            min_dedicated_memory_mb: None,
+            requires_ray_tracing: false,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

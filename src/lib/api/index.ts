@@ -1,3 +1,4 @@
+import { previewAndApply } from "./preparedChanges";
 import { invoke } from "@tauri-apps/api/core";
 import type {
   ApplyResult,
@@ -13,8 +14,10 @@ import type {
   ScalabilityLimits,
 } from "@/lib/core/types";
 
-export function getGpuInfo(): Promise<GpuCapabilities> {
-  return invoke("get_gpu_info_cmd");
+export function getGpuInfo(gameId?: string): Promise<GpuCapabilities> {
+  return gameId
+    ? invoke("get_game_gpu", { gameId })
+    : invoke("get_gpu_info_cmd");
 }
 
 export function getDesktopResolution(): Promise<ScreenResolution> {
@@ -91,14 +94,11 @@ export function applyCustom(
   engineVersion?: string | null,
   warningsAcknowledged?: boolean,
 ): Promise<ApplyResult> {
-  return invoke("apply_custom_cmd", {
-    configDir,
+  void [exeName, engineFamily, engineVersion, warningsAcknowledged];
+  return previewAndApply({
+    game_id: gameId ?? "",
+    config_dir: configDir,
     changes: { files, removals: removals ?? {} },
-    exeName: exeName ?? null,
-    gameId: gameId ?? null,
-    engineFamily: engineFamily ?? null,
-    engineVersion: engineVersion ?? null,
-    warningsAcknowledged: warningsAcknowledged ?? false,
   });
 }
 
@@ -120,14 +120,12 @@ export function restoreBackup(
   engineFamily?: string,
   installDir?: string,
 ): Promise<string[]> {
-  return invoke("restore_backup_cmd", {
-    configDir,
-    backupId,
-    exeName: exeName ?? null,
-    gameId: gameId ?? null,
-    engineFamily: engineFamily ?? null,
-    installDir: installDir ?? null,
-  });
+  void [exeName, engineFamily, installDir];
+  return previewAndApply({
+    game_id: gameId ?? "",
+    config_dir: configDir,
+    backup_id: backupId,
+  }).then((result) => result.changed_files);
 }
 
 export function resetConfigToUser(
@@ -172,7 +170,10 @@ export function removeGameProfile(id: string): Promise<void> {
   return invoke("remove_game_profile", { id });
 }
 
-export function importGameCover(gameId: string, imagePath: string): Promise<GameProfile> {
+export function importGameCover(
+  gameId: string,
+  imagePath: string,
+): Promise<GameProfile> {
   return invoke("import_game_cover_cmd", { gameId, imagePath });
 }
 
@@ -201,11 +202,13 @@ export function applyGameOverride(
   exeName?: string,
   warningsAcknowledged?: boolean,
 ): Promise<ApplyResult> {
-  return invoke("apply_game_override", {
-    configDir,
-    overrideDef: override,
-    exeName: exeName ?? null,
-    warningsAcknowledged: warningsAcknowledged ?? false,
+  void [exeName, warningsAcknowledged];
+  return previewAndApply({
+    game_id: override.game_id,
+    config_dir: configDir,
+    changes: { files: override.files, removals: override.removals ?? {} },
+    input_updates: override.input_updates ?? [],
+    preset_metadata: override.metadata ?? null,
   });
 }
 
@@ -229,7 +232,9 @@ export function submitCrashReport(
   return invoke("submit_crash_report_cmd", { payload });
 }
 
-export function listCrashReports(): Promise<import("@/lib/crashReport").CrashReportEntry[]> {
+export function listCrashReports(): Promise<
+  import("@/lib/crashReport").CrashReportEntry[]
+> {
   return invoke("list_crash_reports_cmd");
 }
 

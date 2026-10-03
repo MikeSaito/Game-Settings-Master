@@ -39,6 +39,9 @@ pub fn profile_from_manual_path(name: &str, install_dir: &str) -> Result<GamePro
         .map(|p| p.to_string_lossy().to_string());
 
     Ok(GameProfile {
+        gpu_adapter_id: None,
+        launch_target: None,
+
         id: format!("manual-{}", Uuid::new_v4()),
         name: display_name.to_string(),
         source: "manual".to_string(),

@@ -15,6 +15,9 @@ import { gpuFilterHint } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
 import { BackupsPanel } from "@/components/backups";
 import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
+import { GameHardwarePanel } from "@/components/advanced/GameHardwarePanel";
+import { DiagnosticsPanel } from "@/components/advanced/DiagnosticsPanel";
+import { InputEditor } from "@/components/advanced/InputEditor";
 
 interface Props {
   game: GameProfile | null;
@@ -49,7 +52,9 @@ export function AdvancedEditor({ game }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="shrink-0">
+      <div className="min-h-0 max-h-[50%] shrink-0 overflow-y-auto [@media(max-height:700px)]:max-h-[35%]">
+        <GameHardwarePanel game={game} gpu={state.gpu} />
+        <DiagnosticsPanel game={game} />
         <EditorModeBar
           gameId={game.id}
           panel={state.panel}
@@ -59,24 +64,33 @@ export function AdvancedEditor({ game }: Props) {
         />
       </div>
 
-      {state.panel === "backups" ? (
+      {state.panel === "input" ? (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <InputEditor key={game.id} game={game} running={state.gameRunning} />
+        </div>
+      ) : state.panel === "backups" ? (
         <div className="min-h-0 flex-1 overflow-y-auto">
           <BackupsPanel game={game} />
         </div>
       ) : state.panel === "extra" ? (
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <ExtraIniPanel gameConfig={state.gameConfig} loading={state.gameConfigLoading} />
+          <ExtraIniPanel
+            gameConfig={state.gameConfig}
+            loading={state.gameConfigLoading}
+          />
         </div>
       ) : state.panel === "presets" ? (
         <div className="min-h-0 flex-1 space-y-3 overflow-y-auto">
           {state.gameRunning && (
-            <Alert tone="warning" icon={AlertTriangle} title={t("gameRunningTitle")}>
+            <Alert
+              tone="warning"
+              icon={AlertTriangle}
+              title={t("gameRunningTitle")}
+            >
               {t("gameRunningInline")}
             </Alert>
           )}
-          {state.message && (
-            <Alert tone="success">{state.message}</Alert>
-          )}
+          {state.message && <Alert tone="success">{state.message}</Alert>}
           {state.applyError && (
             <Alert tone="danger" title={t("errorTitle")}>
               {state.applyError}
@@ -97,8 +111,9 @@ export function AdvancedEditor({ game }: Props) {
           />
 
           <section className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap gap-1.5">
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+              <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   <Badge tone="info">
                     {game.engine_version
                       ? t("paramsForEngine", {
@@ -107,9 +122,13 @@ export function AdvancedEditor({ game }: Props) {
                         })
                       : t("paramsCount", { count: state.catalogStats.total })}
                   </Badge>
-                  <Badge tone="success">{t("knownCount", { count: state.catalogStats.known })}</Badge>
+                  <Badge tone="success">
+                    {t("knownCount", { count: state.catalogStats.known })}
+                  </Badge>
                   {state.catalogStats.unknown > 0 && (
-                    <Badge tone="warning">{t("unknownCount", { count: state.catalogStats.unknown })}</Badge>
+                    <Badge tone="warning">
+                      {t("unknownCount", { count: state.catalogStats.unknown })}
+                    </Badge>
                   )}
                   {state.limits && state.panel === "basic" && (
                     <Badge tone="accent">
@@ -132,63 +151,72 @@ export function AdvancedEditor({ game }: Props) {
                       })}
                     </Badge>
                   )}
+                </div>
+                {gpuHint && (
+                  <Badge tone="info" className="max-w-xl" title={gpuHint}>
+                    {t("gpuHintTitle")}: {gpuHint}
+                  </Badge>
+                )}
               </div>
-              {gpuHint && (
-                <Badge tone="info" className="max-w-xl" title={gpuHint}>
-                  {t("gpuHintTitle")}: {gpuHint}
-                </Badge>
+
+              {state.validationIssues.length > 0 && (
+                <ApplyValidationPanel
+                  issues={state.validationIssues}
+                  warningsAcknowledged={state.applyWarningsAcknowledged}
+                  onWarningsAcknowledgedChange={
+                    state.setApplyWarningsAcknowledged
+                  }
+                />
               )}
+
+              {state.conflictGroups.length > 0 && (
+                <SgEngineConflictPanel
+                  groups={state.conflictGroups}
+                  onResolve={state.resolveSgConflict}
+                />
+              )}
+
+              {state.gameRunning && (
+                <Alert
+                  tone="warning"
+                  icon={AlertTriangle}
+                  className="mb-3"
+                  title={t("gameRunningTitle")}
+                >
+                  {t("gameRunningInline")}
+                </Alert>
+              )}
+
+              {state.message && (
+                <Alert tone="success" className="mb-3">
+                  {state.message}
+                </Alert>
+              )}
+              {state.applyError && (
+                <Alert tone="danger" className="mb-3" title={t("errorTitle")}>
+                  {state.applyError}
+                </Alert>
+              )}
+
+              <ParameterList
+                className="min-h-40 flex-1"
+                filteredParams={state.filteredParams}
+                search={state.search}
+                parametersLoading={state.parametersLoading}
+                gpu={state.gpu}
+                engineEnabled={state.engineEnabled}
+                showEngineToggle
+                gusIniToggleOnly={state.panel === "basic"}
+                shippedIniKeys={state.shippedIniKeys}
+                pendingConflictKeys={state.pendingConflictKeys}
+                comboWarningsByKey={state.comboWarningsByKey}
+                onUpdateParam={state.updateParam}
+                onToggleEngineParam={state.toggleEngineParam}
+              />
             </div>
 
-            {state.validationIssues.length > 0 && (
-              <ApplyValidationPanel
-                issues={state.validationIssues}
-                warningsAcknowledged={state.applyWarningsAcknowledged}
-                onWarningsAcknowledgedChange={state.setApplyWarningsAcknowledged}
-              />
-            )}
-
-            {state.conflictGroups.length > 0 && (
-              <SgEngineConflictPanel
-                groups={state.conflictGroups}
-                onResolve={state.resolveSgConflict}
-              />
-            )}
-
-            {state.gameRunning && (
-              <Alert tone="warning" icon={AlertTriangle} className="mb-3" title={t("gameRunningTitle")}>
-                {t("gameRunningInline")}
-              </Alert>
-            )}
-
-            {state.message && (
-              <Alert tone="success" className="mb-3">
-                {state.message}
-              </Alert>
-            )}
-            {state.applyError && (
-              <Alert tone="danger" className="mb-3" title={t("errorTitle")}>
-                {state.applyError}
-              </Alert>
-            )}
-
-            <ParameterList
-              className="min-h-0 flex-1"
-              filteredParams={state.filteredParams}
-              search={state.search}
-              parametersLoading={state.parametersLoading}
-              gpu={state.gpu}
-              engineEnabled={state.engineEnabled}
-              showEngineToggle
-              gusIniToggleOnly={state.panel === "basic"}
-              shippedIniKeys={state.shippedIniKeys}
-              pendingConflictKeys={state.pendingConflictKeys}
-              comboWarningsByKey={state.comboWarningsByKey}
-              onUpdateParam={state.updateParam}
-              onToggleEngineParam={state.toggleEngineParam}
-            />
-
-            <div className="mt-3 shrink-0">
+            {/* Keep room for warnings; let the footer grow when the window is short. */}
+            <div className="mt-3 flex min-h-0 max-h-[min(100%,max(75%,13rem))] flex-col">
               <EditorApplyBar state={state} />
             </div>
           </section>

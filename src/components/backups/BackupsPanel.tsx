@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { BackupRow } from "@/components/backups/BackupRow";
+import { SnapshotTools } from "@/components/backups/SnapshotTools";
 import { BackupSectionTitle } from "@/components/backups/BackupSectionTitle";
 import { OVERRIDE_INI_FILES_LABEL } from "@/lib/ini/configFiles";
 import { Badge } from "@/components/ds/Badge";
@@ -44,7 +45,12 @@ export function BackupsPanel({ game }: Props) {
   const gameRunning = useGameRunning(runningExeName);
   const backupsEnabled = useBackgroundSafeEnabled(!!configDir);
 
-  const { data: backups = [], isLoading, isFetching, refetch } = useQuery({
+  const {
+    data: backups = [],
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ["backups", configDir, game.id],
     queryFn: () => listBackups(configDir, game.id),
     enabled: backupsEnabled,
@@ -69,7 +75,11 @@ export function BackupsPanel({ game }: Props) {
   if (!configDir) {
     return (
       <div className="space-y-3">
-        <Alert tone="warning" icon={AlertTriangle} title={t("configMissing.title", { name: game.name })}>
+        <Alert
+          tone="warning"
+          icon={AlertTriangle}
+          title={t("configMissing.title", { name: game.name })}
+        >
           {t("configMissing.body")}
         </Alert>
         <ConfigPathHelp />
@@ -80,7 +90,9 @@ export function BackupsPanel({ game }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-2">
-        <Badge tone="neutral">{t("header.backupsCount", { count: backups.length })}</Badge>
+        <Badge tone="neutral">
+          {t("header.backupsCount", { count: backups.length })}
+        </Badge>
       </div>
 
       <Alert tone="info" title={t("howItWorks.title")}>
@@ -88,6 +100,11 @@ export function BackupsPanel({ game }: Props) {
       </Alert>
 
       <GameRunningAlert exeName={runningExeName} gameName={game.name} />
+      <SnapshotTools
+        game={game}
+        backups={backups}
+        disabled={gameRunning || restore.isPending || reset.isPending}
+      />
 
       {restoreError && (
         <Alert tone="danger" title={t("restore.errorTitle")}>
@@ -110,11 +127,18 @@ export function BackupsPanel({ game }: Props) {
       <section>
         <BackupSectionTitle
           title={t("reset.sectionTitle")}
-          description={t("reset.sectionDesc", { files: OVERRIDE_INI_FILES_LABEL })}
+          description={t("reset.sectionDesc", {
+            files: OVERRIDE_INI_FILES_LABEL,
+          })}
         />
         {resetConfirm ? (
-          <Panel padding="md" className="border-[var(--color-danger)]/45 bg-[var(--color-danger-soft)]">
-            <p className="text-sm text-[var(--color-text-secondary)]">{t("reset.confirmBody")}</p>
+          <Panel
+            padding="md"
+            className="border-[var(--color-danger)]/45 bg-[var(--color-danger-soft)]"
+          >
+            <p className="text-sm text-[var(--color-text-secondary)]">
+              {t("reset.confirmBody")}
+            </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Button
                 variant="danger"
@@ -125,7 +149,11 @@ export function BackupsPanel({ game }: Props) {
               >
                 {t("reset.confirmYes")}
               </Button>
-              <Button variant="secondary" onClick={() => setResetConfirm(false)} disabled={reset.isPending}>
+              <Button
+                variant="secondary"
+                onClick={() => setResetConfirm(false)}
+                disabled={reset.isPending}
+              >
                 {t("reset.cancel")}
               </Button>
             </div>
@@ -157,7 +185,9 @@ export function BackupsPanel({ game }: Props) {
           <Panel padding="md">
             <div className="flex flex-col items-center gap-3 py-6">
               <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-              <p className="text-sm text-[var(--color-text-muted)]">{t("list.loading")}</p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                {t("list.loading")}
+              </p>
             </div>
           </Panel>
         ) : backups.length === 0 ? (

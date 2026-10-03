@@ -1,4 +1,4 @@
-use super::permissions::{clear_readonly, format_io_error};
+use super::permissions::format_io_error;
 use std::fs;
 use std::io::Read;
 use std::path::Path;
@@ -14,8 +14,6 @@ const FILE_SHARE_WRITE: u32 = 0x0000_0002;
 const FILE_SHARE_DELETE: u32 = 0x0000_0004;
 
 pub fn read_file_bytes(path: &Path) -> Result<Vec<u8>, String> {
-    clear_readonly(path);
-
     #[cfg(windows)]
     if let Ok(bytes) = read_file_shared(path) {
         return Ok(bytes);

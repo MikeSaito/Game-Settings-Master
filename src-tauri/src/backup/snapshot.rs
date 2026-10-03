@@ -1,6 +1,6 @@
 use chrono::Local;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::fs_util::{
     ensure_safe_child_file, is_safe_backup_id, read_file_bytes, write_file_bytes,
@@ -15,21 +15,6 @@ pub(crate) fn new_backup_id() -> String {
         Local::now().format("%Y%m%d_%H%M%S"),
         uuid::Uuid::new_v4().simple()
     )
-}
-
-pub fn backup_all_targets(targets: &[PathBuf]) -> Result<String, String> {
-    let shared_id = new_backup_id();
-    let mut completed: Vec<PathBuf> = Vec::new();
-    for target in targets {
-        if let Err(error) = backup_config_dir(target, Some(&shared_id)) {
-            for previous in completed {
-                let _ = fs::remove_dir_all(backup_store_dir(&previous).join(&shared_id));
-            }
-            return Err(error);
-        }
-        completed.push(target.clone());
-    }
-    Ok(shared_id.to_string())
 }
 
 pub fn backup_config_dir(config_dir: &Path, backup_id: Option<&str>) -> Result<String, String> {

@@ -4,7 +4,10 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GameGridCard } from "@/components/library/GameGridCard";
 import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
-import { LibraryToolbar, type LibraryViewMode } from "@/components/library/LibraryToolbar";
+import {
+  LibraryToolbar,
+  type LibraryViewMode,
+} from "@/components/library/LibraryToolbar";
 import { Alert, EmptyState, Skeleton } from "@/components/ds/Feedback";
 import { Badge } from "@/components/ds/Badge";
 import { Button } from "@/components/ds/Button";
@@ -20,6 +23,7 @@ import {
 import { formatInvokeError } from "@/lib/core";
 import { openPathDialog } from "@/lib/api";
 import type { GameProfile } from "@/lib/core";
+import { DiscoveryWarnings } from "@/components/library/DiscoveryWarnings";
 
 interface Props {
   selectedGame: GameProfile | null;
@@ -28,7 +32,12 @@ interface Props {
   onGameRemoved?: (id: string) => void;
 }
 
-export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameRemoved }: Props) {
+export function GameLibrary({
+  selectedGame,
+  onSelectGame,
+  onGameUpdated,
+  onGameRemoved,
+}: Props) {
   const { t } = useTranslation("library");
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
@@ -36,7 +45,12 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
   const [libraryError, setLibraryError] = useState<string>();
   const queriesEnabled = useBackgroundSafeEnabled();
 
-  const { data: games = [], isLoading, isFetching, refetch } = useQuery({
+  const {
+    data: games = [],
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ["games"],
     queryFn: scanGames,
     enabled: queriesEnabled,
@@ -50,7 +64,8 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
       total: games.length,
       withConfig: games.filter((game) => game.config_dir).length,
       ue: games.filter((game) => game.is_ue).length,
-      withCover: games.filter((game) => game.custom_cover || game.cover_url).length,
+      withCover: games.filter((game) => game.custom_cover || game.cover_url)
+        .length,
     }),
     [games],
   );
@@ -59,7 +74,9 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
     const q = query.trim().toLowerCase();
     return games
       .filter((game) => !q || game.name.toLowerCase().includes(q))
-      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase(), "ru"));
+      .sort((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase(), "ru"),
+      );
   }, [games, query]);
   const hasGamesWithoutConfig = filteredGames.some((game) => !game.config_dir);
 
@@ -151,6 +168,7 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
 
   return (
     <div className="space-y-4">
+      <DiscoveryWarnings />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
@@ -159,13 +177,23 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--color-text)]">
             {t("header.title")}
           </h1>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">{t("header.subtitle")}</p>
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            {t("header.subtitle")}
+          </p>
         </div>
         <div className="flex flex-wrap gap-1.5">
-          <Badge tone="info">{t("badges.total", { count: scanSummary.total })}</Badge>
-          <Badge tone="success">{t("badges.withConfig", { count: scanSummary.withConfig })}</Badge>
-          <Badge tone="accent">{t("badges.ue", { count: scanSummary.ue })}</Badge>
-          <Badge tone="neutral">{t("badges.withCover", { count: scanSummary.withCover })}</Badge>
+          <Badge tone="info">
+            {t("badges.total", { count: scanSummary.total })}
+          </Badge>
+          <Badge tone="success">
+            {t("badges.withConfig", { count: scanSummary.withConfig })}
+          </Badge>
+          <Badge tone="accent">
+            {t("badges.ue", { count: scanSummary.ue })}
+          </Badge>
+          <Badge tone="neutral">
+            {t("badges.withCover", { count: scanSummary.withCover })}
+          </Badge>
         </div>
       </div>
 
@@ -198,7 +226,9 @@ export function GameLibrary({ selectedGame, onSelectGame, onGameUpdated, onGameR
         <EmptyState
           icon={Gamepad2}
           title={query ? t("empty.nothingFound") : t("empty.noGames")}
-          description={query ? t("empty.tryAnother") : t("empty.scanOrAddPrefix")}
+          description={
+            query ? t("empty.tryAnother") : t("empty.scanOrAddPrefix")
+          }
           primaryAction={
             <Button
               variant="primary"

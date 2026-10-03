@@ -5,6 +5,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      validation_only:
+        description: "Build a signed test installer without changing tags or publishing a release"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -43,6 +48,9 @@ jobs:
             $version = $pkg.version
           }
           "VERSION=$version" >> $env:GITHUB_ENV
+          if (-not [bool]::Parse("${{ inputs.validation_only || false }}") -and $version.Contains('-')) {
+            throw "Prerelease builds require validation_only; stable publication is disabled for this version"
+          }
 
       - name: Fail if release tag already exists
         if: github.event_name == 'push'
@@ -60,7 +68,7 @@ jobs:
           exit 0
 
       - name: Point release tag at current commit (manual republish)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && !inputs.validation_only
         env:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
@@ -130,6 +138,7 @@ jobs:
           "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Prepare release notes
+        if: '!inputs.validation_only'
         shell: pwsh
         run: |
           $version = "${{ env.VERSION }}"
@@ -156,6 +165,7 @@ jobs:
           [System.IO.File]::WriteAllText("$PWD/release-notes.md", $body.Trim(), $utf8NoBom)
 
       - name: Publish GitHub Release
+        if: '!inputs.validation_only'
         uses: softprops/action-gh-release@v3
         with:
           token: ${{ github.token }}
@@ -169,3 +179,14 @@ jobs:
           files: |
             ${{ env.SETUP_NAME }}
             latest.json
+
+      - name: Save signed validation installer
+        if: inputs.validation_only
+        uses: actions/upload-artifact@v7
+        with:
+          name: ue-validation-${{ env.VERSION }}-${{ github.run_id }}
+          path: |
+            src-tauri/target/release/bundle/nsis/*-setup.exe
+            src-tauri/target/release/bundle/nsis/*-setup.exe.sig
+          if-no-files-found: error
+          retention-days: 30

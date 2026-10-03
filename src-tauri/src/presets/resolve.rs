@@ -73,9 +73,6 @@ pub(crate) fn resolve_sections(
         let section_name = normalize_section(section);
         let mut mapped = IndexMap::new();
         for (key, value) in entries {
-            if value.is_empty() {
-                continue;
-            }
             let resolved = value
                 .replace("{{width}}", &width.to_string())
                 .replace("{{height}}", &height.to_string());
