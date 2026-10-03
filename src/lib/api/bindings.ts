@@ -258,6 +258,9 @@ export type IniFileData = {
 export type InputDocument = {
 	revision: string,
 	entries: InputEntry[],
+	source_path?: string,
+	file_state?: InputFileState,
+	custom_settings_path?: string | null,
 };
 
 export type InputEntry = {
@@ -270,6 +273,8 @@ export type InputEntry = {
 	editable: boolean,
 	reason: string | null,
 };
+
+export type InputFileState = "missing" | "empty" | "no_classic_bindings" | "bindings";
 
 export type InputUpdate = InputUpdate_Serialize | InputUpdate_Deserialize;
 

@@ -138,10 +138,28 @@ export function InputEditor({
       <p className="text-sm text-[var(--color-text-muted)]">
         {t("input.scope")}
       </p>
+      {data?.source_path && (
+        <p className="break-all text-sm text-[var(--color-text-muted)]">
+          {t("input.source", { path: data.source_path })}
+        </p>
+      )}
       {(error || queryError) && (
         <p role="alert">{error ?? formatInvokeError(queryError)}</p>
       )}
-      {!data?.entries.length && <p>{t("input.empty")}</p>}
+      {data && !data.entries.length && (
+        <div className="space-y-2">
+          <p>{t(`input.states.${data.file_state ?? "no_classic_bindings"}`)}</p>
+          {data.custom_settings_path ? (
+            <p className="break-all text-sm text-[var(--color-text-muted)]">
+              {t("input.customSettings", { path: data.custom_settings_path })}
+            </p>
+          ) : (
+            <p className="text-sm text-[var(--color-text-muted)]">
+              {t("input.noBindingsHelp")}
+            </p>
+          )}
+        </div>
+      )}
       {data?.entries.map((entry) => {
         const fields = values[entry.line] ?? entry.fields;
         const title =
@@ -239,47 +257,49 @@ export function InputEditor({
           </div>
         );
       })}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          loading={busy}
-          disabled={running || busy || updates.length === 0}
-          onClick={() => void run(false)}
-        >
-          {t("preview.apply")}
-        </Button>
-        <input
-          aria-label={t("snapshots.name")}
-          maxLength={120}
-          placeholder={t("snapshots.name")}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          className="rounded bg-[var(--color-bg-soft)] p-2"
-        />
-        <label>
-          {t("presets.mode")}{" "}
-          <select
-            value={mode}
-            onChange={(event) => setMode(event.target.value)}
-            className={controlClass}
+      {!!data?.entries.length && (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            loading={busy}
+            disabled={running || busy || updates.length === 0}
+            onClick={() => void run(false)}
           >
-            <option value="changes">{t("presets.changes")}</option>
-            <option value="profile">{t("presets.profile")}</option>
-          </select>
-        </label>
-        <Button
-          variant="secondary"
-          disabled={
-            busy ||
-            (mode === "changes"
-              ? updates.length === 0
-              : !data?.entries.some((entry) => entry.editable)) ||
-            !name.trim()
-          }
-          onClick={() => void run(true)}
-        >
-          {t("input.savePreset")}
-        </Button>
-      </div>
+            {t("preview.apply")}
+          </Button>
+          <input
+            aria-label={t("snapshots.name")}
+            maxLength={120}
+            placeholder={t("snapshots.name")}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            className="rounded bg-[var(--color-bg-soft)] p-2"
+          />
+          <label>
+            {t("presets.mode")}{" "}
+            <select
+              value={mode}
+              onChange={(event) => setMode(event.target.value)}
+              className={controlClass}
+            >
+              <option value="changes">{t("presets.changes")}</option>
+              <option value="profile">{t("presets.profile")}</option>
+            </select>
+          </label>
+          <Button
+            variant="secondary"
+            disabled={
+              busy ||
+              (mode === "changes"
+                ? updates.length === 0
+                : !data?.entries.some((entry) => entry.editable)) ||
+              !name.trim()
+            }
+            onClick={() => void run(true)}
+          >
+            {t("input.savePreset")}
+          </Button>
+        </div>
+      )}
     </section>
   );
 }

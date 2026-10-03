@@ -89,8 +89,15 @@
   },
   "input": {
     "title": "Controls — Input.ini",
-    "scope": "Edit classic bindings found in the config. Enhanced Input and ambiguous entries are read-only.",
-    "empty": "No classic bindings found in Input.ini",
+    "scope": "Edit classic bindings found in Input.ini. Ambiguous entries are read-only. Enhanced Input and game-specific formats are not yet supported.",
+    "source": "File: {{path}}",
+    "states": {
+      "missing": "Input.ini is missing from the active config folder.",
+      "empty": "Input.ini was found, but it is empty and contains no bindings.",
+      "no_classic_bindings": "Input.ini was found, but it contains no classic ActionMappings, AxisMappings or AxisConfig."
+    },
+    "noBindingsHelp": "The game may store controls in another file or in its built-in settings. Having an Input.ini file does not mean it contains bindings.",
+    "customSettings": "PUBG control settings were found in {{path}} (CustomInputSettins). This editor does not yet support the game's custom format. Change controls in PUBG's settings.",
     "savePreset": "Save control changes as a preset",
     "fields": {
       "Key": "Key",

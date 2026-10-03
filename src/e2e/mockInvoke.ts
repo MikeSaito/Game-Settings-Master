@@ -45,6 +45,9 @@ const e2eAmd: GpuCapabilities = {
 let selectedGpu: string | null = null;
 const inputFixture = (): InputDocument => ({
   revision: crypto.randomUUID(),
+  source_path: `${testGame.config_dir}\\Input.ini`,
+  file_state: "bindings",
+  custom_settings_path: null,
   entries: [0, 1].map((index) => ({
     id: `input-${index}`,
     line: index + 2,
@@ -220,6 +223,14 @@ export function handleE2eInvoke(
     case "get_diagnostic_report":
       return null;
     case "get_input_document":
+      if (sessionStorage.getItem("gsm-e2e-input-state") === "pubg-empty") {
+        return {
+          ...structuredClone(inputDocument),
+          entries: [],
+          file_state: "empty",
+          custom_settings_path: `${testGame.config_dir}\\GameUserSettings.ini`,
+        } satisfies InputDocument;
+      }
       return structuredClone(inputDocument);
     case "create_snapshot": {
       const id = createBackup([]);

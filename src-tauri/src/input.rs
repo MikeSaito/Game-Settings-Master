@@ -2,6 +2,7 @@ use crate::core::app_error::{AppError, AppInvokeError};
 use crate::ini::document::{Document, Entry};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+use std::path::Path;
 
 #[derive(Clone, Debug, Serialize, Deserialize, specta::Type)]
 pub struct InputEntry {
@@ -20,6 +21,22 @@ pub struct InputEntry {
 pub struct InputDocument {
     pub revision: String,
     pub entries: Vec<InputEntry>,
+    #[serde(default)]
+    pub source_path: String,
+    #[serde(default)]
+    pub file_state: InputFileState,
+    #[serde(default)]
+    pub custom_settings_path: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "snake_case")]
+pub enum InputFileState {
+    Missing,
+    Empty,
+    #[default]
+    NoClassicBindings,
+    Bindings,
 }
 
 /// Split a UE struct, respecting nested structs, quoted commas and escapes.
@@ -302,10 +319,14 @@ pub fn get_input_document(
         &crate::ini::paths::inspect_config_dir(&config_dir)?,
         &hints,
     );
-    let bytes = crate::changes::read_optional(&dir, "Input.ini")?.unwrap_or_default();
-    let (text, _) = crate::ini::encoding::decode_bytes(&bytes)?;
+    read_input_document(&dir)
+}
+
+fn read_input_document(dir: &Path) -> Result<InputDocument, AppInvokeError> {
+    let bytes = crate::changes::read_optional(dir, "Input.ini")?;
+    let (text, _) = crate::ini::encoding::decode_bytes(bytes.as_deref().unwrap_or_default())?;
     let document = Document::parse(&text);
-    let entries = identified_entries(&document)
+    let entries: Vec<_> = identified_entries(&document)
         .into_iter()
         .map(|(entry, id)| {
             let can_edit = editable(&document, &entry);
@@ -328,15 +349,121 @@ pub fn get_input_document(
             }
         })
         .collect();
+    let file_state = if bytes.is_none() {
+        InputFileState::Missing
+    } else if text.trim().is_empty() {
+        InputFileState::Empty
+    } else if entries.is_empty() {
+        InputFileState::NoClassicBindings
+    } else {
+        InputFileState::Bindings
+    };
+    // This is only a coverage hint. Do not interpret a game's custom binding format
+    // as Engine.InputSettings or make an optional hint prevent reading Input.ini.
+    let custom_settings_path = entries
+        .is_empty()
+        .then(|| {
+            let bytes = crate::changes::read_optional(dir, "GameUserSettings.ini")
+                .ok()
+                .flatten()?;
+            let (text, _) = crate::ini::encoding::decode_bytes(&bytes).ok()?;
+            Document::parse(&text)
+                .entries()
+                .iter()
+                .any(|entry| {
+                    entry
+                        .section
+                        .eq_ignore_ascii_case("/Script/TslGame.TslGameUserSettings")
+                        && entry.key.eq_ignore_ascii_case("CustomInputSettins")
+                        && !entry.value.is_empty()
+                })
+                .then(|| {
+                    dir.join("GameUserSettings.ini")
+                        .to_string_lossy()
+                        .into_owned()
+                })
+        })
+        .flatten();
     Ok(InputDocument {
-        revision: crate::changes::digest(&bytes),
+        revision: crate::changes::digest(bytes.as_deref().unwrap_or_default()),
         entries,
+        source_path: dir.join("Input.ini").to_string_lossy().into_owned(),
+        file_state,
+        custom_settings_path,
     })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn distinguishes_missing_empty_and_non_classic_files() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("Input.ini");
+        let missing = read_input_document(dir.path()).unwrap();
+        assert_eq!(missing.file_state, InputFileState::Missing);
+        assert_eq!(missing.source_path, path.to_string_lossy());
+        for bytes in [
+            b"\r\n".as_slice(),
+            b"\xef\xbb\xbf\r\n",
+            b"\xff\xfe\r\0\n\0",
+            b"",
+        ] {
+            std::fs::write(&path, bytes).unwrap();
+            let empty = read_input_document(dir.path()).unwrap();
+            assert_eq!(empty.file_state, InputFileState::Empty);
+            assert!(empty.entries.is_empty());
+            assert_eq!(std::fs::read(&path).unwrap(), bytes);
+        }
+        std::fs::write(
+            &path,
+            "[/Script/Engine.InputSettings]\nbEnableMouseSmoothing=False\n",
+        )
+        .unwrap();
+        assert_eq!(
+            read_input_document(dir.path()).unwrap().file_state,
+            InputFileState::NoClassicBindings
+        );
+        std::fs::write(
+            &path,
+            "[/Script/Engine.InputSettings]\n+ActionMappings=(ActionName=Jump,Key=SpaceBar)\n",
+        )
+        .unwrap();
+        let bindings = read_input_document(dir.path()).unwrap();
+        assert_eq!(bindings.file_state, InputFileState::Bindings);
+        assert_eq!(bindings.entries.len(), 1);
+        assert!(!bindings.entries[0].editable);
+    }
+    #[test]
+    fn empty_pubg_input_reports_custom_settings_without_creating_bindings() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(dir.path().join("Input.ini"), b"\r\n").unwrap();
+        let path = dir.path().join("GameUserSettings.ini");
+        let text = "[/Script/TslGame.TslGameUserSettings]\nCustomInputSettins=(ActionKeyList=())\n";
+        std::fs::write(&path, text).unwrap();
+        let document = read_input_document(dir.path()).unwrap();
+        assert_eq!(document.file_state, InputFileState::Empty);
+        assert!(document.entries.is_empty());
+        assert_eq!(
+            document.custom_settings_path.as_deref(),
+            Some(path.to_str().unwrap())
+        );
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), text);
+        std::fs::write(
+            &path,
+            "[OtherGame]\nCustomInputSettins=(ActionKeyList=())\n",
+        )
+        .unwrap();
+        assert!(read_input_document(dir.path())
+            .unwrap()
+            .custom_settings_path
+            .is_none());
+        std::fs::write(&path, b"\xff").unwrap();
+        assert!(read_input_document(dir.path())
+            .unwrap()
+            .custom_settings_path
+            .is_none());
+    }
     #[test]
     fn later_clear_makes_previous_array_entries_read_only() {
         let doc = Document::parse("[/Script/Engine.InputSettings]\n!AxisMappings=ClearArray\n+AxisMappings=(AxisName=Forward,Key=W,Scale=1)\n!AxisMappings=ClearArray\n+AxisMappings=(AxisName=Forward,Key=S,Scale=1)\n");

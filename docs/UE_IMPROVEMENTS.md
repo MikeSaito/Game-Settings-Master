@@ -87,6 +87,11 @@ read-only. Selected changes that would merge `+` entries are blocked. A simultan
 binding swap is validated as a complete selected set. Enhanced Input and game-specific
 binding schemes are outside this candidate.
 
+The controls tab displays the resolved Input.ini path and distinguishes a missing
+file, an empty file (including whitespace/BOM only), and a file without classic
+bindings. PUBG's CustomInputSettins in GameUserSettings.ini is detected as a separate
+unsupported format; an empty Input.ini does not provide editable PUBG bindings.
+
 ## Validation and stable release gates
 
 Automated checks cover preview/commit equivalence, cancellation, exclusions,
@@ -96,8 +101,8 @@ Input occurrence identity, unknown GPU capabilities and discovery failure isolat
 Browser scenarios cover normal application/restore plus GPU selection, Input
 partial application, named snapshots, legacy preset import and Russian UI.
 
-Local validation on 2026-10-02: 236 Rust tests passed (one hardware-session test
-is intentionally ignored by the normal suite), 200 TypeScript tests and 13
+Local validation on 2026-10-03: 238 Rust tests passed (one hardware-session test
+is intentionally ignored by the normal suite), 206 TypeScript tests and 15
 Playwright scenarios passed. Catalog builder tests (12), frontend production
 build, Clippy with warnings denied, Rust formatting, locale parity, generated
 validation index and package alignment checks passed.

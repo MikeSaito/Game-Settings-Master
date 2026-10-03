@@ -1,5 +1,23 @@
 import { test, expect } from "@playwright/test";
 
+for (const language of ["en", "ru"]) {
+  test(`empty PUBG Input.ini explains the actual source in ${language}`, async ({ page }) => {
+    await page.addInitScript((language) => {
+      sessionStorage.setItem("gsm-e2e-language", language);
+      sessionStorage.setItem("gsm-e2e-input-state", "pubg-empty");
+    }, language);
+    await page.goto("/e2e.html");
+    await page.getByRole("button", { name: language === "ru" ? "Выбрать" : "Select", exact: true }).click();
+    await page.getByRole("tab", { name: language === "ru" ? "Управление" : "Controls", exact: true }).click();
+    const panel = page.getByRole("heading", { name: language === "ru" ? "Управление — Input.ini" : "Controls — Input.ini" }).locator("..");
+    await expect(panel).toContainText(language === "ru" ? "он пуст" : "it is empty");
+    await expect(panel).toContainText("GameUserSettings.ini (CustomInputSettins)");
+    await expect(panel).toContainText(language === "ru" ? "пока не поддерживает" : "does not yet support");
+    await expect(panel.getByRole("button")).toHaveCount(0);
+    await expect(panel.getByRole("combobox")).toHaveCount(0);
+  });
+}
+
 test("Russian controls and preview are localized", async ({ page }) => {
   await page.addInitScript(() =>
     sessionStorage.setItem("gsm-e2e-language", "ru"),
