@@ -1,5 +1,85 @@
 import { test, expect } from "@playwright/test";
 
+for (const [language, width, height, fontScale] of [
+  ["en", 1200, 600, 1.25],
+  ["ru", 1200, 600, 1.25],
+  ["en", 1200, 750, 1],
+  ["ru", 1200, 750, 1],
+  ["en", 1440, 900, 1.25],
+  ["ru", 1440, 900, 1.25],
+] as const) {
+  test(`preset options stay inside ${width}x${height} window in ${language}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height });
+    await page.addInitScript(
+      (language) => {
+        sessionStorage.setItem("gsm-e2e-language", language);
+        sessionStorage.setItem("gsm-e2e-fixtures", "conflict");
+      },
+      language,
+    );
+    await page.goto("/e2e.html");
+    await page
+      .getByRole("button", {
+        name: language === "ru" ? "Выбрать" : "Select",
+        exact: true,
+      })
+      .click();
+    await page.evaluate((scale) =>
+      document.documentElement.style.setProperty("--app-font-scale", String(scale)),
+      fontScale,
+    );
+    if (height >= 750) {
+      await expect(page.getByRole("tab", {
+        name: language === "ru" ? "Пресеты" : "Presets",
+        exact: true,
+      })).toBeInViewport({ ratio: 1 });
+    }
+    const options = page.getByText(
+      language === "ru" ? "Параметры сохранения пресета" : "Preset save options",
+      { exact: true },
+    );
+    await options.click();
+    const apply = page.getByRole("button", {
+      name: language === "ru"
+        ? "Применить в пользовательские настройки"
+        : "Apply to GameUserSettings",
+      exact: true,
+    });
+    const save = page.getByRole("button", {
+      name: language === "ru" ? "Сохранить пресет" : "Save preset",
+      exact: true,
+    });
+    const expectActionsInsideWindow = async () => {
+      for (const button of [apply, save]) {
+        await expect(button).toBeInViewport({ ratio: 1 });
+        const bounds = await button.boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds!.y).toBeGreaterThanOrEqual(0);
+        expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(height);
+      }
+    };
+    await expectActionsInsideWindow();
+    const scroll = await options.locator("..").evaluate((element) => ({
+      height: element.clientHeight,
+      content: element.scrollHeight,
+    }));
+    expect(scroll.height).toBeGreaterThan(0);
+    expect(scroll.content).toBeGreaterThanOrEqual(scroll.height);
+    if (height === 600) expect(scroll.content).toBeGreaterThan(scroll.height);
+    const rayTracing = page.getByRole("checkbox", {
+      name: language === "ru"
+        ? "Требуется аппаратная трассировка лучей"
+        : "Hardware ray tracing required",
+    });
+    await rayTracing.check();
+    await expect(rayTracing).toBeChecked();
+    await expectActionsInsideWindow();
+    await page.screenshot({ path: `test-results/preset-options-${language}-${width}x${height}.png` });
+  });
+}
+
 for (const language of ["en", "ru"]) {
   test(`empty PUBG Input.ini explains the actual source in ${language}`, async ({ page }) => {
     await page.addInitScript((language) => {

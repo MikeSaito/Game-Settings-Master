@@ -92,6 +92,10 @@ file, an empty file (including whitespace/BOM only), and a file without classic
 bindings. PUBG's CustomInputSettins in GameUserSettings.ini is detected as a separate
 unsupported format; an empty Input.ini does not provide editable PUBG bindings.
 
+Editor headers, warnings and preset metadata have bounded scroll regions. Expanding
+preset options keeps the save/apply controls within the available editor height,
+including short windows with large text and configuration conflict warnings.
+
 ## Validation and stable release gates
 
 Automated checks cover preview/commit equivalence, cancellation, exclusions,
@@ -102,7 +106,7 @@ Browser scenarios cover normal application/restore plus GPU selection, Input
 partial application, named snapshots, legacy preset import and Russian UI.
 
 Local validation on 2026-10-03: 238 Rust tests passed (one hardware-session test
-is intentionally ignored by the normal suite), 206 TypeScript tests and 15
+is intentionally ignored by the normal suite), 206 TypeScript tests and 21
 Playwright scenarios passed. Catalog builder tests (12), frontend production
 build, Clippy with warnings denied, Rust formatting, locale parity, generated
 validation index and package alignment checks passed.

@@ -55,8 +55,8 @@ export function EditorApplyBar({ state }: Props) {
       (!Number.isInteger(Number(memory)) || Number(memory) <= 0));
 
   return (
-    <div className="mt-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-[var(--shadow-panel)]">
-      <details className="mb-2 text-sm">
+    <div className="flex min-h-0 flex-col rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-[var(--shadow-panel)]">
+      <details className="mb-2 min-h-0 overflow-y-auto overscroll-contain text-sm">
         <summary>{ti("presets.options")}</summary>
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
           <label>
@@ -118,7 +118,7 @@ export function EditorApplyBar({ state }: Props) {
           </label>
         </div>
       </details>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex shrink-0 flex-wrap items-center gap-2">
         <div className="min-w-[160px] flex-1">
           <div className="text-sm font-semibold text-[var(--color-text)]">
             {t("changesCount", { count: state.pendingChangesCount })}

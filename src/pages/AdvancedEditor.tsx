@@ -52,7 +52,7 @@ export function AdvancedEditor({ game }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="shrink-0">
+      <div className="min-h-0 max-h-[50%] shrink-0 overflow-y-auto">
         <GameHardwarePanel game={game} gpu={state.gpu} />
         <DiagnosticsPanel game={game} />
         <EditorModeBar
@@ -111,109 +111,112 @@ export function AdvancedEditor({ game }: Props) {
           />
 
           <section className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap gap-1.5">
-                <Badge tone="info">
-                  {game.engine_version
-                    ? t("paramsForEngine", {
-                        count: state.catalogStats.total,
-                        version: game.engine_version,
-                      })
-                    : t("paramsCount", { count: state.catalogStats.total })}
-                </Badge>
-                <Badge tone="success">
-                  {t("knownCount", { count: state.catalogStats.known })}
-                </Badge>
-                {state.catalogStats.unknown > 0 && (
-                  <Badge tone="warning">
-                    {t("unknownCount", { count: state.catalogStats.unknown })}
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+              <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap gap-1.5">
+                  <Badge tone="info">
+                    {game.engine_version
+                      ? t("paramsForEngine", {
+                          count: state.catalogStats.total,
+                          version: game.engine_version,
+                        })
+                      : t("paramsCount", { count: state.catalogStats.total })}
                   </Badge>
-                )}
-                {state.limits && state.panel === "basic" && (
-                  <Badge tone="accent">
-                    {t("scalabilityLimits", { max: state.limits.global_max })}
+                  <Badge tone="success">
+                    {t("knownCount", { count: state.catalogStats.known })}
                   </Badge>
-                )}
-                {state.panel === "basic" && state.gusIniStats.total > 0 && (
-                  <Badge tone="warning">
-                    {t("gusIni.short", {
-                      on: state.gusIniStats.on,
-                      total: state.gusIniStats.total,
-                    })}
-                  </Badge>
-                )}
-                {state.panel === "advanced" && state.engineStats.total > 0 && (
-                  <Badge tone="warning">
-                    {t("engineIni.short", {
-                      on: state.engineStats.on,
-                      total: state.engineStats.total,
-                    })}
+                  {state.catalogStats.unknown > 0 && (
+                    <Badge tone="warning">
+                      {t("unknownCount", { count: state.catalogStats.unknown })}
+                    </Badge>
+                  )}
+                  {state.limits && state.panel === "basic" && (
+                    <Badge tone="accent">
+                      {t("scalabilityLimits", { max: state.limits.global_max })}
+                    </Badge>
+                  )}
+                  {state.panel === "basic" && state.gusIniStats.total > 0 && (
+                    <Badge tone="warning">
+                      {t("gusIni.short", {
+                        on: state.gusIniStats.on,
+                        total: state.gusIniStats.total,
+                      })}
+                    </Badge>
+                  )}
+                  {state.panel === "advanced" && state.engineStats.total > 0 && (
+                    <Badge tone="warning">
+                      {t("engineIni.short", {
+                        on: state.engineStats.on,
+                        total: state.engineStats.total,
+                      })}
+                    </Badge>
+                  )}
+                </div>
+                {gpuHint && (
+                  <Badge tone="info" className="max-w-xl" title={gpuHint}>
+                    {t("gpuHintTitle")}: {gpuHint}
                   </Badge>
                 )}
               </div>
-              {gpuHint && (
-                <Badge tone="info" className="max-w-xl" title={gpuHint}>
-                  {t("gpuHintTitle")}: {gpuHint}
-                </Badge>
+
+              {state.validationIssues.length > 0 && (
+                <ApplyValidationPanel
+                  issues={state.validationIssues}
+                  warningsAcknowledged={state.applyWarningsAcknowledged}
+                  onWarningsAcknowledgedChange={
+                    state.setApplyWarningsAcknowledged
+                  }
+                />
               )}
+
+              {state.conflictGroups.length > 0 && (
+                <SgEngineConflictPanel
+                  groups={state.conflictGroups}
+                  onResolve={state.resolveSgConflict}
+                />
+              )}
+
+              {state.gameRunning && (
+                <Alert
+                  tone="warning"
+                  icon={AlertTriangle}
+                  className="mb-3"
+                  title={t("gameRunningTitle")}
+                >
+                  {t("gameRunningInline")}
+                </Alert>
+              )}
+
+              {state.message && (
+                <Alert tone="success" className="mb-3">
+                  {state.message}
+                </Alert>
+              )}
+              {state.applyError && (
+                <Alert tone="danger" className="mb-3" title={t("errorTitle")}>
+                  {state.applyError}
+                </Alert>
+              )}
+
+              <ParameterList
+                className="min-h-40 flex-1"
+                filteredParams={state.filteredParams}
+                search={state.search}
+                parametersLoading={state.parametersLoading}
+                gpu={state.gpu}
+                engineEnabled={state.engineEnabled}
+                showEngineToggle
+                gusIniToggleOnly={state.panel === "basic"}
+                shippedIniKeys={state.shippedIniKeys}
+                pendingConflictKeys={state.pendingConflictKeys}
+                comboWarningsByKey={state.comboWarningsByKey}
+                onUpdateParam={state.updateParam}
+                onToggleEngineParam={state.toggleEngineParam}
+              />
             </div>
 
-            {state.validationIssues.length > 0 && (
-              <ApplyValidationPanel
-                issues={state.validationIssues}
-                warningsAcknowledged={state.applyWarningsAcknowledged}
-                onWarningsAcknowledgedChange={
-                  state.setApplyWarningsAcknowledged
-                }
-              />
-            )}
-
-            {state.conflictGroups.length > 0 && (
-              <SgEngineConflictPanel
-                groups={state.conflictGroups}
-                onResolve={state.resolveSgConflict}
-              />
-            )}
-
-            {state.gameRunning && (
-              <Alert
-                tone="warning"
-                icon={AlertTriangle}
-                className="mb-3"
-                title={t("gameRunningTitle")}
-              >
-                {t("gameRunningInline")}
-              </Alert>
-            )}
-
-            {state.message && (
-              <Alert tone="success" className="mb-3">
-                {state.message}
-              </Alert>
-            )}
-            {state.applyError && (
-              <Alert tone="danger" className="mb-3" title={t("errorTitle")}>
-                {state.applyError}
-              </Alert>
-            )}
-
-            <ParameterList
-              className="min-h-0 flex-1"
-              filteredParams={state.filteredParams}
-              search={state.search}
-              parametersLoading={state.parametersLoading}
-              gpu={state.gpu}
-              engineEnabled={state.engineEnabled}
-              showEngineToggle
-              gusIniToggleOnly={state.panel === "basic"}
-              shippedIniKeys={state.shippedIniKeys}
-              pendingConflictKeys={state.pendingConflictKeys}
-              comboWarningsByKey={state.comboWarningsByKey}
-              onUpdateParam={state.updateParam}
-              onToggleEngineParam={state.toggleEngineParam}
-            />
-
-            <div className="mt-3 shrink-0">
+            {/* Keep room for warnings; let the footer grow when the window is short. */}
+            <div className="mt-3 flex min-h-0 max-h-[min(100%,max(75%,13rem))] flex-col">
               <EditorApplyBar state={state} />
             </div>
           </section>
