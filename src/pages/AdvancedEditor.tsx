@@ -52,7 +52,7 @@ export function AdvancedEditor({ game }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 max-h-[50%] shrink-0 overflow-y-auto">
+      <div className="min-h-0 max-h-[50%] shrink-0 overflow-y-auto [@media(max-height:700px)]:max-h-[35%]">
         <GameHardwarePanel game={game} gpu={state.gpu} />
         <DiagnosticsPanel game={game} />
         <EditorModeBar
