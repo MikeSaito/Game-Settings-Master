@@ -1,11 +1,59 @@
-import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
+import { en, ru } from "./src/content.ts";
+import { escapeHtml, renderSite } from "./src/site/render.ts";
 
 const rootDir = import.meta.dirname;
 const base = process.env.VITE_BASE_PATH ?? "/";
-const siteUrl = (process.env.VITE_SITE_URL ?? "https://gsm-tool.com").replace(/\/$/, "");
+const siteUrl = (process.env.VITE_SITE_URL ?? "https://gsm-tool.com").replace(
+  /\/$/,
+  "",
+);
 const lastmod = new Date().toISOString().slice(0, 10);
+const version =
+  process.env.VITE_APP_VERSION?.trim() ||
+  JSON.parse(readFileSync(resolve(rootDir, "../package.json"), "utf8")).version;
+if (!/^\d+\.\d+\.\d+$/.test(version))
+  throw new Error("Landing requires a stable app version");
+const repo = process.env.VITE_GITHUB_REPO || "MikeSaito/Game-Settings-Master";
+
+function staticPage(): Plugin {
+  return {
+    name: "static-product-page",
+    transformIndexHtml(html, ctx) {
+      const t = ctx.filename?.endsWith("en.html") ? en : ru;
+      return html
+        .replace(
+          /<title>[\s\S]*?<\/title>/,
+          `<title>${escapeHtml(t.title)}</title>`,
+        )
+        .replace(
+          /(<meta\s+(?:name="description"|property="og:description"|name="twitter:description")\s+content=")[^"]*(")/g,
+          (_, start, end) => `${start}${escapeHtml(t.description)}${end}`,
+        )
+        .replace(
+          /(<meta\s+(?:property="og:title"|name="twitter:title")\s+content=")[^"]*(")/g,
+          (_, start, end) => `${start}${escapeHtml(t.title)}${end}`,
+        )
+        .replace(
+          /"description":\s*"[^"]*"/,
+          `"description": ${JSON.stringify(t.description)}, "softwareVersion": ${JSON.stringify(version)}`,
+        )
+        .replace(
+          '<div id="app"></div>',
+          `<div id="app">${renderSite(t, { version, base, repo })}</div>`,
+        )
+        .replace(/<noscript>\s*<div style="max-width:[\s\S]*?<\/noscript>/, "");
+    },
+  };
+}
 
 function rewriteEnRoute(url: string): string | null {
   const parsed = new URL(url, "http://localhost");
@@ -14,7 +62,11 @@ function rewriteEnRoute(url: string): string | null {
     return `${parsed.pathname}${parsed.search}`;
   }
   const baseTrim = base.replace(/\/$/, "");
-  if (baseTrim && (parsed.pathname === `${baseTrim}/en` || parsed.pathname === `${baseTrim}/en/`)) {
+  if (
+    baseTrim &&
+    (parsed.pathname === `${baseTrim}/en` ||
+      parsed.pathname === `${baseTrim}/en/`)
+  ) {
     parsed.pathname = `${baseTrim}/en.html`;
     return `${parsed.pathname}${parsed.search}`;
   }
@@ -100,7 +152,7 @@ function injectYandexMetrika(): Plugin {
   return {
     name: "inject-yandex-metrika",
     transformIndexHtml(html) {
-      return html.replace("<head>", `<head>\n${snippet}`);
+      return html.replace("</head>", `${snippet}\n  </head>`);
     },
   };
 }
@@ -109,8 +161,8 @@ function injectContentSecurityPolicy(): Plugin {
   const csp = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://yastatic.net",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
     `img-src 'self' data: https://mc.yandex.ru ${siteUrl}`,
     "connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://*.yandex.ru https://*.yandex.net",
     "frame-src https://mc.yandex.ru",
@@ -123,8 +175,8 @@ function injectContentSecurityPolicy(): Plugin {
     apply: "build",
     transformIndexHtml(html) {
       return html.replace(
-        "<head>",
-        `<head>\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
+        '<meta charset="UTF-8" />',
+        `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
       );
     },
   };
@@ -170,16 +222,13 @@ function injectSiteMeta(): Plugin {
         )
         .replace(
           /<meta property="og:image" content="[^"]*"/,
-          `<meta property="og:image" content="${siteUrl}/og-image.png"`,
+          `<meta property="og:image" content="${siteUrl}/og-image${isEn ? "-en" : ""}.jpg"`,
         )
         .replace(
           /<meta name="twitter:image" content="[^"]*"/,
-          `<meta name="twitter:image" content="${siteUrl}/og-image.png"`,
+          `<meta name="twitter:image" content="${siteUrl}/og-image${isEn ? "-en" : ""}.jpg"`,
         )
-        .replace(
-          /"url": "https:\/\/gsm-tool.com\/"/,
-          `"url": "${pageUrl}"`,
-        );
+        .replace(/"url": "https:\/\/gsm-tool.com\/"/, `"url": "${pageUrl}"`);
     },
   };
 }
@@ -230,7 +279,14 @@ Sitemap: ${siteUrl}/sitemap.xml
 export default defineConfig({
   base,
   appType: "mpa",
-  plugins: [enRoutePlugin(), injectYandexMetrika(), injectContentSecurityPolicy(), injectSiteMeta(), emitSeoFiles()],
+  plugins: [
+    staticPage(),
+    enRoutePlugin(),
+    injectYandexMetrika(),
+    injectContentSecurityPolicy(),
+    injectSiteMeta(),
+    emitSeoFiles(),
+  ],
   build: {
     outDir: "dist",
     emptyOutDir: true,

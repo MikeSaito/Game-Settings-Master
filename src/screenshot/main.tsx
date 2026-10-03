@@ -3,6 +3,7 @@ import i18n, { type AppLanguage } from "../i18n";
 import "../index.css";
 import "./screenshot.css";
 import { ScreenshotFrames } from "./frames";
+import { FeatureFrames } from "./featureFrames";
 
 function screenshotLang(): AppLanguage {
   const value = new URLSearchParams(window.location.search).get("lang");
@@ -10,11 +11,18 @@ function screenshotLang(): AppLanguage {
 }
 
 const lang = screenshotLang();
-document.documentElement.setAttribute("data-theme", "light");
+document.documentElement.setAttribute("data-theme", "dark");
 document.documentElement.lang = lang;
 
 void i18n.changeLanguage(lang).then(() => {
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <ScreenshotFrames lang={lang} />,
+    new URLSearchParams(window.location.search).has("feature") ? (
+      <FeatureFrames
+        lang={lang}
+        feature={new URLSearchParams(window.location.search).get("feature")!}
+      />
+    ) : (
+      <ScreenshotFrames lang={lang} />
+    ),
   );
 });

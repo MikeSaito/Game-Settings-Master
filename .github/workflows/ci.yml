@@ -152,3 +152,18 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      - name: Install landing test browser
+        working-directory: landing
+        run: npx playwright install --with-deps chromium
+
+      - name: Test landing
+        working-directory: landing
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: landing-test-results
+          path: landing/test-results
+          retention-days: 7
