@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@emnapi/core": "^2.0.0-alpha.5",
-    "@emnapi/runtime": "^2.0.0-alpha.5",
+    "@emnapi/runtime": "^2.0.0-alpha.6",
     "@playwright/test": "^1.63.0",
     "playwright": "^1.63.0",
     "typescript": "~7.0.2",
