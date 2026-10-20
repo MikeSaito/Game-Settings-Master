@@ -20,6 +20,7 @@ const BINDINGS_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../src/lib/api
 #[test]
 fn export_typescript_bindings() {
     let types = Types::default()
+        .register::<crate::transaction::PendingOperation>()
         .register::<crate::changes::PreparedChanges>()
         .register::<crate::changes::PrepareRequest>()
         .register::<crate::changes::ChangeIssue>()

@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { UpdateGate } from "@/components/app/UpdateGate";
 import { ChangesPreview } from "@/components/app/ChangesPreview";
+import { RecoveryPanel } from "@/components/app/RecoveryPanel";
 import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { RouteLoading } from "@/components/app/RouteLoading";
 import { EmptyState } from "@/components/ds/Feedback";
@@ -188,6 +189,7 @@ export default function App() {
           <AppWindowFocusProvider>
             <AppContent />
             <ChangesPreview />
+            <RecoveryPanel />
           </AppWindowFocusProvider>
         </AppSettingsProvider>
       </UpdateGate>

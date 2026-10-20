@@ -1,3 +1,4 @@
+import { finiteDecimal } from "./sharedRules";
 import type { GameParameter, GameProfile, GpuCapabilities, ScalabilityLimits } from "@/lib/core/types";
 import type { EditorPanel } from "@/lib/routing";
 import { initialEngineEnabledKeys } from "../engineParams";
@@ -56,11 +57,11 @@ function paramForKey(
 }
 
 function checkValueRange(param: GameParameter | undefined, value: string): ValidationIssue | null {
-  if (!param?.min && !param?.max) return null;
-  const num = Number(value.trim());
+  if (param?.min == null && param?.max == null) return null;
+  const num = finiteDecimal(value) ?? NaN;
   if (!Number.isFinite(num)) return null;
-  const min = param.min != null ? Number(param.min) : NaN;
-  const max = param.max != null ? Number(param.max) : NaN;
+  const min = param.min != null ? finiteDecimal(param.min) ?? NaN : NaN;
+  const max = param.max != null ? finiteDecimal(param.max) ?? NaN : NaN;
   if (Number.isFinite(min) && num < min) {
     return {
       code: "value_out_of_range",
@@ -116,7 +117,7 @@ function checkSgLimit(
   }
 
   const max = sgMaxForKey(ctx.limits, key);
-  const n = Number(value.trim());
+  const n = (finiteDecimal(value) ?? NaN);
   if (Number.isFinite(n) && n > max) {
     return {
       code: "sg_exceeds_limit",

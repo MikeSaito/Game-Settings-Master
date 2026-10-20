@@ -15,12 +15,6 @@ use std::path::Path;
 
 const GUS_INI: &str = "GameUserSettings.ini";
 const ENGINE_INI_FILES: &[&str] = &["Engine.ini", "Scalability.ini", "Game.ini"];
-const RT_CVAR_KEYS: &[&str] = &[
-    "r.raytracing",
-    "r.raytracing.enabled",
-    "r.lumen.hardwareraytracing",
-];
-
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum IssueSeverity {
     Error,
@@ -176,7 +170,7 @@ fn check_value_range(
     min: Option<&str>,
     max: Option<&str>,
 ) -> Option<SemanticIssue> {
-    let parsed = value.trim().parse::<f64>().ok()?;
+    let parsed = crate::validation_rules::finite_decimal(value)?;
     if !parsed.is_finite() {
         return None;
     }
@@ -422,7 +416,7 @@ fn key_applies_to_game(
 
 fn check_sg_limit(key: &str, value: &str, limits: &ScalabilityLimits) -> Option<SemanticIssue> {
     let max = limits.max_for(key);
-    let parsed = value.trim().parse::<f64>().ok()?;
+    let parsed = crate::validation_rules::finite_decimal(value)?;
     if !parsed.is_finite() {
         return None;
     }
@@ -436,13 +430,6 @@ fn check_sg_limit(key: &str, value: &str, limits: &ScalabilityLimits) -> Option<
     } else {
         None
     }
-}
-
-fn effective_engine_value<'a>(state: &'a EffectiveIniKeys, key: &str) -> Option<&'a str> {
-    ENGINE_INI_FILES
-        .iter()
-        .filter_map(|file| state.get(*file))
-        .find_map(|values| values.get(key).map(String::as_str))
 }
 
 fn collect_pending_values(
@@ -498,99 +485,57 @@ fn check_combo_rules(
         }
     }
 
-    let rt_on = RT_CVAR_KEYS.iter().any(|key| {
-        effective_engine_value(state, key)
-            .map(is_truthy_cvar)
-            .unwrap_or(false)
-    });
-    let rt_changed = RT_CVAR_KEYS
-        .iter()
-        .any(|key| pending_values.contains_key(*key));
-    let shadows_changed = pending_values.contains_key("sg.shadowquality");
-
-    if rt_on && (rt_changed || shadows_changed) {
-        if let Some(shadow_val) = state
-            .get(GUS_INI)
-            .and_then(|values| values.get("sg.shadowquality"))
-        {
-            if is_low_quality(shadow_val, 4) {
-                issues.push(SemanticIssue {
-                    code: "combo_rt_shadows",
-                    severity: IssueSeverity::Warning,
-                    message_ru: format!(
-                        "Ray Tracing включён при низком sg.ShadowQuality ({shadow_val})"
-                    ),
-                    message_en: format!(
-                        "Ray Tracing enabled with low sg.ShadowQuality ({shadow_val})"
-                    ),
-                });
-            }
-        }
-
-        if rt_changed && gpu.ray_tracing_status.as_deref() == Some("unknown") {
-            issues.push(SemanticIssue {
-                code: "combo_rt_gpu_unknown",
-                severity: IssueSeverity::Warning,
-                message_ru: "Не удалось определить аппаратную поддержку RT выбранной GPU".into(),
-                message_en: "Unable to determine hardware RT support for the selected GPU".into(),
-            });
-        } else if rt_changed && !gpu.supports_ray_tracing {
-            issues.push(SemanticIssue {
-                code: "combo_rt_no_hw",
-                severity: IssueSeverity::Warning,
-                message_ru: "Ray Tracing включён, но GPU не поддерживает RT в UE".to_string(),
-                message_en: "Ray Tracing enabled but GPU does not support RT in UE".to_string(),
-            });
+    let mut values = HashMap::new();
+    for (key, value) in state.get(GUS_INI).into_iter().flat_map(|v| v.iter()) {
+        values.insert(key.clone(), value.clone());
+    }
+    // Preserve the established Engine -> Scalability -> Game precedence.
+    for file in ENGINE_INI_FILES.iter().rev() {
+        for (key, value) in state.get(*file).into_iter().flat_map(|v| v.iter()) {
+            values.insert(key.clone(), value.clone());
         }
     }
-
-    let streaming_combo_changed = pending_values.contains_key("sg.texturequality")
-        || pending_values.contains_key("r.streaming.poolsize");
-    if streaming_combo_changed {
-        if let (Some(texture_val), Some(pool_val)) = (
-            state
-                .get(GUS_INI)
-                .and_then(|values| values.get("sg.texturequality")),
-            effective_engine_value(state, "r.streaming.poolsize"),
-        ) {
-            if is_low_quality(texture_val, 4) {
-                if let Ok(pool) = pool_val.trim().parse::<f64>() {
-                    if pool.is_finite() && pool > 3000.0 {
-                        issues.push(SemanticIssue {
-                            code: "combo_streaming_texture",
-                            severity: IssueSeverity::Warning,
-                            message_ru: format!(
-                                "Большой r.Streaming.PoolSize ({pool_val}) при низком sg.TextureQuality ({texture_val})"
-                            ),
-                            message_en: format!(
-                                "Large r.Streaming.PoolSize ({pool_val}) with low sg.TextureQuality ({texture_val})"
-                            ),
-                        });
-                    }
-                }
-            }
-        }
+    let changed = pending_values.keys().cloned().collect();
+    let rt_status = if gpu.ray_tracing_status.as_deref() == Some("unknown") {
+        "unknown"
+    } else if gpu.supports_ray_tracing {
+        "supported"
+    } else {
+        "unsupported"
+    };
+    for issue in crate::validation_rules::evaluate(&values, &changed, rt_status) {
+        let shadows = values
+            .get("sg.shadowquality")
+            .map(String::as_str)
+            .unwrap_or("");
+        let pool = values
+            .get("r.streaming.poolsize")
+            .map(String::as_str)
+            .unwrap_or("");
+        let texture = values
+            .get("sg.texturequality")
+            .map(String::as_str)
+            .unwrap_or("");
+        let (code, ru, en) = match issue.code.as_str() {
+            "combo_rt_shadows" => ("combo_rt_shadows", format!("Ray Tracing включён при низком sg.ShadowQuality ({shadows})"), format!("Ray Tracing enabled with low sg.ShadowQuality ({shadows})")),
+            "combo_rt_gpu_unknown" => ("combo_rt_gpu_unknown", "Не удалось определить аппаратную поддержку RT выбранной GPU".into(), "Unable to determine hardware RT support for the selected GPU".into()),
+            "combo_rt_no_hw" => ("combo_rt_no_hw", "Ray Tracing включён, но GPU не поддерживает RT в UE".into(), "Ray Tracing enabled but GPU does not support RT in UE".into()),
+            "combo_streaming_texture" => ("combo_streaming_texture", format!("Большой r.Streaming.PoolSize ({pool}) при низком sg.TextureQuality ({texture})"), format!("Large r.Streaming.PoolSize ({pool}) with low sg.TextureQuality ({texture})")),
+            _ => unreachable!("Unknown shared rule"),
+        };
+        issues.push(SemanticIssue {
+            code,
+            severity: if issue.severity == "error" {
+                IssueSeverity::Error
+            } else {
+                IssueSeverity::Warning
+            },
+            message_ru: ru,
+            message_en: en,
+        });
     }
 
     issues
-}
-
-fn is_truthy_cvar(value: &str) -> bool {
-    matches!(
-        value.trim().to_ascii_lowercase().as_str(),
-        "1" | "true" | "yes" | "on"
-    )
-}
-
-fn is_low_quality(value: &str, max: u32) -> bool {
-    let Ok(n) = value.trim().parse::<f64>() else {
-        return false;
-    };
-    if !n.is_finite() {
-        return false;
-    }
-    let threshold = (max / 2).saturating_sub(1) as f64;
-    n <= threshold
 }
 
 fn dedupe_issues(mut issues: Vec<SemanticIssue>) -> Vec<SemanticIssue> {
@@ -605,6 +550,57 @@ mod tests {
     use crate::catalog::invalidate_catalog_cache;
     use std::collections::HashMap;
     use tempfile::TempDir;
+
+    #[test]
+    fn shared_combo_scenarios_reach_backend_validation() {
+        let cases: serde_json::Value =
+            serde_json::from_str(include_str!("../../../../shared/validation-cases.json")).unwrap();
+        for case in cases["comboCases"].as_array().unwrap() {
+            let mut state = EffectiveIniKeys::new();
+            let mut pending: HashMap<String, HashMap<String, HashMap<String, String>>> =
+                HashMap::new();
+            for (key, value) in case["values"].as_object().unwrap() {
+                let file = if key.starts_with("sg.") {
+                    GUS_INI
+                } else {
+                    "Engine.ini"
+                };
+                state
+                    .entry(file.into())
+                    .or_default()
+                    .insert(key.clone(), value.as_str().unwrap().into());
+            }
+            for key in case["changedKeys"].as_array().unwrap() {
+                let key = key.as_str().unwrap();
+                let file = if key.starts_with("sg.") {
+                    GUS_INI
+                } else {
+                    "Engine.ini"
+                };
+                pending
+                    .entry(file.into())
+                    .or_default()
+                    .entry("SystemSettings".into())
+                    .or_default()
+                    .insert(
+                        key.into(),
+                        case["values"][key].as_str().unwrap_or("1").into(),
+                    );
+            }
+            let status = case["rtStatus"].as_str().unwrap();
+            let mut gpu = GpuCapabilities::from_gpu_name("Fixture");
+            gpu.ray_tracing_status = Some(status.into());
+            gpu.supports_ray_tracing = status == "supported";
+            let actual=check_combo_rules(&state,&pending,&gpu).into_iter().map(|issue|serde_json::json!({"code":issue.code,"severity":if issue.severity==IssueSeverity::Error {"error"} else {"warning"}})).collect::<Vec<_>>();
+            let expected = case["expected"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|issue| serde_json::json!({"code":issue["code"],"severity":issue["severity"]}))
+                .collect::<Vec<_>>();
+            assert_eq!(actual, expected, "{}", case["name"]);
+        }
+    }
 
     fn ctx<'a>(
         config_path: &'a Path,

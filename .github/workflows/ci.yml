@@ -44,6 +44,7 @@ jobs:
         run: |
           npm run build
           npm test
+          node --test scripts/release-policy.test.mjs
 
       - name: Catalog builder tests
         run: npm run catalog:test

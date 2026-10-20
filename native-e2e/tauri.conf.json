@@ -1,0 +1,10 @@
+{
+  "identifier": "com.mike.gsm.native-test",
+  "plugins": {
+    "updater": {
+      "endpoints": ["http://127.0.0.1:17891/latest.json"],
+      "dangerousInsecureTransportProtocol": true,
+      "windows": {"installMode":"quiet"}
+    }
+  }
+}

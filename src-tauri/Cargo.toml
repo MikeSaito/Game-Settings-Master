@@ -13,6 +13,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
+[features]
+native-test = []
+
 [dependencies]
 tauri = { version = "2", features = [] }
 tauri-plugin-dialog = "2"
@@ -51,6 +54,8 @@ tauri-plugin-updater = "2"
 
 [dev-dependencies]
 tempfile = "3"
+base64 = "0.22"
+minisign-verify = "0.3"
 
 [profile.release]
 lto = true

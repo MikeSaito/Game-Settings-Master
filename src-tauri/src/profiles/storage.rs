@@ -40,7 +40,9 @@ fn test_app_data_dir() -> PathBuf {
 pub fn app_data_dir() -> Result<PathBuf, String> {
     #[cfg(test)]
     let dir = test_app_data_dir();
-    #[cfg(not(test))]
+    #[cfg(all(not(test), feature = "native-test"))]
+    let dir = crate::native_test::root()?.join("app-data");
+    #[cfg(all(not(test), not(feature = "native-test")))]
     let dir = dirs::data_dir()
         .ok_or_else(|| {
             crate::i18n::t(

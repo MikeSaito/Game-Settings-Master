@@ -1,0 +1,20 @@
+{
+  "comboCases": [
+    {"name":"RT low shadows", "values":{"r.raytracing":"1","sg.shadowquality":"0"}, "changedKeys":["r.raytracing"], "rtStatus":"supported", "expected":[{"code":"combo_rt_shadows","severity":"warning","key":"sg.ShadowQuality"}]},
+    {"name":"RT shadow boundary", "values":{"r.raytracing":"ON","sg.shadowquality":"1"}, "changedKeys":["sg.shadowquality"], "rtStatus":"supported", "expected":[{"code":"combo_rt_shadows","severity":"warning","key":"sg.ShadowQuality"}]},
+    {"name":"RT high shadows", "values":{"r.raytracing":"1","sg.shadowquality":"2"}, "changedKeys":["r.raytracing"], "rtStatus":"supported", "expected":[]},
+    {"name":"RT unsupported", "values":{"r.raytracing.enabled":" true "}, "changedKeys":["r.raytracing.enabled"], "rtStatus":"unsupported", "expected":[{"code":"combo_rt_no_hw","severity":"warning","key":null}]},
+    {"name":"RT unknown", "values":{"r.lumen.hardwareraytracing":"yes"}, "changedKeys":["r.lumen.hardwareraytracing"], "rtStatus":"unknown", "expected":[{"code":"combo_rt_gpu_unknown","severity":"warning","key":null}]},
+    {"name":"RT disabled", "values":{"r.raytracing":"0","sg.shadowquality":"0"}, "changedKeys":["r.raytracing"], "rtStatus":"unsupported", "expected":[]},
+    {"name":"unrelated edit", "values":{"r.raytracing":"1","sg.shadowquality":"0"}, "changedKeys":["r.other"], "rtStatus":"supported", "expected":[]},
+    {"name":"large pool", "values":{"sg.texturequality":"1","r.streaming.poolsize":"3001"}, "changedKeys":["r.streaming.poolsize"], "rtStatus":"supported", "expected":[{"code":"combo_streaming_texture","severity":"warning","key":"r.Streaming.PoolSize"}]},
+    {"name":"pool boundary", "values":{"sg.texturequality":"0","r.streaming.poolsize":"3000"}, "changedKeys":["sg.texturequality"], "rtStatus":"supported", "expected":[]},
+    {"name":"nonfinite pool", "values":{"sg.texturequality":"0","r.streaming.poolsize":"Infinity"}, "changedKeys":["r.streaming.poolsize"], "rtStatus":"supported", "expected":[]},
+    {"name":"empty quality", "values":{"sg.texturequality":"","r.streaming.poolsize":"4096"}, "changedKeys":["r.streaming.poolsize"], "rtStatus":"supported", "expected":[]}
+  ],
+  "numberCases":[
+    {"raw":"0","expected":0}, {"raw":" -1.5 ","expected":-1.5}, {"raw":"1e3","expected":1000},
+    {"raw":"","expected":null}, {"raw":" ","expected":null}, {"raw":"0x10","expected":null},
+    {"raw":"NaN","expected":null}, {"raw":"Infinity","expected":null}, {"raw":"1e999","expected":null}
+  ]
+}

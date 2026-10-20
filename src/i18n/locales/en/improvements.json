@@ -136,5 +136,12 @@
     "next": "Next match",
     "notFound": "Text not found",
     "lines": "Lines: {{count}}"
+  },
+  "recovery": {
+    "title": "Unfinished write",
+    "blocked": "Changes to the affected folders are blocked until recovery. Other games remain available.",
+    "restore": "Restore",
+    "defer": "Later",
+    "show": "Show recovery"
   }
 }

@@ -10,6 +10,7 @@ secrets.json
 
 # ─── Node / frontend ────────────────────────────────────────────────────────
 node_modules/
+desktop-test-results/
 dist/
 dist-ssr/
 *.local

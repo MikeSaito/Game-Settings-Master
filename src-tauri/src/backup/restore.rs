@@ -1,14 +1,19 @@
 use std::collections::HashSet;
+#[cfg(test)]
 use std::fs;
 use std::path::Path;
 
+#[cfg(test)]
 use crate::fs_util::{
     ensure_safe_child_file, is_allowed_restore_filename, read_file_bytes, safe_child_path,
     write_file_bytes,
 };
 
-use super::paths::{resolve_backup_path, OVERRIDE_INI_FILES};
+use super::paths::resolve_backup_path;
+#[cfg(test)]
+use super::paths::OVERRIDE_INI_FILES;
 
+#[cfg(test)]
 fn backed_restore_file_names(backup_path: &Path) -> Result<HashSet<String>, String> {
     let mut backed_files = HashSet::new();
     for entry in fs::read_dir(backup_path).map_err(|e| e.to_string())? {
@@ -39,6 +44,7 @@ fn backed_restore_file_names(backup_path: &Path) -> Result<HashSet<String>, Stri
     Ok(backed_files)
 }
 
+#[cfg(test)]
 fn remove_override_files_missing_from_snapshot(
     config_dir: &Path,
     backed_files: &HashSet<String>,
@@ -61,6 +67,7 @@ fn remove_override_files_missing_from_snapshot(
     Ok(())
 }
 
+#[cfg(test)]
 pub fn restore_backup(config_dir: &Path, backup_id: &str) -> Result<Vec<String>, String> {
     let backup_path = resolve_backup_path(config_dir, backup_id)?;
     let backed_files = backed_restore_file_names(&backup_path)?;
@@ -166,6 +173,7 @@ pub fn resolve_backup_config_dir(
 }
 
 /// Apply rollback: deletes override ini created by apply, then restores the snapshot.
+#[cfg(test)]
 pub fn rollback_apply_snapshot(config_dir: &Path, backup_id: &str) -> Result<Vec<String>, String> {
     let backup_path = resolve_backup_path(config_dir, backup_id)?;
     let backed_files = backed_restore_file_names(&backup_path)?;

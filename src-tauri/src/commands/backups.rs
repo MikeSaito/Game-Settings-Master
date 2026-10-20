@@ -95,7 +95,12 @@ pub fn reset_config_to_user_cmd(
 
     let hints = platform_hints_for_game(game_id.as_deref(), engine_family.as_deref());
     ensure_all_targets_writable(&path, &hints, resolved_exe.as_deref())?;
-    let (backup_id, deleted_files) = crate::backup::reset_config_all_targets(&path, &hints)?;
+    let (backup_id, deleted_files) = crate::backup::reset_config_all_targets(
+        &path,
+        &hints,
+        game_id.as_deref(),
+        resolved_exe.as_deref(),
+    )?;
     Ok(ConfigResetResult {
         backup_id,
         deleted_files,

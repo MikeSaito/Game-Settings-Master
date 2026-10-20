@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "decimalPattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
+  "truthy": ["1", "true", "yes", "on"],
+  "rules": [
+    {
+      "code": "combo_rt_shadows", "severity": "warning", "key": "sg.ShadowQuality",
+      "changedAny": ["r.raytracing", "r.raytracing.enabled", "r.lumen.hardwareraytracing", "sg.shadowquality"],
+      "all": [{"anyTruthy": ["r.raytracing", "r.raytracing.enabled", "r.lumen.hardwareraytracing"]}, {"key": "sg.shadowquality", "lte": 1}]
+    },
+    {
+      "code": "combo_rt_gpu_unknown", "severity": "warning", "key": null,
+      "changedAny": ["r.raytracing", "r.raytracing.enabled", "r.lumen.hardwareraytracing"],
+      "all": [{"anyTruthy": ["r.raytracing", "r.raytracing.enabled", "r.lumen.hardwareraytracing"]}, {"rtStatus": "unknown"}]
+    },
+    {
+      "code": "combo_rt_no_hw", "severity": "warning", "key": null,
+      "changedAny": ["r.raytracing", "r.raytracing.enabled", "r.lumen.hardwareraytracing"],
+      "all": [{"anyTruthy": ["r.raytracing", "r.raytracing.enabled", "r.lumen.hardwareraytracing"]}, {"rtStatus": "unsupported"}]
+    },
+    {
+      "code": "combo_streaming_texture", "severity": "warning", "key": "r.Streaming.PoolSize",
+      "changedAny": ["sg.texturequality", "r.streaming.poolsize"],
+      "all": [{"key": "sg.texturequality", "lte": 1}, {"key": "r.streaming.poolsize", "gt": 3000}]
+    }
+  ]
+}

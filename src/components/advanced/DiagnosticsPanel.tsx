@@ -51,16 +51,16 @@ export function DiagnosticsPanel({ game }: { game: GameProfile }) {
     const inputUpdates: { line: number; expected: string; value: string }[] =
       [];
     for (const op of report.changes) {
-      if (op.kind.startsWith("input:")) {
+      if (op.kind === "input" && op.line != null) {
         if (op.before != null && op.after != null)
           inputUpdates.push({
-            line: Number(op.kind.slice(6)),
+            line: op.line,
             expected: op.after,
             value: op.before,
           });
         continue;
       }
-      if (op.kind !== "scalar" && !op.kind.startsWith("scalar:")) continue;
+      if (op.kind !== "scalar") continue;
       if (op.before === null)
         ((changes.removals[op.file] ??= {})[op.section] ??= []).push(op.key);
       else
@@ -126,8 +126,7 @@ export function DiagnosticsPanel({ game }: { game: GameProfile }) {
         {report?.changes.some(
           (op) =>
             op.kind === "scalar" ||
-            op.kind.startsWith("scalar:") ||
-            op.kind.startsWith("input:"),
+            op.kind === "input",
         ) && (
           <Button size="sm" disabled={busy} onClick={() => void run(reapply)}>
             {t("diagnostics.reapply")}

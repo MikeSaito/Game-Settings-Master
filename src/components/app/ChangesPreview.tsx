@@ -260,10 +260,10 @@ export function ChangesPreview() {
                           {t("preview.linked")}
                         </small>
                       )}
-                    {op.kind.startsWith("scalar:") && (
+                    {op.occurrence != null && (
                       <small className="block text-[var(--color-text-muted)]">
                         {t("preview.occurrence", {
-                          number: Number(op.kind.slice(7)) + 1,
+                          number: op.occurrence! + 1,
                         })}
                       </small>
                     )}

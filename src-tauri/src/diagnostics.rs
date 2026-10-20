@@ -1,5 +1,5 @@
 //! Backend observation while GSM is open. A change is never attributed to a process.
-use crate::changes::ChangeOperation;
+use crate::changes::{ChangeOperation, OperationKind};
 use crate::core::models::GameProfile;
 use crate::ini::document::{Document, Entry};
 use serde::{Deserialize, Serialize};
@@ -64,9 +64,50 @@ fn load(game: &str) -> Result<Option<Baseline>, String> {
             "Diagnostic baseline too large",
         ));
     }
-    serde_json::from_slice(&crate::fs_util::read_file_bytes(&path)?)
-        .map(Some)
-        .map_err(|e| e.to_string())
+    serde_json::from_value({
+        let mut value: serde_json::Value =
+            serde_json::from_slice(&crate::fs_util::read_file_bytes(&path)?)
+                .map_err(|e| e.to_string())?;
+        fn migrate(value: &mut serde_json::Value) {
+            match value {
+                serde_json::Value::Object(map) => {
+                    if let Some(kind) = map.get("kind").and_then(|v| v.as_str()).map(str::to_owned)
+                    {
+                        for prefix in ["input", "scalar"] {
+                            if let Some(position) = kind
+                                .strip_prefix(&format!("{prefix}:"))
+                                .and_then(|v| v.parse::<u32>().ok())
+                            {
+                                map.insert("kind".into(), prefix.into());
+                                map.insert(
+                                    if prefix == "input" {
+                                        "line"
+                                    } else {
+                                        "occurrence"
+                                    }
+                                    .into(),
+                                    position.into(),
+                                );
+                            }
+                        }
+                    }
+                    for child in map.values_mut() {
+                        migrate(child);
+                    }
+                }
+                serde_json::Value::Array(items) => {
+                    for item in items {
+                        migrate(item);
+                    }
+                }
+                _ => {}
+            }
+        }
+        migrate(&mut value);
+        value
+    })
+    .map(Some)
+    .map_err(|e| e.to_string())
 }
 fn persist_report(baseline: &Baseline, report: DiagnosticReport) -> Result<bool, String> {
     let _lock = STORAGE.lock().map_err(|e| e.to_string())?;
@@ -108,11 +149,7 @@ pub(crate) fn record(
         if let Ok((text, _)) = crate::ini::encoding::decode_bytes(bytes) {
             let entries = Document::parse(&text).entries();
             for operation in operations {
-                if let Some(line) = operation
-                    .kind
-                    .strip_prefix("input:")
-                    .and_then(|line| line.parse::<usize>().ok())
-                {
+                if let Some(line) = operation.line.map(|line| line as usize) {
                     if let Some(entry) = entries.iter().find(|entry| entry.line == line) {
                         let signature = input_signature(entry);
                         let occurrence = entries
@@ -139,8 +176,8 @@ pub(crate) fn record(
             .iter()
             .map(|operation| {
                 let mut operation = operation.clone();
-                if operation.kind == "file-text" {
-                    operation.kind = "file".into();
+                if operation.kind == OperationKind::FileText {
+                    operation.kind = OperationKind::File;
                     // Whole-file diagnostics use file_hashes; do not persist editor contents.
                     operation.before = None;
                     operation.after = None;
@@ -180,7 +217,7 @@ fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
     let mut checked_files = BTreeSet::new();
     for operation in &baseline.operations {
         let bytes = crate::changes::read_optional(&dir, &operation.file)?;
-        if operation.kind == "file" {
+        if operation.kind == OperationKind::File {
             if !checked_files.insert(operation.file.clone()) {
                 continue;
             }
@@ -203,11 +240,7 @@ fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
             .unwrap_or_default();
         let document = Document::parse(&text);
         let mut difference = operation.clone();
-        let actual = if let Some(line) = operation
-            .kind
-            .strip_prefix("input:")
-            .and_then(|line| line.parse::<usize>().ok())
-        {
+        let actual = if let Some(line) = operation.line.map(|line| line as usize) {
             let entries = document.entries();
             let entry = if let Some(identity) = baseline.input_identities.get(&operation.id) {
                 entries
@@ -222,14 +255,10 @@ fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
                 })
             };
             if let Some(entry) = entry {
-                difference.kind = format!("input:{}", entry.line);
+                difference.line = Some(entry.line as u32);
             }
             entry.map(|entry| entry.value.clone())
-        } else if let Some(occurrence) = operation
-            .kind
-            .strip_prefix("scalar:")
-            .and_then(|value| value.parse::<usize>().ok())
-        {
+        } else if let Some(occurrence) = operation.occurrence.map(|value| value as usize) {
             document
                 .entries()
                 .into_iter()
@@ -249,7 +278,7 @@ fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
                 .cloned()
         };
         // Struct field order and whitespace have no effect on binding values.
-        let same_binding = operation.kind.starts_with("input:")
+        let same_binding = operation.kind == OperationKind::Input
             && operation
                 .after
                 .as_deref()
@@ -654,7 +683,14 @@ mod tests {
             key: key.into(),
             before: None,
             after: expected.map(str::to_owned),
-            kind: kind.into(),
+            kind: match kind.split(':').next().unwrap() {
+                "input" => OperationKind::Input,
+                "scalar" => OperationKind::Scalar,
+                "file-text" => OperationKind::FileText,
+                _ => OperationKind::File,
+            },
+            line: kind.strip_prefix("input:").and_then(|v| v.parse().ok()),
+            occurrence: kind.strip_prefix("scalar:").and_then(|v| v.parse().ok()),
         }
     }
     #[test]
@@ -712,7 +748,7 @@ mod tests {
         .unwrap();
         let result = check(&baseline).unwrap();
         assert_eq!(result.status, "changed");
-        assert_eq!(result.changes[0].kind, "input:3");
+        assert_eq!(result.changes[0].line, Some(3));
     }
     #[test]
     fn full_file_diagnostic_has_one_consistent_byte_comparison() {

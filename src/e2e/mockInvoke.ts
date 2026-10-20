@@ -338,7 +338,7 @@ export function handleE2eInvoke(
               key: entry.key,
               before: entry.value,
               after: update.value,
-              kind: `input:${entry.line}`,
+              kind: "input", line: entry.line,
             });
           }
         }
@@ -398,9 +398,9 @@ export function handleE2eInvoke(
             revision: crypto.randomUUID(),
           });
         }
-        if (op.kind.startsWith("input:")) {
+        if (op.kind === "input") {
           const entry = inputDocument.entries.find(
-            (entry) => entry.line === Number(op.kind.slice(6)),
+            (entry) => entry.line === op.line!,
           );
           if (entry && op.after) {
             entry.value = op.after;
@@ -426,8 +426,8 @@ export function handleE2eInvoke(
       inputDocument.revision = crypto.randomUUID();
       return {
         applied_input_lines: operations
-          .filter((op) => op.kind.startsWith("input:"))
-          .map((op) => Number(op.kind.slice(6))),
+          .filter((op) => op.kind === "input")
+          .map((op) => op.line!),
         backup_id: backupId,
         changed_files: [...new Set(operations.map((op) => op.file))],
         diff: operations.map((op) => ({

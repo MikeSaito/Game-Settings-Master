@@ -16,10 +16,13 @@ mod i18n;
 mod ini;
 mod input;
 mod launch;
+mod native_test;
 mod presets;
 mod profiles;
 mod scalability;
 mod text_editor;
+mod transaction;
+mod validation_rules;
 
 use commands::{
     add_manual_game, apply_custom_cmd, apply_game_override, clear_crash_reports_cmd,
@@ -41,6 +44,10 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
+            #[cfg(feature = "native-test")]
+            native_test::setup().map_err(std::io::Error::other)?;
+            #[cfg(feature = "native-test")]
+            native_test::record_launch(&app.package_info().version.to_string()).map_err(std::io::Error::other)?;
             if let Ok(resource_dir) = app.path().resource_dir() {
                 core::resource_paths::init_resource_root(resource_dir);
             }
@@ -49,6 +56,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            transaction::list_pending_operations,
+            transaction::recover_pending_operation,
             changes::prepare_changes,
             commands::snapshots::create_snapshot,
             commands::snapshots::rename_snapshot,

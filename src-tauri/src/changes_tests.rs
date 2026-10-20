@@ -2,7 +2,7 @@ use super::*;
 use crate::profiles::use_test_app_data_dir;
 
 thread_local! { static FAIL_FILE: std::cell::RefCell<Option<String>> = const { std::cell::RefCell::new(None) }; }
-pub(super) fn check_injected_write_error(file: &str) -> Result<(), String> {
+pub(crate) fn check_injected_write_error(file: &str) -> Result<(), String> {
     FAIL_FILE.with(|failure| {
         if failure.borrow().as_deref() == Some(file) {
             failure.replace(None);
@@ -354,7 +354,7 @@ fn scalar_preview_includes_changed_duplicate_occurrences_without_touching_other_
     let plan = prepare_changes(request).unwrap();
     assert_eq!(plan.operations.len(), 1);
     assert_eq!(plan.operations[0].before.as_deref(), Some("1"));
-    assert_eq!(plan.operations[0].kind, "scalar:0");
+    assert_eq!(plan.operations[0].occurrence, Some(0));
     apply_prepared_changes(
         plan.id,
         plan.operations.into_iter().map(|op| op.id).collect(),
@@ -393,7 +393,7 @@ fn input_preset_uses_occurrence_identity_after_line_and_value_changes() {
         value: "(AxisName=Forward,Key=Up,Scale=1)".into(),
     }];
     let plan = prepare_changes(request).unwrap();
-    assert_eq!(plan.operations[0].kind, "input:3");
+    assert_eq!(plan.operations[0].line, Some(3));
     assert!(plan.operations[0]
         .before
         .as_deref()
@@ -483,7 +483,7 @@ fn renamed_snapshot_keeps_date_and_reports_encoding_and_comment_differences() {
     )
     .unwrap();
     assert_eq!(comparison.len(), 1);
-    assert_eq!(comparison[0].kind, "comparison-file");
+    assert_eq!(comparison[0].kind, OperationKind::ComparisonFile);
 }
 
 #[test]

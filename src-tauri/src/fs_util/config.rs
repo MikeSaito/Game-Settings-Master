@@ -1,16 +1,9 @@
 use std::fs;
 use std::path::Path;
 
-use super::io::{clear_readonly, read_file_bytes, write_file_bytes};
-use super::path_safety::ALLOWED_CONFIG_INI_FILES;
+use super::io::{read_file_bytes, write_file_bytes};
 use super::process::is_exe_running_uncached;
 use crate::core::app_error::AppInvokeError;
-
-pub fn clear_config_readonly(config_dir: &Path) {
-    for file in ALLOWED_CONFIG_INI_FILES {
-        clear_readonly(&config_dir.join(file));
-    }
-}
 
 pub fn ensure_config_writable(
     config_dir: &Path,
@@ -22,15 +15,14 @@ pub fn ensure_config_writable(
         }
     }
 
-    clear_config_readonly(config_dir);
-
     for file in ["GameUserSettings.ini", "Engine.ini"] {
         let path = config_dir.join(file);
         if !path.exists() {
             continue;
         }
-        let bytes = read_file_bytes(&path)?;
-        write_file_bytes(&path, &bytes)?;
+        super::ensure_safe_child_file(config_dir, &path)?;
+        // A preflight must never rewrite files or change their attributes.
+        read_file_bytes(&path)?;
     }
 
     probe_config_dir_writable(config_dir)?;
@@ -39,7 +31,8 @@ pub fn ensure_config_writable(
 }
 
 fn probe_config_dir_writable(config_dir: &Path) -> Result<(), AppInvokeError> {
-    let probe = config_dir.join(".uesm-write-test");
+    crate::transaction::ensure_clear(config_dir)?;
+    let probe = config_dir.join(format!(".uesm-write-test-{}", uuid::Uuid::new_v4()));
     write_file_bytes(&probe, b"ok").map_err(|e| {
         crate::i18n::t(
             &format!(

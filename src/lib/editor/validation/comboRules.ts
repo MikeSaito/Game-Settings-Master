@@ -1,3 +1,5 @@
+import policy from "@shared/validation-rules.json";
+import { evaluateSharedRules } from "./sharedRules";
 import type { GameParameter, GpuCapabilities } from "@/lib/core/types";
 import type { EditorPanel } from "@/lib/routing";
 import { shouldIncludeInApply } from "../engineParams";
@@ -6,21 +8,7 @@ import type { ValidationIssue } from "./types";
 
 const ENGINE_SCALABILITY = new Set(["Engine.ini", "Scalability.ini"]);
 
-const RT_CVAR_KEYS = [
-  "r.raytracing",
-  "r.raytracing.enabled",
-  "r.lumen.hardwareraytracing",
-] as const;
-
-function isTruthyCvar(value: string): boolean {
-  const v = value.trim().toLowerCase();
-  return v === "1" || v === "true" || v === "yes" || v === "on";
-}
-
-function isLowQuality(value: string, max = 4): boolean {
-  const n = Number(value.trim());
-  return Number.isFinite(n) && n <= Math.max(0, Math.floor(max / 2) - 1);
-}
+const RT_CVAR_KEYS: string[] = policy.rules.flatMap((rule) => rule.all.flatMap((clause) => "anyTruthy" in clause ? clause.anyTruthy ?? [] : []));
 
 function collectPendingValues(
   files: Record<string, Record<string, Record<string, string>>>,
@@ -116,26 +104,6 @@ function activeApplyValue(
   return null;
 }
 
-function engineCvarApplyValue(
-  ctx: ComboRuleContext,
-  key: string,
-  pendingValues: Map<string, string>,
-): string | null {
-  const lower = key.toLowerCase();
-  const pending = pendingValues.get(lower);
-  if (pending != null) return pending;
-  return activeApplyValue(ctx, key, pendingValues);
-}
-
-function engineCvarActiveInApply(
-  ctx: ComboRuleContext,
-  key: string,
-  pendingValues: Map<string, string>,
-): boolean {
-  const value = engineCvarApplyValue(ctx, key, pendingValues);
-  return value != null && isTruthyCvar(value);
-}
-
 export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const pendingValues = collectPendingValues(ctx.files);
@@ -158,69 +126,24 @@ export function evaluateComboRules(ctx: ComboRuleContext): ValidationIssue[] {
     }
   }
 
-  const rtOn = RT_CVAR_KEYS.some((key) =>
-    engineCvarActiveInApply(ctx, key, pendingValues),
-  );
-  const rtChanged = RT_CVAR_KEYS.some((key) => pendingValues.has(key));
-  const shadowsChanged = pendingValues.has("sg.shadowquality");
-
-  if (rtOn && (rtChanged || shadowsChanged)) {
-    const shadowVal = activeApplyValue(ctx, "sg.ShadowQuality", pendingValues);
-    if (shadowVal && isLowQuality(shadowVal, 4)) {
-      issues.push({
-        code: "combo_rt_shadows",
-        severity: "warning",
-        key: "sg.ShadowQuality",
-        i18nKey: "validation.combo.rtLowShadows",
-        i18nParams: { shadows: shadowVal },
-      });
-    }
-
-    if (rtChanged && ctx.gpuPending) {
-      issues.push({
-        code: "combo_gpu_pending",
-        severity: "error",
-        i18nKey: "validation.gpuPending",
-      });
-    } else if (
-      rtChanged &&
-      (ctx.gpuUnavailable || ctx.gpu?.ray_tracing_status === "unknown")
-    ) {
-      issues.push({
-        code: "combo_rt_gpu_unknown",
-        severity: "warning",
-        i18nKey: "validation.combo.rtGpuUnknown",
-      });
-    } else if (rtChanged && ctx.gpu && !ctx.gpu.supports_ray_tracing) {
-      issues.push({
-        code: "combo_rt_no_hw",
-        severity: "warning",
-        i18nKey: "validation.combo.rtNoHardware",
-      });
-    }
+  const values: Record<string, string> = {};
+  const keys = new Set(policy.rules.flatMap((rule) => rule.all.flatMap((clause) => "anyTruthy" in clause ? clause.anyTruthy ?? [] : "key" in clause && clause.key ? [clause.key] : [])));
+  for (const key of keys) {
+    const value = activeApplyValue(ctx, key, pendingValues);
+    if (value !== null) values[key] = value;
   }
-
-  const textureVal = activeApplyValue(ctx, "sg.TextureQuality", pendingValues);
-  const poolVal = engineCvarApplyValue(
-    ctx,
-    "r.Streaming.PoolSize",
-    pendingValues,
-  );
-  if (
-    (pendingValues.has("sg.texturequality") ||
-      pendingValues.has("r.streaming.poolsize")) &&
-    textureVal &&
-    isLowQuality(textureVal, 4) &&
-    poolVal &&
-    Number(poolVal) > 3000
-  ) {
-    issues.push({
-      code: "combo_streaming_texture",
-      severity: "warning",
-      key: "r.Streaming.PoolSize",
-      i18nKey: "validation.combo.streamingTexture",
-      i18nParams: { pool: poolVal, texture: textureVal },
-    });
+  const rtStatus = ctx.gpuPending ? "pending" : ctx.gpuUnavailable || ctx.gpu?.ray_tracing_status === "unknown" ? "unknown" : ctx.gpu ? ctx.gpu.supports_ray_tracing ? "supported" : "unsupported" : "unavailable";
+  for (const issue of evaluateSharedRules({ values, changedKeys: [...pendingValues.keys()], rtStatus })) {
+    const messages: Record<string, string> = {
+      combo_rt_shadows: "validation.combo.rtLowShadows",
+      combo_rt_gpu_unknown: "validation.combo.rtGpuUnknown",
+      combo_rt_no_hw: "validation.combo.rtNoHardware",
+      combo_streaming_texture: "validation.combo.streamingTexture",
+    };
+    issues.push({ code: issue.code, severity: issue.severity, key: issue.key ?? undefined, i18nKey: messages[issue.code], i18nParams: { shadows: values["sg.shadowquality"], pool: values["r.streaming.poolsize"], texture: values["sg.texturequality"] } });
+  }
+  if (ctx.gpuPending && RT_CVAR_KEYS.some((key) => pendingValues.has(key)) && RT_CVAR_KEYS.some((key) => policy.truthy.includes((values[key] ?? "").trim().toLowerCase()))) {
+    issues.push({ code: "combo_gpu_pending", severity: "error", i18nKey: "validation.gpuPending" });
   }
 
   return issues;

@@ -11,11 +11,20 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
 jobs:
+  native-desktop:
+    uses: ./.github/workflows/windows-e2e.yml
+    with:
+      test_updates: true
   build-windows:
+    needs: native-desktop
     runs-on: windows-latest
     permissions:
       contents: write
@@ -52,41 +61,15 @@ jobs:
             throw "Prerelease builds require validation_only; stable publication is disabled for this version"
           }
 
-      - name: Fail if release tag already exists
-        if: github.event_name == 'push'
+      - name: Verify version and immutable release identity
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: pwsh
-        run: |
-          $tag = "v${{ env.VERSION }}"
-          $ErrorActionPreference = "Continue"
-          $PSNativeCommandUseErrorActionPreference = $false
-          gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
-          if ($LASTEXITCODE -eq 0) {
-            throw "GitHub release $tag already exists"
-          }
-          exit 0
-
-      - name: Point release tag at current commit (manual republish)
-        if: github.event_name == 'workflow_dispatch' && !inputs.validation_only
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: pwsh
-        run: |
-          $tag = "v${{ env.VERSION }}"
-          $ErrorActionPreference = "Continue"
-          $PSNativeCommandUseErrorActionPreference = $false
-          gh release view $tag --repo "${{ github.repository }}" 2>$null | Out-Null
-          if ($LASTEXITCODE -ne 0) {
-            exit 0
-          }
-          gh release edit $tag --repo "${{ github.repository }}" --target "${{ github.sha }}"
-          git tag -f $tag "${{ github.sha }}"
-          git push origin "refs/tags/${tag}:refs/tags/${tag}" --force
+          GSM_VALIDATION_ONLY: ${{ inputs.validation_only || false }}
+        run: node scripts/release-preflight.mjs
 
       - name: Rust tests
         working-directory: src-tauri
-        run: cargo test
+        run: cargo test --locked
 
       - name: Build Tauri bundles
         env:
@@ -99,14 +82,14 @@ jobs:
         run: |
           $version = "${{ env.VERSION }}"
 
-          $setup = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe" | Select-Object -First 1
-          if (-not $setup) { throw "NSIS setup.exe not found" }
-
-          $sig = Get-ChildItem "src-tauri/target/release/bundle/nsis/*-setup.exe.sig" | Select-Object -First 1
-          if (-not $sig) { throw "NSIS setup.exe.sig not found" }
+          $setups = @(Get-ChildItem "src-tauri/target/release/bundle/nsis/*_${version}_x64-setup.exe" -File)
+          if ($setups.Count -ne 1) { throw "Expected exactly one NSIS installer for $version" }
+          $setup = $setups[0]
+          $sig = Get-Item -LiteralPath ($setup.FullName + '.sig') -ErrorAction Stop
 
           $setupName = "Game-Settings-Master_${version}_x64-setup.exe"
           Copy-Item $setup.FullName $setupName
+          Copy-Item $sig.FullName "$setupName.sig"
 
           $signature = (Get-Content $sig.FullName -Raw).Trim()
           $tag = "v$version"
@@ -164,21 +147,36 @@ jobs:
           $utf8NoBom = New-Object System.Text.UTF8Encoding $false
           [System.IO.File]::WriteAllText("$PWD/release-notes.md", $body.Trim(), $utf8NoBom)
 
-      - name: Publish GitHub Release
+      - name: Verify final installer signature and manifest
+        shell: pwsh
+        run: |
+          cargo run --locked --manifest-path src-tauri/Cargo.toml --example verify_release -- "${{ env.SETUP_NAME }}" "${{ env.SETUP_NAME }}.sig" latest.json "${{ github.repository }}"
+          if ($LASTEXITCODE -ne 0) { throw "Signature verification failed" }
+          ./scripts/test-installer.ps1 -Installer "${{ env.SETUP_NAME }}"
+
+      - name: Create immutable release draft
         if: '!inputs.validation_only'
-        uses: softprops/action-gh-release@v3
-        with:
-          token: ${{ github.token }}
-          tag_name: v${{ env.VERSION }}
-          target_commitish: ${{ github.sha }}
-          name: Game Settings Master v${{ env.VERSION }}
-          body_path: release-notes.md
-          generate_release_notes: false
-          make_latest: true
-          overwrite_files: true
-          files: |
-            ${{ env.SETUP_NAME }}
-            latest.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          node scripts/release-preflight.mjs --create-tag
+          if ($LASTEXITCODE -ne 0) { throw "Release identity check failed" }
+          gh release create "v${{ env.VERSION }}" --repo "${{ github.repository }}" --verify-tag --draft --title "Game Settings Master v${{ env.VERSION }}" --notes-file release-notes.md "${{ env.SETUP_NAME }}" "${{ env.SETUP_NAME }}.sig" latest.json
+          if ($LASTEXITCODE -ne 0) { throw "Draft creation failed; existing releases must not be replaced" }
+
+      - name: Verify uploaded assets and publish
+        if: '!inputs.validation_only'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release download "v${{ env.VERSION }}" --repo "${{ github.repository }}" --dir verified-release
+          if ($LASTEXITCODE -ne 0) { throw "Release download failed" }
+          cargo run --locked --manifest-path src-tauri/Cargo.toml --example verify_release -- "verified-release/${{ env.SETUP_NAME }}" "verified-release/${{ env.SETUP_NAME }}.sig" verified-release/latest.json "${{ github.repository }}"
+          if ($LASTEXITCODE -ne 0) { throw "Uploaded asset verification failed" }
+          gh release edit "v${{ env.VERSION }}" --repo "${{ github.repository }}" --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw "Publication failed" }
 
       - name: Save signed validation installer
         if: inputs.validation_only

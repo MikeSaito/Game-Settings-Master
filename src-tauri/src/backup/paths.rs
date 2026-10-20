@@ -63,7 +63,11 @@ fn backup_base_dir() -> PathBuf {
         .join("target")
         .join("test-backups");
 
-    #[cfg(not(test))]
+    #[cfg(all(not(test), feature = "native-test"))]
+    return crate::native_test::root()
+        .expect("native test root")
+        .join("backups");
+    #[cfg(all(not(test), not(feature = "native-test")))]
     dirs::data_local_dir()
         .unwrap_or_else(|| PathBuf::from("."))
         .join("ue-settings-master")

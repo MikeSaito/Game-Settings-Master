@@ -1,0 +1,70 @@
+name: Windows desktop E2E
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      test_updates:
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      test_updates:
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  configs:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Install desktop drivers
+        shell: pwsh
+        run: ./scripts/install-native-driver.ps1
+      - name: Build isolated native application
+        run: npm exec -- tauri build --debug --no-bundle --features native-test --config native-e2e/tauri.conf.json
+      - name: Real config writes and crash recovery
+        run: node native-e2e/configs.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: native-config-results
+          path: desktop-test-results/configs
+  updater:
+    if: inputs.test_updates == true
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Install desktop drivers
+        shell: pwsh
+        run: ./scripts/install-native-driver.ps1
+      - name: Build signed update fixtures
+        shell: pwsh
+        run: ./scripts/build-updater-fixtures.ps1
+      - name: Real signed updater tests
+        run: node native-e2e/updater.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: native-updater-results
+          path: test-results/native-updater

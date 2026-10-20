@@ -1,12 +1,14 @@
+#[cfg(test)]
 use std::fs;
 use std::path::Path;
 
+#[cfg(test)]
 use crate::fs_util::ensure_safe_child_file;
 
 use super::paths::OVERRIDE_INI_FILES;
-use super::restore::rollback_apply_snapshot;
 use super::snapshot::{backup_config_dir, new_backup_id};
 
+#[cfg(test)]
 fn reset_config_overrides(config_dir: &Path) -> Result<Vec<String>, String> {
     let mut deleted = Vec::new();
 
@@ -40,6 +42,8 @@ pub fn reset_config_to_user_settings(config_dir: &Path) -> Result<(String, Vec<S
 pub fn reset_config_all_targets(
     primary_config_dir: &Path,
     hints: &crate::ini::platform::PlatformHints,
+    game_id: Option<&str>,
+    exe: Option<&str>,
 ) -> Result<(String, Vec<String>), String> {
     let path = crate::ini::platform::reconcile_config_dir(primary_config_dir, hints);
     let targets = crate::ini::platform::apply_target_dirs(&path, hints);
@@ -49,25 +53,25 @@ pub fn reset_config_all_targets(
     }
 
     let mut all_deleted = Vec::new();
-    for (i, target) in targets.iter().enumerate() {
-        match reset_config_overrides(target) {
-            Ok(mut deleted) => all_deleted.append(&mut deleted),
-            Err(e) => {
-                let mut rollback_errors = Vec::new();
-                for t in targets.iter().take(i + 1) {
-                    if let Err(rb) = rollback_apply_snapshot(t, &shared_id) {
-                        rollback_errors.push(rb);
-                    }
-                }
-                if rollback_errors.is_empty() {
-                    return Err(e);
-                }
-                return Err(crate::i18n::t(
-                    &format!("{e} (откат: {})", rollback_errors.join("; ")),
-                    &format!("{e} (rollback: {})", rollback_errors.join("; ")),
-                ));
+    let mut writes = Vec::new();
+    for target in targets {
+        let mut files = std::collections::BTreeMap::new();
+        for file in OVERRIDE_INI_FILES {
+            if crate::changes::read_optional(&target, file)?.is_some() {
+                files.insert(file.to_owned(), None);
+                all_deleted.push(file.to_owned());
             }
         }
+        if !files.is_empty() {
+            writes.push(crate::transaction::Target {
+                dir: target,
+                writes: files,
+                expected: None,
+            });
+        }
+    }
+    if !writes.is_empty() {
+        crate::transaction::execute(writes, game_id, exe)?;
     }
     all_deleted.sort();
     all_deleted.dedup();

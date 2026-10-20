@@ -1,4 +1,4 @@
-use crate::changes::{ChangeOperation, PrepareRequest, PreparedChanges};
+use crate::changes::{ChangeOperation, OperationKind, PrepareRequest, PreparedChanges};
 use crate::core::app_error::{AppError, AppInvokeError};
 use crate::core::models::CustomChanges;
 use crate::ini::document::Document;
@@ -95,7 +95,9 @@ pub fn compare_snapshots(
                     key: key.clone(),
                     before,
                     after,
-                    kind: "comparison".into(),
+                    kind: OperationKind::Comparison,
+                    line: None,
+                    occurrence: None,
                 });
             }
         }
@@ -114,7 +116,9 @@ pub fn compare_snapshots(
                 key: "*".into(),
                 before,
                 after,
-                kind: "comparison-file".into(),
+                kind: OperationKind::ComparisonFile,
+                line: None,
+                occurrence: None,
             });
         }
     }

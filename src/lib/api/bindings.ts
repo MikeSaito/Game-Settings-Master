@@ -62,7 +62,9 @@ export type ChangeOperation = {
 	key: string,
 	before: string | null,
 	after: string | null,
-	kind: string,
+	kind: OperationKind,
+	line?: number | null,
+	occurrence?: number | null,
 };
 
 export type ConfigDiffEntry = {
@@ -328,9 +330,19 @@ export type LaunchTarget_Serialize = {
 	value: string,
 };
 
+export type OperationKind = "scalar" | "input" | "file" | "file-text" | "comparison" | "comparison-file";
+
 export type ParameterOption = {
 	value: string,
 	label: string,
+};
+
+export type PendingOperation = {
+	id: string,
+	game_id: string | null,
+	folders: string[],
+	created_at: string,
+	error: string | null,
 };
 
 export type PrepareRequest = PrepareRequest_Serialize | PrepareRequest_Deserialize;

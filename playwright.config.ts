@@ -8,13 +8,13 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "github" : "list",
   use: {
-    baseURL: "http://localhost:1434",
+    baseURL: "http://127.0.0.1:1434",
     trace: "on-first-retry",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: "npm run e2e:serve",
-    url: "http://localhost:1434/e2e.html",
+    url: "http://127.0.0.1:1434/e2e.html",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
