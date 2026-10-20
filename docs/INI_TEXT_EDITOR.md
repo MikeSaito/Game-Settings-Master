@@ -1,8 +1,7 @@
 # INI text editor
 
 The Files tab edits the selected game's Engine.ini, GameUserSettings.ini,
-Scalability.ini, Game.ini and Input.ini. This feature is in development and is not
-included in the published 1.3.0 installer.
+Scalability.ini, Game.ini and Input.ini. Available since version 1.4.0.
 
 Each file keeps a separate in-memory draft when switching files or editor tabs.
 Drafts are discarded when leaving the game editor. Search selects the next match;
