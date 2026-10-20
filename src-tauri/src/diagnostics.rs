@@ -135,7 +135,19 @@ pub(crate) fn record(
     let baseline = Baseline {
         profile: profile.clone(),
         dir: dir.to_string_lossy().into(),
-        operations: operations.to_vec(),
+        operations: operations
+            .iter()
+            .map(|operation| {
+                let mut operation = operation.clone();
+                if operation.kind == "file-text" {
+                    operation.kind = "file".into();
+                    // Whole-file diagnostics use file_hashes; do not persist editor contents.
+                    operation.before = None;
+                    operation.after = None;
+                }
+                operation
+            })
+            .collect(),
         file_hashes: writes
             .iter()
             .map(|(file, bytes)| {

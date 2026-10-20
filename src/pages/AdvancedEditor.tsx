@@ -17,6 +17,7 @@ import { BackupsPanel } from "@/components/backups";
 import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
 import { GameHardwarePanel } from "@/components/advanced/GameHardwarePanel";
 import { DiagnosticsPanel } from "@/components/advanced/DiagnosticsPanel";
+import { IniTextEditor } from "@/components/advanced/IniTextEditor";
 import { InputEditor } from "@/components/advanced/InputEditor";
 
 interface Props {
@@ -53,8 +54,10 @@ export function AdvancedEditor({ game }: Props) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 max-h-[50%] shrink-0 overflow-y-auto [@media(max-height:700px)]:max-h-[35%]">
-        <GameHardwarePanel game={game} gpu={state.gpu} />
-        <DiagnosticsPanel game={game} />
+        <div className={state.panel === "files" ? "hidden" : undefined}>
+          <GameHardwarePanel game={game} gpu={state.gpu} />
+          <DiagnosticsPanel game={game} />
+        </div>
         <EditorModeBar
           gameId={game.id}
           panel={state.panel}
@@ -64,7 +67,19 @@ export function AdvancedEditor({ game }: Props) {
         />
       </div>
 
-      {state.panel === "input" ? (
+      <div
+        className={
+          state.panel === "files" ? "flex min-h-0 flex-1 flex-col" : "hidden"
+        }
+      >
+        <IniTextEditor
+          key={`${game.id}:${state.configDir}`}
+          game={game}
+          running={state.gameRunning}
+          active={state.panel === "files"}
+        />
+      </div>
+      {state.panel === "files" ? null : state.panel === "input" ? (
         <div className="min-h-0 flex-1 overflow-y-auto">
           <InputEditor key={game.id} game={game} running={state.gameRunning} />
         </div>
@@ -143,14 +158,15 @@ export function AdvancedEditor({ game }: Props) {
                       })}
                     </Badge>
                   )}
-                  {state.panel === "advanced" && state.engineStats.total > 0 && (
-                    <Badge tone="warning">
-                      {t("engineIni.short", {
-                        on: state.engineStats.on,
-                        total: state.engineStats.total,
-                      })}
-                    </Badge>
-                  )}
+                  {state.panel === "advanced" &&
+                    state.engineStats.total > 0 && (
+                      <Badge tone="warning">
+                        {t("engineIni.short", {
+                          on: state.engineStats.on,
+                          total: state.engineStats.total,
+                        })}
+                      </Badge>
+                    )}
                 </div>
                 {gpuHint && (
                   <Badge tone="info" className="max-w-xl" title={gpuHint}>

@@ -60,6 +60,8 @@ pub struct PrepareRequest {
     #[serde(default)]
     pub input_revision: Option<String>,
     #[serde(default)]
+    pub raw_files: Vec<crate::text_editor::RawFileUpdate>,
+    #[serde(default)]
     pub restore_origin_backup_id: Option<String>,
     #[serde(default)]
     pub preset_metadata: Option<crate::core::models::PresetMetadata>,
@@ -147,7 +149,7 @@ pub(crate) fn encode_like(
     bytes
 }
 
-fn effective_dir(profile: &GameProfile, dir: &str) -> Result<PathBuf, String> {
+pub(crate) fn effective_dir(profile: &GameProfile, dir: &str) -> Result<PathBuf, String> {
     let path = crate::ini::paths::inspect_config_dir(dir)?;
     let hints =
         crate::discovery::platform_hints_for_game(Some(&profile.id), Some(&profile.engine_family));
@@ -276,7 +278,38 @@ fn plan_issues(
     if request.backup_id.is_some() || operations.is_empty() {
         return Vec::new();
     }
-    let mut issues = semantic_issues(&scalar_changes(operations), profile, dir, gpu);
+    let mut scalar = scalar_changes(operations);
+    for op in operations.iter().filter(|op| op.kind == "file-text") {
+        let old = Document::parse(op.before.as_deref().unwrap_or_default()).scalar_values();
+        for entry in Document::parse(op.after.as_deref().unwrap_or_default()).entries() {
+            if entry.key.starts_with(['+', '-', '!', '.']) {
+                continue;
+            }
+            let identity = (
+                entry.section.to_ascii_lowercase(),
+                entry.key.to_ascii_lowercase(),
+            );
+            if old.get(&identity) != Some(&entry.value) {
+                scalar
+                    .files
+                    .entry(op.file.clone())
+                    .or_default()
+                    .entry(entry.section)
+                    .or_default()
+                    .insert(entry.key, entry.value);
+            }
+        }
+    }
+    let mut issues = semantic_issues(&scalar, profile, dir, gpu);
+    if operations.iter().any(|op| op.kind == "file-text") {
+        issues.push(ChangeIssue {
+            code: "raw_ini_edit".into(), severity: "warning".into(),
+            message: crate::i18n::t(
+                "Файл будет записан целиком. Проверьте синтаксис и порядок записей: не все ручные изменения можно проверить автоматически.",
+                "The entire file will be written. Check syntax and entry order: manual edits cannot all be validated automatically.",
+            ),
+        });
+    }
     let input_updates: Vec<_> = operations
         .iter()
         .filter_map(|operation| {
@@ -437,6 +470,24 @@ pub fn prepare_changes(request: PrepareRequest) -> Result<PreparedChanges, AppIn
     if request.input_updates.len() > 512 {
         return Err(error("Слишком много привязок", "Too many input bindings"));
     }
+    if request.raw_files.len() > crate::fs_util::ALLOWED_CONFIG_INI_FILES.len() {
+        return Err(error("Слишком много файлов", "Too many files"));
+    }
+    if !request.raw_files.is_empty()
+        && (request.backup_id.is_some()
+            || request.restore_origin_backup_id.is_some()
+            || !request.restore_files.is_empty()
+            || !request.changes.files.is_empty()
+            || !request.changes.removals.is_empty()
+            || !request.input_updates.is_empty()
+            || request.input_revision.is_some()
+            || request.preset_metadata.is_some())
+    {
+        return Err(error(
+            "Нельзя смешивать текстовые и структурированные правки",
+            "Cannot mix text and structured edits",
+        ));
+    }
     let mut originals: BTreeMap<String, Option<Vec<u8>>> = BTreeMap::new();
     for file in crate::fs_util::ALLOWED_CONFIG_INI_FILES {
         originals.insert(file.into(), read_optional(&dir, file)?);
@@ -458,7 +509,60 @@ pub fn prepare_changes(request: PrepareRequest) -> Result<PreparedChanges, AppIn
     }
     let mut replacements = BTreeMap::new();
     let mut operations = Vec::new();
-    if let Some(id) = &request.backup_id {
+    if !request.raw_files.is_empty() {
+        let mut seen = HashSet::new();
+        for update in &request.raw_files {
+            if !crate::fs_util::is_allowed_config_ini_filename(&update.file)
+                || !seen.insert(update.file.to_ascii_lowercase())
+            {
+                return Err(error(
+                    "Недопустимый или повторный файл",
+                    "Invalid or duplicate file",
+                ));
+            }
+            if update.text.len() > crate::text_editor::MAX_TEXT_BYTES || update.text.contains('\0')
+            {
+                return Err(error(
+                    "Недопустимый текст или размер файла превышает 1 МБ",
+                    "Invalid text or file exceeds 1 MB",
+                ));
+            }
+            if Path::new(&update.config_dir) != dir {
+                return Err(error(
+                    "Папка конфигов изменилась: перечитайте файл",
+                    "Config folder changed: reload the file",
+                ));
+            }
+            let before = originals.get(&update.file).cloned().flatten();
+            if before.as_ref().map(|bytes| digest(bytes)) != update.revision {
+                return Err(error(
+                    "Файл изменился: перечитайте файл перед сохранением",
+                    "File changed: reload it before saving",
+                ));
+            }
+            let after = encode_like(&update.text, before.as_ref(), None);
+            if after.len() > crate::text_editor::MAX_TEXT_BYTES {
+                return Err(error("Файл превышает 1 МБ", "File exceeds 1 MB"));
+            }
+            if before.as_ref() == Some(&after) || (before.is_none() && update.text.is_empty()) {
+                continue;
+            }
+            add_op(
+                &mut operations,
+                &update.file,
+                "",
+                "*",
+                before
+                    .as_ref()
+                    .map(|_| decode(before.as_ref()))
+                    .transpose()?,
+                Some(update.text.clone()),
+                "file-text",
+                &format!("file:{}", update.file),
+            );
+            replacements.insert(update.file.clone(), Some(after));
+        }
+    } else if let Some(id) = &request.backup_id {
         if !request.changes.files.is_empty()
             || !request.changes.removals.is_empty()
             || !request.input_updates.is_empty()
@@ -888,7 +992,7 @@ pub fn apply_prepared_changes(
     }
     let mut writes = BTreeMap::new();
     for op in &selected {
-        if op.kind == "file" {
+        if op.kind == "file" || op.kind == "file-text" {
             writes.insert(op.file.clone(), plan.replacements[&op.file].clone());
         } else {
             let before = plan.originals.get(&op.file).and_then(Option::as_ref);

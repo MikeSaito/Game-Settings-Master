@@ -255,6 +255,14 @@ export type IniFileData = {
 	sections: { [key in string]: { [key in string]: string } },
 };
 
+export type IniTextDocument = {
+	file: string,
+	config_dir: string,
+	text: string,
+	revision: string | null,
+	encoding: string,
+};
+
 export type InputDocument = {
 	revision: string,
 	entries: InputEntry[],
@@ -335,6 +343,7 @@ export type PrepareRequest_Deserialize = {
 	restore_files?: string[],
 	input_updates?: InputUpdate_Deserialize[],
 	input_revision?: string | null,
+	raw_files?: RawFileUpdate[],
 	restore_origin_backup_id?: string | null,
 	preset_metadata?: PresetMetadata | null,
 };
@@ -347,6 +356,7 @@ export type PrepareRequest_Serialize = {
 	restore_files: string[],
 	input_updates: InputUpdate_Serialize[],
 	input_revision: string | null,
+	raw_files: RawFileUpdate[],
 	restore_origin_backup_id: string | null,
 	preset_metadata: PresetMetadata | null,
 };
@@ -372,6 +382,13 @@ export type PresetMetadata = {
 	gpu_vendor?: string | null,
 	min_dedicated_memory_mb?: number | null,
 	requires_ray_tracing?: boolean,
+};
+
+export type RawFileUpdate = {
+	file: string,
+	config_dir: string,
+	text: string,
+	revision: string | null,
 };
 
 export type ScalabilityLimits = {

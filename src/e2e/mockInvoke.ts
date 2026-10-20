@@ -13,6 +13,7 @@ import type {
   PrepareRequest,
   PreparedChanges,
   InputDocument,
+  IniTextDocument,
   GameOverride,
 } from "@/lib/api/bindings";
 import { OVERRIDE_INI_FILES } from "@/lib/ini/configFiles";
@@ -63,6 +64,34 @@ const inputFixture = (): InputDocument => ({
     reason: null,
   })),
 });
+const textFiles = new Map<string, IniTextDocument>();
+function textDocument(file: string): IniTextDocument {
+  let document = textFiles.get(file);
+  if (!document) {
+    const missing = file === "Game.ini";
+    document = {
+      file,
+      config_dir: testGame.config_dir!,
+      encoding: "UTF-8 BOM",
+      revision: missing ? null : crypto.randomUUID(),
+      text: missing
+        ? ""
+        : "; Example config\r\n[SystemSettings]\r\nr.Test=1\r\n",
+    };
+    textFiles.set(file, document);
+  }
+  return structuredClone(document);
+}
+const rawWarnings = () => [
+  {
+    code: "raw_ini_edit",
+    severity: "warning",
+    message:
+      sessionStorage.getItem("gsm-e2e-language") === "ru"
+        ? "Файл будет записан целиком. Проверьте синтаксис и порядок записей."
+        : "Whole-file edit: check syntax and entry order.",
+  },
+];
 let inputDocument = inputFixture();
 let overrides: GameOverride[] = [];
 
@@ -200,6 +229,7 @@ export function resetE2eMockState(): void {
   prepared.clear();
   selectedGpu = null;
   inputDocument = inputFixture();
+  textFiles.clear();
   overrides = [];
 }
 
@@ -222,6 +252,8 @@ export function handleE2eInvoke(
       return [];
     case "get_diagnostic_report":
       return null;
+    case "get_ini_text_document":
+      return textDocument(String(args?.file));
     case "get_input_document":
       if (sessionStorage.getItem("gsm-e2e-input-state") === "pubg-empty") {
         return {
@@ -311,12 +343,30 @@ export function handleE2eInvoke(
           }
         }
       }
+      for (const update of request.raw_files ?? []) {
+        const document = textDocument(update.file);
+        if (update.revision !== document.revision)
+          throw new Error("File changed: reload it before saving");
+        if (update.text === document.text) continue;
+        operations.push({
+          id: String(operations.length),
+          group: `file:${update.file}`,
+          file: update.file,
+          section: "",
+          key: "*",
+          before: document.revision === null ? null : document.text,
+          after: update.text,
+          kind: "file-text",
+        });
+      }
       const plan: PreparedChanges = {
         id: crypto.randomUUID(),
         game_id: request.game_id,
         config_dir: request.config_dir,
         operations,
-        issues: [],
+        issues: operations.some((op) => op.kind === "file-text")
+          ? rawWarnings()
+          : [],
         revisions: {},
       };
       prepared.set(plan.id, plan);
@@ -325,8 +375,15 @@ export function handleE2eInvoke(
     case "discard_prepared_changes":
       prepared.delete(String(args?.planId));
       return null;
-    case "validate_prepared_changes":
-      return [];
+    case "validate_prepared_changes": {
+      const plan = prepared.get(String(args?.planId));
+      const ids = new Set(args?.selectedIds as string[]);
+      return plan?.operations.some(
+        (op) => ids.has(op.id) && op.kind === "file-text",
+      )
+        ? rawWarnings()
+        : [];
+    }
     case "apply_prepared_changes": {
       const plan = prepared.get(String(args?.planId));
       if (!plan) throw new Error("Preview expired");
@@ -334,6 +391,13 @@ export function handleE2eInvoke(
       const operations = plan.operations.filter((op) => ids.has(op.id));
       const backupId = operations.length ? createBackup([]) : "";
       for (const op of operations) {
+        if (op.kind === "file-text") {
+          textFiles.set(op.file, {
+            ...textDocument(op.file),
+            text: op.after ?? "",
+            revision: crypto.randomUUID(),
+          });
+        }
         if (op.kind.startsWith("input:")) {
           const entry = inputDocument.entries.find(
             (entry) => entry.line === Number(op.kind.slice(6)),
