@@ -53,6 +53,8 @@
 
 **Advanced editor** — Engine.ini CVars with descriptions, warnings, tier hints, and a Recommended filter for your setup.
 
+**INI text editor** – a separate Files tab for five game INI files, with search, per-file drafts, full-text preview and backups. Preserves comments, duplicate entries and supported encodings; files up to 1 MiB.
+
 **Backups** — automatic snapshot before every apply; restore the previous state in one click.
 
 **Built-in reference** — parameter hints in English and Russian, tuned to the game’s Unreal Engine version.
