@@ -12,15 +12,9 @@
     "test:e2e": "playwright test"
   },
   "devDependencies": {
-    "@emnapi/core": "^2.0.0-alpha.6",
-    "@emnapi/runtime": "^2.0.0-alpha.6",
     "@playwright/test": "^1.64.1",
     "playwright": "^1.64.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.4"
-  },
-  "overrides": {
-    "esbuild": "^0.28.1",
-    "nanoid": "^3.3.18"
   }
 }
