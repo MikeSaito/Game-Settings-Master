@@ -47,7 +47,8 @@ pub fn run() {
             #[cfg(feature = "native-test")]
             native_test::setup().map_err(std::io::Error::other)?;
             #[cfg(feature = "native-test")]
-            native_test::record_launch(&app.package_info().version.to_string()).map_err(std::io::Error::other)?;
+            native_test::record_launch(&app.package_info().version.to_string())
+                .map_err(std::io::Error::other)?;
             if let Ok(resource_dir) = app.path().resource_dir() {
                 core::resource_paths::init_resource_root(resource_dir);
             }

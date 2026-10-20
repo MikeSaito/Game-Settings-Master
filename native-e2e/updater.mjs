@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { readFile, mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { join, resolve } from "node:path";
@@ -66,4 +67,9 @@ try {
   // Stop only the fixture at its exact installation path, including the updater's restarted child.
   const cleanup = spawn("powershell.exe", ["-NoProfile","-Command", "Get-Process ue-settings-master -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $env:GSM_UPDATED_BINARY } | Stop-Process -Force"], {env:{...process.env,GSM_UPDATED_BINARY:binary},windowsHide:true});
   await new Promise(resolve=>cleanup.on("exit",resolve));
+  const uninstaller = join(destination,"uninstall.exe");
+  if (existsSync(uninstaller)) {
+    const uninstall = spawn(uninstaller,["/S"],{windowsHide:true});
+    await new Promise((resolve,reject)=>{uninstall.on("error",reject);uninstall.on("exit",resolve);});
+  }
 }

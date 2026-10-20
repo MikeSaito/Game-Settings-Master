@@ -21,7 +21,9 @@ pub(crate) fn root() -> Result<std::path::PathBuf, String> {
 #[cfg(feature = "native-test")]
 pub(crate) fn setup() -> Result<(), String> {
     let root = root()?;
-    if root.join("initialized").exists() { return Ok(()); }
+    if root.join("initialized").exists() {
+        return Ok(());
+    }
     let config = root.join("fixture/Saved/Config/Windows");
     let install = root.join("fixture/install");
     std::fs::create_dir_all(&config).map_err(|e| e.to_string())?;
@@ -39,7 +41,11 @@ pub(crate) fn setup() -> Result<(), String> {
 #[cfg(feature = "native-test")]
 pub(crate) fn record_launch(version: &str) -> Result<(), String> {
     use std::io::Write;
-    let mut log = std::fs::OpenOptions::new().create(true).append(true).open(root()?.join("launches.txt")).map_err(|e| e.to_string())?;
+    let mut log = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(root()?.join("launches.txt"))
+        .map_err(|e| e.to_string())?;
     writeln!(log, "{version}").map_err(|e| e.to_string())?;
     log.sync_all().map_err(|e| e.to_string())
 }

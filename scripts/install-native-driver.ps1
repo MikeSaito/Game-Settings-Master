@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-cargo install tauri-driver --locked
+cargo install tauri-driver --locked --version 2.1.0
 if ($LASTEXITCODE -ne 0) { throw 'tauri-driver installation failed' }
 $edge = Join-Path ${env:ProgramFiles(x86)} 'Microsoft/Edge/Application/msedge.exe'
 if (-not (Test-Path -LiteralPath $edge)) { $edge = Join-Path $env:ProgramFiles 'Microsoft/Edge/Application/msedge.exe' }

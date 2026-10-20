@@ -157,3 +157,46 @@ fn multiple_targets_are_one_undo_operation() {
     assert!(!f.dir.join("Engine.ini").exists());
     assert_eq!(fs::read(second.join("Engine.ini")).unwrap(), b"old");
 }
+
+#[test]
+fn executor_rechecks_preview_under_the_writer_lock() {
+    let f = Fixture::new();
+    let before = fs::read(f.dir.join("GameUserSettings.ini")).unwrap();
+    let result = execute(
+        vec![Target {
+            dir: f.dir.clone(),
+            writes: BTreeMap::from([(
+                "GameUserSettings.ini".into(),
+                Some(b"replacement".to_vec()),
+            )]),
+            expected: Some(BTreeMap::from([(
+                "GameUserSettings.ini".into(),
+                Some(b"stale".to_vec()),
+            )])),
+        }],
+        Some(&f.game),
+        None,
+    );
+    assert!(result.is_err());
+    assert_eq!(
+        fs::read(f.dir.join("GameUserSettings.ini")).unwrap(),
+        before
+    );
+    assert!(list_pending_operations().unwrap().is_empty());
+}
+
+#[test]
+fn reset_preflight_preserves_original_bytes_and_readonly_attribute() {
+    let f = Fixture::new();
+    let path = f.dir.join("GameUserSettings.ini");
+    let before = fs::read(&path).unwrap();
+    let modified = fs::metadata(&path).unwrap().modified().unwrap();
+    let mut permissions = fs::metadata(&path).unwrap().permissions();
+    permissions.set_readonly(true);
+    fs::set_permissions(&path, permissions).unwrap();
+    crate::fs_util::ensure_config_writable(&f.dir, None).unwrap();
+    assert_eq!(fs::read(&path).unwrap(), before);
+    assert_eq!(fs::metadata(&path).unwrap().modified().unwrap(), modified);
+    assert!(fs::metadata(&path).unwrap().permissions().readonly());
+    crate::fs_util::clear_readonly(&path);
+}
