@@ -19,16 +19,16 @@ export async function launch(application, env, artifactDir) {
   let startupError;
   driver.on("error", (error) => { startupError = error; });
   driver.on("exit", (code) => { startupError = new Error(`tauri-driver exited: ${code}`); });
-  async function request(path, body, method = "POST") {
+  async function request(path, body, method = "POST", timeout = 30000) {
     if (startupError) throw startupError;
-    const response = await fetch(`http://127.0.0.1:4444${path}`, { method, headers: { "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(30000) });
+    const response = await fetch(`http://127.0.0.1:4444${path}`, { method, headers: { "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(timeout) });
     const json = await response.json();
     if (!response.ok || json.value?.error) throw new Error(JSON.stringify(json.value));
     return json.value;
   }
   await waitFor(() => request("/status", undefined, "GET"));
   let session;
-  try { session = await request("/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application } } } }); }
+  try { session = await request("/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application } } } }, "POST", 120000); }
   catch (error) {
     driver.kill();
     await writeFile(`${artifactDir}/driver.log`, Buffer.concat(output));
