@@ -25,6 +25,7 @@ fn export_typescript_bindings() {
         .register::<crate::changes::ChangeIssue>()
         .register::<crate::changes::ChangeOperation>()
         .register::<crate::input::InputDocument>()
+        .register::<crate::text_editor::IniTextDocument>()
         .register::<crate::diagnostics::DiagnosticReport>()
         .register::<GameProfile>()
         .register::<GameParameter>()

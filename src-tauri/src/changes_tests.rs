@@ -704,3 +704,170 @@ fn resolution_rows_are_linked_at_backend_selection_boundary() {
     assert!(apply_prepared_changes(plan.id, selected, true).is_err());
     assert!(!crate::backup::paths::backup_store_dir(&fixture.dir()).exists());
 }
+
+fn raw_request(fixture: &Fixture, files: &[(&str, &str)]) -> PrepareRequest {
+    PrepareRequest {
+        game_id: fixture.profile.id.clone(),
+        config_dir: fixture.profile.config_dir.clone().unwrap(),
+        raw_files: files
+            .iter()
+            .map(|(file, text)| {
+                let document = crate::text_editor::get_ini_text_document(
+                    fixture.profile.id.clone(),
+                    fixture.profile.config_dir.clone().unwrap(),
+                    (*file).into(),
+                )
+                .unwrap();
+                crate::text_editor::RawFileUpdate {
+                    file: (*file).into(),
+                    config_dir: document.config_dir,
+                    revision: document.revision,
+                    text: (*text).into(),
+                }
+            })
+            .collect(),
+        ..Default::default()
+    }
+}
+
+#[test]
+fn text_edit_preserves_bytes_encoding_duplicates_comments_and_array_order() {
+    for encoding in [
+        crate::ini::encoding::IniEncoding::Utf8,
+        crate::ini::encoding::IniEncoding::Utf16Le,
+    ] {
+        for bom in [false, true] {
+            let fixture = Fixture::new();
+            let original = "; комментарий\r\n[Input]\r\n+A=One\r\n-A=Two\r\n!A=ClearArray\r\n.A=Three\r\n[Input]\r\nKey=\r\nKey=Old\r\n";
+            let mut bytes = crate::ini::encoding::encode_bytes(original, encoding);
+            if bom && encoding == crate::ini::encoding::IniEncoding::Utf8 {
+                bytes.splice(0..0, [0xef, 0xbb, 0xbf]);
+            }
+            std::fs::write(fixture.dir().join("Input.ini"), &bytes).unwrap();
+            let text = original.replace("Key=Old", "Key=New");
+            let plan = prepare_changes(raw_request(&fixture, &[("Input.ini", &text)])).unwrap();
+            assert_eq!(plan.operations.len(), 1);
+            assert_eq!(plan.operations[0].before.as_deref(), Some(original));
+            assert_eq!(plan.operations[0].after.as_deref(), Some(text.as_str()));
+            assert_eq!(
+                std::fs::read(fixture.dir().join("Input.ini")).unwrap(),
+                bytes
+            );
+            let result = apply_prepared_changes(plan.id, vec!["0".into()], true).unwrap();
+            assert!(!result.backup_id.is_empty());
+            let actual = std::fs::read(fixture.dir().join("Input.ini")).unwrap();
+            assert_eq!(actual, encode_like(&text, Some(&bytes), None));
+            let report =
+                crate::diagnostics::get_diagnostic_report(fixture.profile.id.clone(), true)
+                    .unwrap()
+                    .unwrap();
+            assert!(report.changes.is_empty());
+            std::fs::write(fixture.dir().join("Input.ini"), b"; overwritten").unwrap();
+            let report =
+                crate::diagnostics::get_diagnostic_report(fixture.profile.id.clone(), true)
+                    .unwrap()
+                    .unwrap();
+            assert_eq!(report.changes.len(), 1);
+            assert_eq!(report.changes[0].file, "Input.ini");
+        }
+    }
+}
+
+#[test]
+fn text_edit_detects_stale_source_before_and_after_preview() {
+    let fixture = Fixture::new();
+    let request = raw_request(&fixture, &[("Engine.ini", "[SystemSettings]\nr.Test=1\n")]);
+    std::fs::write(fixture.dir().join("Engine.ini"), b"; external").unwrap();
+    assert!(prepare_changes(request).is_err());
+    let mut request = raw_request(&fixture, &[("Engine.ini", "[SystemSettings]\nr.Test=1\n")]);
+    request.raw_files[0].config_dir.push_str("/other");
+    assert!(prepare_changes(request).is_err());
+    let plan = prepare_changes(raw_request(&fixture, &[("Engine.ini", "; edited")])).unwrap();
+    std::fs::write(fixture.dir().join("Engine.ini"), b"; changed again").unwrap();
+    assert!(apply_prepared_changes(plan.id, vec!["0".into()], true).is_err());
+    assert!(!crate::backup::paths::backup_store_dir(&fixture.dir()).exists());
+}
+
+#[test]
+fn text_edit_selection_keeps_unselected_files_and_empty_plans_do_not_backup() {
+    let fixture = Fixture::new();
+    let unchanged = std::fs::read_to_string(fixture.dir().join("GameUserSettings.ini")).unwrap();
+    let plan = prepare_changes(raw_request(
+        &fixture,
+        &[("GameUserSettings.ini", &unchanged), ("Engine.ini", "")],
+    ))
+    .unwrap();
+    assert!(plan.operations.is_empty());
+    let result = apply_prepared_changes(plan.id, vec![], true).unwrap();
+    assert!(result.backup_id.is_empty());
+    assert!(!crate::backup::paths::backup_store_dir(&fixture.dir()).exists());
+    let plan = prepare_changes(raw_request(
+        &fixture,
+        &[("Engine.ini", "; new"), ("Input.ini", "; keep draft")],
+    ))
+    .unwrap();
+    assert!(apply_prepared_changes(plan.id.clone(), vec!["0".into()], false).is_err());
+    let result = apply_prepared_changes(plan.id, vec!["0".into()], true).unwrap();
+    assert_eq!(result.changed_files, vec!["Engine.ini"]);
+    assert_eq!(
+        std::fs::read_to_string(fixture.dir().join("Engine.ini")).unwrap(),
+        "; new"
+    );
+    assert!(!fixture.dir().join("Input.ini").exists());
+}
+
+#[test]
+fn text_edit_rolls_back_new_and_existing_files_after_write_failure() {
+    let fixture = Fixture::new();
+    let original = std::fs::read(fixture.dir().join("GameUserSettings.ini")).unwrap();
+    let plan = prepare_changes(raw_request(
+        &fixture,
+        &[
+            ("Engine.ini", "; new"),
+            ("GameUserSettings.ini", "; changed"),
+        ],
+    ))
+    .unwrap();
+    FAIL_FILE.with(|failure| failure.replace(Some("GameUserSettings.ini".into())));
+    assert!(apply_prepared_changes(plan.id, vec!["0".into(), "1".into()], true).is_err());
+    assert!(!fixture.dir().join("Engine.ini").exists());
+    assert_eq!(
+        std::fs::read(fixture.dir().join("GameUserSettings.ini")).unwrap(),
+        original
+    );
+}
+
+#[test]
+fn text_editor_rejects_unsafe_names_duplicate_files_mixed_modes_and_invalid_text() {
+    let fixture = Fixture::new();
+    for name in ["../Engine.ini", "other.ini", "C:\\Engine.ini", "engine.ini"] {
+        assert!(crate::text_editor::get_ini_text_document(
+            fixture.profile.id.clone(),
+            fixture.profile.config_dir.clone().unwrap(),
+            name.into()
+        )
+        .is_err());
+        let mut request = raw_request(&fixture, &[("Engine.ini", "; new")]);
+        request.raw_files[0].file = name.into();
+        assert!(prepare_changes(request).is_err());
+    }
+    let mut request = raw_request(&fixture, &[("Engine.ini", "; new")]);
+    request.raw_files.push(request.raw_files[0].clone());
+    assert!(prepare_changes(request).is_err());
+    let mut request = fixture.request();
+    request.raw_files = raw_request(&fixture, &[("Engine.ini", "; new")]).raw_files;
+    assert!(prepare_changes(request).is_err());
+    for text in [
+        "nul\0byte".into(),
+        "a".repeat(crate::text_editor::MAX_TEXT_BYTES + 1),
+    ] {
+        assert!(prepare_changes(raw_request(&fixture, &[("Engine.ini", &text)])).is_err());
+    }
+    std::fs::write(fixture.dir().join("Engine.ini"), [0xfe, 0xff, 0, 65]).unwrap();
+    assert!(crate::text_editor::get_ini_text_document(
+        fixture.profile.id.clone(),
+        fixture.profile.config_dir.clone().unwrap(),
+        "Engine.ini".into()
+    )
+    .is_err());
+}

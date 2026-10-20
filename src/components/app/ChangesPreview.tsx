@@ -243,7 +243,11 @@ export function ChangesPreview() {
                       {op.file} · {op.section}
                     </span>
                     <div>
-                      {op.key === "*" ? t("preview.fileBytes") : op.key}
+                      {op.kind === "file-text"
+                        ? t("files.wholeFile")
+                        : op.key === "*"
+                          ? t("preview.fileBytes")
+                          : op.key}
                     </div>
                     {op.kind === "file" && (
                       <small>{t("preview.wholeFile")}</small>
@@ -265,18 +269,26 @@ export function ChangesPreview() {
                     )}
                   </td>
                   <td className="max-w-xs whitespace-pre-wrap break-all p-2 font-mono">
-                    {op.before === null
-                      ? t("preview.absent")
-                      : op.before === ""
-                        ? t("preview.empty")
-                        : op.before.slice(0, 2000)}
+                    {op.before === null ? (
+                      t("preview.absent")
+                    ) : op.before === "" ? (
+                      t("preview.empty")
+                    ) : (
+                      <pre className="max-h-64 overflow-auto whitespace-pre-wrap">
+                        {op.before}
+                      </pre>
+                    )}
                   </td>
                   <td className="max-w-xs whitespace-pre-wrap break-all p-2 font-mono">
-                    {op.after === null
-                      ? t("preview.delete")
-                      : op.after === ""
-                        ? t("preview.empty")
-                        : op.after.slice(0, 2000)}
+                    {op.after === null ? (
+                      t("preview.delete")
+                    ) : op.after === "" ? (
+                      t("preview.empty")
+                    ) : (
+                      <pre className="max-h-64 overflow-auto whitespace-pre-wrap">
+                        {op.after}
+                      </pre>
+                    )}
                   </td>
                 </tr>
               ))}

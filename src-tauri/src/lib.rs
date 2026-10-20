@@ -19,6 +19,7 @@ mod launch;
 mod presets;
 mod profiles;
 mod scalability;
+mod text_editor;
 
 use commands::{
     add_manual_game, apply_custom_cmd, apply_game_override, clear_crash_reports_cmd,
@@ -57,6 +58,7 @@ pub fn run() {
             changes::validate_prepared_changes,
             changes::discard_prepared_changes,
             input::get_input_document,
+            text_editor::get_ini_text_document,
             diagnostics::get_diagnostic_report,
             scan_games,
             discovery::other_stores::get_discovery_warnings,

@@ -52,6 +52,7 @@ export async function previewAndApply(
     input_revision: null,
     restore_files: [],
     input_updates: [],
+    raw_files: [],
     ...input,
   };
   const plan = await prepareChanges(request);

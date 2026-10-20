@@ -10,6 +10,7 @@ const BASE_PANELS: EditorPanel[] = [
   "basic",
   "advanced",
   "input",
+  "files",
   "presets",
   "backups",
 ];
@@ -39,6 +40,7 @@ export function EditorModeBar({
         "basic",
         "advanced",
         "input",
+        "files",
         "extra",
         "presets",
         "backups",
@@ -67,29 +69,33 @@ export function EditorModeBar({
   };
 
   const activeHint =
-    panel === "input"
-      ? t("tabs.inputHint")
-      : panel === "basic"
-        ? t("tabs.basicHint")
-        : panel === "advanced"
-          ? t("tabs.advancedHint")
-          : panel === "extra"
-            ? t("tabs.extraHint")
-            : panel === "presets"
-              ? t("tabs.presetsHint")
-              : t("tabs.backupsHint");
+    panel === "files"
+      ? t("tabs.filesHint")
+      : panel === "input"
+        ? t("tabs.inputHint")
+        : panel === "basic"
+          ? t("tabs.basicHint")
+          : panel === "advanced"
+            ? t("tabs.advancedHint")
+            : panel === "extra"
+              ? t("tabs.extraHint")
+              : panel === "presets"
+                ? t("tabs.presetsHint")
+                : t("tabs.backupsHint");
   const activeBody =
-    panel === "input"
-      ? t("mode.inputBody")
-      : panel === "basic"
-        ? t("mode.basicBody")
-        : panel === "advanced"
-          ? t("mode.advancedBody")
-          : panel === "extra"
-            ? t("mode.extraBodyShort")
-            : panel === "presets"
-              ? t("mode.presetsBody")
-              : t("mode.backupsBody");
+    panel === "files"
+      ? t("mode.filesBody")
+      : panel === "input"
+        ? t("mode.inputBody")
+        : panel === "basic"
+          ? t("mode.basicBody")
+          : panel === "advanced"
+            ? t("mode.advancedBody")
+            : panel === "extra"
+              ? t("mode.extraBodyShort")
+              : panel === "presets"
+                ? t("mode.presetsBody")
+                : t("mode.backupsBody");
 
   return (
     <div className="mb-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-soft)]">
@@ -105,7 +111,13 @@ export function EditorModeBar({
         }))}
       />
 
-      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div
+        className={
+          panel === "files"
+            ? "hidden"
+            : "mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
+        }
+      >
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium text-[var(--color-text)]">
             {activeHint}
@@ -118,7 +130,8 @@ export function EditorModeBar({
         {panel !== "backups" &&
           panel !== "extra" &&
           panel !== "presets" &&
-          panel !== "input" && (
+          panel !== "input" &&
+          panel !== "files" && (
             <div
               className={cn(
                 "min-w-0 rounded-[var(--radius-control)] border px-3 py-2 text-xs sm:max-w-[min(50%,34rem)]",

@@ -112,5 +112,29 @@
       "bCmd": "Command"
     }
   },
-  "discovery": { "warnings": "Some game sources are unavailable" }
+  "discovery": {
+    "warnings": "Some game sources are unavailable"
+  },
+  "files": {
+    "title": "INI file text",
+    "select": "Configuration file",
+    "save": "Preview and save",
+    "reload": "Reload file",
+    "discard": "Discard draft and reload",
+    "discardHint": "Unsaved changes in this file will be lost.",
+    "missing": "This file is missing. Saving nonempty text will create it.",
+    "dirty": "Modified files: {{count}}",
+    "saved": "Files saved: {{count}}. Backup created.",
+    "clean": "No unsaved changes",
+    "running": "The game is running. Reading is available; saving is blocked.",
+    "hint": "Ctrl+S previews changes with a backup. Drafts remain while this game editor is open.",
+    "stale": "The file changed on disk. Your draft is retained; reload the file before saving.",
+    "wholeFile": "Full file text",
+    "changed": "Unsaved draft",
+    "readOnly": "Reading…",
+    "find": "Find in file",
+    "next": "Next match",
+    "notFound": "Text not found",
+    "lines": "Lines: {{count}}"
+  }
 }

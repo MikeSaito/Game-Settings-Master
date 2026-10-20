@@ -51,7 +51,9 @@
     "engine": "Advanced",
     "engineBadge": "Expert",
     "input": "Controls",
-    "inputHint": "Keyboard, mouse and controller"
+    "inputHint": "Keyboard, mouse and controller",
+    "files": "Files",
+    "filesHint": "INI text editor"
   },
   "mode": {
     "basicTitle": "Basic settings",
@@ -67,7 +69,8 @@
     "extraBodyShort": "Input.ini / DeviceProfiles.ini: browse and search.",
     "basicSafe": "GameUserSettings.ini only",
     "advancedFiles": "Engine.ini / Scalability.ini",
-    "inputBody": "Classic Input.ini bindings with a changes preview."
+    "inputBody": "Classic Input.ini bindings with a changes preview.",
+    "filesBody": "Edit source text with a preview and backup before writing."
   },
   "engineWarning": {
     "title": "Advanced users only",

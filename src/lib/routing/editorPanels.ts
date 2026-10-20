@@ -1,7 +1,13 @@
 import type { GameParameter } from "@/lib/core/types";
 
 export type EditorPanel =
-  "basic" | "advanced" | "extra" | "backups" | "presets" | "input";
+  | "basic"
+  | "advanced"
+  | "extra"
+  | "backups"
+  | "presets"
+  | "input"
+  | "files";
 
 /** Parameter list filter mode in the editor sidebar. */
 export type EditorFilterMode = "recommended" | "full" | "ini_only";
@@ -21,6 +27,7 @@ function normalizePanel(raw: string | null): EditorPanel | null {
   if (raw === "basic" || raw === "scalability") return "basic";
   if (raw === "advanced" || raw === "engine") return "advanced";
   if (raw === "extra") return "extra";
+  if (raw === "files") return "files";
   if (raw === "input") return "input";
   if (raw === "backups") return "backups";
   if (raw === "presets" || raw === "preset") return "presets";
@@ -51,7 +58,8 @@ export function filterParamsByPanel(
     panel === "backups" ||
     panel === "extra" ||
     panel === "presets" ||
-    panel === "input"
+    panel === "input" ||
+    panel === "files"
   )
     return [];
   return params.filter((p) => panelForParameter(p) === panel);
@@ -100,7 +108,8 @@ export function defaultFilterMode(panel: EditorPanel): EditorFilterMode {
     panel === "backups" ||
     panel === "extra" ||
     panel === "presets" ||
-    panel === "input"
+    panel === "input" ||
+    panel === "files"
   )
     return "recommended";
   return "ini_only";
@@ -111,7 +120,8 @@ export function defaultCategoryForPanel(panel: EditorPanel): string {
     panel === "backups" ||
     panel === "extra" ||
     panel === "presets" ||
-    panel === "input"
+    panel === "input" ||
+    panel === "files"
   )
     return "All";
   return panel === "basic" ? "Scalability" : "Rendering";

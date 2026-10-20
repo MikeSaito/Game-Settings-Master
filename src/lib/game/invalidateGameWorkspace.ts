@@ -15,4 +15,5 @@ export function invalidateGameWorkspace(
   void queryClient.invalidateQueries({ queryKey: ["game-config"] });
   void queryClient.invalidateQueries({ queryKey: ["input-document", gameId] });
   void queryClient.invalidateQueries({ queryKey: ["diagnostic", gameId] });
+  void queryClient.invalidateQueries({ queryKey: ["ini-text", gameId] });
 }

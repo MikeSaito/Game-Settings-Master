@@ -51,7 +51,9 @@
     "engine": "Расширенное",
     "engineBadge": "Эксперт",
     "input": "Управление",
-    "inputHint": "Клавиши, мышь и контроллер"
+    "inputHint": "Клавиши, мышь и контроллер",
+    "files": "Файлы",
+    "filesHint": "Текстовый редактор INI"
   },
   "mode": {
     "basicTitle": "Базовые настройки",
@@ -67,7 +69,8 @@
     "extraBodyShort": "Input.ini / DeviceProfiles.ini: просмотр и поиск.",
     "basicSafe": "Только GameUserSettings.ini",
     "advancedFiles": "Engine.ini / Scalability.ini",
-    "inputBody": "Классические привязки Input.ini с предпросмотром изменений."
+    "inputBody": "Классические привязки Input.ini с предпросмотром изменений.",
+    "filesBody": "Редактируйте исходный текст с предпросмотром и бэкапом перед записью."
   },
   "engineWarning": {
     "title": "Режим для опытных пользователей",
