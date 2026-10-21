@@ -43,9 +43,11 @@ pub(crate) fn root() -> Result<std::path::PathBuf, String> {
     // runner's environment. The updater preserves command-line arguments.
     let root = std::env::var_os("GSM_NATIVE_TEST_ROOT")
         .or_else(|| {
-            let mut args = std::env::args_os();
-            args.find(|arg| arg == "--gsm-native-test-root")?;
-            args.next()
+            std::env::args_os().find_map(|arg| {
+                arg.to_str()?
+                    .strip_prefix("--gsm-native-test-root=")
+                    .map(std::ffi::OsString::from)
+            })
         })
         .ok_or("A native test root is required for native-test builds")?;
     let root = std::path::PathBuf::from(root);

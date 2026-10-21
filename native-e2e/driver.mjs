@@ -29,7 +29,9 @@ export async function launch(application, env, artifactDir) {
   await waitFor(() => request("/status", undefined, "GET"));
   let session;
   try {
-    const args = env.GSM_NATIVE_TEST_ROOT ? ["--gsm-native-test-root", env.GSM_NATIVE_TEST_ROOT] : [];
+    // EdgeDriver interprets/reorders arguments as Chromium switches. Keep the
+    // path attached to its switch so it survives WebDriver and NSIS relaunch.
+    const args = env.GSM_NATIVE_TEST_ROOT ? [`--gsm-native-test-root=${env.GSM_NATIVE_TEST_ROOT}`] : [];
     session = await request("/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application, args } } } }, "POST", 120000);
     // WebView2 can return a session while its initial about:blank is still active.
     // Wait for the application document before consumers access origin storage.
