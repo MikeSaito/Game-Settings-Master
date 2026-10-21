@@ -60,7 +60,10 @@ cargo clippy --locked --manifest-path src-tauri/Cargo.toml -- -D warnings
 ```
 
 Windows desktop tests require `tauri-driver` and Microsoft Edge Driver matching
-the installed Edge. `scripts/install-native-driver.ps1` installs these on CI.
+the installed WebView2 Runtime. `scripts/install-native-driver.ps1` selects and
+pins that runtime and installs its matching driver on CI. The native jobs use
+Windows Server 2022 while the Server 2025 image is affected by the upstream
+WebView2 automation issue tracked in actions/runner-images#14738.
 
 ```text
 npm exec -- tauri build --debug --no-bundle --features native-test --config native-e2e/tauri.conf.json

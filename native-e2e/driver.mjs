@@ -28,7 +28,15 @@ export async function launch(application, env, artifactDir) {
   }
   await waitFor(() => request("/status", undefined, "GET"));
   let session;
-  try { session = await request("/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application } } } }, "POST", 120000); }
+  try {
+    session = await request("/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application } } } }, "POST", 120000);
+    // WebView2 can return a session while its initial about:blank is still active.
+    // Wait for the application document before consumers access origin storage.
+    await waitFor(() => request(`/session/${session.sessionId}/execute/sync`, {
+      script: "return location.protocol !== 'about:' && document.readyState === 'complete' && !!document.getElementById('root')",
+      args: [],
+    }));
+  }
   catch (error) {
     driver.kill();
     await writeFile(`${artifactDir}/driver.log`, Buffer.concat(output));
