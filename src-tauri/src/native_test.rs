@@ -8,8 +8,15 @@ pub(crate) fn checkpoint(_name: &str) {
 
 #[cfg(feature = "native-test")]
 pub(crate) fn root() -> Result<std::path::PathBuf, String> {
+    // NSIS can relaunch through Explorer, which does not inherit the test
+    // runner's environment. The updater preserves command-line arguments.
     let root = std::env::var_os("GSM_NATIVE_TEST_ROOT")
-        .ok_or("GSM_NATIVE_TEST_ROOT is required for native-test builds")?;
+        .or_else(|| {
+            let mut args = std::env::args_os();
+            args.find(|arg| arg == "--gsm-native-test-root")?;
+            args.next()
+        })
+        .ok_or("A native test root is required for native-test builds")?;
     let root = std::path::PathBuf::from(root);
     if !root.is_absolute() {
         return Err("Test root must be absolute".into());

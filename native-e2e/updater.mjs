@@ -62,6 +62,8 @@ try {
   assert.match(Buffer.concat(output).toString(),/^1\.4\.1/m);
   console.log("Native updater rejected tampered packages and installed version 1.4.1");
 } finally {
+  await mkdir(resolve("test-results/native-updater"), { recursive: true });
+  try { await writeFile(resolve("test-results/native-updater/launches.txt"), await readFile(join(appRoot,"launches.txt"))); } catch {}
   if(app) await app.close();
   server.close();
   // Stop only the fixture at its exact installation path, including the updater's restarted child.
