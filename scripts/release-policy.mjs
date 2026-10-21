@@ -8,7 +8,7 @@ export function validateVersions({ packageVersion, tauriVersion, cargoVersion, t
 export async function checkRemoteRelease({ repo, token, tag, sha }, fetcher = fetch) {
   if (!repo || !token || !/^[a-f0-9]{40}$/.test(sha ?? "")) throw new Error("Repository, token and commit SHA are required");
   async function get(path) {
-    const response = await fetcher(`https://api.github.com/repos/${repo}/${path}`, {
+    const response = await fetcher(`https://api.github.com/repos/${repo}${path ? `/${path}` : ""}`, {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" },
       signal: AbortSignal.timeout(30000),
     });

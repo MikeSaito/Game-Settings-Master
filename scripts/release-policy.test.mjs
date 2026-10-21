@@ -26,6 +26,20 @@ test("missing release with matching tag is allowed", async () => {
 test("a missing tag can be created without force", async () => {
   assert.equal(await checkRemoteRelease(options,responses([{},404,404])),false);
 });
+
+test("preflight uses canonical GitHub repository, release and ref endpoints", async () => {
+  const urls = [];
+  const reply = responses([{},404,404]);
+  assert.equal(await checkRemoteRelease(options, async (url) => {
+    urls.push(url);
+    return reply();
+  }), false);
+  assert.deepEqual(urls, [
+    "https://api.github.com/repos/owner/repo",
+    "https://api.github.com/repos/owner/repo/releases/tags/v1.4.0",
+    "https://api.github.com/repos/owner/repo/git/ref/tags/v1.4.0",
+  ]);
+});
 test("annotated tags must resolve to the same commit", async () => {
   assert.equal(await checkRemoteRelease(options,responses([{},404,{object:{type:"tag",sha:"tag"}},{object:{type:"commit",sha}}])),true);
   await assert.rejects(checkRemoteRelease(options,responses([{},404,{object:{type:"commit",sha:"b".repeat(40)}}])),/different commit/);
