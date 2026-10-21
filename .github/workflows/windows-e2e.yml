@@ -60,6 +60,9 @@ jobs:
       - name: Install desktop drivers
         shell: pwsh
         run: ./scripts/install-native-driver.ps1
+      - name: Prepare desktop shell for installer relaunch
+        shell: pwsh
+        run: ./scripts/prepare-installer-desktop.ps1
       - name: Build signed update fixtures
         shell: pwsh
         run: ./scripts/build-updater-fixtures.ps1
