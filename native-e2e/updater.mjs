@@ -64,6 +64,9 @@ try {
 } finally {
   await mkdir(resolve("test-results/native-updater"), { recursive: true });
   try { await writeFile(resolve("test-results/native-updater/launches.txt"), await readFile(join(appRoot,"launches.txt"))); } catch {}
+  for (const name of ["native-startup.log", "native-installer.log", "native-shell-child.txt"]) {
+    try { await writeFile(resolve(`test-results/native-updater/${name}`), await readFile(join(destination,name))); } catch {}
+  }
   if(app) await app.close();
   server.close();
   // Stop only the fixture at its exact installation path, including the updater's restarted child.

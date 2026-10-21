@@ -14,6 +14,7 @@ try {
       version = $version
       identifier = 'com.mike.gsm.native-updater-test'
       productName = 'GSM Native Updater Test'
+      bundle = @{ windows = @{ nsis = @{ installerHooks = (Join-Path $PWD 'native-e2e/installer-hooks.nsh') } } }
       plugins = @{ updater = @{ pubkey = $publicKey; endpoints = @('http://127.0.0.1:17891/latest.json'); dangerousInsecureTransportProtocol = $true; windows = @{ installMode = 'quiet' } } }
     }
     $config | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $configPath -Encoding utf8

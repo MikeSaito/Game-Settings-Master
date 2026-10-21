@@ -1,4 +1,35 @@
 //! Test-only controls are compiled out of normal builds.
+#[cfg(feature = "native-test")]
+fn trace(message: &str) {
+    use std::io::Write;
+    if let Ok(exe) = std::env::current_exe() {
+        if let Some(parent) = exe.parent() {
+            if let Ok(mut file) = std::fs::OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(parent.join("native-startup.log"))
+            {
+                let _ = writeln!(file, "{message}");
+            }
+        }
+    }
+}
+
+#[cfg(feature = "native-test")]
+pub(crate) fn trace_startup() {
+    trace(&format!(
+        "start pid={} args={:?} root={:?}",
+        std::process::id(),
+        std::env::args_os().collect::<Vec<_>>(),
+        std::env::var_os("GSM_NATIVE_TEST_ROOT")
+    ));
+    let previous = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        trace(&format!("panic: {info}"));
+        previous(info);
+    }));
+}
+
 pub(crate) fn checkpoint(_name: &str) {
     #[cfg(feature = "native-test")]
     if std::env::var("GSM_TEST_CRASH_AT").ok().as_deref() == Some(_name) {
