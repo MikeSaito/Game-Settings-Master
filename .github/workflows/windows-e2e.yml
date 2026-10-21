@@ -17,7 +17,9 @@ permissions:
   contents: read
 jobs:
   configs:
-    runs-on: windows-latest
+    # WebView2 WebDriver cannot create sessions on the current Server 2025 image.
+    # https://github.com/actions/runner-images/issues/14738
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -43,7 +45,7 @@ jobs:
           path: desktop-test-results/configs
   updater:
     if: inputs.test_updates == true
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
