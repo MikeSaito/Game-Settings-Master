@@ -31,16 +31,24 @@
 
 ## Screenshots
 
+Current application interface with demonstration data. Click an image to view it at full size.
+
 <p align="center">
-  <img src="landing/public/screenshots/en/library.png" width="420" alt="Game library">
+  <a href="docs/screenshots/en/library.webp"><img src="docs/screenshots/en/library.webp" width="420" alt="Game library"></a>
   &nbsp;&nbsp;
-  <img src="landing/public/screenshots/en/editor-basic.png" width="420" alt="Basic editor">
+  <a href="docs/screenshots/en/editor-basic.webp"><img src="docs/screenshots/en/editor-basic.webp" width="420" alt="Basic editor"></a>
 </p>
 
 <p align="center">
-  <img src="landing/public/screenshots/en/editor-advanced.png" width="420" alt="Advanced editor">
+  <a href="docs/screenshots/en/editor-advanced.webp"><img src="docs/screenshots/en/editor-advanced.webp" width="420" alt="Advanced editor"></a>
   &nbsp;&nbsp;
-  <img src="landing/public/screenshots/en/backups.png" width="420" alt="Backups">
+  <a href="docs/screenshots/en/editor-files.webp"><img src="docs/screenshots/en/editor-files.webp" width="420" alt="INI text editor"></a>
+</p>
+
+<p align="center">
+  <a href="docs/screenshots/en/preview.webp"><img src="docs/screenshots/en/preview.webp" width="420" alt="Change preview"></a>
+  &nbsp;&nbsp;
+  <a href="docs/screenshots/en/backups.webp"><img src="docs/screenshots/en/backups.webp" width="420" alt="Backups"></a>
 </p>
 
 ---

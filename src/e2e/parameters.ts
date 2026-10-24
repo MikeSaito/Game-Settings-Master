@@ -1,5 +1,6 @@
 import type { GameParameter } from "@/lib/core";
 import { basicParameters } from "@/screenshot/fixtures";
+import { readmeParameters } from "@/screenshot/readmeFixtures";
 
 function engineParam(
   overrides: Partial<GameParameter> & Pick<GameParameter, "key" | "value">,
@@ -89,10 +90,14 @@ export function createE2eParameters(): GameParameter[] {
   return createE2eConflictParameters();
 }
 
-export type E2eFixtureMode = "basic" | "sg-limit" | "conflict";
+export type E2eFixtureMode = "basic" | "sg-limit" | "conflict" | "readme";
 
 export function createE2eParametersForMode(mode: E2eFixtureMode): GameParameter[] {
   switch (mode) {
+    case "readme":
+      return readmeParameters(
+        sessionStorage.getItem("gsm-e2e-language") === "ru" ? "ru" : "en",
+      );
     case "sg-limit":
       return createSgLimitE2eParameters();
     case "conflict":
@@ -106,7 +111,7 @@ export function readE2eFixtureMode(): E2eFixtureMode {
   if (typeof window === "undefined") return "basic";
   try {
     const raw = sessionStorage.getItem("gsm-e2e-fixtures");
-    if (raw === "sg-limit" || raw === "conflict") return raw;
+    if (raw === "sg-limit" || raw === "conflict" || raw === "readme") return raw;
   } catch {
     /* ignore */
   }

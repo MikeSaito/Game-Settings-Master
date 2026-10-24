@@ -24,6 +24,7 @@
     "landing:build": "npm run build --prefix landing",
     "landing:dev": "npm run dev --prefix landing",
     "landing:capture": "npm run capture-screenshots --prefix landing",
+    "screenshots:readme": "node scripts/capture-readme-screenshots.mjs",
     "updater:keys": "powershell -ExecutionPolicy Bypass -File scripts/open-keygen-terminal.ps1",
     "updater:sync-pubkey": "powershell -ExecutionPolicy Bypass -File scripts/sync-updater-pubkey.ps1",
     "updater:build": "powershell -ExecutionPolicy Bypass -File scripts/build-signed.ps1"

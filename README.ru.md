@@ -31,16 +31,24 @@
 
 ## Скриншоты
 
+Текущий интерфейс приложения с демонстрационными данными. Нажмите на изображение, чтобы открыть его в полном размере.
+
 <p align="center">
-  <img src="landing/public/screenshots/ru/library.png" width="420" alt="Библиотека игр">
+  <a href="docs/screenshots/ru/library.webp"><img src="docs/screenshots/ru/library.webp" width="420" alt="Библиотека игр"></a>
   &nbsp;&nbsp;
-  <img src="landing/public/screenshots/ru/editor-basic.png" width="420" alt="Редактор Basic">
+  <a href="docs/screenshots/ru/editor-basic.webp"><img src="docs/screenshots/ru/editor-basic.webp" width="420" alt="Базовый редактор"></a>
 </p>
 
 <p align="center">
-  <img src="landing/public/screenshots/ru/editor-advanced.png" width="420" alt="Редактор Advanced">
+  <a href="docs/screenshots/ru/editor-advanced.webp"><img src="docs/screenshots/ru/editor-advanced.webp" width="420" alt="Расширенный редактор"></a>
   &nbsp;&nbsp;
-  <img src="landing/public/screenshots/ru/backups.png" width="420" alt="Резервные копии">
+  <a href="docs/screenshots/ru/editor-files.webp"><img src="docs/screenshots/ru/editor-files.webp" width="420" alt="Текстовый редактор INI"></a>
+</p>
+
+<p align="center">
+  <a href="docs/screenshots/ru/preview.webp"><img src="docs/screenshots/ru/preview.webp" width="420" alt="Предпросмотр изменений"></a>
+  &nbsp;&nbsp;
+  <a href="docs/screenshots/ru/backups.webp"><img src="docs/screenshots/ru/backups.webp" width="420" alt="Бэкапы"></a>
 </p>
 
 ---
