@@ -105,13 +105,13 @@ def main() -> int:
             enriched = process_file(json_path, json_path.name, by_key, file_overrides)
             write_catalog(json_path, enriched)
             counts[f"{label}/{json_path.name}"] = len(enriched)
-            print(f"  {label}: {json_path.name} — {len(enriched)} entries")
+            print(f"  {label}: {json_path.name} – {len(enriched)} entries")
 
     if FORZA_PATH.is_file():
         enriched = process_file(FORZA_PATH, FORZA_FILENAME, by_key, file_overrides)
         write_catalog(FORZA_PATH, enriched)
         counts[f"forza/{FORZA_FILENAME}"] = len(enriched)
-        print(f"  forza: {FORZA_FILENAME} — {len(enriched)} entries")
+        print(f"  forza: {FORZA_FILENAME} – {len(enriched)} entries")
     else:
         print("  forza: parameter-catalog.json not found (skipped)")
 

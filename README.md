@@ -20,7 +20,7 @@
 
 <p align="center">
   <strong>Ini editor for Unreal Engine games</strong><br>
-  Edit GameUserSettings and Engine.ini in one place — with hints, backups, and filters matched to your GPU.
+  Edit GameUserSettings and Engine.ini in one place – with hints, backups, and filters matched to your GPU.
 </p>
 
 <p align="center">
@@ -33,41 +33,56 @@
 
 Current application interface with demonstration data. Click an image to view it at full size.
 
-<p align="center">
-  <a href="docs/screenshots/en/library.webp"><img src="docs/screenshots/en/library.webp" width="420" alt="Game library"></a>
-  &nbsp;&nbsp;
-  <a href="docs/screenshots/en/editor-basic.webp"><img src="docs/screenshots/en/editor-basic.webp" width="420" alt="Basic editor"></a>
-</p>
-
-<p align="center">
-  <a href="docs/screenshots/en/editor-advanced.webp"><img src="docs/screenshots/en/editor-advanced.webp" width="420" alt="Advanced editor"></a>
-  &nbsp;&nbsp;
-  <a href="docs/screenshots/en/editor-files.webp"><img src="docs/screenshots/en/editor-files.webp" width="420" alt="INI text editor"></a>
-</p>
-
-<p align="center">
-  <a href="docs/screenshots/en/preview.webp"><img src="docs/screenshots/en/preview.webp" width="420" alt="Change preview"></a>
-  &nbsp;&nbsp;
-  <a href="docs/screenshots/en/backups.webp"><img src="docs/screenshots/en/backups.webp" width="420" alt="Backups"></a>
-</p>
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Game library</strong><br>
+      <a href="docs/screenshots/en/library.webp"><img src="docs/screenshots/en/library.webp" width="400" alt="Game library"></a>
+    </td>
+    <td width="50%" align="center">
+      <strong>Basic editor</strong><br>
+      <a href="docs/screenshots/en/editor-basic.webp"><img src="docs/screenshots/en/editor-basic.webp" width="400" alt="Basic editor"></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Advanced editor</strong><br>
+      <a href="docs/screenshots/en/editor-advanced.webp"><img src="docs/screenshots/en/editor-advanced.webp" width="400" alt="Advanced editor"></a>
+    </td>
+    <td width="50%" align="center">
+      <strong>INI text editor</strong><br>
+      <a href="docs/screenshots/en/editor-files.webp"><img src="docs/screenshots/en/editor-files.webp" width="400" alt="INI text editor"></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Change preview</strong><br>
+      <a href="docs/screenshots/en/preview.webp"><img src="docs/screenshots/en/preview.webp" width="400" alt="Change preview"></a>
+    </td>
+    <td width="50%" align="center">
+      <strong>Backups</strong><br>
+      <a href="docs/screenshots/en/backups.webp"><img src="docs/screenshots/en/backups.webp" width="400" alt="Backups"></a>
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## What it does
 
-**Game library** — scans Steam and Epic libraries, supports manual games, finds config folders, and shows engine info and cover art.
+**Game library** – scans Steam and Epic libraries, supports manual games, finds config folders, and shows engine info and cover art.
 
-**Basic editor** — GameUserSettings.ini: scalability presets, resolution, window mode, VSync — the same knobs you see in-game.
+**Basic editor** – GameUserSettings.ini: scalability presets, resolution, window mode, VSync – the same knobs you see in-game.
 
-**Advanced editor** — Engine.ini CVars with descriptions, warnings, tier hints, and a Recommended filter for your setup.
+**Advanced editor** – Engine.ini CVars with descriptions, warnings, tier hints, and a Recommended filter for your setup.
 
 **INI text editor** – a separate Files tab for five game INI files, with search, per-file drafts, full-text preview and backups. Preserves comments, duplicate entries and supported encodings; files up to 1 MiB.
 
-**Backups** — automatic snapshot before every apply; restore the previous state in one click.
+**Backups** – automatic snapshot before every apply; restore the previous state in one click.
 
-**Built-in reference** — parameter hints in English and Russian, tuned to the game’s Unreal Engine version.
+**Built-in reference** – parameter hints in English and Russian, tuned to the game’s Unreal Engine version.
 
-**GPU-aware UI** — DLSS, FSR, ray tracing, and frame generation options appear only when your graphics card supports them.
+**GPU-aware UI** – DLSS, FSR, ray tracing, and frame generation options appear only when your graphics card supports them.
 
 ---
 
@@ -82,7 +97,7 @@ Free · Windows · MIT · open source
 
 ### First launch (SmartScreen)
 
-The installer is not commercially signed. Windows may show a blue SmartScreen prompt — this is normal for independent software.
+The installer is not commercially signed. Windows may show a blue SmartScreen prompt – this is normal for independent software.
 
 1. Click **More info**
 2. Click **Run anyway**

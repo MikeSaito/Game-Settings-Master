@@ -1,7 +1,7 @@
 [package]
 name = "ue-settings-master"
 version = "1.4.1"
-description = "UE Settings Master — мастер настроек для игр Unreal Engine"
+description = "UE Settings Master – мастер настроек для игр Unreal Engine"
 authors = ["Mike Saito <chigikovden@gmail.com>"]
 license = "MIT"
 edition = "2021"

@@ -517,9 +517,9 @@ fn check_combo_rules(
             .map(String::as_str)
             .unwrap_or("");
         let (code, ru, en) = match issue.code.as_str() {
-            "combo_rt_shadows" => ("combo_rt_shadows", format!("Ray Tracing включён при низком sg.ShadowQuality ({shadows})"), format!("Ray Tracing enabled with low sg.ShadowQuality ({shadows})")),
+            "combo_rt_shadows" => ("combo_rt_shadows", format!("Ray Tracing включен при низком sg.ShadowQuality ({shadows})"), format!("Ray Tracing enabled with low sg.ShadowQuality ({shadows})")),
             "combo_rt_gpu_unknown" => ("combo_rt_gpu_unknown", "Не удалось определить аппаратную поддержку RT выбранной GPU".into(), "Unable to determine hardware RT support for the selected GPU".into()),
-            "combo_rt_no_hw" => ("combo_rt_no_hw", "Ray Tracing включён, но GPU не поддерживает RT в UE".into(), "Ray Tracing enabled but GPU does not support RT in UE".into()),
+            "combo_rt_no_hw" => ("combo_rt_no_hw", "Ray Tracing включен, но GPU не поддерживает RT в UE".into(), "Ray Tracing enabled but GPU does not support RT in UE".into()),
             "combo_streaming_texture" => ("combo_streaming_texture", format!("Большой r.Streaming.PoolSize ({pool}) при низком sg.TextureQuality ({texture})"), format!("Large r.Streaming.PoolSize ({pool}) with low sg.TextureQuality ({texture})")),
             _ => unreachable!("Unknown shared rule"),
         };

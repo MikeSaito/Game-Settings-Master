@@ -46,7 +46,7 @@
     "advancedHint": "Параметры движка и консольные переменные: для опытных",
     "backupsHint": "Снимки конфигов перед применением и откат",
     "extraHint": "Input.ini и DeviceProfiles.ini: только просмотр",
-    "presetsHint": "Сохранённые наборы настроек",
+    "presetsHint": "Сохраненные наборы настроек",
     "scalability": "Базовое",
     "engine": "Расширенное",
     "engineBadge": "Эксперт",
@@ -60,12 +60,12 @@
     "advancedTitle": "Расширенные настройки",
     "backupsTitle": "Бэкапы",
     "extraTitle": "Дополнительные ini",
-    "presetsTitle": "Сохранённые пресеты",
+    "presetsTitle": "Сохраненные пресеты",
     "basicBody": "Ключи «в файле игры» были в ini при открытии: их нельзя удалить, только изменить значение. Доп. из каталога: «Добавить/Удалить из ini».",
     "advancedBody": "Тонкая настройка движка. Может создать или изменить Engine.ini / Scalability.ini. Для опытных пользователей.",
     "backupsBody": "Автоматические снимки конфигов хранятся локально в данных приложения. Восстановление и сброс к чистой конфигурации.",
     "extraBody": "Input.ini и DeviceProfiles.ini из папки конфигурации игры. Только чтение: редактирование через расширенный режим не поддерживается.",
-    "presetsBody": "Пресеты, сохранённые из редактора. Импорт, экспорт, применение к конфигурации игры и удаление.",
+    "presetsBody": "Пресеты, сохраненные из редактора. Импорт, экспорт, применение к конфигурации игры и удаление.",
     "extraBodyShort": "Input.ini / DeviceProfiles.ini: просмотр и поиск.",
     "basicSafe": "Только GameUserSettings.ini",
     "advancedFiles": "Engine.ini / Scalability.ini",
@@ -109,7 +109,7 @@
     "title": "Параметры ini (Engine / Scalability / Game)",
     "addToIni": "Добавить в ini",
     "removeFromIni": "Удалить из ini",
-    "before": "Кнопки «Добавить в ini» и «Удалить из ini» управляют наличием строки в файле: после «Применить» ключ будет записан или удалён. Сейчас в ini: {{on}} из {{total}}.",
+    "before": "Кнопки «Добавить в ini» и «Удалить из ini» управляют наличием строки в файле: после «Применить» ключ будет записан или удален. Сейчас в ini: {{on}} из {{total}}.",
     "short": "В ini: {{on}} из {{total}}."
   },
   "gusIni": {
@@ -132,7 +132,7 @@
   "applyAdvanced": "Применить (движок / масштабируемость)",
   "discard": "Сбросить",
   "savePreset": "Сохранить пресет",
-  "savedPresets": "Сохранённые пресеты",
+  "savedPresets": "Сохраненные пресеты",
   "changesCount_one": "{{count}} изменение",
   "changesCount_few": "{{count}} изменения",
   "changesCount_many": "{{count}} изменений",
@@ -157,8 +157,8 @@
     "noChanges": "Нет изменений: включите параметры Engine.ini или измените значения."
   },
   "applied": "Применено {{count}} правок · резервная копия {{backupId}}. Перезапустите игру.",
-  "presetSaved": "Пресет «{{name}}» сохранён.",
-  "presetApplied": "Пресет применён · резервная копия {{backupId}}.",
+  "presetSaved": "Пресет «{{name}}» сохранен.",
+  "presetApplied": "Пресет применен · резервная копия {{backupId}}.",
   "qualityDefault": "По умолчанию",
   "qualityLevel": {
     "0": "Низкое",
@@ -166,7 +166,7 @@
     "2": "Высокое",
     "3": "Эпик",
     "4": "Кинематограф",
-    "custom": "Своё @{{value}}"
+    "custom": "Свое @{{value}}"
   },
   "fullscreenMode": {
     "0": "Полный экран",
@@ -239,7 +239,7 @@
     "off": "Строки нет в ini. Нажмите «Добавить в ini» и «Применить», чтобы записать ключ.",
     "on": "Строка будет в ini после «Применить». Нажмите «Удалить из ini», чтобы убрать ключ."
   },
-  "sentinelHint": "В ini стоит −1: игра подставляет своё значение. Задайте 0–4 или другое число, чтобы зафиксировать вручную.",
+  "sentinelHint": "В ini стоит −1: игра подставляет свое значение. Задайте 0–4 или другое число, чтобы зафиксировать вручную.",
   "rangeHint": "Диапазон: {{range}} · примерный",
   "newKey": "новый ключ",
   "noDiff": {
@@ -266,7 +266,7 @@
     "delete": "Удалить",
     "importInvalid": "Не удалось прочитать файл пресета (.uesm-preset.json).",
     "imported": "Пресет «{{name}}» импортирован.",
-    "empty": "Нет сохранённых пресетов: сохраните текущие правки или импортируйте JSON.",
+    "empty": "Нет сохраненных пресетов: сохраните текущие правки или импортируйте JSON.",
     "applyConfirmTitle": "Применить пресет «{{name}}»",
     "applyConfirm": "Применить пресет",
     "applyCancel": "Отмена"
@@ -279,15 +279,15 @@
     "confirmWarnings": "Подтвердите предупреждения ниже, чтобы применить.",
     "versionMismatch": "{{key}} недоступен для UE {{version}}",
     "sgExceedsLimit": "{{key}}={{value}} выше лимита sg (макс. {{max}})",
-    "limitsPending": "Лимиты sg ещё загружаются: подождите перед применением",
-    "gpuPending": "Данные GPU ещё загружаются: подождите перед применением с Ray Tracing",
+    "limitsPending": "Лимиты sg еще загружаются: подождите перед применением",
+    "gpuPending": "Данные GPU еще загружаются: подождите перед применением с Ray Tracing",
     "sgRConflict": "Конфликт sg/r: {{sg}} перекрывается ручным r.*",
     "valueBelowMin": "{{key}}={{value}} ниже минимума {{min}}",
     "valueAboveMax": "{{key}}={{value}} выше максимума {{max}}",
     "shippedKeyRemoval": "{{key}} нельзя удалить: ключ был в ini игры при открытии",
     "combo": {
-      "rtLowShadows": "Ray Tracing включён при низком sg.ShadowQuality ({{shadows}}): возможны артефакты или просадка FPS",
-      "rtNoHardware": "Ray Tracing включён, но GPU не поддерживает RT в UE",
+      "rtLowShadows": "Ray Tracing включен при низком sg.ShadowQuality ({{shadows}}): возможны артефакты или просадка FPS",
+      "rtNoHardware": "Ray Tracing включен, но GPU не поддерживает RT в UE",
       "rtGpuUnknown": "Не удалось определить GPU: Ray Tracing может не работать на вашей видеокарте",
       "engineScalabilityDup": "{{key}} одновременно в Engine.ini и Scalability.ini: победит последний записанный",
       "streamingTexture": "Большой r.Streaming.PoolSize ({{pool}}) при низком sg.TextureQuality ({{texture}}): риск нехватки VRAM"

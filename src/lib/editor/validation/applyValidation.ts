@@ -30,7 +30,7 @@ export interface ValidateApplyContext {
   /** True when GPU query finished without data (e.g. invoke failure). */
   gpuUnavailable?: boolean;
   editableCategories: Set<string>;
-  /** Keys present in ini on first load of this game session — not removable. */
+  /** Keys present in ini on first load of this game session – not removable. */
   shippedIniKeys?: ReadonlySet<string>;
 }
 
@@ -159,7 +159,7 @@ export interface ValidateIniChangesContext {
   gpuPending?: boolean;
   gpuUnavailable?: boolean;
   engineEnabled: Set<string>;
-  /** Keys present in ini on first load of this game session — not removable. */
+  /** Keys present in ini on first load of this game session – not removable. */
   shippedIniKeys?: ReadonlySet<string>;
 }
 

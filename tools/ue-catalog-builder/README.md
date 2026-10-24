@@ -11,16 +11,16 @@ npm run catalog:test
 
 ## Layout
 
-- `build.py` — parser, multi-version merge, supplemental CVars
-- `extract/` — UE source extractors (`sg_from_cpp.py`, `gus_from_header.py`)
-- `tier_a/` — tier A expansion generators and v6 family modules
-- `analysis/` — catalog gap and coverage scripts
-- `fixtures/` — regenerate committed sample ini under `tools/ue-reference/fixtures/`
-- `shared/` — `ue_versions.json` and loader
-- `data/supplemental_cvars.json` — extra well-known CVars when snapshots are small
-- `generated/sg_registry_merged.json` — generated `sg.*` registry with version bounds
-- `generated/gus_registry_merged.json` — generated display/user settings registry
-- `test_build.py` — unit tests
+- `build.py` – parser, multi-version merge, supplemental CVars
+- `extract/` – UE source extractors (`sg_from_cpp.py`, `gus_from_header.py`)
+- `tier_a/` – tier A expansion generators and v6 family modules
+- `analysis/` – catalog gap and coverage scripts
+- `fixtures/` – regenerate committed sample ini under `tools/ue-reference/fixtures/`
+- `shared/` – `ue_versions.json` and loader
+- `data/supplemental_cvars.json` – extra well-known CVars when snapshots are small
+- `generated/sg_registry_merged.json` – generated `sg.*` registry with version bounds
+- `generated/gus_registry_merged.json` – generated display/user settings registry
+- `test_build.py` – unit tests
 
 ### Tier overlays
 

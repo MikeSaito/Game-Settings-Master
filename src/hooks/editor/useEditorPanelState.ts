@@ -33,7 +33,7 @@ export function useEditorPanelState(gameId: string | undefined, defaultPanel: Ed
         { replace: true },
       );
     }
-    // Panel state lives in sessionStorage — do not mirror it to URL hash (breaks library nav).
+    // Panel state lives in sessionStorage – do not mirror it to URL hash (breaks library nav).
     // eslint-disable-next-line react-hooks/exhaustive-deps -- init once per game open
   }, [gameId, defaultPanel]);
 

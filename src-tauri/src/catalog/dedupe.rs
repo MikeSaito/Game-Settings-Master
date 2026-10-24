@@ -38,7 +38,7 @@ fn param_match_score(
     }
 }
 
-/// One key in multiple GUS sections (SN2) — keep the match aligned with the catalog.
+/// One key in multiple GUS sections (SN2) – keep the match aligned with the catalog.
 pub(crate) fn dedupe_parameters_by_file_key(
     parameters: &mut Vec<GameParameter>,
     index: &CatalogIndex,

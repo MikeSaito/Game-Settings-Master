@@ -248,7 +248,7 @@ pub(super) fn plan_issues(
             {
                 warning(
                     "preset_memory",
-                    "Недостаточно выделенной видеопамяти или её объём неизвестен",
+                    "Недостаточно выделенной видеопамяти или ее объем неизвестен",
                     "Dedicated GPU memory is insufficient or unknown",
                 );
             }

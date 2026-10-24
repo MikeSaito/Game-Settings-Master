@@ -12,7 +12,7 @@
     "absent": "Absent",
     "empty": "Empty string",
     "delete": "Delete",
-    "wholeFile": "Whole file restore — linked rows are selected together",
+    "wholeFile": "Whole file restore – linked rows are selected together",
     "ack": "I have reviewed the warnings",
     "confirm": "Confirm and apply",
     "refresh": "Refresh diff",
@@ -88,7 +88,7 @@
     "nativePackage": "Registered Xbox game: launch through Windows"
   },
   "input": {
-    "title": "Controls — Input.ini",
+    "title": "Controls – Input.ini",
     "scope": "Edit classic bindings found in Input.ini. Ambiguous entries are read-only. Enhanced Input and game-specific formats are not yet supported.",
     "source": "File: {{path}}",
     "states": {

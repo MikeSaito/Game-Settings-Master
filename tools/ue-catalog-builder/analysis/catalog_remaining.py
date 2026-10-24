@@ -106,7 +106,7 @@ def main() -> None:
     for label, count in by_source.most_common():
         print(f"  {label}: {count}")
 
-    print(f"\n=== WITHOUT tier_a ({len(no_tier_a)}) — upgrade candidates ===")
+    print(f"\n=== WITHOUT tier_a ({len(no_tier_a)}) – upgrade candidates ===")
     pfx = Counter(
         x.split(".")[0] + "." + (x.split(".")[1] if "." in x else "")
         for x in no_tier_a
@@ -148,7 +148,7 @@ def main() -> None:
 
     print("\n=== OUT OF SCOPE (needs Epic clone / new UE tag) ===")
     print("  fixtures ~726 keys from BaseEngine.ini + BaseScalability.ini (4.27–5.8)")
-    print("  full Epic git clone can add 1000+ keys — see docs/epic-clone-setup.md")
+    print("  full Epic git clone can add 1000+ keys – see docs/epic-clone-setup.md")
     print("  UE 5.9+: add to tools/ue-catalog-builder/ue_versions.json + fetch")
 
 

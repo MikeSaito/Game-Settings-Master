@@ -8,7 +8,7 @@ export function isUeSentinelValue(value: string): boolean {
 
 export function formatParamDisplayValue(value: string): string {
   const v = value.trim();
-  if (!v) return "—";
+  if (!v) return "–";
   if (isUeSentinelValue(v)) {
     return i18n.t("common:paramSentinel");
   }

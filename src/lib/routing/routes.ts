@@ -19,7 +19,7 @@ export function parseGameRoute(pathname: string): {
   return { gameId: decodeURIComponent(match[1]), tab: "advanced" };
 }
 
-/** Legacy game URLs (wizard, reshade, backups) — redirect to `/advanced`. */
+/** Legacy game URLs (wizard, reshade, backups) – redirect to `/advanced`. */
 export function parseLegacyGameRoute(pathname: string): { gameId: string } | null {
   const match = pathname.match(/^\/game\/([^/]+)\/(wizard|reshade|backups)$/);
   if (!match) return null;

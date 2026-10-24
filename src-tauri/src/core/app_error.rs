@@ -19,7 +19,7 @@ pub struct AppInvokeError {
     pub message: String,
 }
 
-/// Internal alias — command handlers and helpers build structured invoke errors.
+/// Internal alias – command handlers and helpers build structured invoke errors.
 pub type AppError = AppInvokeError;
 
 impl AppInvokeError {
@@ -87,10 +87,10 @@ mod tests;
 pub fn running_game_ini_blocked(exe: &str) -> AppInvokeError {
     AppInvokeError::game_running(crate::i18n::t(
         &format!(
-            "Игра «{exe}» запущена. Закройте игру перед применением — иначе ini-файлы заблокированы."
+            "Игра «{exe}» запущена. Закройте игру перед применением – иначе ini-файлы заблокированы."
         ),
         &format!(
-            "Game «{exe}» is running. Close the game before applying changes — otherwise ini files are locked."
+            "Game «{exe}» is running. Close the game before applying changes – otherwise ini files are locked."
         ),
     ))
 }

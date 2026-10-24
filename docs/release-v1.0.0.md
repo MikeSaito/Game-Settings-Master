@@ -1,4 +1,4 @@
-# Game Settings Master v1.0.0 — Release Notes
+# Game Settings Master v1.0.0 – Release Notes
 
 [Русский](#русский) · [English](#english)
 
@@ -7,14 +7,14 @@
 ## Русский
 
 **Дата:** 2026-06  
-**Каталог:** 548 bundled reference keys (fixtures UE 4.27 + 5.4). Полный каталог 1000+ — [`docs/epic-clone-setup.md`](epic-clone-setup.md).
+**Каталог:** 548 bundled reference keys (fixtures UE 4.27 + 5.4). Полный каталог 1000+ – [`docs/epic-clone-setup.md`](epic-clone-setup.md).
 
 ### Advanced Editor
 
 - **Две зоны:** «Масштабируемость» (sg.*, GUS) и «Engine» (экспертный режим)
 - **Expert warning** RU/EN на вкладке Engine + badge «Эксперт»
-- **Фильтр «Рекомендуемые»** — `catalog_recommended` + эвристика; default ON
-- **Tier hints** для sg.*Quality — что меняет Low/Medium/High/Epic (из `scalability_tiers`)
+- **Фильтр «Рекомендуемые»** – `catalog_recommended` + эвристика; default ON
+- **Tier hints** для sg.*Quality – что меняет Low/Medium/High/Epic (из `scalability_tiers`)
 
 ### Каталог
 
@@ -50,14 +50,14 @@
 ## English
 
 **Date:** 2026-06  
-**Catalog:** 548 bundled reference keys (UE 4.27 + 5.4 fixtures). Full 1000+ catalog — [`docs/epic-clone-setup.md`](epic-clone-setup.md).
+**Catalog:** 548 bundled reference keys (UE 4.27 + 5.4 fixtures). Full 1000+ catalog – [`docs/epic-clone-setup.md`](epic-clone-setup.md).
 
 ### Advanced Editor
 
 - **Two zones:** Scalability (sg.*, GUS) and Engine (expert mode)
 - **Expert warning** RU/EN on Engine tab + Expert badge
-- **Recommended filter** — `catalog_recommended` + heuristics; default ON
-- **Tier hints** for sg.*Quality — UE preset tier CVars (from `scalability_tiers`)
+- **Recommended filter** – `catalog_recommended` + heuristics; default ON
+- **Tier hints** for sg.*Quality – UE preset tier CVars (from `scalability_tiers`)
 
 ### Catalog
 
@@ -73,7 +73,7 @@
 
 ### merge_stats (bundled)
 
-Same as above — 548 keys, 2 fixture sources.
+Same as above – 548 keys, 2 fixture sources.
 
 ### Other
 

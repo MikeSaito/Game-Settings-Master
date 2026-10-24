@@ -18,7 +18,7 @@ pub fn save_game_profile(profile: GameProfile) -> Result<(), AppInvokeError> {
         return Ok(());
     }
     Err(AppError::game_not_found(crate::i18n::t(
-        "Игра не найдена в сохранённых профилях или результате сканирования. Добавьте игру через библиотеку.",
+        "Игра не найдена в сохраненных профилях или результате сканирования. Добавьте игру через библиотеку.",
         "Game not found in saved profiles or scan results. Add the game via the library.",
     )))
 }

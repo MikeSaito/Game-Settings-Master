@@ -123,8 +123,8 @@ pub fn validate_config_dir(config_dir: &str) -> Result<PathBuf, String> {
     let gus = resolved.join("GameUserSettings.ini");
     if !ue_path_has_saved_segment(&resolved) && !gus.exists() {
         return Err(crate::i18n::t(
-            "Каталог не похож на UE Saved/Config — нужен GameUserSettings.ini или путь .../Saved/Config/Windows",
-            "Directory does not look like UE Saved/Config — GameUserSettings.ini or a .../Saved/Config/Windows path is required",
+            "Каталог не похож на UE Saved/Config – нужен GameUserSettings.ini или путь .../Saved/Config/Windows",
+            "Directory does not look like UE Saved/Config – GameUserSettings.ini or a .../Saved/Config/Windows path is required",
         ));
     }
 

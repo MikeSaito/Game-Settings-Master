@@ -144,7 +144,7 @@ pub fn select(adapters: &[GpuCapabilities], saved: Option<&str>) -> GpuCapabilit
         .unwrap_or_else(|| GpuCapabilities::from_gpu_name("Unknown GPU"));
     if saved.is_some() {
         gpu.selection_warning = Some(crate::i18n::t(
-            "Сохранённая GPU недоступна; используется автоматический выбор",
+            "Сохраненная GPU недоступна; используется автоматический выбор",
             "Saved GPU is unavailable; using automatic selection",
         ));
     }

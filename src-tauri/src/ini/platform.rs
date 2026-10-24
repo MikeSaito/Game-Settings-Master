@@ -90,7 +90,7 @@ fn preference_rank(path: &Path, order: &[&str]) -> usize {
 
 fn platform_preference_order(engine_family: Option<&str>) -> &'static [&'static str] {
     match engine_family {
-        // Saved/Config/Windows — typical UE5 path (Subnautica 2, etc.). Win64 is the exe folder, not config.
+        // Saved/Config/Windows – typical UE5 path (Subnautica 2, etc.). Win64 is the exe folder, not config.
         Some("ue5") => &["Windows", "WinGDK", "Win64", "WindowsNoEditor"],
         Some("ue4") => &["WindowsNoEditor", "Windows", "WinGDK", "Win64"],
         _ => &["Windows", "WindowsNoEditor", "WinGDK", "Win64"],
@@ -112,7 +112,7 @@ pub fn apply_target_dirs(config_dir: &Path, hints: &PlatformHints) -> Vec<PathBu
     vec![pick_platform_config_dir(&root, hints).unwrap_or_else(|| config_dir.to_path_buf())]
 }
 
-/// If the saved path is stale (another platform is newer) — return the current one.
+/// If the saved path is stale (another platform is newer) – return the current one.
 pub fn reconcile_config_dir(config_dir: &Path, hints: &PlatformHints) -> PathBuf {
     let Some(root) = config_root_from_platform_dir(config_dir) else {
         return config_dir.to_path_buf();

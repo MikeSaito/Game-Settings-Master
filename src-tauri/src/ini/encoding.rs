@@ -42,7 +42,7 @@ pub(crate) fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String
         let (chunks, remainder) = bytes[2..].as_chunks::<2>();
         if !remainder.is_empty() {
             return Err(crate::i18n::t(
-                "Повреждён UTF-16 INI: нечётное число байтов",
+                "Поврежден UTF-16 INI: нечетное число байтов",
                 "Invalid UTF-16 INI: odd byte count",
             ));
         }
@@ -52,7 +52,7 @@ pub(crate) fn decode_bytes(bytes: &[u8]) -> Result<(String, IniEncoding), String
             .collect();
         Ok((
             String::from_utf16(&units)
-                .map_err(|_| crate::i18n::t("Повреждён UTF-16 INI", "Invalid UTF-16 INI"))?,
+                .map_err(|_| crate::i18n::t("Поврежден UTF-16 INI", "Invalid UTF-16 INI"))?,
             IniEncoding::Utf16Le,
         ))
     } else if bytes.starts_with(&[0xFE, 0xFF]) {

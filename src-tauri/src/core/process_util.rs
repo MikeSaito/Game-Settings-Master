@@ -20,7 +20,7 @@ pub fn hidden_command(program: &str) -> std::process::Command {
     cmd
 }
 
-/// IDLE + background flag — blocks sync/scan IPC while the game is in the foreground.
+/// IDLE + background flag – blocks sync/scan IPC while the game is in the foreground.
 pub fn set_process_background_mode(background: bool) {
     APP_IN_BACKGROUND.store(background, Ordering::Relaxed);
     #[cfg(windows)]

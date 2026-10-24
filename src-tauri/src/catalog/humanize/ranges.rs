@@ -109,13 +109,13 @@ pub(crate) fn fill_generic_value_hint(param: &mut GameParameter) {
     }
     if param.value_type == "bool" {
         param.value_hint = Some(crate::i18n::t(
-            "True — вкл, False — выкл",
-            "True — on, False — off",
+            "True – вкл, False – выкл",
+            "True – on, False – off",
         ));
         return;
     }
     if param.value_type == "enum" {
-        param.value_hint = Some(crate::i18n::t("On — вкл, Off — выкл", "On — on, Off — off"));
+        param.value_hint = Some(crate::i18n::t("On – вкл, Off – выкл", "On – on, Off – off"));
         return;
     }
     if let (Some(min), Some(max)) = (&param.min, &param.max) {
@@ -139,8 +139,8 @@ pub(crate) fn infer_range_from_value(param: &mut GameParameter) {
 
     if param.value.trim() == "-1" || param.value.trim() == "-1.0" {
         param.value_hint = Some(crate::i18n::t(
-            "−1 — автоматически (движок/меню сами выбирают значение). Задайте число вручную, чтобы зафиксировать.",
-            "−1 — automatic (engine/menu chooses the value). Set a number manually to lock it in.",
+            "−1 – автоматически (движок/меню сами выбирают значение). Задайте число вручную, чтобы зафиксировать.",
+            "−1 – automatic (engine/menu chooses the value). Set a number manually to lock it in.",
         ));
         return;
     }

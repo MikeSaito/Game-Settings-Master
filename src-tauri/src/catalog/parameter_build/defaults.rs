@@ -41,7 +41,7 @@ pub(crate) fn catalog_default_value(entry: &ParameterCatalogEntry) -> String {
 }
 
 fn extract_hint_number(hint: &str) -> Option<String> {
-    let token = hint.split([',', '—', '-', ' ']).find_map(|part| {
+    let token = hint.split([',', '–', '-', ' ']).find_map(|part| {
         let t = part.trim();
         if t.parse::<f64>().is_ok() || t.parse::<i64>().is_ok() {
             Some(t.to_string())

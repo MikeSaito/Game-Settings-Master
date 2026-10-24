@@ -76,7 +76,7 @@ export interface ComboRuleContext {
   removals?: Record<string, Record<string, string[]>>;
 }
 
-/** Value that will be active after apply — respects engine ini toggles. */
+/** Value that will be active after apply – respects engine ini toggles. */
 function activeApplyValue(
   ctx: ComboRuleContext,
   key: string,

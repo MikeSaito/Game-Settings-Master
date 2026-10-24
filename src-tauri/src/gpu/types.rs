@@ -23,11 +23,11 @@ pub struct GpuCapabilities {
     pub selection_warning: Option<String>,
     pub name: String,
     pub vendor: GpuVendor,
-    /// DLSS / DLAA — GeForce RTX 20 series and newer (Tensor Cores).
+    /// DLSS / DLAA – GeForce RTX 20 series and newer (Tensor Cores).
     pub supports_dlss: bool,
-    /// DLSS Frame Generation — RTX 40 series and newer.
+    /// DLSS Frame Generation – RTX 40 series and newer.
     pub supports_dlss_fg: bool,
-    /// Hardware ray tracing in UE — GeForce RTX 20+.
+    /// Hardware ray tracing in UE – GeForce RTX 20+.
     pub supports_ray_tracing: bool,
 }
 

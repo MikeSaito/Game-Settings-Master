@@ -119,8 +119,8 @@ fn build_hint_lines(rows: &[ScalabilityTierRow], lang_en: bool) -> String {
 
 fn fallback_tier_hint_pair(key: &str) -> (Option<String>, Option<String>) {
     if key.eq_ignore_ascii_case("sg.ResolutionQuality") {
-        let ru = "Процент render scale (не индекс 0–4): 50% — экономия FPS, 100% — натив, 125%+ — supersampling";
-        let en = "Render scale percentage (not a 0–4 index): 50% — save FPS, 100% — native, 125%+ — supersampling";
+        let ru = "Процент render scale (не индекс 0–4): 50% – экономия FPS, 100% – натив, 125%+ – supersampling";
+        let en = "Render scale percentage (not a 0–4 index): 50% – save FPS, 100% – native, 125%+ – supersampling";
         return (Some(ru.to_string()), Some(en.to_string()));
     }
 

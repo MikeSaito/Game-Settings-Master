@@ -48,7 +48,7 @@ pub(crate) fn validate_install_dir_for_game(
     Ok(())
 }
 
-/// Строгая проверка для read/write IPC — путь должен совпадать с ожидаемым.
+/// Строгая проверка для read/write IPC – путь должен совпадать с ожидаемым.
 pub(crate) fn validate_config_dir_for_game(
     game_id: &str,
     config_dir: &str,
@@ -56,7 +56,7 @@ pub(crate) fn validate_config_dir_for_game(
     validate_config_dir_trust(game_id, config_dir, false)
 }
 
-/// Первая ручная привязка config_dir — допускает валидный UE-путь без auto-detect.
+/// Первая ручная привязка config_dir – допускает валидный UE-путь без auto-detect.
 pub(crate) fn validate_initial_config_dir_for_game(
     game_id: &str,
     config_dir: &str,
@@ -111,8 +111,8 @@ fn validate_config_dir_trust_profile(
         None if allow_manual_if_unknown => {}
         None => {
             return Err(AppError::validation(crate::i18n::t(
-                "config_dir для игры не задан — укажите папку конфигурации вручную",
-                "config_dir is not set for the game — specify the config folder manually",
+                "config_dir для игры не задан – укажите папку конфигурации вручную",
+                "config_dir is not set for the game – specify the config folder manually",
             )));
         }
     }

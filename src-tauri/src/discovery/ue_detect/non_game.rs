@@ -2,7 +2,7 @@ use std::path::Path;
 
 use super::markers::has_win64_shipping_exe;
 
-/// UE engine install, Fab Plugin, and other tools — not library games.
+/// UE engine install, Fab Plugin, and other tools – not library games.
 pub fn is_non_game_install(install_dir: &Path, display_name: &str, app_name: Option<&str>) -> bool {
     if is_tool_by_display_name(display_name) {
         return true;

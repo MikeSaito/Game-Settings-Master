@@ -93,7 +93,7 @@ pub fn is_allowed_restore_filename(name: &str) -> bool {
     false
 }
 
-/// Backup folder id from list/restore — no path separators or traversal.
+/// Backup folder id from list/restore – no path separators or traversal.
 pub fn is_safe_backup_id(id: &str) -> bool {
     if id.is_empty() || id.len() > 64 {
         return false;
@@ -102,7 +102,7 @@ pub fn is_safe_backup_id(id: &str) -> bool {
         .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
 }
 
-/// Process basename for running/kill checks — single filename, no path separators.
+/// Process basename for running/kill checks – single filename, no path separators.
 pub fn is_safe_exe_basename(name: &str) -> bool {
     let trimmed = name.trim();
     if trimmed.is_empty() || trimmed.len() > 260 {

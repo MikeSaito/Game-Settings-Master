@@ -4,7 +4,7 @@
     "title_en": "Hair strands (Groom)",
     "description": "Включает или настраивает рендер прядей волос через систему Groom в UE. 0: волосы упрощены или выкл. 1: полноценные strand-based волосы на персонажах. Очень тяжело для GPU; актуально только если игра использует Groom.",
     "description_en": "Enables or configures strand hair rendering via UE Groom. 0: hair simplified or off. 1: full strand-based hair on characters. Very GPU-heavy; only relevant if the game uses Groom.",
-    "impact": "Очень высокая нагрузка при включённых strand волосах.",
+    "impact": "Очень высокая нагрузка при включенных strand волосах.",
     "impact_en": "Very high load with strand hair enabled.",
     "min": "0",
     "max": "1",
@@ -16,7 +16,7 @@
   "r.HairStrands": {
     "title": "Strand-волосы (глобальный переключатель)",
     "title_en": "Hair strands global toggle",
-    "description": "Глобальный переключатель strand-based волос. 0: движок не рисует отдельные пряди. 1: включён рендер Groom/волос как прядей. На слабых GPU лучше 0, если игра это позволяет.",
+    "description": "Глобальный переключатель strand-based волос. 0: движок не рисует отдельные пряди. 1: включен рендер Groom/волос как прядей. На слабых GPU лучше 0, если игра это позволяет.",
     "description_en": "Global strand hair toggle. 0: engine does not draw individual hair strands. 1: Groom/strand hair rendering on. Prefer 0 on weak GPUs if the game allows.",
     "impact": "Очень высокая нагрузка.",
     "impact_en": "Very high load.",
@@ -30,7 +30,7 @@
   "r.Strands.DeepShadow": {
     "title": "Глубокие тени для волос",
     "title_en": "Hair deep shadows",
-    "description": "Включает более точные тени между прядями волос. 0: простые тени, быстрее. 1: объёмнее волосы, но заметно тяжелее для GPU.",
+    "description": "Включает более точные тени между прядями волос. 0: простые тени, быстрее. 1: объемнее волосы, но заметно тяжелее для GPU.",
     "description_en": "Enables more accurate shadows between hair strands. 0: simple shadows, faster. 1: fuller hair look but noticeably heavier on GPU.",
     "impact": "Высокая нагрузка на персонажах с Groom.",
     "impact_en": "High load on Groom characters.",
@@ -78,7 +78,7 @@
     "impact_en": "Lowering the value saves GPU.",
     "min": "0",
     "max": "1",
-    "value_hint": "0.5: разрежённые волосы",
+    "value_hint": "0.5: разреженные волосы",
     "value_hint_en": "0.5: thinner hair",
     "category": "Rendering",
     "value_type": "float"
@@ -100,7 +100,7 @@
   "r.MeshCardRepresentation.SkeletalMesh": {
     "title": "Card mesh для скелетных моделей",
     "title_en": "Skeletal mesh card representation",
-    "description": "Разрешает Lumen/card representation для анимированных персонажей. 0: только статика в card mesh. 1: персонажи участвуют в упрощённом GI/reflections через cards, но дороже.",
+    "description": "Разрешает Lumen/card representation для анимированных персонажей. 0: только статика в card mesh. 1: персонажи участвуют в упрощенном GI/reflections через cards, но дороже.",
     "description_en": "Allows Lumen/card representation for animated characters. 0: static meshes only in cards. 1: characters included in simplified GI/reflections via cards but costlier.",
     "impact": "Средняя–высокая в сценах с Lumen.",
     "impact_en": "Medium–high in Lumen scenes.",
@@ -154,9 +154,9 @@
     "value_type": "int"
   },
   "r.TranslucencyLightingVolume.Blur": {
-    "title": "Размытие объёма света для прозрачности",
+    "title": "Размытие объема света для прозрачности",
     "title_en": "Translucency lighting volume blur",
-    "description": "Насколько сильно размывается 3D-объём света для стекла и дыма. Выше: мягче освещение прозрачных объектов, меньше шума. Ниже: резче, но «зернистее».",
+    "description": "Насколько сильно размывается 3D-объем света для стекла и дыма. Выше: мягче освещение прозрачных объектов, меньше шума. Ниже: резче, но «зернистее».",
     "description_en": "How much the translucency lighting volume is blurred. Higher: softer transparent lighting, less noise. Lower: sharper but grainier.",
     "impact": "Средняя нагрузка там, где много стекла.",
     "impact_en": "Medium load where there is lots of glass.",
@@ -168,9 +168,9 @@
     "value_type": "int"
   },
   "r.TranslucencyLightingVolume.Dim": {
-    "title": "Затемнение объёма прозрачности",
+    "title": "Затемнение объема прозрачности",
     "title_en": "Translucency lighting volume dim",
-    "description": "Глобально приглушает яркость объёма освещения для полупрозрачных материалов. Полезно, если стекло и дым «пересвечены».",
+    "description": "Глобально приглушает яркость объема освещения для полупрозрачных материалов. Полезно, если стекло и дым «пересвечены».",
     "description_en": "Globally dims translucency lighting volume brightness. Useful if glass and smoke look blown out.",
     "impact": "Косметика, низкая нагрузка.",
     "impact_en": "Cosmetic, low load.",
@@ -212,7 +212,7 @@
   "r.VertexFoggingForOpaque": {
     "title": "Туман на вершинах непрозрачных объектов",
     "title_en": "Vertex fogging for opaque",
-    "description": "0: туман считается per-pixel (точнее). 1: упрощённый туман на вершинах: быстрее на слабых GPU, но «полосы» на больших полигонах.",
+    "description": "0: туман считается per-pixel (точнее). 1: упрощенный туман на вершинах: быстрее на слабых GPU, но «полосы» на больших полигонах.",
     "description_en": "0: per-pixel fog (more accurate). 1: simplified vertex fog: faster on weak GPUs but banding on large polygons.",
     "impact": "1 может дать FPS на слабом железе.",
     "impact_en": "1 may boost FPS on weak hardware.",
@@ -282,7 +282,7 @@
   "r.Spot.Resolution": {
     "title": "Spot lights: разрешение теней",
     "title_en": "Spot light shadow resolution",
-    "description": "Разрешение shadow map для прожекторов. Ниже: «мыльные» тени от фонарей. Выше: чётче, но сильно тяжелее при многих spot на сцене.",
+    "description": "Разрешение shadow map для прожекторов. Ниже: «мыльные» тени от фонарей. Выше: четче, но сильно тяжелее при многих spot на сцене.",
     "description_en": "Shadow map resolution for spot lights. Lower: blurry flashlight shadows. Higher: sharper but much heavier with many spots.",
     "impact": "Очень высокая при многих прожекторах.",
     "impact_en": "Very high with many spots.",
@@ -310,7 +310,7 @@
   "r.Spot.Intensity": {
     "title": "Spot lights: яркость",
     "title_en": "Spot lights intensity",
-    "description": "Глобальный множитель яркости всех прожекторов. 1: как в игре. Выше: «пережжённые» фонари. Ниже: темнее сцены с прожекторами.",
+    "description": "Глобальный множитель яркости всех прожекторов. 1: как в игре. Выше: «пережженные» фонари. Ниже: темнее сцены с прожекторами.",
     "description_en": "Global brightness multiplier for all spot lights. 1: as in game. Higher: blown-out lights. Lower: darker spotlight scenes.",
     "impact": "Косметика.",
     "impact_en": "Cosmetic.",
@@ -338,7 +338,7 @@
   "r.Spot.Size": {
     "title": "Spot lights: размер источника",
     "title_en": "Spot light source size",
-    "description": "Виртуальный размер прожектора: влияет на мягкость краёв тени (penumbra). Больше: мягче тени от фонарей. Меньше: резкие как от точечного источника.",
+    "description": "Виртуальный размер прожектора: влияет на мягкость краев тени (penumbra). Больше: мягче тени от фонарей. Меньше: резкие как от точечного источника.",
     "description_en": "Virtual spot size: affects shadow edge softness (penumbra). Larger: softer flashlight shadows. Smaller: hard like a point light.",
     "impact": "Средняя нагрузка.",
     "impact_en": "Medium load.",
@@ -394,7 +394,7 @@
   "r.Spot.Count": {
     "title": "Spot lights: число сэмплов",
     "title_en": "Spot lights sample count",
-    "description": "Сколько сэмплов используется при расчёте прожекторного света. Больше: плавнее, меньше артефактов. Меньше: быстрее.",
+    "description": "Сколько сэмплов используется при расчете прожекторного света. Больше: плавнее, меньше артефактов. Меньше: быстрее.",
     "description_en": "Samples used when evaluating spot lights. More: smoother, fewer artifacts. Fewer: faster.",
     "impact": "Средняя–высокая.",
     "impact_en": "Medium–high.",
@@ -408,7 +408,7 @@
   "r.Spot.Bias": {
     "title": "Spot lights: bias теней",
     "title_en": "Spot light shadow bias",
-    "description": "Смещение shadow map для прожекторов: убирает «акне» теней, но слишком большой bias даёт «висящие» тени.",
+    "description": "Смещение shadow map для прожекторов: убирает «акне» теней, но слишком большой bias дает «висящие» тени.",
     "description_en": "Shadow map bias for spots: removes shadow acne but too much bias causes floating shadows.",
     "impact": "Косметика теней.",
     "impact_en": "Shadow cosmetics.",
