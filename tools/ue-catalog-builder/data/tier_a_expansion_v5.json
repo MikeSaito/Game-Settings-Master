@@ -16,7 +16,7 @@
   "r.AllowStaticLighting": {
     "title": "Статическое освещение",
     "title_en": "Static lighting",
-    "description": "0: только динамический свет (медленнее, гибче). 1: baked static lighting разрешён: быстрее там, где карта запечена.",
+    "description": "0: только динамический свет (медленнее, гибче). 1: baked static lighting разрешен: быстрее там, где карта запечена.",
     "description_en": "0: dynamic lighting only (slower, flexible). 1: baked static lighting allowed: faster on baked maps.",
     "impact": "Сильно зависит от игры: не выключайте без причины.",
     "impact_en": "Highly game-dependent: don't disable without reason.",
@@ -86,7 +86,7 @@
   "r.ClearCoatNormal": {
     "title": "Clear coat normal maps",
     "title_en": "Clear coat normals",
-    "description": "0: упрощённые блики на лакированных/мокрых поверхностях. 1: полноценные clear coat normals: реалистичнее капоты, кожа, мокрый металл.",
+    "description": "0: упрощенные блики на лакированных/мокрых поверхностях. 1: полноценные clear coat normals: реалистичнее капоты, кожа, мокрый металл.",
     "description_en": "0: simplified highlights on lacquered/wet surfaces. 1: full clear coat normals: more realistic hoods, leather, wet metal.",
     "impact": "Низкая–средняя нагрузка.",
     "impact_en": "Low–medium load.",
@@ -114,7 +114,7 @@
   "r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque": {
     "title": "Sky Atmosphere: быстрый aerial perspective",
     "title_en": "Sky atmosphere fast aerial perspective",
-    "description": "0: полный расчёт aerial perspective для неба. 1: ускоренный LUT на непрозрачных поверхностях: быстрее, чуть менее точная дымка на горизонте.",
+    "description": "0: полный расчет aerial perspective для неба. 1: ускоренный LUT на непрозрачных поверхностях: быстрее, чуть менее точная дымка на горизонте.",
     "description_en": "0: full aerial perspective for sky. 1: fast LUT on opaque surfaces: faster, slightly less accurate horizon haze.",
     "impact": "Средняя на открытых картах.",
     "impact_en": "Medium on open maps.",
@@ -128,7 +128,7 @@
   "r.Lumen.FinalGatherQuality": {
     "title": "Lumen: качество final gather",
     "title_en": "Lumen final gather quality",
-    "description": "Детализация финального сбора непрямого света Lumen. 0: быстро, шумнее в тёмных углах. 4: чище GI, но сильно тяжелее.",
+    "description": "Детализация финального сбора непрямого света Lumen. 0: быстро, шумнее в темных углах. 4: чище GI, но сильно тяжелее.",
     "description_en": "Lumen indirect light final gather detail. 0: fast, noisier dark corners. 4: cleaner GI but much heavier.",
     "impact": "Очень высокая при 3–4.",
     "impact_en": "Very high at 3–4.",
@@ -198,7 +198,7 @@
   "r.Nanite.ImpostorDistanceScale": {
     "title": "Nanite: дистанция impostor",
     "title_en": "Nanite impostor distance scale",
-    "description": "Множитель расстояния, на котором Nanite подменяет дальние объекты упрощёнными impostor. Больше 1: дольше полная детализация (красивее, тяжелее).",
+    "description": "Множитель расстояния, на котором Nanite подменяет дальние объекты упрощенными impostor. Больше 1: дольше полная детализация (красивее, тяжелее).",
     "description_en": "Distance multiplier before Nanite swaps distant objects to impostors. Above 1: full detail held longer (prettier, heavier).",
     "impact": "Сильно на open world.",
     "impact_en": "Strong on open world.",
@@ -226,7 +226,7 @@
   "r.Shadow.PreShadowResolutionFactor": {
     "title": "Тени: множитель pre-shadow",
     "title_en": "Pre-shadow resolution factor",
-    "description": "Масштабирует разрешение pre-shadow pass. 1: норма. Ниже: быстрее, мыльнее тени. Выше: чётче, тяжелее.",
+    "description": "Масштабирует разрешение pre-shadow pass. 1: норма. Ниже: быстрее, мыльнее тени. Выше: четче, тяжелее.",
     "description_en": "Scales pre-shadow pass resolution. 1: normal. Lower: faster, blurrier shadows. Higher: sharper, heavier.",
     "impact": "Средняя–высокая.",
     "impact_en": "Medium–high.",
@@ -296,7 +296,7 @@
   "r.Audio.Quality": {
     "title": "Качество аудио",
     "title_en": "Audio quality",
-    "description": "0: упрощённая обработка звука. 1: полное качество: reverb, occlusion, HRTF если поддерживается.",
+    "description": "0: упрощенная обработка звука. 1: полное качество: reverb, occlusion, HRTF если поддерживается.",
     "description_en": "0: simplified audio processing. 1: full quality: reverb, occlusion, HRTF if supported.",
     "impact": "Низкая на FPS.",
     "impact_en": "Low FPS impact.",
@@ -324,7 +324,7 @@
   "t.MaxAnisotropy": {
     "title": "Анизотропия (t.*)",
     "title_en": "Anisotropy (t.* namespace)",
-    "description": "Аналог r.MaxAnisotropy в namespace t.*: чёткость текстур под углом. 16: рекомендуется.",
+    "description": "Аналог r.MaxAnisotropy в namespace t.*: четкость текстур под углом. 16: рекомендуется.",
     "description_en": "Like r.MaxAnisotropy in t.* namespace: angled texture sharpness. 16 recommended.",
     "impact": "Почти без FPS.",
     "impact_en": "Almost no FPS cost.",
@@ -380,7 +380,7 @@
   "t.Streaming": {
     "title": "Стриминг текстур (t.*)",
     "title_en": "Texture streaming (t.*)",
-    "description": "0: упрощённый стриминг. 1: полный pipeline подгрузки текстур.",
+    "description": "0: упрощенный стриминг. 1: полный pipeline подгрузки текстур.",
     "description_en": "0: simplified streaming. 1: full texture streaming pipeline.",
     "impact": "Фризы и VRAM.",
     "impact_en": "Hitches and VRAM.",
@@ -772,7 +772,7 @@
   "r.Cloud.Enable": {
     "title": "облака неба: вкл/выкл",
     "title_en": "sky clouds: on/off",
-    "description": "0: облака неба выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: облака неба выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: sky clouds off. 1: on: affects the final post-processed image.",
     "impact": "Средняя на открытом небе.",
     "impact_en": "Medium under open sky.",
@@ -828,7 +828,7 @@
   "r.Cloud.Count": {
     "title": "облака неба: плотность",
     "title_en": "sky clouds: density",
-    "description": "Число или плотность слоёв облака неба. Выше: гуще облака, тяжелее для GPU.",
+    "description": "Число или плотность слоев облака неба. Выше: гуще облака, тяжелее для GPU.",
     "description_en": "Layer count or density for sky clouds. Higher: denser clouds, heavier GPU.",
     "impact": "Средняя на открытом небе.",
     "impact_en": "Medium under open sky.",
@@ -842,7 +842,7 @@
   "fx.AmbientOcclusion.Enable": {
     "title": "затенение в углах (SSAO): вкл/выкл",
     "title_en": "corner ambient occlusion (SSAO): on/off",
-    "description": "0: затенение в углах (SSAO) выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: затенение в углах (SSAO) выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: corner ambient occlusion (SSAO) off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -896,9 +896,9 @@
     "value_type": "float"
   },
   "fx.AntiAliasing.Enable": {
-    "title": "сглаживание краёв (AA): вкл/выкл",
+    "title": "сглаживание краев (AA): вкл/выкл",
     "title_en": "edge anti-aliasing (AA): on/off",
-    "description": "0: сглаживание краёв (AA) выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: сглаживание краев (AA) выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: edge anti-aliasing (AA) off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -910,9 +910,9 @@
     "value_type": "int"
   },
   "fx.AntiAliasing.Quality": {
-    "title": "сглаживание краёв (AA): качество",
+    "title": "сглаживание краев (AA): качество",
     "title_en": "edge anti-aliasing (AA): quality",
-    "description": "Детализация сглаживание краёв (AA). 0: грубо и быстро. 4: максимум качества, тяжелее для GPU.",
+    "description": "Детализация сглаживание краев (AA). 0: грубо и быстро. 4: максимум качества, тяжелее для GPU.",
     "description_en": "edge anti-aliasing (AA) detail. 0: coarse and fast. 4: max quality, heavier GPU.",
     "impact": "Средняя нагрузка на постобработку.",
     "impact_en": "Medium post-process load.",
@@ -924,9 +924,9 @@
     "value_type": "int"
   },
   "fx.AntiAliasing.Intensity": {
-    "title": "сглаживание краёв (AA): интенсивность",
+    "title": "сглаживание краев (AA): интенсивность",
     "title_en": "edge anti-aliasing (AA): intensity",
-    "description": "Сила сглаживание краёв (AA). 0: почти не видно. 1: как задумано. Выше 1: перебор.",
+    "description": "Сила сглаживание краев (AA). 0: почти не видно. 1: как задумано. Выше 1: перебор.",
     "description_en": "edge anti-aliasing (AA) strength. 0: barely visible. 1: as intended. Above 1: overdone.",
     "impact": "В основном косметика.",
     "impact_en": "Mostly cosmetic.",
@@ -938,9 +938,9 @@
     "value_type": "float"
   },
   "fx.AntiAliasing.Max": {
-    "title": "сглаживание краёв (AA): верхний предел",
+    "title": "сглаживание краев (AA): верхний предел",
     "title_en": "edge anti-aliasing (AA): max clamp",
-    "description": "Ограничивает максимальный вклад сглаживание краёв (AA): полезно против пересвета в ini.",
+    "description": "Ограничивает максимальный вклад сглаживание краев (AA): полезно против пересвета в ini.",
     "description_en": "Caps maximum edge anti-aliasing (AA): useful against blown-out ini values.",
     "impact": "Косметика.",
     "impact_en": "Cosmetic.",
@@ -954,7 +954,7 @@
   "fx.Bloom.Enable": {
     "title": "свечение ярких источников (bloom): вкл/выкл",
     "title_en": "bright source bloom: on/off",
-    "description": "0: свечение ярких источников (bloom) выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: свечение ярких источников (bloom) выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: bright source bloom off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1010,7 +1010,7 @@
   "fx.ChromaticAberration.Enable": {
     "title": "хроматическая аберрация: вкл/выкл",
     "title_en": "chromatic aberration: on/off",
-    "description": "0: хроматическая аберрация выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: хроматическая аберрация выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: chromatic aberration off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1066,7 +1066,7 @@
   "fx.ColorGrading.Enable": {
     "title": "цветокоррекция: вкл/выкл",
     "title_en": "color grading: on/off",
-    "description": "0: цветокоррекция выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: цветокоррекция выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: color grading off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1122,7 +1122,7 @@
   "fx.DepthOfField.Enable": {
     "title": "глубина резкости (DoF): вкл/выкл",
     "title_en": "depth of field (DoF): on/off",
-    "description": "0: глубина резкости (DoF) выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: глубина резкости (DoF) выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: depth of field (DoF) off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1176,9 +1176,9 @@
     "value_type": "float"
   },
   "fx.Grain.Enable": {
-    "title": "плёночное зерно: вкл/выкл",
+    "title": "пленочное зерно: вкл/выкл",
     "title_en": "film grain: on/off",
-    "description": "0: плёночное зерно выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: пленочное зерно выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: film grain off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1190,9 +1190,9 @@
     "value_type": "int"
   },
   "fx.Grain.Quality": {
-    "title": "плёночное зерно: качество",
+    "title": "пленочное зерно: качество",
     "title_en": "film grain: quality",
-    "description": "Детализация плёночное зерно. 0: грубо и быстро. 4: максимум качества, тяжелее для GPU.",
+    "description": "Детализация пленочное зерно. 0: грубо и быстро. 4: максимум качества, тяжелее для GPU.",
     "description_en": "film grain detail. 0: coarse and fast. 4: max quality, heavier GPU.",
     "impact": "Средняя нагрузка на постобработку.",
     "impact_en": "Medium post-process load.",
@@ -1204,9 +1204,9 @@
     "value_type": "int"
   },
   "fx.Grain.Intensity": {
-    "title": "плёночное зерно: интенсивность",
+    "title": "пленочное зерно: интенсивность",
     "title_en": "film grain: intensity",
-    "description": "Сила плёночное зерно. 0: почти не видно. 1: как задумано. Выше 1: перебор.",
+    "description": "Сила пленочное зерно. 0: почти не видно. 1: как задумано. Выше 1: перебор.",
     "description_en": "film grain strength. 0: barely visible. 1: as intended. Above 1: overdone.",
     "impact": "В основном косметика.",
     "impact_en": "Mostly cosmetic.",
@@ -1218,9 +1218,9 @@
     "value_type": "float"
   },
   "fx.Grain.Max": {
-    "title": "плёночное зерно: верхний предел",
+    "title": "пленочное зерно: верхний предел",
     "title_en": "film grain: max clamp",
-    "description": "Ограничивает максимальный вклад плёночное зерно: полезно против пересвета в ini.",
+    "description": "Ограничивает максимальный вклад пленочное зерно: полезно против пересвета в ini.",
     "description_en": "Caps maximum film grain: useful against blown-out ini values.",
     "impact": "Косметика.",
     "impact_en": "Cosmetic.",
@@ -1234,7 +1234,7 @@
   "fx.LensFlares.Enable": {
     "title": "блики объектива: вкл/выкл",
     "title_en": "lens flares: on/off",
-    "description": "0: блики объектива выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: блики объектива выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: lens flares off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1290,7 +1290,7 @@
   "fx.MotionBlur.Enable": {
     "title": "размытие в движении: вкл/выкл",
     "title_en": "motion blur: on/off",
-    "description": "0: размытие в движении выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: размытие в движении выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: motion blur off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1346,7 +1346,7 @@
   "fx.SceneFringe.Enable": {
     "title": "цветовая окантовка по краям: вкл/выкл",
     "title_en": "scene color fringe: on/off",
-    "description": "0: цветовая окантовка по краям выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: цветовая окантовка по краям выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: scene color fringe off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1402,7 +1402,7 @@
   "fx.ScreenSpaceReflections.Enable": {
     "title": "экранные отражения (SSR): вкл/выкл",
     "title_en": "screen-space reflections (SSR): on/off",
-    "description": "0: экранные отражения (SSR) выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: экранные отражения (SSR) выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: screen-space reflections (SSR) off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1458,7 +1458,7 @@
   "fx.Tonemapper.Enable": {
     "title": "тонмаппер / HDR: вкл/выкл",
     "title_en": "tonemapper / HDR: on/off",
-    "description": "0: тонмаппер / HDR выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: тонмаппер / HDR выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: tonemapper / HDR off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",
@@ -1514,7 +1514,7 @@
   "fx.Vignette.Enable": {
     "title": "виньетирование по краям: вкл/выкл",
     "title_en": "edge vignette: on/off",
-    "description": "0: виньетирование по краям выключен. 1: включён: влияет на финальную картинку после рендера.",
+    "description": "0: виньетирование по краям выключен. 1: включен: влияет на финальную картинку после рендера.",
     "description_en": "0: edge vignette off. 1: on: affects the final post-processed image.",
     "impact": "Зависит от эффекта: от косметики до средней нагрузки.",
     "impact_en": "Depends on effect: cosmetic to medium load.",

@@ -1,4 +1,4 @@
-# Epic Unreal Engine clone — setup / Настройка клона UE
+# Epic Unreal Engine clone – setup / Настройка клона UE
 
 [English](#english) · [Русский](#русский)
 
@@ -19,10 +19,10 @@ Game Settings Master builds `ue_reference_index.json` from Epic’s **BaseEngine
 ### Clone
 
 ```powershell
-# Option A — GitHub CLI (after Epic linked your account)
+# Option A – GitHub CLI (after Epic linked your account)
 gh repo clone EpicGames/UnrealEngine D:\UnrealEngine
 
-# Option B — git (use Epic credentials / PAT when prompted)
+# Option B – git (use Epic credentials / PAT when prompted)
 git clone https://github.com/EpicGames/UnrealEngine.git D:\UnrealEngine
 cd D:\UnrealEngine
 git lfs install
@@ -49,7 +49,7 @@ npm run catalog:test
 
 `-AutoTags` resolves release tags per version (4.27, 5.0 … 5.8) and extracts **BaseEngine.ini**, **BaseScalability.ini**, and registry source files via `git archive` (fast; no full worktree checkout).
 
-**Expected catalog size:** ~725 merged unique CVars across 10 UE versions (BaseEngine.ini + BaseScalability.ini). Not 1000+ — most engine defaults live in tier sections and dedupe on merge.
+**Expected catalog size:** ~725 merged unique CVars across 10 UE versions (BaseEngine.ini + BaseScalability.ini). Not 1000+ – most engine defaults live in tier sections and dedupe on merge.
 
 ### Troubleshooting
 
@@ -66,7 +66,7 @@ npm run catalog:test
 
 ### Зачем
 
-Каталог `ue_reference_index.json` собирается из **BaseEngine.ini** / **BaseScalability.ini** Epic для UE **4.27–5.8**. В релизе — **bundled catalog** (**767** reference keys, tier A/B overlays). Локальный git-клон Epic нужен для пересборки каталога из исходников движка.
+Каталог `ue_reference_index.json` собирается из **BaseEngine.ini** / **BaseScalability.ini** Epic для UE **4.27–5.8**. В релизе – **bundled catalog** (**767** reference keys, tier A/B overlays). Локальный git-клон Epic нужен для пересборки каталога из исходников движка.
 
 ### Что нужно
 
@@ -100,7 +100,7 @@ npm run catalog:test
 .\scripts\validate-catalog-stats.ps1
 ```
 
-`-AutoTags` — release-теги и `git archive` (быстро, без полного worktree).
+`-AutoTags` – release-теги и `git archive` (быстро, без полного worktree).
 
 ### Частые ошибки
 

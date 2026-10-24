@@ -72,7 +72,7 @@
   "r.AnisotropicMaterials": {
     "title": "Anisotropic materials",
     "title_en": "Anisotropic materials",
-    "description": "0: упрощённый shading анизотропных материалов (бархат, CD). 1: полный anisotropic BRDF: реалистичнее, чуть тяжелее.",
+    "description": "0: упрощенный shading анизотропных материалов (бархат, CD). 1: полный anisotropic BRDF: реалистичнее, чуть тяжелее.",
     "description_en": "0: simplified anisotropic material shading (velvet, brushed metal). 1: full anisotropic BRDF: more realistic, slightly heavier.",
     "impact": "Низкая–средняя.",
     "impact_en": "Low–medium.",
@@ -296,7 +296,7 @@
   "r.DFShadowQuality": {
     "title": "Distance field shadow quality",
     "title_en": "Distance field shadow quality",
-    "description": "Качество теней через mesh distance fields (0–4). Выше: чётче DF shadows на foliage и динамике, тяжелее.",
+    "description": "Качество теней через mesh distance fields (0–4). Выше: четче DF shadows на foliage и динамике, тяжелее.",
     "description_en": "Mesh distance field shadow quality (0–4). Higher: sharper DF shadows on foliage/dynamics, heavier.",
     "impact": "Высокая при DF shadows.",
     "impact_en": "High with DF shadows.",
@@ -352,7 +352,7 @@
   "r.Decal.Enable": {
     "title": "декали: вкл/выкл",
     "title_en": "decals: enable",
-    "description": "0: декали отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: декали отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: decals off or simplified (FPS). 1: full rendering.",
     "impact": "Низкая–средняя на уровнях с декалями.",
     "impact_en": "Low–medium on decal-heavy levels.",
@@ -422,7 +422,7 @@
   "r.DefaultFeature.AntiAliasing": {
     "title": "Default feature: AA",
     "title_en": "Default feature anti-aliasing",
-    "description": "Default anti-aliasing для проекта. 0: без AA по умолчанию. 1: TAA/FXAA включён в default renderer.",
+    "description": "Default anti-aliasing для проекта. 0: без AA по умолчанию. 1: TAA/FXAA включен в default renderer.",
     "description_en": "Default project anti-aliasing. 0: no default AA. 1: TAA/FXAA enabled in default renderer.",
     "impact": "Средняя.",
     "impact_en": "Medium.",
@@ -520,7 +520,7 @@
   "r.Directional.Enable": {
     "title": "направленный свет (солнце): вкл/выкл",
     "title_en": "directional light (sun): enable",
-    "description": "0: направленный свет (солнце) отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: направленный свет (солнце) отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: directional light (sun) off or simplified (FPS). 1: full rendering.",
     "impact": "Сильно на открытых картах и тенях.",
     "impact_en": "Strong on open maps and shadows.",
@@ -646,7 +646,7 @@
   "r.DisableDistortion": {
     "title": "Disable distortion",
     "title_en": "Disable distortion",
-    "description": "0: heat haze/distortion effects разрешены. 1: все distortion выкл: FPS на сценах с огнём/магией, плоский heat shimmer.",
+    "description": "0: heat haze/distortion effects разрешены. 1: все distortion выкл: FPS на сценах с огнем/магией, плоский heat shimmer.",
     "description_en": "0: heat haze/distortion allowed. 1: all distortion off: FPS on fire/magic scenes, flat heat shimmer.",
     "impact": "Низкая–средняя.",
     "impact_en": "Low–medium.",
@@ -792,7 +792,7 @@
     "impact_en": "Cosmetics and view distance.",
     "min": "0",
     "max": "0.1",
-    "value_hint": "0.02: лёгкая дымка",
+    "value_hint": "0.02: легкая дымка",
     "value_hint_en": "0.02: light haze",
     "category": "Rendering",
     "value_type": "float"
@@ -828,7 +828,7 @@
   "r.Fog.InscatteringColor": {
     "title": "Туман: цвет inscattering",
     "title_en": "Fog inscattering color",
-    "description": "Цвет рассеянного света в тумане (RGB множители). Влияет на «синеву» или «жёлтый» туман на закате.",
+    "description": "Цвет рассеянного света в тумане (RGB множители). Влияет на «синеву» или «желтый» туман на закате.",
     "description_en": "Inscattered light color in fog (RGB multipliers). Affects blue or golden sunset fog tint.",
     "impact": "Косметика.",
     "impact_en": "Cosmetic.",
@@ -940,7 +940,7 @@
   "r.Foliage.Enable": {
     "title": "растительность (foliage): вкл/выкл",
     "title_en": "foliage vegetation: enable",
-    "description": "0: растительность (foliage) отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: растительность (foliage) отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: foliage vegetation off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя–высокая в лесах.",
     "impact_en": "Medium–high in forests.",
@@ -1220,7 +1220,7 @@
   "r.Grass.Enable": {
     "title": "трава: вкл/выкл",
     "title_en": "grass: enable",
-    "description": "0: трава отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: трава отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: grass off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя на лугах и open world.",
     "impact_en": "Medium on meadows and open world.",
@@ -1444,7 +1444,7 @@
   "r.HeterogeneousVolumes.Shadows.Precision": {
     "title": "Hetero volumes: точность теней",
     "title_en": "Heterogeneous volumes shadow precision",
-    "description": "Точность теней от heterogeneous volumes. Выше: чётче self-shadowing дыма, дороже.",
+    "description": "Точность теней от heterogeneous volumes. Выше: четче self-shadowing дыма, дороже.",
     "description_en": "Shadow precision for heterogeneous volumes. Higher: sharper volumetric self-shadowing, costlier.",
     "impact": "Высокая.",
     "impact_en": "High.",
@@ -1556,7 +1556,7 @@
   "r.Landscape.Enable": {
     "title": "ландшафт: вкл/выкл",
     "title_en": "landscape terrain: enable",
-    "description": "0: ландшафт отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: ландшафт отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: landscape terrain off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя–высокая на open world.",
     "impact_en": "Medium–high on open world.",
@@ -1752,7 +1752,7 @@
   "r.Level.Enable": {
     "title": "стриминг уровня: вкл/выкл",
     "title_en": "level streaming: enable",
-    "description": "0: стриминг уровня отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: стриминг уровня отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: level streaming off or simplified (FPS). 1: full rendering.",
     "impact": "CPU и фризы подгрузки.",
     "impact_en": "CPU and streaming hitches.",
@@ -1920,7 +1920,7 @@
   "r.Light.Enable": {
     "title": "освещение: вкл/выкл",
     "title_en": "lighting: enable",
-    "description": "0: освещение отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: освещение отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: lighting off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя–высокая на ночных уровнях.",
     "impact_en": "Medium–high on night levels.",
@@ -2088,7 +2088,7 @@
   "r.Lumen.Reflections.DownsampleFactor": {
     "title": "Lumen отражения: downsample",
     "title_en": "Lumen reflections downsample",
-    "description": "Делитель разрешения для Lumen reflections. 1: полное разрешение, чётче отражения. 2+: быстрее, но «мыльнее» отражения на воде и металле.",
+    "description": "Делитель разрешения для Lumen reflections. 1: полное разрешение, четче отражения. 2+: быстрее, но «мыльнее» отражения на воде и металле.",
     "description_en": "Resolution divisor for Lumen reflections. 1: full res, sharper reflections. 2+: faster but blurrier on water and metal.",
     "impact": "Средняя–высокая при активных Lumen reflections.",
     "impact_en": "Medium–high with Lumen reflections on.",
@@ -2368,7 +2368,7 @@
   "r.Lumen.ScreenProbeGather.TwoSidedFoliageBackfaceDiffuse": {
     "title": "Lumen GI: двусторонняя листва",
     "title_en": "Lumen GI two-sided foliage backface",
-    "description": "0: упрощённый diffuse с обратной стороны листвы. 1: полный backface diffuse: реалистичнее просвечивание листьев.",
+    "description": "0: упрощенный diffuse с обратной стороны листвы. 1: полный backface diffuse: реалистичнее просвечивание листьев.",
     "description_en": "0: simplified foliage backface diffuse. 1: full backface: more realistic leaf translucency.",
     "impact": "Средняя в лесах.",
     "impact_en": "Medium in forests.",
@@ -2466,7 +2466,7 @@
   "r.Lumen.TranslucencyVolume.TraceFromVolume": {
     "title": "Lumen translucency: trace from volume",
     "title_en": "Lumen translucency trace from volume",
-    "description": "0: упрощённый свет для translucency. 1: трассировка из volume: реалистичнее дым и стекло, тяжелее.",
+    "description": "0: упрощенный свет для translucency. 1: трассировка из volume: реалистичнее дым и стекло, тяжелее.",
     "description_en": "0: simplified translucency lighting. 1: trace from volume: more realistic smoke and glass, heavier.",
     "impact": "Высокая при 1.",
     "impact_en": "High at 1.",
@@ -2634,7 +2634,7 @@
   "r.Mesh.Enable": {
     "title": "меши и LOD: вкл/выкл",
     "title_en": "mesh LOD: enable",
-    "description": "0: меши и LOD отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: меши и LOD отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: mesh LOD off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя на плотных уровнях.",
     "impact_en": "Medium on dense levels.",
@@ -2900,7 +2900,7 @@
   "r.Moon.Enable": {
     "title": "лунный свет: вкл/выкл",
     "title_en": "moonlight: enable",
-    "description": "0: лунный свет отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: лунный свет отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: moonlight off or simplified (FPS). 1: full rendering.",
     "impact": "Низкая–средняя ночью.",
     "impact_en": "Low–medium at night.",
@@ -3110,7 +3110,7 @@
   "r.Ocean.Enable": {
     "title": "океан: вкл/выкл",
     "title_en": "ocean: enable",
-    "description": "0: океан отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: океан отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: ocean off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя–высокая на водных уровнях.",
     "impact_en": "Medium–high on water levels.",
@@ -3348,7 +3348,7 @@
   "r.Point.Enable": {
     "title": "точечный свет: вкл/выкл",
     "title_en": "point light: enable",
-    "description": "0: точечный свет отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: точечный свет отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: point light off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя в интерьерах.",
     "impact_en": "Medium indoors.",
@@ -3502,7 +3502,7 @@
   "r.Reflection.CaptureResolution": {
     "title": "Reflection captures: разрешение",
     "title_en": "Reflection capture resolution",
-    "description": "Разрешение cubemap reflection captures. 128: быстро и грубо. 512+: чётче зеркала и лужи, больше VRAM.",
+    "description": "Разрешение cubemap reflection captures. 128: быстро и грубо. 512+: четче зеркала и лужи, больше VRAM.",
     "description_en": "Reflection capture cubemap resolution. 128: fast and coarse. 512+: sharper mirrors and puddles, more VRAM.",
     "impact": "VRAM и качество отражений.",
     "impact_en": "VRAM and reflection quality.",
@@ -3530,7 +3530,7 @@
   "r.Reflection.MaxRoughness": {
     "title": "Reflections: max roughness",
     "title_en": "Reflection max roughness",
-    "description": "Максимальная roughness, при которой ещё считаются отражения. Ниже: меньше матовых отражений, выше FPS.",
+    "description": "Максимальная roughness, при которой еще считаются отражения. Ниже: меньше матовых отражений, выше FPS.",
     "description_en": "Max roughness still receiving reflections. Lower: fewer matte reflections, more FPS.",
     "impact": "Средняя.",
     "impact_en": "Medium.",
@@ -3670,7 +3670,7 @@
   "r.Render.Enable": {
     "title": "общий рендер: вкл/выкл",
     "title_en": "general rendering: enable",
-    "description": "0: общий рендер отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: общий рендер отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: general rendering off or simplified (FPS). 1: full rendering.",
     "impact": "Зависит от параметра.",
     "impact_en": "Depends on parameter.",
@@ -3936,7 +3936,7 @@
   "r.Scene.Enable": {
     "title": "рендер сцены: вкл/выкл",
     "title_en": "scene rendering: enable",
-    "description": "0: рендер сцены отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: рендер сцены отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: scene rendering off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя–высокая.",
     "impact_en": "Medium–high.",
@@ -4202,7 +4202,7 @@
   "r.Shadow.Virtual.ResolutionLodBiasDirectional": {
     "title": "VSM: LOD bias солнца",
     "title_en": "VSM directional resolution LOD bias",
-    "description": "Смещает LOD разрешения VSM для направленного света (солнце). Выше: чётче тени вдали, тяжелее. Ниже: быстрее, мыльнее на горизонте.",
+    "description": "Смещает LOD разрешения VSM для направленного света (солнце). Выше: четче тени вдали, тяжелее. Ниже: быстрее, мыльнее на горизонте.",
     "description_en": "Biases VSM resolution LOD for directional light (sun). Higher: sharper distant shadows, heavier. Lower: faster, blurrier horizon.",
     "impact": "Сильно на открытых картах.",
     "impact_en": "Strong on open maps.",
@@ -4230,7 +4230,7 @@
   "r.Shadow.Virtual.ResolutionLodBiasLocal": {
     "title": "VSM: LOD bias локальных теней",
     "title_en": "VSM local resolution LOD bias",
-    "description": "LOD bias разрешения VSM для point/spot света. Выше: чётче тени от фонарей, выше нагрузка.",
+    "description": "LOD bias разрешения VSM для point/spot света. Выше: четче тени от фонарей, выше нагрузка.",
     "description_en": "VSM resolution LOD bias for point/spot lights. Higher: sharper lamp shadows, higher load.",
     "impact": "Средняя в интерьерах.",
     "impact_en": "Medium indoors.",
@@ -4356,7 +4356,7 @@
   "r.Skeletal.Enable": {
     "title": "скелетные меши: вкл/выкл",
     "title_en": "skeletal meshes: enable",
-    "description": "0: скелетные меши отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: скелетные меши отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: skeletal meshes off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя на уровнях с NPC.",
     "impact_en": "Medium on NPC-heavy levels.",
@@ -4566,7 +4566,7 @@
   "r.Sky.Enable": {
     "title": "небо: вкл/выкл",
     "title_en": "sky: enable",
-    "description": "0: небо отключён или упрощён (FPS). 1: полная отрисовка.",
+    "description": "0: небо отключен или упрощен (FPS). 1: полная отрисовка.",
     "description_en": "0: sky off or simplified (FPS). 1: full rendering.",
     "impact": "Средняя на открытом небе.",
     "impact_en": "Medium under open sky.",
@@ -4734,7 +4734,7 @@
   "r.SkyAtmosphere.FastSkyLUT": {
     "title": "Sky Atmosphere: быстрый sky LUT",
     "title_en": "Sky atmosphere fast sky LUT",
-    "description": "0: полный расчёт неба. 1: ускоренный sky LUT: быстрее на open world, чуть менее точный закат.",
+    "description": "0: полный расчет неба. 1: ускоренный sky LUT: быстрее на open world, чуть менее точный закат.",
     "description_en": "0: full sky evaluation. 1: fast sky LUT: faster open world, slightly less accurate sunsets.",
     "impact": "Средняя на открытых картах.",
     "impact_en": "Medium on open maps.",
@@ -4874,7 +4874,7 @@
   "r.SkyQuality": {
     "title": "Sky quality",
     "title_en": "Sky quality",
-    "description": "Общий уровень качества неба (0–4). Ниже: упрощённый sky rendering. Выше: детальнее sun/sky/atmosphere.",
+    "description": "Общий уровень качества неба (0–4). Ниже: упрощенный sky rendering. Выше: детальнее sun/sky/atmosphere.",
     "description_en": "Overall sky quality (0–4). Lower: simplified sky rendering. Higher: finer sun/sky/atmosphere.",
     "impact": "Средняя на open world.",
     "impact_en": "Medium on open world.",
@@ -4900,9 +4900,9 @@
     "value_type": "float"
   },
   "r.Star.Bias": {
-    "title": "звёздное небо: bias",
+    "title": "звездное небо: bias",
     "title_en": "starfield: bias",
-    "description": "Bias сэмплинга звёздное небо: против артефактов.",
+    "description": "Bias сэмплинга звездное небо: против артефактов.",
     "description_en": "starfield sampling bias: against artifacts.",
     "impact": "Низкая ночью.",
     "impact_en": "Low at night.",
@@ -4914,9 +4914,9 @@
     "value_type": "float"
   },
   "r.Star.Count": {
-    "title": "звёздное небо: число сэмплов",
+    "title": "звездное небо: число сэмплов",
     "title_en": "starfield: sample count",
-    "description": "Число сэмплов звёздное небо. Больше: плавнее.",
+    "description": "Число сэмплов звездное небо. Больше: плавнее.",
     "description_en": "starfield sample count. More: smoother.",
     "impact": "Низкая ночью.",
     "impact_en": "Low at night.",
@@ -4944,7 +4944,7 @@
   "r.Streaming.Boost": {
     "title": "Streaming: boost приоритет",
     "title_en": "Streaming priority boost",
-    "description": "Множитель приоритета подгрузки текстур. Выше 1: агрессивнее stream-in (быстрее чёткие текстуры, больше IO/VRAM).",
+    "description": "Множитель приоритета подгрузки текстур. Выше 1: агрессивнее stream-in (быстрее четкие текстуры, больше IO/VRAM).",
     "description_en": "Texture streaming priority multiplier. Above 1: more aggressive stream-in (sharper textures faster, more IO/VRAM).",
     "impact": "VRAM и фризы.",
     "impact_en": "VRAM and hitches.",
@@ -5210,7 +5210,7 @@
   "r.VolumetricFog.GridSizeZ": {
     "title": "Volumetric fog: grid Z",
     "title_en": "Volumetric fog grid size Z",
-    "description": "Число слоёв volumetric fog по глубине. Больше: точнее туман по высоте, больше VRAM и GPU.",
+    "description": "Число слоев volumetric fog по глубине. Больше: точнее туман по высоте, больше VRAM и GPU.",
     "description_en": "Volumetric fog depth slices. More: finer height fog, more VRAM and GPU.",
     "impact": "Очень высокая.",
     "impact_en": "Very high.",

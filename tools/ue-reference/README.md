@@ -1,7 +1,7 @@
 # UE reference snapshots (local only)
 
 Epic **Unreal Engine** ships default config templates as `BaseEngine.ini` and `BaseScalability.ini`.
-Game Settings Master uses them **only as a local build input** — not shipped as Epic source trees.
+Game Settings Master uses them **only as a local build input** – not shipped as Epic source trees.
 
 ## Supported UE versions
 

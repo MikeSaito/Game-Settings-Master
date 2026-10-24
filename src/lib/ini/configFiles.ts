@@ -1,5 +1,5 @@
 /**
- * UE config ini filenames — keep in sync with
+ * UE config ini filenames – keep in sync with
  * `src-tauri/src/fs_util/path_safety.rs` (ALLOWED_CONFIG_INI_FILES, OVERRIDE_INI_FILES).
  */
 export const GAME_USER_SETTINGS_INI = "GameUserSettings.ini";

@@ -1,4 +1,4 @@
-# Game Settings Master v1.0.4 — Release Notes
+# Game Settings Master v1.0.4 – Release Notes
 
 [Русский](#русский) · [English](#english)
 
@@ -7,28 +7,28 @@
 ## Русский
 
 **Дата:** 2026-07-01  
-**Тип:** minor — качество, E2E, конфликты sg/r, crash reports, синхронизация ini
+**Тип:** minor – качество, E2E, конфликты sg/r, crash reports, синхронизация ini
 
 ### Новое
 
-- **E2E (Playwright):** три сценария в CI — apply/restore из Basic, разрешение конфликта sg/r с применением, сброс override ini из бэкапов (`e2e/`, `src/e2e/mockInvoke.ts`, `playwright.config.ts`)
-- **Opt-in crash reports:** локальное сохранение отчётов об ошибках без behavior tracking — Rust-модуль `crash_report/`, UI в настройках (`CrashReportsSection`), `ErrorBoundary` с отправкой stack trace при согласии пользователя
-- **Список всех crash reports:** в настройках — все сохранённые отчёты (не только последний), GitHub / Copy на каждой строке
-- **Actionable UI sg ↔ r.\*:** панель конфликтов (`SgEngineConflictPanel`) — tier preview, «сбросить r.\*, оставить sg.\*», i18n RU/EN
+- **E2E (Playwright):** три сценария в CI – apply/restore из Basic, разрешение конфликта sg/r с применением, сброс override ini из бэкапов (`e2e/`, `src/e2e/mockInvoke.ts`, `playwright.config.ts`)
+- **Opt-in crash reports:** локальное сохранение отчетов об ошибках без behavior tracking – Rust-модуль `crash_report/`, UI в настройках (`CrashReportsSection`), `ErrorBoundary` с отправкой stack trace при согласии пользователя
+- **Список всех crash reports:** в настройках – все сохраненные отчеты (не только последний), GitHub / Copy на каждой строке
+- **Actionable UI sg ↔ r.\*:** панель конфликтов (`SgEngineConflictPanel`) – tier preview, «сбросить r.\*, оставить sg.\*», i18n RU/EN
 - **Workspace badge:** бейдж «только GUS» когда нет override ini (Engine / Scalability / Game / Input / DeviceProfiles)
 - **Единый канон ini-файлов:** Rust `ALLOWED_CONFIG_INI_FILES` / `OVERRIDE_INI_FILES` в `path_safety.rs`, зеркало на frontend в `src/lib/ini/configFiles.ts`; `get_game_config` читает все 6 ini
 - **Ini toggle в редакторе:** переключатель для Engine.ini, Scalability.ini, Game.ini (не только GUS)
 
 ### Исправления и качество
 
-- **Flaky catalog test:** cache reuse проверяется через `Arc::ptr_eq` без глобального счётчика сборок
+- **Flaky catalog test:** cache reuse проверяется через `Arc::ptr_eq` без глобального счетчика сборок
 - **Removals на Basic panel:** `buildCustomChanges` учитывает removals для Scalability/Game.ini; фильтр панели внутри функции (full draft для removals)
 - **Pending keys конфликтов:** removals не считаются active override при детекте sg/r
-- **Prefix matching sg→r:** `sgQualityToRPrefix` + `matchesSgRPrefixFamily` — не ловит посторонние ключи вроде `r.TextureStreamingPoolSize`
+- **Prefix matching sg→r:** `sgQualityToRPrefix` + `matchesSgRPrefixFamily` – не ловит посторонние ключи вроде `r.TextureStreamingPoolSize`
 - **ErrorBoundary:** `componentStack` в payload; «saved» только после успешного submit crash report
-- **Backups UI:** кнопка «Удалить Engine / Scalability ini» вместо «Сброс (только GUS)»; в описании — полный список override ini включая DeviceProfiles
-- **Landing CSP:** meta CSP для production; Metrika — `mc.yandex.ru`, `yastatic.net`, `*.yandex.ru/net`
-- **IDE:** `.vscode/settings.json` — `typescript.tsdk` → `node_modules/typescript/lib` (убирает ложную ошибку `ignoreDeprecations: "6.0"`)
+- **Backups UI:** кнопка «Удалить Engine / Scalability ini» вместо «Сброс (только GUS)»; в описании – полный список override ini включая DeviceProfiles
+- **Landing CSP:** meta CSP для production; Metrika – `mc.yandex.ru`, `yastatic.net`, `*.yandex.ru/net`
+- **IDE:** `.vscode/settings.json` – `typescript.tsdk` → `node_modules/typescript/lib` (убирает ложную ошибку `ignoreDeprecations: "6.0"`)
 
 ### Ревью перед релизом
 
@@ -53,7 +53,7 @@
 
 ### Установщик
 
-`Game-Settings-Master_1.0.4_x64-setup.exe` — через GitHub Actions (`workflow_dispatch`) после push тега/релиза.
+`Game-Settings-Master_1.0.4_x64-setup.exe` – через GitHub Actions (`workflow_dispatch`) после push тега/релиза.
 
 ### Ключевые файлы изменений
 
@@ -70,14 +70,14 @@
 ## English
 
 **Date:** 2026-07-01  
-**Type:** minor — quality, E2E, sg/r conflicts, crash reports, ini sync
+**Type:** minor – quality, E2E, sg/r conflicts, crash reports, ini sync
 
 ### New
 
-- **E2E (Playwright):** three CI scenarios — basic apply/restore, sg/r conflict resolution + apply, override ini reset from backups (`e2e/`, `src/e2e/mockInvoke.ts`, `playwright.config.ts`)
-- **Opt-in crash reports:** local error reports without behavior tracking — Rust `crash_report/`, settings UI (`CrashReportsSection`), `ErrorBoundary` with stack trace when the user opts in
+- **E2E (Playwright):** three CI scenarios – basic apply/restore, sg/r conflict resolution + apply, override ini reset from backups (`e2e/`, `src/e2e/mockInvoke.ts`, `playwright.config.ts`)
+- **Opt-in crash reports:** local error reports without behavior tracking – Rust `crash_report/`, settings UI (`CrashReportsSection`), `ErrorBoundary` with stack trace when the user opts in
 - **All crash reports list:** settings show every saved report, not only the latest, with per-row GitHub / Copy actions
-- **Actionable sg ↔ r.\* UI:** conflict panel (`SgEngineConflictPanel`) — tier preview, “reset r.\*, keep sg.\*”, RU/EN i18n
+- **Actionable sg ↔ r.\* UI:** conflict panel (`SgEngineConflictPanel`) – tier preview, “reset r.\*, keep sg.\*”, RU/EN i18n
 - **Workspace badge:** “GUS only” badge when no override ini files are present
 - **Single ini canon:** Rust `ALLOWED_CONFIG_INI_FILES` / `OVERRIDE_INI_FILES` in `path_safety.rs`, mirrored in `src/lib/ini/configFiles.ts`; `get_game_config` reads all six ini files
 - **Ini toggle in editor:** Engine.ini, Scalability.ini, Game.ini (not GUS-only)
@@ -87,11 +87,11 @@
 - **Flaky catalog test:** cache reuse verified via `Arc::ptr_eq` without a global build counter
 - **Basic panel removals:** `buildCustomChanges` handles Scalability/Game.ini removals; panel filter applied inside the function (full draft for removals)
 - **Conflict pending keys:** removals are not counted as active overrides in sg/r detection
-- **sg→r prefix matching:** `sgQualityToRPrefix` + `matchesSgRPrefixFamily` — avoids false positives like `r.TextureStreamingPoolSize`
+- **sg→r prefix matching:** `sgQualityToRPrefix` + `matchesSgRPrefixFamily` – avoids false positives like `r.TextureStreamingPoolSize`
 - **ErrorBoundary:** `componentStack` in payload; “saved” only after successful crash report submit
 - **Backups UI:** button “Remove Engine / Scalability ini” instead of “Reset (GUS only)”; full override ini list including DeviceProfiles in copy
-- **Landing CSP:** production meta CSP; Metrika — `mc.yandex.ru`, `yastatic.net`, `*.yandex.ru/net`
-- **IDE:** `.vscode/settings.json` — `typescript.tsdk` → fixes spurious `ignoreDeprecations: "6.0"` IDE warning
+- **Landing CSP:** production meta CSP; Metrika – `mc.yandex.ru`, `yastatic.net`, `*.yandex.ru/net`
+- **IDE:** `.vscode/settings.json` – `typescript.tsdk` → fixes spurious `ignoreDeprecations: "6.0"` IDE warning
 
 ### Pre-release review
 
@@ -116,7 +116,7 @@
 
 ### Installer
 
-`Game-Settings-Master_1.0.4_x64-setup.exe` — via GitHub Actions (`workflow_dispatch`) after pushing the release.
+`Game-Settings-Master_1.0.4_x64-setup.exe` – via GitHub Actions (`workflow_dispatch`) after pushing the release.
 
 ### Key changed areas
 

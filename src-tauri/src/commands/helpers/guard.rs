@@ -35,8 +35,8 @@ fn guard_trusted_config_dir(
         return Ok(());
     }
     Err(AppError::validation(crate::i18n::t(
-        "Для доступа к конфигу Unreal Engine укажите game_id — без него путь не проверяется",
-        "Specify game_id to access Unreal Engine config — without it the path is not validated",
+        "Для доступа к конфигу Unreal Engine укажите game_id – без него путь не проверяется",
+        "Specify game_id to access Unreal Engine config – without it the path is not validated",
     )))
 }
 

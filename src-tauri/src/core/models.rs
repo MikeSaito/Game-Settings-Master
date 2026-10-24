@@ -107,7 +107,7 @@ pub struct GameParameter {
     #[serde(default)]
     pub default_value: Option<String>,
     /// Interactive control type in the manual editor: "slider" | "toggle" | "select" | "stepper" | "text".
-    /// None — frontend infers from value_type/min/max.
+    /// None – frontend infers from value_type/min/max.
     #[serde(default)]
     pub ui_control: Option<String>,
     /// Step for slider/stepper.

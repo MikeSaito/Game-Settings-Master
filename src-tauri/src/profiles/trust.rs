@@ -97,7 +97,7 @@ pub fn validate_profile_paths(profile: &GameProfile) -> Result<(), String> {
     })?;
     if is_disposable_install_path(&canonical) {
         return Err(crate::i18n::t(
-            "Нельзя сохранить игру с путём установки во временной папке",
+            "Нельзя сохранить игру с путем установки во временной папке",
             "Cannot save a game with an install path in a temporary folder",
         ));
     }
@@ -127,7 +127,7 @@ pub fn resolve_trusted_profile(profile: &GameProfile) -> Result<GameProfile, Str
         .ok_or_else(|| {
             crate::i18n::t(
                 &format!(
-                    "Игра '{}' не найдена в сохранённых профилях или результате сканирования. Добавьте игру вручную.",
+                    "Игра '{}' не найдена в сохраненных профилях или результате сканирования. Добавьте игру вручную.",
                     profile.id
                 ),
                 &format!(
@@ -162,7 +162,7 @@ pub fn ensure_known_game_id(game_id: &str) -> Result<(), String> {
         Ok(())
     } else {
         Err(crate::i18n::t(
-            &format!("Игра '{id}' не найдена в сохранённых профилях или результате сканирования"),
+            &format!("Игра '{id}' не найдена в сохраненных профилях или результате сканирования"),
             &format!("Game '{id}' was not found in saved profiles or scan results"),
         ))
     }

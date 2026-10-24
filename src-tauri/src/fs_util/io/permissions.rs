@@ -35,9 +35,9 @@ pub fn format_io_error(
 fn io_error_hint(err: &std::io::Error) -> (&'static str, &'static str) {
     match err.raw_os_error() {
         Some(5) => (
-            ". Доступ запрещён. Полностью закройте игру и лаунчер (Steam/Epic), отключите \
-             игровые оверлеи (Steam/Discord/NVIDIA) и проверьте антивирус. Если игра в защищённой \
-             папке (Program Files) — запустите приложение от имени администратора. \
+            ". Доступ запрещен. Полностью закройте игру и лаунчер (Steam/Epic), отключите \
+             игровые оверлеи (Steam/Discord/NVIDIA) и проверьте антивирус. Если игра в защищенной \
+             папке (Program Files) – запустите приложение от имени администратора. \
              Также снимите атрибут «Только чтение» с файла.",
             ". Access denied. Fully close the game and launcher (Steam/Epic), disable \
              game overlays (Steam/Discord/NVIDIA), and check your antivirus. If the game is in a \
@@ -45,8 +45,8 @@ fn io_error_hint(err: &std::io::Error) -> (&'static str, &'static str) {
              Also remove the Read-only attribute from the file.",
         ),
         Some(32) => (
-            ". Файл занят другим процессом — закройте игру, лаунчер и оверлеи, затем повторите.",
-            ". The file is in use by another process — close the game, launcher, and overlays, then try again.",
+            ". Файл занят другим процессом – закройте игру, лаунчер и оверлеи, затем повторите.",
+            ". The file is in use by another process – close the game, launcher, and overlays, then try again.",
         ),
         _ => ("", ""),
     }

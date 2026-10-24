@@ -13,7 +13,7 @@ Game Settings Master собирает знания о параметрах Unrea
 
 Приоритет данных: curated JSON → metadata из Epic source → reference index → auto-guess.
 
-Ключи, найденные в ini игрока, всегда показываются как `present_in_ini`. Если для них нет каталога, приложение создаёт synthetic row: `known=false`, `editable=true`, категория угадывается по имени ключа и секции. Сложные структурные значения вроде key bindings остаются read-only, чтобы не сломать вложенный формат игры.
+Ключи, найденные в ini игрока, всегда показываются как `present_in_ini`. Если для них нет каталога, приложение создает synthetic row: `known=false`, `editable=true`, категория угадывается по имени ключа и секции. Сложные структурные значения вроде key bindings остаются read-only, чтобы не сломать вложенный формат игры.
 
 Почему `sg.*` не парсятся из `BaseScalability.ini`: официальные группы качества регистрируются в C++ (`Engine/Source/Runtime/Engine/Private/Scalability.cpp`) через `TEXT("sg.ShadowQuality")` и похожие CVars. `BaseScalability.ini` в основном хранит tier mapping: какие `r.*` применяются на Low/Medium/High/Epic.
 
@@ -25,7 +25,7 @@ Game-specific параметры (`DLSS*`, `FSR*`, `TSR*`, `XeSS*`, `RayTracing*
 
 **Базовое** редактирует только слой `GameUserSettings.ini`: `sg.*`, display/window/audio и game-specific ключи, которые уже лежат в GUS. Такой apply не должен создавать `Engine.ini`.
 
-**Расширенное** редактирует низкоуровневые `Engine.ini`, `Game.ini`, `Scalability.ini` и `r.*` overrides. Эти ключи могут конфликтовать с `sg.*`: например, `sg.ShadowQuality=3` задаёт tier теней, а ручной `r.Shadow*` override может частично переопределить этот tier. UI показывает warning chip для таких пересечений.
+**Расширенное** редактирует низкоуровневые `Engine.ini`, `Game.ini`, `Scalability.ini` и `r.*` overrides. Эти ключи могут конфликтовать с `sg.*`: например, `sg.ShadowQuality=3` задает tier теней, а ручной `r.Shadow*` override может частично переопределить этот tier. UI показывает warning chip для таких пересечений.
 
 ## English
 
@@ -54,7 +54,7 @@ For a detected `engine_version` (UE 4.27–5.8), `get_game_parameters` returns:
 
 1. Every key found in the player's ini (`present_in_ini=true`)
 2. All bundled curated entries (human RU/EN)
-3. Every reference index entry where `reference_applies_to_version` is true (full version slice — not all 726 keys for every game)
+3. Every reference index entry where `reference_applies_to_version` is true (full version slice – not all 726 keys for every game)
 
 Typical counts per UE version (see `merge_stats.json` → `applicable_by_version`): **~595 (4.27)** … **~661 (5.4)** … **~706 (5.8)**.
 

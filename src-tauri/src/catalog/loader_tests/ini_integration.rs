@@ -3,7 +3,7 @@ use std::fs;
 
 #[test]
 fn curated_scalability_entries_have_ui_controls() {
-    // Catalog comes from bundled scalability.json (by_full_id — bundled wins),
+    // Catalog comes from bundled scalability.json (by_full_id – bundled wins),
     // so curated fields reach GameParameter regardless of remote cache.
     let dir = tempfile::tempdir().unwrap();
     fs::write(

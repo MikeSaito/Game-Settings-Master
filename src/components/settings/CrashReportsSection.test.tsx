@@ -58,6 +58,6 @@ describe("CrashReportsSection", () => {
     renderSection();
     expect(await screen.findByText("First crash")).toBeInTheDocument();
     expect(screen.getByText("Second crash")).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /copy report|скопировать отчёт/i })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /copy report|скопировать отчет/i })).toHaveLength(2);
   });
 });

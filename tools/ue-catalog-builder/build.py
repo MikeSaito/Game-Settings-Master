@@ -136,6 +136,8 @@ def normalize_display_text(text: str) -> str:
         .replace("\u201d", '"')
         .replace("\u2014", " - ")
         .replace("\u2013", " - ")
+        .replace("\u0451", "\u0435")
+        .replace("\u0401", "\u0415")
         .replace("\u2192", " -> ")
     )
 
@@ -502,7 +504,7 @@ def pick_nearest_default(m: MergedEntry, version: str = "5.4") -> str:
         return m.defaults_by_version[version]
     if m.defaults_by_version:
         return next(iter(m.defaults_by_version.values()))
-    return "—"
+    return "–"
 
 
 def tier_c_auto_description(

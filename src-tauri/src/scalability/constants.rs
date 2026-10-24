@@ -13,7 +13,7 @@ pub const QUALITY_INDEX_GROUPS: &[&str] = &[
     "CloudsQuality",
 ];
 
-/// Render scale in percent — not a 0–4 index.
+/// Render scale in percent – not a 0–4 index.
 pub const RESOLUTION_SCALE_KEY: &str = "sg.ResolutionQuality";
 
 /// Standard UE maximum: 0=Low, 1=Medium, 2=High, 3=Epic, 4=Cinematic.

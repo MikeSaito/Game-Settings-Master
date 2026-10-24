@@ -2,7 +2,7 @@
   "r.Lumen.FinalGatherMethod": {
     "title": "Метод финального сбора света Lumen",
     "title_en": "Lumen final gather method",
-    "description": "Выбирает, как Lumen собирает непрямой свет в финальном проходе. 0: быстрее, но шумнее в тёмных углах. 1: точнее и стабильнее картинка, особенно в интерьерах с отражениями. Меняйте только если знаете, что игра использует Lumen GI.",
+    "description": "Выбирает, как Lumen собирает непрямой свет в финальном проходе. 0: быстрее, но шумнее в темных углах. 1: точнее и стабильнее картинка, особенно в интерьерах с отражениями. Меняйте только если знаете, что игра использует Lumen GI.",
     "description_en": "Chooses how Lumen gathers indirect light in the final pass. 0: faster but noisier in dark corners. 1: more accurate and stable image, especially indoors with reflections. Change only if you know the game uses Lumen GI.",
     "impact": "Средняя–высокая нагрузка. Заметно в помещениях с Lumen.",
     "impact_en": "Medium–high load. Noticeable indoors with Lumen.",
@@ -18,7 +18,7 @@
     "title_en": "Lumen: RT hit lighting",
     "description": "Разрешает Lumen использовать трассировку лучей на GPU для точного освещения контактов (hit lighting). 0: только программные методы, быстрее на картах без RT. 1: точнее блики и тени от Lumen, но требует RTX/RDNA2+.",
     "description_en": "Allows Lumen to use GPU ray tracing for accurate contact lighting (hit lighting). 0: software paths only, faster on non-RT GPUs. 1: sharper Lumen highlights and shadows but needs RTX/RDNA2+.",
-    "impact": "Очень высокая нагрузка при включённом RT.",
+    "impact": "Очень высокая нагрузка при включенном RT.",
     "impact_en": "Very high load when RT is enabled.",
     "min": "0",
     "max": "1",
@@ -44,7 +44,7 @@
   "r.Lumen.ScreenProbeGather.ShortRangeAO.DownsampleFactor": {
     "title": "Lumen: детализация короткого AO",
     "title_en": "Lumen short-range AO downsample",
-    "description": "Насколько грубо считается короткая затенённость (AO) рядом с объектами в Lumen. Больше: быстрее, но менее чёткие углы и щели. Меньше: мягче и точнее контактные тени, но тяжелее для GPU.",
+    "description": "Насколько грубо считается короткая затененность (AO) рядом с объектами в Lumen. Больше: быстрее, но менее четкие углы и щели. Меньше: мягче и точнее контактные тени, но тяжелее для GPU.",
     "description_en": "How coarsely Lumen computes short-range ambient occlusion near objects. Higher: faster but softer corners and gaps. Lower: smoother, more accurate contact shading but heavier on GPU.",
     "impact": "Средняя нагрузка в сценах с Lumen GI.",
     "impact_en": "Medium load in Lumen GI scenes.",
@@ -58,7 +58,7 @@
   "r.Lumen.ScreenProbeGather.ShortRangeAO.FoliageOcclusionStrength": {
     "title": "Lumen: затенение листвы (AO)",
     "title_en": "Lumen foliage AO strength",
-    "description": "Сила затенения между листьями и травой в Lumen. 0: трава и кусты выглядят «плоско», без объёма. Выше: гуще тени внутри листвы, реалистичнее, но может затемнить лесные локации.",
+    "description": "Сила затенения между листьями и травой в Lumen. 0: трава и кусты выглядят «плоско», без объема. Выше: гуще тени внутри листвы, реалистичнее, но может затемнить лесные локации.",
     "description_en": "How strongly Lumen shades between leaves and grass. 0: foliage looks flat without depth. Higher: denser inner foliage shadows, more realistic but can darken forest areas.",
     "impact": "Средняя нагрузка в лесах и полях.",
     "impact_en": "Medium load in forests and fields.",
@@ -72,7 +72,7 @@
   "r.Lumen.ScreenProbeGather.ShortRangeAO.HorizonSearch.SliceCount": {
     "title": "Lumen: точность AO у горизонта",
     "title_en": "Lumen horizon AO slice count",
-    "description": "Сколько «срезов» использует Lumen при поиске затенённости у горизонта и больших поверхностей. Больше: плавнее переход свет/тень на склонах и полах. Меньше: быстрее, но возможны полосы и резкие границы.",
+    "description": "Сколько «срезов» использует Lumen при поиске затененности у горизонта и больших поверхностей. Больше: плавнее переход свет/тень на склонах и полах. Меньше: быстрее, но возможны полосы и резкие границы.",
     "description_en": "How many slices Lumen uses when searching horizon and large-surface occlusion. More: smoother light/shadow on slopes and floors. Fewer: faster but possible banding and hard edges.",
     "impact": "Средняя нагрузка на открытых картах.",
     "impact_en": "Medium load on open maps.",
@@ -114,7 +114,7 @@
   "r.Lumen.TranslucencyVolume.SpatialFilter": {
     "title": "Lumen: сглаживание света в полупрозрачности",
     "title_en": "Lumen translucency spatial filter",
-    "description": "Насколько сильно Lumen размывает свет внутри объёмов полупрозрачности. Выше: меньше шума и «зернистости» в дыме и стекле, но мягче детали. Ниже: резче, но шумнее.",
+    "description": "Насколько сильно Lumen размывает свет внутри объемов полупрозрачности. Выше: меньше шума и «зернистости» в дыме и стекле, но мягче детали. Ниже: резче, но шумнее.",
     "description_en": "How much Lumen blurs light inside translucent volumes. Higher: less noise and grain in smoke and glass but softer detail. Lower: sharper but noisier.",
     "impact": "Низкая–средняя нагрузка.",
     "impact_en": "Low–medium load.",
@@ -142,7 +142,7 @@
   "r.LumenScene.SurfaceCache.CardMaxResolution": {
     "title": "Lumen: макс. разрешение карточек поверхности",
     "title_en": "Lumen surface card max resolution",
-    "description": "Максимальная детализация «карточек»: маленьких кусочков поверхности, по которым Lumen считает отражённый свет. Выше: чётче GI на мелких деталях и углах. Ниже: быстрее, но «мыльнее» непрямой свет.",
+    "description": "Максимальная детализация «карточек»: маленьких кусочков поверхности, по которым Lumen считает отраженный свет. Выше: четче GI на мелких деталях и углах. Ниже: быстрее, но «мыльнее» непрямой свет.",
     "description_en": "Maximum detail of surface cards: small surface patches Lumen uses for bounced light. Higher: sharper GI on fine detail and corners. Lower: faster but blurrier indirect light.",
     "impact": "Высокая нагрузка в детализированных сценах.",
     "impact_en": "High load in detailed scenes.",
@@ -156,7 +156,7 @@
   "r.LumenScene.SurfaceCache.CardMinResolution": {
     "title": "Lumen: мин. разрешение карточек поверхности",
     "title_en": "Lumen surface card min resolution",
-    "description": "Нижний предел детализации карточек Lumen. Если слишком низко: дальние стены и полы теряют мелкий отражённый свет. Если слишком высоко: растёт нагрузка без заметной пользы на больших плоскостях.",
+    "description": "Нижний предел детализации карточек Lumen. Если слишком низко: дальние стены и полы теряют мелкий отраженный свет. Если слишком высоко: растет нагрузка без заметной пользы на больших плоскостях.",
     "description_en": "Lower bound for Lumen surface card detail. Too low: distant walls and floors lose fine bounced light. Too high: extra cost with little benefit on large flat areas.",
     "impact": "Средняя нагрузка.",
     "impact_en": "Medium load.",
@@ -184,7 +184,7 @@
   "r.MegaLights.DownsampleMode": {
     "title": "MegaLights: режим понижения разрешения",
     "title_en": "MegaLights downsample mode",
-    "description": "Как MegaLights (массовое освещение UE5.4+) рендерит с пониженным разрешением для скорости. 0: полное разрешение, тяжелее. Выше: быстрее, но мягче и менее чёткие множественные источники света.",
+    "description": "Как MegaLights (массовое освещение UE5.4+) рендерит с пониженным разрешением для скорости. 0: полное разрешение, тяжелее. Выше: быстрее, но мягче и менее четкие множественные источники света.",
     "description_en": "How MegaLights (UE5.4+ mass lighting) renders at reduced resolution for speed. 0: full resolution, heavier. Higher: faster but softer, less crisp many-light scenes.",
     "impact": "Очень высокая нагрузка без downsample.",
     "impact_en": "Very high load without downsample.",
@@ -280,9 +280,9 @@
     "value_type": "int"
   },
   "r.MegaLights.Volume.GridPixelSize": {
-    "title": "MegaLights: размер ячейки объёмной сетки",
+    "title": "MegaLights: размер ячейки объемной сетки",
     "title_en": "MegaLights volume grid pixel size",
-    "description": "Размер одной ячейки 3D-сетки MegaLights в пикселях экрана. Больше: грубее свет в объёме, быстрее. Меньше: детальнее volumetric lighting, но сильно тяжелее.",
+    "description": "Размер одной ячейки 3D-сетки MegaLights в пикселях экрана. Больше: грубее свет в объеме, быстрее. Меньше: детальнее volumetric lighting, но сильно тяжелее.",
     "description_en": "Size of one MegaLights 3D grid cell in screen pixels. Larger: coarser volumetric light, faster. Smaller: finer volumetric lighting but much heavier.",
     "impact": "Очень высокая на малых значениях.",
     "impact_en": "Very high at small values.",
@@ -294,9 +294,9 @@
     "value_type": "int"
   },
   "r.MegaLights.Volume.GridSizeZ": {
-    "title": "MegaLights: глубина объёмной сетки",
+    "title": "MegaLights: глубина объемной сетки",
     "title_en": "MegaLights volume grid depth (Z)",
-    "description": "Сколько слоев по глубине использует MegaLights в объёмной сетке. Больше: точнее свет вдоль луча камеры, меньше «плоских» бликов. Меньше: экономия GPU.",
+    "description": "Сколько слоев по глубине использует MegaLights в объемной сетке. Больше: точнее свет вдоль луча камеры, меньше «плоских» бликов. Меньше: экономия GPU.",
     "description_en": "How many depth slices MegaLights uses in its volume grid. More: more accurate light along the view ray, less flat highlights. Fewer: GPU savings.",
     "impact": "Высокая нагрузка при больших значениях.",
     "impact_en": "High load at large values.",
@@ -352,7 +352,7 @@
   "r.TSR.Velocity.HoleFill": {
     "title": "TSR: заполнение дыр в velocity buffer",
     "title_en": "TSR velocity hole fill",
-    "description": "Заполняет «дыры» в буфере скорости, которые TSR использует для переноса кадров. 0: быстрее, но чёрные/прозрачные объекты могут оставлять шлейф. 1: стабильнее при движении и частицах.",
+    "description": "Заполняет «дыры» в буфере скорости, которые TSR использует для переноса кадров. 0: быстрее, но черные/прозрачные объекты могут оставлять шлейф. 1: стабильнее при движении и частицах.",
     "description_en": "Fills gaps in the velocity buffer TSR uses for reprojection. 0: faster but black/transparent objects may leave trails. 1: more stable with motion and particles.",
     "impact": "Низкая–средняя нагрузка.",
     "impact_en": "Low–medium load.",
@@ -414,7 +414,7 @@
     "impact_en": "Affects VRAM stability, not image quality.",
     "min": "0",
     "max": "1",
-    "value_hint": "1: если растёт VRAM со временем",
+    "value_hint": "1: если растет VRAM со временем",
     "value_hint_en": "1: if VRAM grows over time",
     "category": "Textures",
     "value_type": "int"
@@ -422,7 +422,7 @@
   "r.Streaming.HLODStrategy": {
     "title": "Стратегия HLOD при стриминге",
     "title_en": "Streaming HLOD strategy",
-    "description": "Как движок подгружает упрощённые HLOD-модели вместе с текстурами. 0: минимум HLOD. Выше: агрессивнее подмена дальних объектов упрощёнными версиями: FPS вдали, но возможны «всплывания» при приближении.",
+    "description": "Как движок подгружает упрощенные HLOD-модели вместе с текстурами. 0: минимум HLOD. Выше: агрессивнее подмена дальних объектов упрощенными версиями: FPS вдали, но возможны «всплывания» при приближении.",
     "description_en": "How the engine streams simplified HLOD models with textures. 0: minimal HLOD. Higher: more aggressive distant LOD swap: FPS at range but possible pop-in when approaching.",
     "impact": "Средняя на открытых картах.",
     "impact_en": "Medium on open maps.",
@@ -490,9 +490,9 @@
     "value_type": "float"
   },
   "r.Volumetric.Bias": {
-    "title": "Объёмный туман: смещение плотности",
+    "title": "Объемный туман: смещение плотности",
     "title_en": "Volumetric fog density bias",
-    "description": "Сдвигает базовую плотность объёмного тумана. Отрицательные: туман реже и прозрачнее. Положительные: гуще дымка, атмосфернее, но может «съесть» дальность обзора.",
+    "description": "Сдвигает базовую плотность объемного тумана. Отрицательные: туман реже и прозрачнее. Положительные: гуще дымка, атмосфернее, но может «съесть» дальность обзора.",
     "description_en": "Shifts base volumetric fog density. Negative: thinner, more transparent fog. Positive: denser haze, more atmosphere but can reduce view distance.",
     "impact": "Средняя нагрузка в туманных локациях.",
     "impact_en": "Medium load in foggy areas.",
@@ -504,9 +504,9 @@
     "value_type": "float"
   },
   "r.Volumetric.Count": {
-    "title": "Объёмный туман: число сэмплов",
+    "title": "Объемный туман: число сэмплов",
     "title_en": "Volumetric fog sample count",
-    "description": "Сколько шагов делает луч через объёмный туман. Больше: плавнее и без «ступенек», меньше: быстрее, но полосатый туман и резкие границы.",
+    "description": "Сколько шагов делает луч через объемный туман. Больше: плавнее и без «ступенек», меньше: быстрее, но полосатый туман и резкие границы.",
     "description_en": "How many steps a ray takes through volumetric fog. More: smoother without banding; fewer: faster but banded fog and hard edges.",
     "impact": "Высокая на больших значениях.",
     "impact_en": "High at large values.",
@@ -518,9 +518,9 @@
     "value_type": "int"
   },
   "r.Volumetric.Distance": {
-    "title": "Объёмный туман: дальность",
+    "title": "Объемный туман: дальность",
     "title_en": "Volumetric fog distance",
-    "description": "На каком расстоянии объёмный туман перестаёт рисоваться. Меньше: экономия FPS, туман «обрывается» ближе. Больше: туман до горизонта, но тяжелее.",
+    "description": "На каком расстоянии объемный туман перестает рисоваться. Меньше: экономия FPS, туман «обрывается» ближе. Больше: туман до горизонта, но тяжелее.",
     "description_en": "Distance at which volumetric fog stops rendering. Shorter: FPS savings, fog cuts off sooner. Longer: fog to horizon but heavier.",
     "impact": "Средняя–высокая на открытых картах.",
     "impact_en": "Medium–high on open maps.",
@@ -532,9 +532,9 @@
     "value_type": "float"
   },
   "r.Volumetric.Intensity": {
-    "title": "Объёмный туман: яркость",
+    "title": "Объемный туман: яркость",
     "title_en": "Volumetric fog intensity",
-    "description": "Общая яркость объёмного тумана и лучей света в нём. 0: почти невидим. 1: как задумано. Выше 1: «пережжённый» туман и слишком яркие god rays.",
+    "description": "Общая яркость объемного тумана и лучей света в нем. 0: почти невидим. 1: как задумано. Выше 1: «пережженный» туман и слишком яркие god rays.",
     "description_en": "Overall brightness of volumetric fog and light shafts in it. 0: nearly invisible. 1: as intended. Above 1: blown-out fog and overly bright god rays.",
     "impact": "Низкая на FPS, влияет на картинку.",
     "impact_en": "Low FPS impact, affects look.",
@@ -546,9 +546,9 @@
     "value_type": "float"
   },
   "r.Volumetric.Max": {
-    "title": "Объёмный туман: верхний предел",
+    "title": "Объемный туман: верхний предел",
     "title_en": "Volumetric fog max clamp",
-    "description": "Ограничивает максимальную плотность/яркость объёмного тумана. Полезно, если туман в игре слишком густой и «съедает» сцену: уменьшите max.",
+    "description": "Ограничивает максимальную плотность/яркость объемного тумана. Полезно, если туман в игре слишком густой и «съедает» сцену: уменьшите max.",
     "description_en": "Caps maximum volumetric fog density/brightness. Useful if in-game fog is too thick and swallows the scene: lower max.",
     "impact": "Косметика, почти без FPS.",
     "impact_en": "Cosmetic, almost no FPS cost.",
@@ -560,9 +560,9 @@
     "value_type": "float"
   },
   "r.Volumetric.Min": {
-    "title": "Объёмный туман: нижний предел",
+    "title": "Объемный туман: нижний предел",
     "title_en": "Volumetric fog min clamp",
-    "description": "Минимальная плотность тумана: пол даже в «чистом» воздухе не опускается ниже этого значения. Поднимите min, если хотите лёгкую дымку везде.",
+    "description": "Минимальная плотность тумана: пол даже в «чистом» воздухе не опускается ниже этого значения. Поднимите min, если хотите легкую дымку везде.",
     "description_en": "Minimum fog density: even clear air won't go below this. Raise min if you want light haze everywhere.",
     "impact": "Косметика.",
     "impact_en": "Cosmetic.",
@@ -574,9 +574,9 @@
     "value_type": "float"
   },
   "r.Volumetric.Size": {
-    "title": "Объёмный туман: размер вокселей",
+    "title": "Объемный туман: размер вокселей",
     "title_en": "Volumetric fog voxel size",
-    "description": "Размер «кубиков» объёмного тумана. Больше: грубее, быстрее. Меньше: детальнее дым и лучи, но заметно тяжелее для GPU.",
+    "description": "Размер «кубиков» объемного тумана. Больше: грубее, быстрее. Меньше: детальнее дым и лучи, но заметно тяжелее для GPU.",
     "description_en": "Size of volumetric fog voxels. Larger: coarser, faster. Smaller: finer smoke and rays but noticeably heavier on GPU.",
     "impact": "Высокая на малых значениях.",
     "impact_en": "High at small values.",
@@ -588,9 +588,9 @@
     "value_type": "int"
   },
   "r.Volumetric.Threshold": {
-    "title": "Объёмный туман: порог отсечения",
+    "title": "Объемный туман: порог отсечения",
     "title_en": "Volumetric fog cutoff threshold",
-    "description": "Порог, ниже которого объёмный туман не рисуется: отсекает почти прозрачные области для экономии. Выше: агрессивнее экономия FPS, ниже: плавнее туман на границах.",
+    "description": "Порог, ниже которого объемный туман не рисуется: отсекает почти прозрачные области для экономии. Выше: агрессивнее экономия FPS, ниже: плавнее туман на границах.",
     "description_en": "Threshold below which volumetric fog is not drawn: culls nearly transparent areas to save cost. Higher: more aggressive FPS savings; lower: smoother fog at edges.",
     "impact": "Средняя: влияет на FPS в тумане.",
     "impact_en": "Medium: affects fog FPS.",
@@ -604,7 +604,7 @@
   "r.HeterogeneousVolumes.Shadows.MaxSampleCount": {
     "title": "Heterogeneous Volumes: сэмплы теней",
     "title_en": "Heterogeneous volumes shadow samples",
-    "description": "Сколько шагов используется для теней в объёмных облаках/дыме (UE5 heterogeneous volumes). Больше: мягче и точнее тени в дыме. Меньше: быстрее, но «шумные» или резкие тени.",
+    "description": "Сколько шагов используется для теней в объемных облаках/дыме (UE5 heterogeneous volumes). Больше: мягче и точнее тени в дыме. Меньше: быстрее, но «шумные» или резкие тени.",
     "description_en": "Steps used for shadows in volumetric clouds/smoke (UE5 heterogeneous volumes). More: softer, more accurate smoke shadows. Fewer: faster but noisy or hard shadows.",
     "impact": "Высокая там, где включены volumetric clouds.",
     "impact_en": "High where volumetric clouds are enabled.",

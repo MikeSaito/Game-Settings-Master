@@ -220,7 +220,7 @@ pub(crate) fn validate_array_uniqueness(
                 && values_equal(&entry.value, &other.value)
                 && values_equal(&other.value, &entry.value)
         }) {
-            return Err(crate::i18n::t("Изменение создаёт одинаковые привязки: операция + объединит записи. Измените набор правок", "This change creates identical bindings: the + operation would merge entries. Adjust the selected changes"));
+            return Err(crate::i18n::t("Изменение создает одинаковые привязки: операция + объединит записи. Измените набор правок", "This change creates identical bindings: the + operation would merge entries. Adjust the selected changes"));
         }
     }
     Ok(())

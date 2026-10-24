@@ -1,6 +1,6 @@
-# Architecture — Game Settings Master
+# Architecture – Game Settings Master
 
-Карта репозитория для контрибьюторов. Поведение приложения не меняется при переносе файлов — важны границы модулей и соглашения об импортах.
+Карта репозитория для контрибьюторов. Поведение приложения не меняется при переносе файлов – важны границы модулей и соглашения об импортах.
 
 ## Обзор
 
@@ -10,7 +10,7 @@
 | Backend | [`src-tauri/src/`](../src-tauri/src/) | Rust: IPC, ini, discovery, catalog |
 | Landing | [`landing/src/`](../landing/src/) | Статический маркетинговый сайт (GitHub Pages) |
 | Catalog builder | [`tools/ue-catalog-builder/`](../tools/ue-catalog-builder/) | Python: сборка `ue_reference_index.json` |
-| Shared constants | [`shared/`](../shared/) | JSON для Rust (`include_str!`) и TS (`@shared/`) — rendering key markers и др. |
+| Shared constants | [`shared/`](../shared/) | JSON для Rust (`include_str!`) и TS (`@shared/`) – rendering key markers и др. |
 | UE snapshots | [`tools/ue-reference/`](../tools/ue-reference/) | Локальные ini-фикстуры и клоны движка |
 
 ## Frontend (`src/`)
@@ -19,11 +19,11 @@
 
 - Алиас **`@/`** → `src/` (см. [`tsconfig.json`](../tsconfig.json), [`vite.config.ts`](../vite.config.ts))
 - Пример: `import { getGameParameters } from "@/lib/api"`, `import { Button } from "@/components/ds/Button"`
-- Внутри одной папки допустимы относительные `./` импорты; между модулями — `@/`
-- Корневой barrel [`src/lib/index.ts`](../src/lib/index.ts) — `core`, `routing`, `editor`, `game`, `gpu`, `settings`; IPC отдельно из `@/lib/api`
-- [`src/components/ds/index.ts`](../src/components/ds/index.ts) — barrel design system (по желанию)
+- Внутри одной папки допустимы относительные `./` импорты; между модулями – `@/`
+- Корневой barrel [`src/lib/index.ts`](../src/lib/index.ts) – `core`, `routing`, `editor`, `game`, `gpu`, `settings`; IPC отдельно из `@/lib/api`
+- [`src/components/ds/index.ts`](../src/components/ds/index.ts) – barrel design system (по желанию)
 
-### `src/lib/` — доменные модули
+### `src/lib/` – доменные модули
 
 | Папка | Что класть |
 |-------|------------|
@@ -31,24 +31,24 @@
 | [`core/`](../src/lib/core/) | Типы, ошибки, `cn`, queryClient, `APP_VERSION` |
 | [`routing/`](../src/lib/routing/) | React Router paths, editor panels, `openGameEditor`, navigation |
 | [`editor/`](../src/lib/editor/) | CVars, фильтры, зависимости параметров (`paramDependencies/`) |
-| [`shared/`](../src/lib/shared/) | TS-обёртки над JSON из [`shared/`](../shared/) (rendering key markers) |
+| [`shared/`](../src/lib/shared/) | TS-обертки над JSON из [`shared/`](../shared/) (rendering key markers) |
 | [`game/`](../src/lib/game/) | GameProfile, covers, prefetch workspace |
 | [`gpu/`](../src/lib/gpu/) | GPU-aware visibility и фильтры |
 | [`settings/`](../src/lib/settings/) | Настройки приложения (тема, язык) |
 
-В каждой подпапке — `index.ts` (barrel). Тесты `*.test.ts` лежат рядом с кодом.
+В каждой подпапке – `index.ts` (barrel). Тесты `*.test.ts` лежат рядом с кодом.
 
 ### Редактор и бэкапы
 
 - Единый URL редактора: `/game/:id/advanced`
-- Активная панель (`basic` | `advanced` | `backups`) — в `sessionStorage` (`gsm-editor-panel:*`)
+- Активная панель (`basic` | `advanced` | `backups`) – в `sessionStorage` (`gsm-editor-panel:*`)
 - Legacy `/game/:id/backups` → redirect на `/advanced` + panel `backups` (как wizard/reshade); redirects оставлены для старых закладок
 - `sessionStorage`: ключи `gsm-editor-panel:*` / `gsm-editor-filter:*`; legacy `gsm-advanced-*` мигрируются один раз при чтении и удаляются
-- `GameTabRoute` — только `"advanced"`; бэкапы не отдельный URL-tab
+- `GameTabRoute` – только `"advanced"`; бэкапы не отдельный URL-tab
 - UI бэкапов встроен в [`AdvancedEditor`](../src/pages/AdvancedEditor.tsx) ([`BackupsPanel`](../src/components/backups/BackupsPanel.tsx))
 - Переход в редактор: [`openGameEditor()`](../src/lib/routing/navigation.ts)
 
-### `src/components/` — UI по фичам
+### `src/components/` – UI по фичам
 
 | Папка | Содержимое |
 |-------|------------|
@@ -61,7 +61,7 @@
 | `app/` | ErrorBoundary, UpdateGate, RouteLoading |
 | `game/` | GameCover |
 
-Удалён legacy-слой `components/ui/` — новый UI только через `ds/`.
+Удален legacy-слой `components/ui/` – новый UI только через `ds/`.
 
 ### `src/hooks/`
 
@@ -88,7 +88,7 @@ core/          app_error (AppErrorCode, AppInvokeError), models, process_util, r
   app_error_tests.rs  error codes + legacy marker roundtrip tests
   resource_paths_tests.rs dev catalog dir smoke test
 i18n/          RU/EN строки backend
-profiles/      сохранённые профили игр (games.json, overrides.json)
+profiles/      сохраненные профили игр (games.json, overrides.json)
   storage.rs        app_data_dir, profiles_path, write_json_atomic
   trust.rs          validate_profile_paths, resolve_trusted_profile
   persist.rs        load/save/remove profiles, prune_stale_saved_profiles
@@ -267,7 +267,7 @@ data/              tier overlays, display_overrides
 generated/         промежуточные registry JSON
 ```
 
-Актуальные счётчики: [`merge_stats.json`](../src-tauri/catalog/generated/merge_stats.json).
+Актуальные счетчики: [`merge_stats.json`](../src-tauri/catalog/generated/merge_stats.json).
 
 ```powershell
 npm run catalog:build
@@ -299,10 +299,10 @@ CI (`.github/workflows/ci.yml`) дублирует `cargo fmt --check`, `cargo c
 
 ## Соглашения
 
-1. **Не смешивать домены** — editor-логика не в `game/`, IPC не в `editor/`.
-2. **Barrel `index.ts`** — публичный API модуля; внутри папки можно использовать относительные импорты.
-3. **Co-located tests** — тест рядом с модулем, не в отдельном дереве зеркал.
-4. **Без изменения данных каталога** в архитектурных PR — `src-tauri/catalog/*.json` только осознанно.
+1. **Не смешивать домены** – editor-логика не в `game/`, IPC не в `editor/`.
+2. **Barrel `index.ts`** – публичный API модуля; внутри папки можно использовать относительные импорты.
+3. **Co-located tests** – тест рядом с модулем, не в отдельном дереве зеркал.
+4. **Без изменения данных каталога** в архитектурных PR – `src-tauri/catalog/*.json` только осознанно.
 5. **`npm run types:gen`** пишет в `src/lib/api/bindings.ts` (включая `AppInvokeError`, `AppErrorCode`).
-6. **IPC-ошибки** — backend отдаёт `{ code, message }`; frontend парсит через [`parseInvokeError()`](../src/lib/core/errors.ts), legacy marker `GSM_ERR_GAME_RUNNING:` поддерживается на переходный период.
-7. **`__APP_VERSION__`** — глобал из `package.json` через `vite.config.ts`; тип в [`src/vite-env.d.ts`](../src/vite-env.d.ts).
+6. **IPC-ошибки** – backend отдает `{ code, message }`; frontend парсит через [`parseInvokeError()`](../src/lib/core/errors.ts), legacy marker `GSM_ERR_GAME_RUNNING:` поддерживается на переходный период.
+7. **`__APP_VERSION__`** – глобал из `package.json` через `vite.config.ts`; тип в [`src/vite-env.d.ts`](../src/vite-env.d.ts).

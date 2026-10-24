@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Normalize catalog titles and replace em dashes in user-facing copy."""
+"""Normalize catalog titles and typography in user-facing copy."""
 
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,23 +24,23 @@ TEXT_FIELDS = {
 
 TITLE_FIXES_RU = {
     "Как далеко от вас видны тени": "Дальность теней",
-    "Как свет заполняет углы и тёмные места": "Глобальное освещение",
+    "Как свет заполняет углы и темные места": "Глобальное освещение",
     "Насколько «живыми» выглядят материалы": "Качество шейдинга",
     'Насколько "живыми" выглядят материалы': "Качество шейдинга",
     "Насколько далеко видны объекты (скрытый множитель)": "Масштаб дальности обзора",
-    "Насколько чёткие края теней": "Разрешение теней",
+    "Насколько четкие края теней": "Разрешение теней",
     "Насколько гладкие края объектов": "Сила сглаживания",
     "Насколько широкие тени в углах": "Контактные тени (SSAO)",
     "Насколько сильно размывается картинка в движении": "Размытие в движении",
-    "DLSS — качество и FPS": "Режим DLSS",
-    "TSR — upscaling без NVIDIA": "Режим TSR",
-    "Чёткость после увеличения картинки (DLSS/TSR)": "Резкость upscaling (DLSS/TSR)",
-    "Как игра рисует меньше, но показывает чётко (DLSS)": "Режим DLSS",
+    "DLSS – качество и FPS": "Режим DLSS",
+    "TSR – upscaling без NVIDIA": "Режим TSR",
+    "Четкость после увеличения картинки (DLSS/TSR)": "Резкость upscaling (DLSS/TSR)",
+    "Как игра рисует меньше, но показывает четко (DLSS)": "Режим DLSS",
     "Как убираются зубцы на краях объектов": "Сглаживание",
     "Как игра увеличивает картинку для FPS": "Метод upscaling",
     "Насколько «широко» вы видите мир": "Угол обзора (FOV)",
-    "Upscaling без NVIDIA (TSR) — для любой видеокарты": "Режим TSR",
-    "DLSS — то же, что режим выше, но числом": "Режим DLSS (число)",
+    "Upscaling без NVIDIA (TSR) – для любой видеокарты": "Режим TSR",
+    "DLSS – то же, что режим выше, но числом": "Режим DLSS (число)",
 }
 
 TITLE_FIXES_EN = {
@@ -58,7 +57,7 @@ TITLE_FIXES_EN = {
 DESC_REPLACEMENTS = [
     (
         "Как игра убирает «зубцы» на краях объектов, когда вы двигаетесь. ",
-        "Сглаживание краёв в движении. ",
+        "Сглаживание краев в движении. ",
     ),
     (
         "Как игра «доводит» яркий кадр до того, что вы видите на мониторе: ",
@@ -79,23 +78,21 @@ def fix_title(field: str, value: str) -> str:
     return value
 
 
-def normalize_em_dash(text: str) -> str:
-    if "\u2014" not in text:
-        return text
-    text = text.replace(" \u2014 ", ": ")
-    text = re.sub(r":\s*:", ":", text)
-    text = re.sub(r"\.\s*:", ".", text)
-    return text
+def normalize_copy_style(text: str) -> str:
+    return text.translate({0x2014: 0x2013, 0x0451: 0x0435, 0x0401: 0x0415})
+
+
+def unsupported_characters(text: str) -> int:
+    return sum(text.count(chr(code)) for code in (0x2014, 0x0451, 0x0401))
 
 
 def normalize_text_field(field: str, value: str) -> str:
     if not isinstance(value, str):
         return value
-    out = fix_title(field, value)
+    out = fix_title(field, normalize_copy_style(value))
     if field.startswith("description"):
         for old, new in DESC_REPLACEMENTS:
             out = out.replace(old, new)
-    out = normalize_em_dash(out)
     return out
 
 
@@ -113,22 +110,22 @@ def walk(obj) -> None:
 
 def process_json_file(path: Path) -> int:
     raw = path.read_text(encoding="utf-8")
-    before = raw.count("\u2014")
+    before = unsupported_characters(raw)
     data = json.loads(raw)
     walk(data)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    after = path.read_text(encoding="utf-8").count("\u2014")
+    after = unsupported_characters(path.read_text(encoding="utf-8"))
     return before - after
 
 
 def process_i18n_file(path: Path) -> int:
     raw = path.read_text(encoding="utf-8")
-    before = raw.count("\u2014")
+    before = unsupported_characters(raw)
     if before == 0:
         return 0
-    text = raw.replace(" \u2014 ", ": ")
+    text = normalize_copy_style(raw)
     path.write_text(text, encoding="utf-8")
-    after = path.read_text(encoding="utf-8").count("\u2014")
+    after = unsupported_characters(path.read_text(encoding="utf-8"))
     return before - after
 
 
@@ -147,7 +144,7 @@ def main() -> None:
     if scripts_translations.exists():
         removed += process_json_file(scripts_translations)
 
-    print(f"Removed {removed} em dashes from catalog/i18n copy.")
+    print(f"Normalized {removed} typography characters in catalog/i18n copy.")
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@ pub fn load_saved_profiles() -> Result<Vec<GameProfile>, String> {
     if saved.games.len() > MAX_SAVED_GAMES {
         return Err(crate::i18n::t(
             &format!(
-                "Слишком много сохранённых игр ({} > {MAX_SAVED_GAMES})",
+                "Слишком много сохраненных игр ({} > {MAX_SAVED_GAMES})",
                 saved.games.len()
             ),
             &format!(

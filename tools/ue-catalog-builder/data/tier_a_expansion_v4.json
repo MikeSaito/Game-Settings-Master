@@ -1,8 +1,8 @@
 {
   "r.Star.Distance": {
-    "title": "звёздное небо: дальность",
+    "title": "звездное небо: дальность",
     "title_en": "starfield sky: distance",
-    "description": "На каком расстоянии звёздное небо перестаёт влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
+    "description": "На каком расстоянии звездное небо перестает влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
     "description_en": "Distance at which starfield sky stops affecting the image. Shorter: FPS savings, effect cuts off sooner. Longer: visible farther.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -14,9 +14,9 @@
     "value_type": "float"
   },
   "r.Star.Enable": {
-    "title": "звёздное небо: вкл/выкл",
+    "title": "звездное небо: вкл/выкл",
     "title_en": "starfield sky: enable",
-    "description": "0: эффект звёздное небо отключён или упрощён (экономия FPS). 1: полная отрисовка звёздное небо как задумано в игре.",
+    "description": "0: эффект звездное небо отключен или упрощен (экономия FPS). 1: полная отрисовка звездное небо как задумано в игре.",
     "description_en": "0: starfield sky effect disabled or simplified (FPS savings). 1: full starfield sky rendering as intended.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -28,9 +28,9 @@
     "value_type": "int"
   },
   "r.Star.Intensity": {
-    "title": "звёздное небо: яркость",
+    "title": "звездное небо: яркость",
     "title_en": "starfield sky: intensity",
-    "description": "Глобальный множитель яркости звёздное небо. 1: как в игре. Выше: пересвет, ниже: тусклее.",
+    "description": "Глобальный множитель яркости звездное небо. 1: как в игре. Выше: пересвет, ниже: тусклее.",
     "description_en": "Global brightness multiplier for starfield sky. 1: as in game. Higher: blown out, lower: dimmer.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -42,9 +42,9 @@
     "value_type": "float"
   },
   "r.Star.Max": {
-    "title": "звёздное небо: верхний предел",
+    "title": "звездное небо: верхний предел",
     "title_en": "starfield sky: max clamp",
-    "description": "Ограничивает максимальный вклад звёздное небо. Полезно, если эффект в ini слишком сильный.",
+    "description": "Ограничивает максимальный вклад звездное небо. Полезно, если эффект в ini слишком сильный.",
     "description_en": "Caps maximum starfield sky contribution. Useful if the effect is too strong in ini.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -56,9 +56,9 @@
     "value_type": "float"
   },
   "r.Star.Min": {
-    "title": "звёздное небо: нижний предел",
+    "title": "звездное небо: нижний предел",
     "title_en": "starfield sky: min clamp",
-    "description": "Минимальный вклад звёздное небо: слабый эффект не опускается ниже этого значения.",
+    "description": "Минимальный вклад звездное небо: слабый эффект не опускается ниже этого значения.",
     "description_en": "Minimum starfield sky contribution: weak effect won't go below this.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -70,9 +70,9 @@
     "value_type": "float"
   },
   "r.Star.Quality": {
-    "title": "звёздное небо: качество",
+    "title": "звездное небо: качество",
     "title_en": "starfield sky: quality",
-    "description": "Общий уровень качества звёздное небо. 0: грубо и быстро. 4: максимум деталей, но тяжелее для GPU.",
+    "description": "Общий уровень качества звездное небо. 0: грубо и быстро. 4: максимум деталей, но тяжелее для GPU.",
     "description_en": "Overall starfield sky quality. 0: coarse and fast. 4: maximum detail but heavier on GPU.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -84,9 +84,9 @@
     "value_type": "int"
   },
   "r.Star.Resolution": {
-    "title": "звёздное небо: разрешение",
+    "title": "звездное небо: разрешение",
     "title_en": "starfield sky: resolution",
-    "description": "Разрешение буфера/текстур для звёздное небо. Ниже: быстрее, но «мыльнее». Выше: чётче, но тяжелее.",
+    "description": "Разрешение буфера/текстур для звездное небо. Ниже: быстрее, но «мыльнее». Выше: четче, но тяжелее.",
     "description_en": "Buffer/texture resolution for starfield sky. Lower: faster but blurrier. Higher: sharper but heavier.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -98,9 +98,9 @@
     "value_type": "int"
   },
   "r.Star.Scale": {
-    "title": "звёздное небо: масштаб",
+    "title": "звездное небо: масштаб",
     "title_en": "starfield sky: scale",
-    "description": "Масштабирует размер/амplitude эффекта звёздное небо. 1: по умолчанию.",
+    "description": "Масштабирует размер/амplitude эффекта звездное небо. 1: по умолчанию.",
     "description_en": "Scales size/amplitude of starfield sky. 1: default.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -112,9 +112,9 @@
     "value_type": "float"
   },
   "r.Star.Size": {
-    "title": "звёздное небо: размер источника",
+    "title": "звездное небо: размер источника",
     "title_en": "starfield sky: source size",
-    "description": "Виртуальный размер источника для звёздное небо: влияет на мягкость переходов и теней.",
+    "description": "Виртуальный размер источника для звездное небо: влияет на мягкость переходов и теней.",
     "description_en": "Virtual source size for starfield sky: affects transition softness and shadows.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -126,9 +126,9 @@
     "value_type": "float"
   },
   "r.Star.Threshold": {
-    "title": "звёздное небо: порог отсечения",
+    "title": "звездное небо: порог отсечения",
     "title_en": "starfield sky: cutoff threshold",
-    "description": "Отсекает слабый вклад звёздное небо ниже порога: экономия GPU. Выше: агрессивнее FPS, ниже: плавнее.",
+    "description": "Отсекает слабый вклад звездное небо ниже порога: экономия GPU. Выше: агрессивнее FPS, ниже: плавнее.",
     "description_en": "Culls weak starfield sky below threshold: GPU savings. Higher: more aggressive FPS, lower: smoother.",
     "impact": "Низкая–средняя нагрузка ночью на открытом небе.",
     "impact_en": "Low–medium load at night under open sky.",
@@ -142,7 +142,7 @@
   "r.Static.Bias": {
     "title": "статическая геометрия и инстансы: bias сэмплинга",
     "title_en": "static geometry and instancing: sampling bias",
-    "description": "Смещение при выборке статическая геометрия и инстансы: убирает артефакты, но слишком большой bias даёт «плавающий» эффект.",
+    "description": "Смещение при выборке статическая геометрия и инстансы: убирает артефакты, но слишком большой bias дает «плавающий» эффект.",
     "description_en": "Sampling bias for static geometry and instancing: removes artifacts but too much causes floating effect.",
     "impact": "Средняя нагрузка на плотных уровнях со статикой.",
     "impact_en": "Medium load on dense static-heavy levels.",
@@ -170,7 +170,7 @@
   "r.Static.Distance": {
     "title": "статическая геометрия и инстансы: дальность",
     "title_en": "static geometry and instancing: distance",
-    "description": "На каком расстоянии статическая геометрия и инстансы перестаёт влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
+    "description": "На каком расстоянии статическая геометрия и инстансы перестает влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
     "description_en": "Distance at which static geometry and instancing stops affecting the image. Shorter: FPS savings, effect cuts off sooner. Longer: visible farther.",
     "impact": "Средняя нагрузка на плотных уровнях со статикой.",
     "impact_en": "Medium load on dense static-heavy levels.",
@@ -184,7 +184,7 @@
   "r.Static.Enable": {
     "title": "статическая геометрия и инстансы: вкл/выкл",
     "title_en": "static geometry and instancing: enable",
-    "description": "0: эффект статическая геометрия и инстансы отключён или упрощён (экономия FPS). 1: полная отрисовка статическая геометрия и инстансы как задумано в игре.",
+    "description": "0: эффект статическая геометрия и инстансы отключен или упрощен (экономия FPS). 1: полная отрисовка статическая геометрия и инстансы как задумано в игре.",
     "description_en": "0: static geometry and instancing effect disabled or simplified (FPS savings). 1: full static geometry and instancing rendering as intended.",
     "impact": "Средняя нагрузка на плотных уровнях со статикой.",
     "impact_en": "Medium load on dense static-heavy levels.",
@@ -254,7 +254,7 @@
   "r.Static.Resolution": {
     "title": "статическая геометрия и инстансы: разрешение",
     "title_en": "static geometry and instancing: resolution",
-    "description": "Разрешение буфера/текстур для статическая геометрия и инстансы. Ниже: быстрее, но «мыльнее». Выше: чётче, но тяжелее.",
+    "description": "Разрешение буфера/текстур для статическая геометрия и инстансы. Ниже: быстрее, но «мыльнее». Выше: четче, но тяжелее.",
     "description_en": "Buffer/texture resolution for static geometry and instancing. Lower: faster but blurrier. Higher: sharper but heavier.",
     "impact": "Средняя нагрузка на плотных уровнях со статикой.",
     "impact_en": "Medium load on dense static-heavy levels.",
@@ -310,7 +310,7 @@
   "r.Sun.Bias": {
     "title": "солнце и небесный свет: bias сэмплинга",
     "title_en": "sun and skylight: sampling bias",
-    "description": "Смещение при выборке солнце и небесный свет: убирает артефакты, но слишком большой bias даёт «плавающий» эффект.",
+    "description": "Смещение при выборке солнце и небесный свет: убирает артефакты, но слишком большой bias дает «плавающий» эффект.",
     "description_en": "Sampling bias for sun and skylight: removes artifacts but too much causes floating effect.",
     "impact": "Сильно влияет на FPS на открытых картах.",
     "impact_en": "Strong FPS impact on open maps.",
@@ -338,7 +338,7 @@
   "r.Sun.Distance": {
     "title": "солнце и небесный свет: дальность",
     "title_en": "sun and skylight: distance",
-    "description": "На каком расстоянии солнце и небесный свет перестаёт влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
+    "description": "На каком расстоянии солнце и небесный свет перестает влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
     "description_en": "Distance at which sun and skylight stops affecting the image. Shorter: FPS savings, effect cuts off sooner. Longer: visible farther.",
     "impact": "Сильно влияет на FPS на открытых картах.",
     "impact_en": "Strong FPS impact on open maps.",
@@ -352,7 +352,7 @@
   "r.Sun.Enable": {
     "title": "солнце и небесный свет: вкл/выкл",
     "title_en": "sun and skylight: enable",
-    "description": "0: эффект солнце и небесный свет отключён или упрощён (экономия FPS). 1: полная отрисовка солнце и небесный свет как задумано в игре.",
+    "description": "0: эффект солнце и небесный свет отключен или упрощен (экономия FPS). 1: полная отрисовка солнце и небесный свет как задумано в игре.",
     "description_en": "0: sun and skylight effect disabled or simplified (FPS savings). 1: full sun and skylight rendering as intended.",
     "impact": "Сильно влияет на FPS на открытых картах.",
     "impact_en": "Strong FPS impact on open maps.",
@@ -422,7 +422,7 @@
   "r.Sun.Resolution": {
     "title": "солнце и небесный свет: разрешение",
     "title_en": "sun and skylight: resolution",
-    "description": "Разрешение буфера/текстур для солнце и небесный свет. Ниже: быстрее, но «мыльнее». Выше: чётче, но тяжелее.",
+    "description": "Разрешение буфера/текстур для солнце и небесный свет. Ниже: быстрее, но «мыльнее». Выше: четче, но тяжелее.",
     "description_en": "Buffer/texture resolution for sun and skylight. Lower: faster but blurrier. Higher: sharper but heavier.",
     "impact": "Сильно влияет на FPS на открытых картах.",
     "impact_en": "Strong FPS impact on open maps.",
@@ -478,7 +478,7 @@
   "r.Tree.Bias": {
     "title": "деревья и листва: bias сэмплинга",
     "title_en": "trees and foliage: sampling bias",
-    "description": "Смещение при выборке деревья и листва: убирает артефакты, но слишком большой bias даёт «плавающий» эффект.",
+    "description": "Смещение при выборке деревья и листва: убирает артефакты, но слишком большой bias дает «плавающий» эффект.",
     "description_en": "Sampling bias for trees and foliage: removes artifacts but too much causes floating effect.",
     "impact": "Средняя–высокая в лесах и джунглях.",
     "impact_en": "Medium–high in forests and jungles.",
@@ -506,7 +506,7 @@
   "r.Tree.Distance": {
     "title": "деревья и листва: дальность",
     "title_en": "trees and foliage: distance",
-    "description": "На каком расстоянии деревья и листва перестаёт влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
+    "description": "На каком расстоянии деревья и листва перестает влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
     "description_en": "Distance at which trees and foliage stops affecting the image. Shorter: FPS savings, effect cuts off sooner. Longer: visible farther.",
     "impact": "Средняя–высокая в лесах и джунглях.",
     "impact_en": "Medium–high in forests and jungles.",
@@ -520,7 +520,7 @@
   "r.Tree.Enable": {
     "title": "деревья и листва: вкл/выкл",
     "title_en": "trees and foliage: enable",
-    "description": "0: эффект деревья и листва отключён или упрощён (экономия FPS). 1: полная отрисовка деревья и листва как задумано в игре.",
+    "description": "0: эффект деревья и листва отключен или упрощен (экономия FPS). 1: полная отрисовка деревья и листва как задумано в игре.",
     "description_en": "0: trees and foliage effect disabled or simplified (FPS savings). 1: full trees and foliage rendering as intended.",
     "impact": "Средняя–высокая в лесах и джунглях.",
     "impact_en": "Medium–high in forests and jungles.",
@@ -590,7 +590,7 @@
   "r.Tree.Resolution": {
     "title": "деревья и листва: разрешение",
     "title_en": "trees and foliage: resolution",
-    "description": "Разрешение буфера/текстур для деревья и листва. Ниже: быстрее, но «мыльнее». Выше: чётче, но тяжелее.",
+    "description": "Разрешение буфера/текстур для деревья и листва. Ниже: быстрее, но «мыльнее». Выше: четче, но тяжелее.",
     "description_en": "Buffer/texture resolution for trees and foliage. Lower: faster but blurrier. Higher: sharper but heavier.",
     "impact": "Средняя–высокая в лесах и джунглях.",
     "impact_en": "Medium–high in forests and jungles.",
@@ -646,9 +646,9 @@
   "r.Water.Bias": {
     "title": "водная поверхность: bias сэмплинга",
     "title_en": "water surface: sampling bias",
-    "description": "Смещение при выборке водная поверхность: убирает артефакты, но слишком большой bias даёт «плавающий» эффект.",
+    "description": "Смещение при выборке водная поверхность: убирает артефакты, но слишком большой bias дает «плавающий» эффект.",
     "description_en": "Sampling bias for water surface: removes artifacts but too much causes floating effect.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "10",
@@ -662,7 +662,7 @@
     "title_en": "water surface: sample count",
     "description": "Сколько сэмплов используется для водная поверхность. Больше: плавнее, меньше: быстрее.",
     "description_en": "Samples used for water surface. More: smoother, fewer: faster.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "1",
     "max": "64",
@@ -674,9 +674,9 @@
   "r.Water.Distance": {
     "title": "водная поверхность: дальность",
     "title_en": "water surface: distance",
-    "description": "На каком расстоянии водная поверхность перестаёт влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
+    "description": "На каком расстоянии водная поверхность перестает влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
     "description_en": "Distance at which water surface stops affecting the image. Shorter: FPS savings, effect cuts off sooner. Longer: visible farther.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "100",
     "max": "100000",
@@ -688,9 +688,9 @@
   "r.Water.Enable": {
     "title": "водная поверхность: вкл/выкл",
     "title_en": "water surface: enable",
-    "description": "0: эффект водная поверхность отключён или упрощён (экономия FPS). 1: полная отрисовка водная поверхность как задумано в игре.",
+    "description": "0: эффект водная поверхность отключен или упрощен (экономия FPS). 1: полная отрисовка водная поверхность как задумано в игре.",
     "description_en": "0: water surface effect disabled or simplified (FPS savings). 1: full water surface rendering as intended.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "1",
@@ -704,7 +704,7 @@
     "title_en": "water surface: intensity",
     "description": "Глобальный множитель яркости водная поверхность. 1: как в игре. Выше: пересвет, ниже: тусклее.",
     "description_en": "Global brightness multiplier for water surface. 1: as in game. Higher: blown out, lower: dimmer.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "4",
@@ -718,7 +718,7 @@
     "title_en": "water surface: max clamp",
     "description": "Ограничивает максимальный вклад водная поверхность. Полезно, если эффект в ini слишком сильный.",
     "description_en": "Caps maximum water surface contribution. Useful if the effect is too strong in ini.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "10",
@@ -732,7 +732,7 @@
     "title_en": "water surface: min clamp",
     "description": "Минимальный вклад водная поверхность: слабый эффект не опускается ниже этого значения.",
     "description_en": "Minimum water surface contribution: weak effect won't go below this.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "1",
@@ -746,7 +746,7 @@
     "title_en": "water surface: quality",
     "description": "Общий уровень качества водная поверхность. 0: грубо и быстро. 4: максимум деталей, но тяжелее для GPU.",
     "description_en": "Overall water surface quality. 0: coarse and fast. 4: maximum detail but heavier on GPU.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "4",
@@ -758,9 +758,9 @@
   "r.Water.Resolution": {
     "title": "водная поверхность: разрешение",
     "title_en": "water surface: resolution",
-    "description": "Разрешение буфера/текстур для водная поверхность. Ниже: быстрее, но «мыльнее». Выше: чётче, но тяжелее.",
+    "description": "Разрешение буфера/текстур для водная поверхность. Ниже: быстрее, но «мыльнее». Выше: четче, но тяжелее.",
     "description_en": "Buffer/texture resolution for water surface. Lower: faster but blurrier. Higher: sharper but heavier.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "128",
     "max": "4096",
@@ -774,7 +774,7 @@
     "title_en": "water surface: scale",
     "description": "Масштабирует размер/амplitude эффекта водная поверхность. 1: по умолчанию.",
     "description_en": "Scales size/amplitude of water surface. 1: default.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0.1",
     "max": "4",
@@ -788,7 +788,7 @@
     "title_en": "water surface: source size",
     "description": "Виртуальный размер источника для водная поверхность: влияет на мягкость переходов и теней.",
     "description_en": "Virtual source size for water surface: affects transition softness and shadows.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "100",
@@ -802,7 +802,7 @@
     "title_en": "water surface: cutoff threshold",
     "description": "Отсекает слабый вклад водная поверхность ниже порога: экономия GPU. Выше: агрессивнее FPS, ниже: плавнее.",
     "description_en": "Culls weak water surface below threshold: GPU savings. Higher: more aggressive FPS, lower: smoother.",
-    "impact": "Заметно на уровнях с океаном, реками и дождём.",
+    "impact": "Заметно на уровнях с океаном, реками и дождем.",
     "impact_en": "Noticeable on levels with ocean, rivers, and rain.",
     "min": "0",
     "max": "1",
@@ -814,7 +814,7 @@
   "r.Water.WaterInfo": {
     "title": "Вода: доп. данные WaterInfo",
     "title_en": "Water: WaterInfo data",
-    "description": "Включает расширенный проход WaterInfo для водных поверхностей UE5: глубина, берег, пена. 0: упрощённая вода. 1: полный pipeline, если игра его использует.",
+    "description": "Включает расширенный проход WaterInfo для водных поверхностей UE5: глубина, берег, пена. 0: упрощенная вода. 1: полный pipeline, если игра его использует.",
     "description_en": "Enables extended WaterInfo pass for UE5 water: depth, shoreline, foam. 0: simplified water. 1: full pipeline if the game uses it.",
     "impact": "Средняя–высокая на уровнях с океаном.",
     "impact_en": "Medium–high on ocean levels.",
@@ -856,7 +856,7 @@
   "r.World.Bias": {
     "title": "глобальные настройки открытого мира: bias сэмплинга",
     "title_en": "open-world global settings: sampling bias",
-    "description": "Смещение при выборке глобальные настройки открытого мира: убирает артефакты, но слишком большой bias даёт «плавающий» эффект.",
+    "description": "Смещение при выборке глобальные настройки открытого мира: убирает артефакты, но слишком большой bias дает «плавающий» эффект.",
     "description_en": "Sampling bias for open-world global settings: removes artifacts but too much causes floating effect.",
     "impact": "Влияет на дальность и детализацию больших карт.",
     "impact_en": "Affects range and detail on large maps.",
@@ -884,7 +884,7 @@
   "r.World.Distance": {
     "title": "глобальные настройки открытого мира: дальность",
     "title_en": "open-world global settings: distance",
-    "description": "На каком расстоянии глобальные настройки открытого мира перестаёт влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
+    "description": "На каком расстоянии глобальные настройки открытого мира перестает влиять на картинку. Меньше: экономия FPS, эффект «обрывается» ближе. Больше: видно дальше.",
     "description_en": "Distance at which open-world global settings stops affecting the image. Shorter: FPS savings, effect cuts off sooner. Longer: visible farther.",
     "impact": "Влияет на дальность и детализацию больших карт.",
     "impact_en": "Affects range and detail on large maps.",
@@ -898,7 +898,7 @@
   "r.World.Enable": {
     "title": "глобальные настройки открытого мира: вкл/выкл",
     "title_en": "open-world global settings: enable",
-    "description": "0: эффект глобальные настройки открытого мира отключён или упрощён (экономия FPS). 1: полная отрисовка глобальные настройки открытого мира как задумано в игре.",
+    "description": "0: эффект глобальные настройки открытого мира отключен или упрощен (экономия FPS). 1: полная отрисовка глобальные настройки открытого мира как задумано в игре.",
     "description_en": "0: open-world global settings effect disabled or simplified (FPS savings). 1: full open-world global settings rendering as intended.",
     "impact": "Влияет на дальность и детализацию больших карт.",
     "impact_en": "Affects range and detail on large maps.",
@@ -968,7 +968,7 @@
   "r.World.Resolution": {
     "title": "глобальные настройки открытого мира: разрешение",
     "title_en": "open-world global settings: resolution",
-    "description": "Разрешение буфера/текстур для глобальные настройки открытого мира. Ниже: быстрее, но «мыльнее». Выше: чётче, но тяжелее.",
+    "description": "Разрешение буфера/текстур для глобальные настройки открытого мира. Ниже: быстрее, но «мыльнее». Выше: четче, но тяжелее.",
     "description_en": "Buffer/texture resolution for open-world global settings. Lower: faster but blurrier. Higher: sharper but heavier.",
     "impact": "Влияет на дальность и детализацию больших карт.",
     "impact_en": "Affects range and detail on large maps.",

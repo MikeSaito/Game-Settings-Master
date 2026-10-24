@@ -174,7 +174,7 @@ export function ParameterList({
     }
     setDetail(null);
     detailKeyRef.current = null;
-    // Reset scroll only when search or visible row set changes — not on value edits.
+    // Reset scroll only when search or visible row set changes – not on value edits.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- virtualizer instance is stable enough here
   }, [search, rowKeys]);
 

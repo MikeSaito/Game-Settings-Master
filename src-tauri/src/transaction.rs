@@ -140,7 +140,7 @@ fn ensure_clear_inner(dirs: &[PathBuf]) -> Result<(), String> {
 }
 fn blocked() -> String {
     crate::i18n::t(
-        "Незавершённая запись: сначала восстановите конфиги",
+        "Незавершенная запись: сначала восстановите конфиги",
         "Unfinished write: restore the configs before making changes",
     )
 }

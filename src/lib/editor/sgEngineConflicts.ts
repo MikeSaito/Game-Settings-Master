@@ -25,7 +25,7 @@ export function sgQualityToRPrefix(sgKey: string): string | null {
 }
 
 /**
- * Match r.{Group}Quality and r.{group}.* sub-cvars — not unrelated keys that merely
+ * Match r.{Group}Quality and r.{group}.* sub-cvars – not unrelated keys that merely
  * share the same substring (e.g. r.TextureStreamingPoolSize for sg.TextureQuality).
  */
 export function matchesSgRPrefixFamily(key: string, prefix: string): boolean {

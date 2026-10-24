@@ -1,4 +1,4 @@
-# Game Settings Master v1.0.5 — Release Notes
+# Game Settings Master v1.0.5 – Release Notes
 
 [Русский](#русский) · [English](#english)
 
@@ -9,9 +9,9 @@
 **Дата:** 2026-07-06  
 **База:** v1.0.4 → v1.0.5 (14 коммитов на `main`)
 
-### Apply — валидация
+### Apply – валидация
 
-**Rust (`semantic_validation.rs`)** — проверка перед `apply_custom_cmd` и `apply_game_override`:
+**Rust (`semantic_validation.rs`)** – проверка перед `apply_custom_cmd` и `apply_game_override`:
 
 | Код | Уровень | Что |
 |-----|---------|-----|
@@ -25,21 +25,21 @@
 | `combo_streaming_texture` | warning | streaming pool + texture quality |
 | `value_out_of_range` | warning | значение вне min/max из каталога |
 
-Без `warnings_acknowledged: true` apply с warnings блокируется. Удаление shipped `r.*` из Engine.ini — разрешено.
+Без `warnings_acknowledged: true` apply с warnings блокируется. Удаление shipped `r.*` из Engine.ini – разрешено.
 
-**Frontend** — `src/lib/editor/validation/`, панель `ApplyValidationPanel` (ошибки / предупреждения / чекбокс подтверждения). Basic и Advanced.
+**Frontend** – `src/lib/editor/validation/`, панель `ApplyValidationPanel` (ошибки / предупреждения / чекбокс подтверждения). Basic и Advanced.
 
 ### Редактор
 
-- `ParameterDetailPane` — боковая панель с описанием выбранного параметра (Advanced).
-- `ExtraIniPanel` — просмотр Input.ini / DeviceProfiles.ini (read-only, виртуальный список).
+- `ParameterDetailPane` – боковая панель с описанием выбранного параметра (Advanced).
+- `ExtraIniPanel` – просмотр Input.ini / DeviceProfiles.ini (read-only, виртуальный список).
 
 ### Каталог
 
 - Overlay match: точное совпадение slug вместо `contains` (чтобы короткое имя игры не цепляло чужой overlay).
-- Dedupe дублей секций в каталоге — тесты в `dedupe.rs`.
+- Dedupe дублей секций в каталоге – тесты в `dedupe.rs`.
 - Обновлены tier_a/b descriptions и expansion JSON в catalog builder.
-- `shared/ue-validation-index.json` — индекс min/max для валидации; CI проверяет sync с `ue_reference_index.json`.
+- `shared/ue-validation-index.json` – индекс min/max для валидации; CI проверяет sync с `ue_reference_index.json`.
 
 ### E2E
 
@@ -94,7 +94,7 @@
 
 ### Установщик
 
-`Game-Settings-Master_1.0.5_x64-setup.exe` — GitHub Actions **Release app** (`workflow_dispatch`).
+`Game-Settings-Master_1.0.5_x64-setup.exe` – GitHub Actions **Release app** (`workflow_dispatch`).
 
 ### Основные пути
 
@@ -132,19 +132,19 @@
 
 Apply with warnings blocked unless `warnings_acknowledged: true`. Removing shipped `r.*` from Engine.ini is allowed.
 
-**Frontend** — `src/lib/editor/validation/`, `ApplyValidationPanel` (errors / warnings / ack checkbox). Basic and Advanced.
+**Frontend** – `src/lib/editor/validation/`, `ApplyValidationPanel` (errors / warnings / ack checkbox). Basic and Advanced.
 
 ### Editor
 
-- `ParameterDetailPane` — side panel with selected parameter details (Advanced).
-- `ExtraIniPanel` — read-only view of Input.ini / DeviceProfiles.ini (virtual list).
+- `ParameterDetailPane` – side panel with selected parameter details (Advanced).
+- `ExtraIniPanel` – read-only view of Input.ini / DeviceProfiles.ini (virtual list).
 
 ### Catalog
 
 - Overlay match: exact slug instead of `contains` (short game id must not pick up another game's overlay).
-- Catalog section dedupe — tests in `dedupe.rs`.
+- Catalog section dedupe – tests in `dedupe.rs`.
 - Updated tier_a/b descriptions and expansion JSON in catalog builder.
-- `shared/ue-validation-index.json` — min/max index for validation; CI checks sync with `ue_reference_index.json`.
+- `shared/ue-validation-index.json` – min/max index for validation; CI checks sync with `ue_reference_index.json`.
 
 ### E2E
 
@@ -199,7 +199,7 @@ Was 3, now **5** (`e2e/apply-restore.spec.ts`, fixtures `e2e/fixtures.ts`):
 
 ### Installer
 
-`Game-Settings-Master_1.0.5_x64-setup.exe` — GitHub Actions **Release app** (`workflow_dispatch`).
+`Game-Settings-Master_1.0.5_x64-setup.exe` – GitHub Actions **Release app** (`workflow_dispatch`).
 
 ### Key paths
 

@@ -19,7 +19,7 @@ async function recordCrash(
   }
 }
 
-/** Opt-in global handlers — no analytics, only explicit crash payloads. */
+/** Opt-in global handlers – no analytics, only explicit crash payloads. */
 export function useCrashReporting(): void {
   useEffect(() => {
     const onError = (event: ErrorEvent) => {

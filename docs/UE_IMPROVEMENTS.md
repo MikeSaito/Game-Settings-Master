@@ -1,4 +1,4 @@
-# Unreal Engine improvements — version 1.3.0
+# Unreal Engine improvements – version 1.3.0
 
 Version **1.3.0** combines the implementation planned for stages 1.1, 1.2 and 1.3.
 Compatibility profiles, Enhanced Input and other engines remain deferred. The

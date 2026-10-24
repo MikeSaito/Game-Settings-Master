@@ -539,7 +539,7 @@ fn game_processes(profile: &GameProfile) -> Result<Vec<ProcessIdentity>, String>
     };
     let Some(exe) = profile.exe_name.as_deref() else {
         return Err(crate::i18n::t(
-            "Не определён игровой EXE",
+            "Не определен игровой EXE",
             "Game executable is unknown",
         ));
     };

@@ -1,5 +1,5 @@
 /**
- * IPC DTOs — generated from Rust (`npm run types:gen`).
+ * IPC DTOs – generated from Rust (`npm run types:gen`).
  * Frontend-only types and serde-default augmentations live below.
  */
 import type { GameParameter as GeneratedGameParameter } from "@/lib/api/bindings";

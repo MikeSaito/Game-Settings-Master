@@ -27,7 +27,7 @@ def main() -> None:
         q = row.get("description_quality", "auto")
         by_quality.setdefault(q, []).append(row["key"])
 
-    print(f"\n=== auto keys ({len(by_quality['auto'])}) — top prefixes ===")
+    print(f"\n=== auto keys ({len(by_quality['auto'])}) – top prefixes ===")
     prefixes = Counter()
     for key in by_quality["auto"]:
         head = key.split(".")[0] + "." + (key.split(".")[1] if "." in key else "")

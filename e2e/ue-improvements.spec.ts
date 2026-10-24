@@ -89,7 +89,7 @@ for (const language of ["en", "ru"]) {
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: language === "ru" ? "Выбрать" : "Select", exact: true }).click();
     await page.getByRole("tab", { name: language === "ru" ? "Управление" : "Controls", exact: true }).click();
-    const panel = page.getByRole("heading", { name: language === "ru" ? "Управление — Input.ini" : "Controls — Input.ini" }).locator("..");
+    const panel = page.getByRole("heading", { name: language === "ru" ? "Управление – Input.ini" : "Controls – Input.ini" }).locator("..");
     await expect(panel).toContainText(language === "ru" ? "он пуст" : "it is empty");
     await expect(panel).toContainText("GameUserSettings.ini (CustomInputSettins)");
     await expect(panel).toContainText(language === "ru" ? "пока не поддерживает" : "does not yet support");
@@ -106,7 +106,7 @@ test("Russian controls and preview are localized", async ({ page }) => {
   await page.getByRole("button", { name: "Выбрать", exact: true }).click();
   await page.getByRole("tab", { name: "Управление", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Управление — Input.ini" }),
+    page.getByRole("heading", { name: "Управление – Input.ini" }),
   ).toBeVisible();
   await page
     .getByRole("textbox", { name: "Jump: Клавиша", exact: true })

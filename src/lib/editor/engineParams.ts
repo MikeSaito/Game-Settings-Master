@@ -57,7 +57,7 @@ export function isGusIniExtra(
   );
 }
 
-/** Optional add/remove — only keys not shipped with the game on first load. */
+/** Optional add/remove – only keys not shipped with the game on first load. */
 export function isIniMembershipToggleable(
   p: GameParameter,
   shippedIniKeys: ReadonlySet<string> = EMPTY_INI_SNAPSHOT,
@@ -101,7 +101,7 @@ export function shouldIncludeInApply(
 }
 
 /**
- * Categories allowed for writing. Always merges game data with the base list —
+ * Categories allowed for writing. Always merges game data with the base list –
  * otherwise Engine.ini is omitted when ini contains only utility keys.
  */
 export function resolveEditableCategories(

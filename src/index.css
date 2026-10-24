@@ -112,7 +112,7 @@ select option {
   color: var(--color-text);
 }
 
-/* Обрезка обложки по центру — равномерно сверху и снизу (лого Steam/Epic в центре кадра) */
+/* Обрезка обложки по центру – равномерно сверху и снизу (лого Steam/Epic в центре кадра) */
 .cover-crop-center,
 .cover-crop-center-static {
   position: absolute;

@@ -28,7 +28,7 @@
   "r.Shadow.MaxResolution": {
     "title": "Разрешение карт теней",
     "title_en": "Shadow map resolution",
-    "description": "Тени могут быть «зубчатыми» или чёткими: как размытая или резкая фотография. 512: мягкие, с пикселями по краям. 2048: хороший баланс. 4096+: очень чётко, но дорого для видеокарты.",
+    "description": "Тени могут быть «зубчатыми» или четкими: как размытая или резкая фотография. 512: мягкие, с пикселями по краям. 2048: хороший баланс. 4096+: очень четко, но дорого для видеокарты.",
     "description_en": "Shadows can be jagged or crisp: like a blurry vs sharp photo. 512: soft with pixelated edges. 2048: good balance. 4096+: very sharp but expensive.",
     "impact": "Высокая нагрузка на GPU. 2048: хороший баланс, 4096: только для топовых карт.",
     "impact_en": "High GPU load. 2048: good balance, 4096: top-tier GPUs only.",
@@ -43,7 +43,7 @@
     "title_en": "Post-process AA quality",
     "description": "Убирает «лестницы» и зубцы на контурах после отрисовки кадра. Выше: гладче края, но при движении картинка может чуть «плыть». 0: минимум, 6: максимум.",
     "description_en": "Removes jaggies on contours after rendering. Higher: smoother edges but image may slightly swim in motion. 0: minimum, 6: maximum.",
-    "impact": "Средняя нагрузка. 6: максимальное сглаживание краёв.",
+    "impact": "Средняя нагрузка. 6: максимальное сглаживание краев.",
     "impact_en": "Medium load. 6: maximum edge smoothing.",
     "category": "PostProcess",
     "min": "0",
@@ -54,7 +54,7 @@
   "r.MotionBlurQuality": {
     "title": "Качество motion blur",
     "title_en": "Motion blur quality",
-    "description": "Работает только если motion blur включён. 0: слабое размытие. 4: длинная «киношная» полоска при резком повороте.",
+    "description": "Работает только если motion blur включен. 0: слабое размытие. 4: длинная «киношная» полоска при резком повороте.",
     "description_en": "Only if motion blur is enabled. 0: weak blur. 4: long cinematic streak on sharp turns.",
     "impact": "Низкая–средняя нагрузка.",
     "impact_en": "Low–medium load.",
@@ -67,7 +67,7 @@
   "r.BloomQuality": {
     "title": "Качество bloom",
     "title_en": "Bloom quality",
-    "description": "Если bloom включён: насколько широкое и мягкое «ореоло» вокруг солнца, ламп и огней. 0: слабое свечение. 5: широкое киношное сияние. Сам bloom включается отдельным параметром.",
+    "description": "Если bloom включен: насколько широкое и мягкое «ореоло» вокруг солнца, ламп и огней. 0: слабое свечение. 5: широкое киношное сияние. Сам bloom включается отдельным параметром.",
     "description_en": "If bloom is on: how wide and soft the halo around sun, lamps, and lights is. 0: weak glow. 5: wide cinematic bloom. Bloom itself is toggled separately.",
     "impact": "Низкая–средняя нагрузка.",
     "impact_en": "Low–medium load.",
@@ -80,7 +80,7 @@
   "r.SSR.Quality": {
     "title": "Качество SSR",
     "title_en": "SSR quality",
-    "description": "Работает только если отражения на воде/полу включены. 0: размытые, нестабильные. 4: чёткое «зеркало» на гладких поверхностях.",
+    "description": "Работает только если отражения на воде/полу включены. 0: размытые, нестабильные. 4: четкое «зеркало» на гладких поверхностях.",
     "description_en": "Only if water/floor reflections are on. 0: blurry, unstable. 4: sharp mirror on glossy surfaces.",
     "impact": "Средняя–высокая нагрузка.",
     "impact_en": "Medium–high load.",
@@ -93,7 +93,7 @@
   "r.AmbientOcclusionLevels": {
     "title": "Уровни SSAO",
     "title_en": "SSAO levels",
-    "description": "Тёмные полоски там, где предметы касаются друг друга или пола: под базой, в трещинах, под транспортом. Делает мир объёмнее без тяжёлых теней. 0: выкл, 3: максимум.",
+    "description": "Темные полоски там, где предметы касаются друг друга или пола: под базой, в трещинах, под транспортом. Делает мир объемнее без тяжелых теней. 0: выкл, 3: максимум.",
     "description_en": "Dark strips where objects touch each other or the floor: under base, in cracks, under vehicles. Adds depth without heavy shadows. 0: off, 3: maximum.",
     "impact": "Средняя нагрузка.",
     "impact_en": "Medium load.",
@@ -106,7 +106,7 @@
   "r.MaxAnisotropy": {
     "title": "Анизотропная фильтрация",
     "title_en": "Max anisotropy",
-    "description": "Когда смотрите на пол или стену под углом: текстура может «плыть» и мылиться. 16: максимальная чёткость (почти бесплатно для FPS). 0–4: заметное «мыло» на полу и дорогах.",
+    "description": "Когда смотрите на пол или стену под углом: текстура может «плыть» и мылиться. 16: максимальная четкость (почти бесплатно для FPS). 0–4: заметное «мыло» на полу и дорогах.",
     "description_en": "When viewing floors or walls at an angle textures may swim and blur. 16: maximum sharpness (almost free FPS). 0–4: obvious blur on floors and roads.",
     "impact": "Почти не влияет на FPS. 16: ставьте всегда, если хватает GPU.",
     "impact_en": "Almost no FPS impact. 16: always use if GPU allows.",
@@ -130,9 +130,9 @@
     "value_hint_en": "256-8192"
   },
   "r.VolumetricFog": {
-    "title": "Объёмный туман",
+    "title": "Объемный туман",
     "title_en": "Volumetric fog",
-    "description": "0: простая дымка вдали, без объёма. 1: туман «живой»: свет пробивается сквозь него лучами, как в кино. Заметно на поверхности океана, в пещерах и в густой дымке.",
+    "description": "0: простая дымка вдали, без объема. 1: туман «живой»: свет пробивается сквозь него лучами, как в кино. Заметно на поверхности океана, в пещерах и в густой дымке.",
     "description_en": "0: simple distant haze, no volume. 1: living fog: light pierces in rays, cinematic. Noticeable on ocean surface, in caves, and thick haze.",
     "impact": "Средняя–высокая нагрузка, если в игре много тумана.",
     "impact_en": "Medium–high load if the game uses lots of fog.",
@@ -145,7 +145,7 @@
   "r.Atmosphere": {
     "title": "Атмосфера неба",
     "title_en": "Sky atmosphere",
-    "description": "0: простое небо без атмосферы, горизонт резкий. 1: лёгкая дымка вдали, небо выглядит объёмнее: как на открытых локациях и на поверхности океана.",
+    "description": "0: простое небо без атмосферы, горизонт резкий. 1: легкая дымка вдали, небо выглядит объемнее: как на открытых локациях и на поверхности океана.",
     "description_en": "0: simple sky without atmosphere, sharp horizon. 1: light distant haze, sky looks more volumetric: like open locations and ocean surface.",
     "impact": "Небольшая–средняя нагрузка. Влияет на вид неба и дальних гор.",
     "impact_en": "Low–medium load. Affects sky and distant mountains.",
@@ -158,7 +158,7 @@
   "r.ContactShadows": {
     "title": "Контактные тени",
     "title_en": "Contact shadows",
-    "description": "Мягкие тени в местах, где предмет касается пола или стены: под ногами, под техникой, в стыках. 0: только обычные тени, у основания может быть «пустота». 1: контакты выглядят объёмнее и правдоподобнее.",
+    "description": "Мягкие тени в местах, где предмет касается пола или стены: под ногами, под техникой, в стыках. 0: только обычные тени, у основания может быть «пустота». 1: контакты выглядят объемнее и правдоподобнее.",
     "description_en": "Soft shadows where an object touches floor or wall: under feet, vehicles, in joints. 0: regular shadows only, base may look hollow. 1: contacts look more dimensional and believable.",
     "impact": "Низкая–средняя нагрузка. Заметнее внутри баз и на гладких полах.",
     "impact_en": "Low–medium load. More noticeable indoors and on smooth floors.",
@@ -171,7 +171,7 @@
   "r.DistanceFieldShadowing": {
     "title": "Тени distance field",
     "title_en": "Distance field shadows",
-    "description": "Добавляет лёгкие тени от мелочи: камней, обломков, деталей: там, где обычные тени их не показывают. 0: только стандартные тени. 1: сцена чуть объёмнее. Не во всех играх заметно.",
+    "description": "Добавляет легкие тени от мелочи: камней, обломков, деталей: там, где обычные тени их не показывают. 0: только стандартные тени. 1: сцена чуть объемнее. Не во всех играх заметно.",
     "description_en": "Adds light shadows from small items: rocks, debris, details: where regular shadows miss them. 0: standard shadows only. 1: scene slightly more dimensional. Not visible in all games.",
     "impact": "Средняя–высокая нагрузка там, где включено.",
     "impact_en": "Medium–high load where enabled.",
@@ -197,9 +197,9 @@
   "r.Lumen.DiffuseIndirect.Allow": {
     "title": "Lumen GI",
     "title_en": "Lumen diffuse GI",
-    "description": "Свет не обрывается в углу: он мягко «подсвечивает» стены и потолок, как в реальности. 0: тёмные углы чёрные и плоские. 1: интерьеры, пещеры и подводные базы выглядят живее. Технология UE5.",
+    "description": "Свет не обрывается в углу: он мягко «подсвечивает» стены и потолок, как в реальности. 0: темные углы черные и плоские. 1: интерьеры, пещеры и подводные базы выглядят живее. Технология UE5.",
     "description_en": "Light does not die in corners: it softly illuminates walls and ceiling. 0: dark corners black and flat. 1: interiors, caves, and underwater bases feel alive. UE5 tech.",
-    "impact": "Очень высокая нагрузка. Один из самых тяжёлых параметров в UE5.",
+    "impact": "Очень высокая нагрузка. Один из самых тяжелых параметров в UE5.",
     "impact_en": "Very high load. One of the heaviest UE5 settings.",
     "category": "Rendering",
     "min": "0",
@@ -210,7 +210,7 @@
   "r.Lumen.Reflections.Allow": {
     "title": "Lumen отражения",
     "title_en": "Lumen reflections",
-    "description": "Вода, металл и стекло отражают окружение в реальном времени: вы видите себя, небо и базу в шлеме и на поверхности воды. 0: отражения упрощённые или отключены. 1: полноценные отражения UE5.",
+    "description": "Вода, металл и стекло отражают окружение в реальном времени: вы видите себя, небо и базу в шлеме и на поверхности воды. 0: отражения упрощенные или отключены. 1: полноценные отражения UE5.",
     "description_en": "Water, metal, and glass reflect the environment in real time: you see yourself, sky, and base in helmet and on water. 0: simplified or off. 1: full UE5 reflections.",
     "impact": "Высокая нагрузка, особенно у воды, металла и внутри баз.",
     "impact_en": "High load, especially on water, metal, and indoors.",
@@ -249,7 +249,7 @@
     "title_en": "Motion blur amount",
     "description": "Насколько сильно картинка размывается при быстром движении камеры. 0: эффект выключен, кадр всегда резкий. 0.5: умеренное размытие. 1: максимум, «киношная» полоска при резком повороте.",
     "description_en": "How much the image blurs on fast camera motion. 0: effect off, frame always sharp. 0.5: moderate blur. 1: maximum, cinematic streak on sharp turns.",
-    "impact": "Минимальная нагрузка. Многие ставят 0 для чёткости и меньшей тошноты.",
+    "impact": "Минимальная нагрузка. Многие ставят 0 для четкости и меньшей тошноты.",
     "impact_en": "Minimal load. Many set 0 for clarity and less nausea.",
     "category": "Effects",
     "min": "0",

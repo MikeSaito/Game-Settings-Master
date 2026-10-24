@@ -46,8 +46,8 @@ pub fn import_game_cover_cmd(
 
     let profile = games.iter_mut().find(|g| g.id == game_id).ok_or_else(|| {
         AppError::game_not_found(crate::i18n::t(
-            &format!("Игра «{game_id}» не найдена — нажмите «Сканировать» в библиотеке"),
-            &format!("Game «{game_id}» not found — click Scan in the library"),
+            &format!("Игра «{game_id}» не найдена – нажмите «Сканировать» в библиотеке"),
+            &format!("Game «{game_id}» not found – click Scan in the library"),
         ))
     })?;
 

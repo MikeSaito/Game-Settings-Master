@@ -91,7 +91,7 @@ fn humanize_token(token: &str) -> String {
         "water" => crate::i18n::t("вода", "water"),
         "sky" => crate::i18n::t("небо", "sky"),
         "cloud" | "clouds" => crate::i18n::t("облака", "clouds"),
-        "volumetric" => crate::i18n::t("объёмный", "volumetric"),
+        "volumetric" => crate::i18n::t("объемный", "volumetric"),
         "global" => crate::i18n::t("глобальный", "global"),
         "illumination" => crate::i18n::t("освещение", "illumination"),
         "exposure" => crate::i18n::t("экспозиция", "exposure"),

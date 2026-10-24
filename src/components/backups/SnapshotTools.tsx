@@ -136,7 +136,7 @@ export function SnapshotTools({
             onChange={(event) => setFirst(event.target.value)}
             className="rounded bg-[var(--color-bg-soft)] p-2"
           >
-            <option value="">—</option>
+            <option value="">–</option>
             {backups.map((backup) => (
               <option key={backup.id} value={backup.id}>
                 {backup.name ?? backup.created_at}
