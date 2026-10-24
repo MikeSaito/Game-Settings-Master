@@ -19,6 +19,7 @@ import type {
 import { OVERRIDE_INI_FILES } from "@/lib/ini/configFiles";
 import { iniSnapshotKeyFromParts } from "@/lib/editor/iniSnapshot";
 import { testGame } from "@/test/fixtures/gameProfile";
+import { getScreenshotGames } from "@/screenshot/fixtures";
 import {
   createE2eParametersForMode,
   readE2eFixtureMode,
@@ -76,7 +77,9 @@ function textDocument(file: string): IniTextDocument {
       revision: missing ? null : crypto.randomUUID(),
       text: missing
         ? ""
-        : "; Example config\r\n[SystemSettings]\r\nr.Test=1\r\n",
+        : readE2eFixtureMode() === "readme"
+          ? "; Demonstration configuration\r\n[SystemSettings]\r\nr.Tonemapper.Sharpen=0.5\r\nr.Lumen.Reflections.Allow=1\r\nr.ViewDistanceScale=1\r\n"
+          : "; Example config\r\n[SystemSettings]\r\nr.Test=1\r\n",
     };
     textFiles.set(file, document);
   }
@@ -239,9 +242,24 @@ export function handleE2eInvoke(
 ): unknown {
   switch (cmd) {
     case "scan_games":
+      if (readE2eFixtureMode() === "readme") {
+        const language =
+          sessionStorage.getItem("gsm-e2e-language") === "ru" ? "ru" : "en";
+        return [
+          {
+            ...testGame,
+            name: language === "ru" ? "Пример игры UE5" : "Example UE5 Game",
+            gpu_adapter_id: selectedGpu,
+          },
+          ...getScreenshotGames(language).slice(1, 3),
+        ];
+      }
       return [{ ...testGame, gpu_adapter_id: selectedGpu }];
     case "get_gpu_info_cmd":
     case "get_game_gpu":
+      if (readE2eFixtureMode() === "readme") {
+        return { ...e2eGpu, name: "NVIDIA GPU (demo)" };
+      }
       return selectedGpu === "test-amd" ? e2eAmd : e2eGpu;
     case "list_gpu_adapters":
       return [e2eGpu, e2eAmd];
