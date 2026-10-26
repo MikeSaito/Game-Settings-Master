@@ -21,5 +21,6 @@
   "gpuFilterNvidiaNoDlss": "GPU {{name}}: DLSS unavailable: GTX has no Tensor Cores.",
   "gpuFilterNvidiaNoFg": "GPU {{name}}: Frame Generation unavailable: DLSS FG will be hidden.",
   "gpuFilterNvidiaDlssOnly": "GPU {{name}}: DLSS available. Frame Generation (DLSS 3): RTX 40 series and newer only.",
-  "skipToContent": "Skip to content"
+  "skipToContent": "Skip to content",
+  "close": "Close"
 }

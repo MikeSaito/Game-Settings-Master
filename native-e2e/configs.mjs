@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, mkdir } from "node:fs/promises";
+import { mkdtemp, readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { createServer } from "node:http";
 import { launch, waitFor } from "./driver.mjs";
@@ -31,12 +31,31 @@ async function preview(text, engine) {
   await app.fill("#ini-text", text);
   if (engine) { await app.select("Engine.ini"); await app.fill("#ini-text", engine); }
   await app.button("Preview and save");
-  await waitFor(() => app.execute("return !!document.querySelector('[role=dialog]')"));
+  await waitFor(() => app.execute("return !!document.querySelector('dialog[open], [role=dialog]')"));
   await app.click("//input[@type='checkbox' and following-sibling::span[contains(.,'reviewed')]] | //label[contains(.,'I have reviewed the warnings')]//input");
 }
 const original = "[ScalabilityGroups]\r\nsg.ShadowQuality=2\r\n";
+async function verifyMaterialWorkspace() {
+  await app.button("Select");
+  for (const [button, theme] of [["Light", "light"], ["Dark", "dark"]]) {
+    await app.click(`//button[@aria-label='${button}']`);
+    await waitFor(async () => (await app.execute("return document.documentElement.dataset.theme")) === theme);
+    await writeFile(join(artifacts, `material-${theme}.png`), Buffer.from(await app.command("/screenshot", undefined, "GET"), "base64"));
+  }
+  await app.click("//button[@aria-label='Game details']");
+  await waitFor(() => app.execute("return !!document.querySelector('dialog[open]') && document.querySelector('dialog[open]').innerText.includes('Native Test Game')"));
+  await app.click("//dialog[@open]//button[@aria-label='Close']");
+  await app.click("//button[@data-parameter-details]");
+  await waitFor(() => app.execute("return !!document.querySelector('dialog[open] [data-testid=parameter-list-details]')"));
+  await app.click("//dialog[@open]//button[@aria-label='Close']");
+  await app.button("Save preset");
+  await waitFor(() => app.execute("return !!document.querySelector('dialog[open]') && document.querySelector('dialog[open]').innerText.includes('Preset save options')"));
+  await app.click("//dialog[@open]//button[@aria-label='Close']");
+  await app.click("//*[@role='tab' and normalize-space(.)='Files']");
+  console.log("Native light/dark themes, parameter details, game details and preset dialog passed");
+}
 try {
-  await start(); await openFiles();
+  await start(); await verifyMaterialWorkspace();
   await preview("[ScalabilityGroups]\r\nsg.ShadowQuality=3\r\n");
   await app.button("Confirm and apply");
   await waitFor(async () => (await readFile(join(config,"GameUserSettings.ini"),"utf8")).includes("sg.ShadowQuality=3"));

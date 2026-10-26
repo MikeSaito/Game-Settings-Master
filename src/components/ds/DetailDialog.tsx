@@ -18,7 +18,7 @@ export function DetailDialog({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const heading = useId();
-  const { t } = useTranslation("settings");
+  const { t } = useTranslation("common");
   useEffect(() => {
     if (!open) return;
     const dialog = ref.current;
