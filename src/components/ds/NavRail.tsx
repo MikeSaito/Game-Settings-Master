@@ -1,5 +1,8 @@
+import { resolveTheme } from "@/lib/settings";
+import { useAppSettings } from "@/hooks/app/useAppSettings";
+import { useEffect, useState } from "react";
 import type { MouseEvent, RefObject } from "react";
-import { Library, Settings, SlidersHorizontal } from "lucide-react";
+import { Library, Settings, SlidersHorizontal, Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { gameTabPath, libraryPath } from "@/lib/routing";
@@ -15,7 +18,7 @@ interface Props {
 }
 
 const navButtonClass =
-  "relative grid h-11 w-11 cursor-pointer place-items-center rounded-[var(--radius-panel)] border text-[var(--color-text-muted)] transition touch-manipulation";
+  "material-rail-button relative grid h-12 w-16 cursor-pointer place-items-center rounded-full text-[var(--color-text-muted)] transition-colors touch-manipulation";
 
 export function NavRail({
   active,
@@ -26,8 +29,22 @@ export function NavRail({
 }: Props) {
   const { t } = useTranslation("sidebar");
   const location = useLocation();
+  const { settings, setTheme } = useAppSettings();
+  const { t: ts } = useTranslation("settings");
+  const [resolvedTheme, setResolvedTheme] = useState(() =>
+    resolveTheme(settings.theme),
+  );
+  useEffect(() => {
+    const sync = () => setResolvedTheme(resolveTheme(settings.theme));
+    sync();
+    const media = window.matchMedia?.("(prefers-color-scheme: light)");
+    media?.addEventListener?.("change", sync);
+    return () => media?.removeEventListener?.("change", sync);
+  }, [settings.theme]);
   const libraryTarget = libraryPath();
-  const gameTarget = selectedGame ? gameTabPath(selectedGame.id, "advanced") : libraryTarget;
+  const gameTarget = selectedGame
+    ? gameTabPath(selectedGame.id, "advanced")
+    : libraryTarget;
 
   const scrollLibraryIfActive = (event: MouseEvent) => {
     if (
@@ -41,8 +58,15 @@ export function NavRail({
   };
 
   return (
-    <aside className="relative z-50 flex w-16 shrink-0 flex-col items-center border-r border-[var(--color-border-strong)] bg-[var(--color-bg-soft)] py-3">
-      <nav className="flex flex-1 flex-col gap-2">
+    <aside className="relative z-50 flex w-[88px] shrink-0 flex-col items-center py-2 max-sm:w-14">
+      <Link
+        to={libraryTarget}
+        aria-label="Game Settings Master"
+        className="mb-7 grid h-14 w-14 place-items-center rounded-2xl max-sm:w-12"
+      >
+        <img src="/logo.png" alt="" className="h-10 w-10 rounded-xl" />
+      </Link>
+      <nav className="flex flex-1 flex-col gap-3">
         <Link
           to={libraryTarget}
           aria-current={active === "library" ? "page" : undefined}
@@ -52,8 +76,8 @@ export function NavRail({
           className={cn(
             navButtonClass,
             active === "library"
-              ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent-hover)] ring-1 ring-[var(--color-accent)]/45"
-              : "border-transparent hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-secondary)]",
+              ? "bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]"
+              : "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]",
           )}
         >
           <Library size={19} />
@@ -68,8 +92,8 @@ export function NavRail({
             className={cn(
               navButtonClass,
               active !== "library"
-                ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent-hover)] ring-1 ring-[var(--color-accent)]/45"
-                : "border-transparent hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-secondary)]",
+                ? "bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]"
+                : "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]",
             )}
           >
             <SlidersHorizontal size={19} />
@@ -88,6 +112,23 @@ export function NavRail({
         )}
       </nav>
       <button
+        type="button"
+        className={cn(navButtonClass, "mb-3")}
+        aria-label={ts(
+          resolvedTheme === "light" ? "theme.dark" : "theme.light",
+        )}
+        title={ts(resolvedTheme === "light" ? "theme.dark" : "theme.light")}
+        onClick={() =>
+          setTheme(
+            document.documentElement.dataset.theme === "light"
+              ? "dark"
+              : "light",
+          )
+        }
+      >
+        {resolvedTheme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+      </button>
+      <button
         ref={settingsButtonRef}
         type="button"
         onClick={() => onSettingsClick?.()}
@@ -98,8 +139,8 @@ export function NavRail({
         className={cn(
           navButtonClass,
           settingsOpen
-            ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent-hover)] ring-1 ring-[var(--color-accent)]/45"
-            : "border-transparent hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-secondary)]",
+            ? "bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]"
+            : "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]",
         )}
       >
         <Settings size={19} />

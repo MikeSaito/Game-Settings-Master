@@ -75,8 +75,8 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
     <section
       className={
         variant === "page"
-          ? "rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
-          : "mt-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3"
+          ? "rounded-[var(--radius-panel)] bg-[var(--color-surface)] p-4"
+          : "mt-3 rounded-[var(--radius-panel)] bg-[var(--color-surface)] p-3"
       }
     >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -189,7 +189,7 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
         {state.overrides.map((override) => (
           <li
             key={`${override.game_id}-${override.name}`}
-            className="flex items-center justify-between gap-3 rounded-lg border border-[var(--color-border)] px-3 py-2"
+            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[var(--color-bg-soft)] px-4 py-4"
           >
             <span className="min-w-0 truncate text-sm text-[var(--color-text-secondary)]">
               {override.name}
@@ -199,7 +199,7 @@ export function SavedPresetsPanel({ state, variant = "embedded" }: Props) {
                 </small>
               )}
             </span>
-            <div className="flex shrink-0 gap-1">
+            <div className="flex flex-wrap gap-1">
               <Button
                 variant="ghost"
                 className="!py-1 !px-2 text-xs"

@@ -33,3 +33,11 @@ vi.mock("@/components/app/UpdateGate", () => ({
   UpdateGate: ({ children }: { children: React.ReactNode }) =>
     React.createElement(React.Fragment, null, children),
 }));
+
+// jsdom has no top-layer dialog implementation; browser tests cover native focus.
+HTMLDialogElement.prototype.showModal = function () {
+  this.setAttribute("open", "");
+};
+HTMLDialogElement.prototype.close = function () {
+  this.removeAttribute("open");
+};

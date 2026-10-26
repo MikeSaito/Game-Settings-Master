@@ -92,9 +92,13 @@ export class ErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={() =>
-                this.setState({ error: null, reportSaved: false, componentStack: null })
+                this.setState({
+                  error: null,
+                  reportSaved: false,
+                  componentStack: null,
+                })
               }
-              className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+              className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-[var(--color-on-accent)] transition hover:opacity-90"
             >
               {i18n.t("common:errorBoundaryRetry")}
             </button>

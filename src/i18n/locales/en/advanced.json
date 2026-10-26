@@ -70,7 +70,8 @@
     "basicSafe": "GameUserSettings.ini only",
     "advancedFiles": "Engine.ini / Scalability.ini",
     "inputBody": "Classic Input.ini bindings with a changes preview.",
-    "filesBody": "Edit source text with a preview and backup before writing."
+    "filesBody": "Edit source text with a preview and backup before writing.",
+    "help": "About this section"
   },
   "engineWarning": {
     "title": "Advanced users only",
@@ -284,5 +285,7 @@
     "noSearch": "No matches",
     "noRows": "Files are empty",
     "readOnlyHint": "Read-only. Changes to these files are not supported in GSM yet."
-  }
+  },
+  "catalogDetails": "Catalog: {{count}} parameters",
+  "parameterDetails": "Details for {{name}}"
 }

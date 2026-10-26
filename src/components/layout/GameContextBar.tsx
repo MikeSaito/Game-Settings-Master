@@ -1,4 +1,4 @@
-import { Copy, Cpu, ExternalLink, FolderOpen, Play, X } from "lucide-react";
+import { Copy, FolderOpen, Info, Play, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
@@ -6,8 +6,10 @@ import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import { useGameLaunch } from "@/hooks/game/useGameLaunch";
 import { useGameRunning } from "@/hooks/game/useGameRunning";
 import { getGpuInfo, openConfigFolder } from "@/lib/api";
-import { exeNameForRunningCheck, supportsIniPresets } from "@/lib/game";
-import { gpuSummaryLabel } from "@/lib/gpu";
+import { exeNameForRunningCheck } from "@/lib/game";
+import { DetailDialog } from "@/components/ds/DetailDialog";
+import { GameHardwarePanel } from "@/components/advanced/GameHardwarePanel";
+import { DiagnosticsPanel } from "@/components/advanced/DiagnosticsPanel";
 import type { GameProfile } from "@/lib/core";
 import { Badge, Button } from "@/components/ds";
 import { GameCover } from "@/components/game/GameCover";
@@ -23,6 +25,7 @@ export function GameContextBar({ game }: Props) {
   const [copyStatus, setCopyStatus] = useState<"copied" | "failed" | null>(
     null,
   );
+  const [infoOpen, setInfoOpen] = useState(false);
   const configDir = game.config_dir;
   const runningExeName =
     exeNameForRunningCheck(game.exe_name, undefined) ?? null;
@@ -48,82 +51,80 @@ export function GameContextBar({ game }: Props) {
   };
 
   return (
-    <section className="relative z-40 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-bg-soft)] px-4 py-3 touch-manipulation">
-      {(game.source === "manual" ||
-        game.source === "gog" ||
-        game.source === "xbox") && (
-        <GameLaunchOptions key={game.id} game={game} />
-      )}
-      <div className="flex flex-wrap items-center gap-3">
+    <section className="relative z-40 shrink-0 px-6 py-4 max-sm:px-3">
+      <div className="flex items-center gap-3">
         <GameCover
           game={game}
           aspect="square"
-          className="h-12 w-12 shrink-0 rounded-[var(--radius-control)]"
+          className="h-12 w-12 shrink-0 rounded-2xl"
         />
         <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h1 className="truncate text-base font-semibold text-[var(--color-text)]">
-              {game.name}
-            </h1>
-            {game.is_ue ? (
-              <Badge tone="accent">
-                {game.engine_family === "ue4"
-                  ? "UE 4"
-                  : game.engine_family === "ue5"
-                    ? "UE 5"
-                    : "Unreal"}
-              </Badge>
-            ) : (
-              <Badge tone="warning">{t("badge.engineUnknown")}</Badge>
-            )}
-            {game.engine_version && (
-              <Badge tone="neutral">{game.engine_version}</Badge>
-            )}
-            <Badge tone={supportsIniPresets(game) ? "success" : "warning"}>
+          <h1 className="truncate text-lg font-medium">{game.name}</h1>
+          <p className="truncate text-xs text-[var(--color-text-muted)]">
+            {game.source === "manual"
+              ? t("manualSource")
+              : game.source.toUpperCase()}{" "}
+            ·{" "}
+            {game.engine_version ??
+              (game.is_ue ? "Unreal Engine" : t("badge.engineUnknown"))}
+          </p>
+        </div>
+        {launchStatus && (
+          <Badge tone={launchStatus.tone} className="max-w-[200px] truncate">
+            {launchStatus.text}
+          </Badge>
+        )}
+        <button
+          type="button"
+          className="material-icon-button"
+          aria-label={t("gameDetails")}
+          title={t("gameDetails")}
+          onClick={() => setInfoOpen(true)}
+        >
+          <Info size={21} />
+        </button>
+        {gameRunning && runningExeName ? (
+          <Button
+            variant="secondary"
+            icon={<X size={15} />}
+            onClick={() => closeMutation.mutate(sessionRef.current)}
+            loading={closeMutation.isPending}
+          >
+            {t("button.close")}
+          </Button>
+        ) : (
+          <Button
+            variant="secondary"
+            icon={<Play size={15} fill="currentColor" />}
+            onClick={() => launchMutation.mutate(sessionRef.current)}
+            loading={launchMutation.isPending}
+          >
+            {t("button.play")}
+          </Button>
+        )}
+      </div>
+      <DetailDialog
+        key={game.id}
+        open={infoOpen}
+        title={t("gameDetails")}
+        onClose={() => setInfoOpen(false)}
+      >
+        <div className="space-y-4">
+          <h3 className="font-medium">{game.name}</h3>
+          <div className="flex flex-wrap gap-2">
+            <Badge tone={configDir ? "success" : "warning"}>
               {configDir ? t("badge.configOk") : t("badge.needConfig")}
             </Badge>
-            {launchStatus && (
-              <Badge
-                tone={launchStatus.tone}
-                className="max-w-[240px] truncate"
-              >
-                {launchStatus.text}
-              </Badge>
-            )}
+            {game.engine_version && <Badge>{game.engine_version}</Badge>}
           </div>
-        </div>
-        <div className="ml-auto flex shrink-0 flex-wrap items-center gap-2">
-          {gpu && (
-            <Badge
-              tone="info"
-              title={gpuSummaryLabel(gpu)}
-              className="max-w-[200px] truncate"
-            >
-              <Cpu size={12} className="mr-1" />
-              {gpuSummaryLabel(gpu)}
-            </Badge>
-          )}
-          {gameRunning && runningExeName ? (
-            <Button
-              variant="secondary"
-              icon={<X size={15} />}
-              onClick={() => closeMutation.mutate(sessionRef.current)}
-              loading={closeMutation.isPending}
-            >
-              {t("button.close")}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              icon={<Play size={15} fill="currentColor" />}
-              onClick={() => launchMutation.mutate(sessionRef.current)}
-              loading={launchMutation.isPending}
-            >
-              {t("button.play")}
-            </Button>
-          )}
+          <p className="text-sm text-[var(--color-text-muted)]">
+            {t("configLabel")}
+          </p>
+          <code className="block break-all text-sm">
+            {configDir || t("noConfigPath")}
+          </code>
           {configDir && (
-            <>
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 size="sm"
                 variant="ghost"
@@ -134,35 +135,27 @@ export function GameContextBar({ game }: Props) {
               </Button>
               <Button
                 size="sm"
-                variant="secondary"
                 icon={<FolderOpen size={14} />}
                 onClick={() => openConfigFolder(configDir, game.id)}
               >
                 {t("button.open")}
               </Button>
               {copyStatus && (
-                <Badge tone={copyStatus === "copied" ? "success" : "warning"}>
+                <span role="status" className="text-sm">
                   {t(`button.${copyStatus}`)}
-                </Badge>
+                </span>
               )}
-            </>
+            </div>
           )}
-          {!configDir && (
-            <ExternalLink
-              size={16}
-              className="text-[var(--color-text-faint)]"
-            />
+          <GameHardwarePanel game={game} gpu={gpu} />
+          <DiagnosticsPanel game={game} />
+          {(game.source === "manual" ||
+            game.source === "gog" ||
+            game.source === "xbox") && (
+            <GameLaunchOptions key={game.id} game={game} />
           )}
         </div>
-      </div>
-      <div className="mt-2 flex min-w-0 items-center gap-2 pl-[3.75rem] text-xs text-[var(--color-text-muted)]">
-        <span className="shrink-0 uppercase tracking-wide">
-          {t("configLabel")}
-        </span>
-        <code className="truncate font-mono text-[var(--color-text-secondary)]">
-          {configDir || t("noConfigPath")}
-        </code>
-      </div>
+      </DetailDialog>
     </section>
   );
 }

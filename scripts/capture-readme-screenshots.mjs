@@ -51,11 +51,7 @@ try {
     const tab = (en, ru) => page.getByRole("tab", { name: label(en, ru), exact: true });
     async function capture(name) {
       await page.evaluate(() => document.fonts.ready);
-      if (name === "editor-basic" || name === "editor-advanced") {
-        await page.getByTestId("parameter-row").first().hover();
-      } else {
-        await page.mouse.move(1910, 1070);
-      }
+      await page.mouse.move(1910, 1070);
       const png = resolve(directory, `${name}.png`);
       await page.screenshot({ path: png, animations: "disabled", caret: "hide" });
       const result = spawnSync("python", ["-c",

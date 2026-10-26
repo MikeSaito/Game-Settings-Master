@@ -34,12 +34,9 @@ function baseParam(overrides: Partial<GameParameter>): GameParameter {
 }
 
 describe("ParameterDetailPane", () => {
-  it("shows hover hint when no parameter selected", () => {
-    render(<ParameterDetailPane param={null} />);
-    expect(screen.getByTestId("parameter-list-details")).toBeInTheDocument();
-    expect(
-      screen.getByText(/Hover a parameter in the list on the left/i),
-    ).toBeInTheDocument();
+  it("does not reserve space when no parameter is selected", () => {
+    const { container } = render(<ParameterDetailPane param={null} />);
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("renders parameter description and impact", () => {
@@ -52,7 +49,9 @@ describe("ParameterDetailPane", () => {
         })}
       />,
     );
-    expect(screen.getByText("Detailed shadow preset info.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Detailed shadow preset info."),
+    ).toBeInTheDocument();
     expect(screen.getByText(/FPS drops on high settings/)).toBeInTheDocument();
     expect(screen.getByText(/r.ShadowQuality=0/)).toBeInTheDocument();
   });

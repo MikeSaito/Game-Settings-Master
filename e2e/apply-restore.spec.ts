@@ -16,7 +16,10 @@ test.describe("editor workflow", () => {
       .getByRole("button", { name: "Apply to GameUserSettings" })
       .click();
     await expect(page.getByRole("dialog")).toBeVisible();
-    await page.screenshot({ path: "test-results/ue-preview-en.png", fullPage: true });
+    await page.screenshot({
+      path: "test-results/ue-preview-en.png",
+      fullPage: true,
+    });
     await page
       .getByRole("dialog")
       .getByRole("button", { name: "Cancel", exact: true })
@@ -68,11 +71,9 @@ test.describe("editor workflow", () => {
       .click();
     await expect(page.getByRole("dialog").getByRole("checkbox")).toHaveCount(1);
     await expect(
-      page
-        .getByRole("dialog")
-        .getByRole("checkbox", {
-          name: "GameUserSettings.ini: sg.TextureQuality",
-        }),
+      page.getByRole("dialog").getByRole("checkbox", {
+        name: "GameUserSettings.ini: sg.TextureQuality",
+      }),
     ).toBeChecked();
     await page
       .getByRole("dialog")
@@ -94,7 +95,7 @@ test.describe("editor workflow", () => {
 
     await page.getByRole("button", { name: "Select" }).click();
     await expect(
-      page.getByText("GameUserSettings: like the in-game menu"),
+      page.getByRole("tab", { name: "Basic", exact: true }),
     ).toBeVisible();
 
     const vsyncRow = page
@@ -136,7 +137,7 @@ test.describe("editor workflow", () => {
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
     await expect(
-      page.getByText("GameUserSettings: like the in-game menu"),
+      page.getByRole("tab", { name: "Basic", exact: true }),
     ).toBeVisible();
 
     await expect(page.getByText("sg.* and r.* overlap")).toBeVisible();
@@ -231,7 +232,7 @@ test.describe("editor workflow", () => {
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
     await expect(
-      page.getByText("GameUserSettings: like the in-game menu"),
+      page.getByRole("tab", { name: "Basic", exact: true }),
     ).toBeVisible();
 
     const viewRow = page
@@ -252,7 +253,7 @@ test.describe("editor workflow", () => {
     await page.goto("/e2e.html");
     await page.getByRole("button", { name: "Select" }).click();
     await expect(
-      page.getByText("GameUserSettings: like the in-game menu"),
+      page.getByRole("tab", { name: "Basic", exact: true }),
     ).toBeVisible();
 
     const vsyncRow = page

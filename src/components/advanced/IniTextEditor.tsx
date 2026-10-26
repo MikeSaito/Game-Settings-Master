@@ -19,7 +19,7 @@ const FILES = [
 ];
 type Draft = { document: IniTextDocument; text: string };
 const control =
-  "rounded border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-3 py-2 text-sm";
+  "rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-3 py-2 text-sm";
 
 export function IniTextEditor({
   game,
@@ -258,7 +258,7 @@ export function IniTextEditor({
       <textarea
         id="ini-text"
         ref={textArea}
-        className="min-h-0 w-full flex-1 resize-none rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-3 font-mono text-sm leading-6 text-[var(--color-text)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+        className="min-h-0 w-full flex-1 resize-none rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 font-mono text-sm leading-6 text-[var(--color-text)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
         spellCheck={false}
         autoCapitalize="off"
         autoCorrect="off"

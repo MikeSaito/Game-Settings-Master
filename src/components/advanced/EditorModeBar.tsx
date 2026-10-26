@@ -1,10 +1,9 @@
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, Info, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorPanel } from "@/lib/routing";
 import { engineWarningAckKey } from "@/lib/routing";
-import { cn } from "@/lib/core";
-import { SegmentControl } from "@/components/ds/SegmentControl";
+import { DetailDialog } from "@/components/ds/DetailDialog";
 
 const BASE_PANELS: EditorPanel[] = [
   "basic",
@@ -31,6 +30,7 @@ export function EditorModeBar({
   showExtraTab = false,
 }: Props) {
   const { t } = useTranslation("advanced");
+  const [helpOpen, setHelpOpen] = useState(false);
   const [advancedWarningDismissed, setAdvancedWarningDismissed] =
     useState(false);
 
@@ -98,75 +98,90 @@ export function EditorModeBar({
                 : t("mode.backupsBody");
 
   return (
-    <div className="mb-3 rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-soft)]">
-      <SegmentControl
-        value={panel}
-        onChange={onPanelChange}
-        ariaLabel={t("tabs.aria")}
-        sizeToContent
-        className="w-full max-w-full overflow-x-auto"
-        options={panels.map((value) => ({
-          value,
-          label: t(`tabs.${value}`),
-        }))}
-      />
-
-      <div
-        className={
-          panel === "files"
-            ? "hidden"
-            : "mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
-        }
-      >
-        <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium text-[var(--color-text)]">
-            {activeHint}
-          </div>
-          <div className="text-xs text-[var(--color-text-muted)]">
-            {activeBody}
-          </div>
-        </div>
-
-        {panel !== "backups" &&
-          panel !== "extra" &&
-          panel !== "presets" &&
-          panel !== "input" &&
-          panel !== "files" && (
-            <div
-              className={cn(
-                "min-w-0 rounded-[var(--radius-control)] border px-3 py-2 text-xs sm:max-w-[min(50%,34rem)]",
-                panel === "basic"
-                  ? "border-[var(--color-success)]/25 bg-[var(--color-success-soft)] text-[var(--color-text-secondary)]"
-                  : "border-[var(--color-warning)]/35 bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
-              )}
+    <div className="mb-4 shrink-0">
+      <div className="flex items-center gap-2 border-b border-[var(--color-border)]">
+        <div
+          role="tablist"
+          aria-label={t("tabs.aria")}
+          className="material-tabs flex min-w-0 flex-1 overflow-x-auto"
+        >
+          {panels.map((value) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={panel === value}
+              tabIndex={panel === value ? 0 : -1}
+              onClick={() => onPanelChange(value)}
+              onKeyDown={(event) => {
+                const index = panels.indexOf(value);
+                const target =
+                  event.key === "ArrowRight"
+                    ? (index + 1) % panels.length
+                    : event.key === "ArrowLeft"
+                      ? (index + panels.length - 1) % panels.length
+                      : event.key === "Home"
+                        ? 0
+                        : event.key === "End"
+                          ? panels.length - 1
+                          : -1;
+                if (target < 0) return;
+                event.preventDefault();
+                onPanelChange(panels[target]);
+                const tabs =
+                  event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+                    '[role="tab"]',
+                  );
+                tabs?.[target]?.focus();
+              }}
             >
-              {panel === "basic" ? (
-                t("mode.basicSafe")
-              ) : advancedWarningDismissed ? (
-                t("mode.advancedFiles")
-              ) : (
-                <div className="flex min-w-0 gap-2">
-                  <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-                  <span className="min-w-0 break-words leading-relaxed">
-                    {t("engineWarning.inline")}{" "}
-                    {t("engineIni.short", {
-                      on: engineStats.on,
-                      total: engineStats.total,
-                    })}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={dismissWarning}
-                    className="ml-1 grid h-5 w-5 shrink-0 place-items-center rounded hover:bg-[var(--color-surface-hover)]"
-                    aria-label={t("engineWarning.acknowledge")}
-                  >
-                    <X size={13} />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+              {t(`tabs.${value}`)}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          className="material-icon-button"
+          aria-label={t("mode.help")}
+          onClick={() => setHelpOpen(true)}
+        >
+          <Info size={19} />
+        </button>
       </div>
+      <DetailDialog
+        open={helpOpen}
+        title={activeHint}
+        onClose={() => setHelpOpen(false)}
+      >
+        <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
+          {activeBody}
+        </p>
+        {(panel === "basic" || panel === "advanced") && (
+          <p className="mt-3 text-sm">
+            {t(panel === "basic" ? "mode.basicSafe" : "mode.advancedFiles")}
+          </p>
+        )}
+      </DetailDialog>
+      {panel === "advanced" && !advancedWarningDismissed && (
+        <div className="mt-3 flex min-w-0 items-start gap-2 rounded-xl bg-[var(--color-warning-soft)] px-3 py-2 text-sm text-[var(--color-warning)]">
+          <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+          <span className="min-w-0 flex-1 break-words">
+            {t("engineWarning.inline")}{" "}
+            {t("engineIni.short", {
+              on: engineStats.on,
+              total: engineStats.total,
+            })}
+          </span>
+          <button
+            type="button"
+            onClick={dismissWarning}
+            className="material-icon-button"
+            aria-label={t("engineWarning.acknowledge")}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

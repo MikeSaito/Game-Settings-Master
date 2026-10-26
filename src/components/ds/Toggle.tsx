@@ -31,14 +31,18 @@ export function Toggle({ checked, onChange, disabled, className }: Props) {
     >
       <span
         className={cn(
-          "pointer-events-none absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-transform",
-          checked ? "translate-x-[2.35rem]" : "translate-x-1",
+          "pointer-events-none absolute top-1 h-6 w-6 rounded-full shadow transition-transform",
+          checked
+            ? "translate-x-[2.35rem] bg-[var(--color-on-accent)]"
+            : "translate-x-1 bg-[var(--color-text)]",
         )}
       />
       <span
         className={cn(
           "pointer-events-none w-full text-center text-xs font-semibold tracking-wide",
-          checked ? "pr-6 text-white" : "pl-6 text-muted",
+          checked
+            ? "pr-6 text-[var(--color-on-accent)]"
+            : "pl-6 text-[var(--color-text-muted)]",
         )}
       >
         {checked ? i18n.t("common:toggleOn") : i18n.t("common:toggleOff")}

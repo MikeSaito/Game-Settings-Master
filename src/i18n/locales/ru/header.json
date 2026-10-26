@@ -25,5 +25,7 @@
   "gameClosed": "Игра закрыта.",
   "errors": {
     "noProcessName": "Имя процесса игры не определено"
-  }
+  },
+  "gameDetails": "Сведения об игре",
+  "manualSource": "Вручную"
 }

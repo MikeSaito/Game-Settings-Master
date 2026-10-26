@@ -12,11 +12,16 @@ const padding = {
   md: "p-4",
 };
 
-export function Panel({ children, className, padding: pad = "md", ...props }: PanelProps) {
+export function Panel({
+  children,
+  className,
+  padding: pad = "md",
+  ...props
+}: PanelProps) {
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-panel)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] shadow-[var(--shadow-subtle)]",
+        "rounded-[var(--radius-panel)] bg-[var(--color-surface)]",
         padding[pad],
         className,
       )}
@@ -28,7 +33,9 @@ export function Panel({ children, className, padding: pad = "md", ...props }: Pa
 }
 
 export function Divider({ className }: { className?: string }) {
-  return <div className={cn("h-px bg-[var(--color-border-strong)]", className)} />;
+  return (
+    <div className={cn("h-px bg-[var(--color-border-strong)]", className)} />
+  );
 }
 
 export function Stack({

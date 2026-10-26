@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -10,11 +10,24 @@ import { isTauriRuntime } from "@/lib/api";
 import { previewAndApply } from "@/lib/api/preparedChanges";
 import { invalidateGameWorkspace } from "@/lib/game/invalidateGameWorkspace";
 
-export function DiagnosticsPanel({ game }: { game: GameProfile }) {
+export function DiagnosticsPanel({
+  game,
+  compact = false,
+}: {
+  game: GameProfile;
+  compact?: boolean;
+}) {
   const { t } = useTranslation("improvements");
   const client = useQueryClient();
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const actionTrigger = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!busy && actionTrigger.current) {
+      actionTrigger.current.focus();
+      actionTrigger.current = null;
+    }
+  }, [busy]);
   const { data: report, error: queryError } = useQuery({
     queryKey: ["diagnostic", game.id],
     queryFn: () =>
@@ -77,6 +90,7 @@ export function DiagnosticsPanel({ game }: { game: GameProfile }) {
     invalidateGameWorkspace(client, game.config_dir, game.id);
   };
   const run = async (fn: () => Promise<unknown>) => {
+    actionTrigger.current = document.activeElement as HTMLElement | null;
     setBusy(true);
     setError(undefined);
     try {
@@ -87,10 +101,19 @@ export function DiagnosticsPanel({ game }: { game: GameProfile }) {
       setBusy(false);
     }
   };
+  if (
+    compact &&
+    !error &&
+    !queryError &&
+    (!report || report.status === "unchanged")
+  )
+    return null;
   return (
     <details
-      open={!!report && report.status !== "unchanged"}
-      className="mb-3 rounded border border-[var(--color-border)] p-3 text-sm"
+      open={
+        !!error || !!queryError || (!!report && report.status !== "unchanged")
+      }
+      className="mb-3 max-h-[30vh] shrink-0 overflow-y-auto rounded-[var(--radius-control)] bg-[var(--color-warning-soft)] p-3 text-sm"
     >
       <summary>
         {t("diagnostics.title")}
@@ -124,9 +147,7 @@ export function DiagnosticsPanel({ game }: { game: GameProfile }) {
           {t("diagnostics.check")}
         </Button>
         {report?.changes.some(
-          (op) =>
-            op.kind === "scalar" ||
-            op.kind === "input",
+          (op) => op.kind === "scalar" || op.kind === "input",
         ) && (
           <Button size="sm" disabled={busy} onClick={() => void run(reapply)}>
             {t("diagnostics.reapply")}

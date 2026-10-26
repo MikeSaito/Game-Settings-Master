@@ -14,13 +14,12 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "border border-[var(--color-accent-hover)] bg-[var(--color-accent)] text-[#17130b] shadow-[var(--shadow-subtle)] hover:bg-[var(--color-accent-hover)] hover:border-[var(--color-accent-hover)]",
+    "bg-[var(--color-accent)] text-[var(--color-on-accent)] hover:brightness-110",
   secondary:
-    "border border-[var(--color-border-strong)] bg-[var(--color-surface-raised)] text-[var(--color-text-secondary)] shadow-[var(--shadow-subtle)] hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]",
-  ghost:
-    "border border-transparent text-[var(--color-text-muted)] hover:border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]",
+    "bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)] hover:brightness-110",
+  ghost: "text-[var(--color-accent)] hover:bg-[var(--color-surface-hover)]",
   danger:
-    "border border-[var(--color-danger)]/45 bg-[var(--color-danger-soft)] text-[var(--color-danger)] hover:border-[var(--color-danger)]",
+    "bg-[var(--color-danger-soft)] text-[var(--color-danger)] hover:brightness-110",
 };
 
 const sizes: Record<Size, string> = {
@@ -42,7 +41,7 @@ export function Button({
     <button
       type="button"
       className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-2 rounded-[var(--radius-control)] font-semibold transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45",
+        "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-medium transition-colors duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45",
         variants[variant],
         sizes[size],
         className,

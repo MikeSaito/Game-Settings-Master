@@ -11,11 +11,9 @@ import { SgEngineConflictPanel } from "@/components/advanced/SgEngineConflictPan
 import { Alert, EmptyState } from "@/components/ds/Feedback";
 import { Badge } from "@/components/ds/Badge";
 import { useAdvancedEditorState } from "@/hooks/editor/useAdvancedEditorState";
-import { gpuFilterHint } from "@/lib/gpu";
 import type { GameProfile } from "@/lib/core";
 import { BackupsPanel } from "@/components/backups";
 import { ConfigPathHelp } from "@/components/library/ConfigPathHelp";
-import { GameHardwarePanel } from "@/components/advanced/GameHardwarePanel";
 import { DiagnosticsPanel } from "@/components/advanced/DiagnosticsPanel";
 import { IniTextEditor } from "@/components/advanced/IniTextEditor";
 import { InputEditor } from "@/components/advanced/InputEditor";
@@ -49,15 +47,10 @@ export function AdvancedEditor({ game }: Props) {
     );
   }
 
-  const gpuHint = state.gpu ? gpuFilterHint(state.gpu) : null;
-
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 max-h-[50%] shrink-0 overflow-y-auto [@media(max-height:700px)]:max-h-[35%]">
-        <div className={state.panel === "files" ? "hidden" : undefined}>
-          <GameHardwarePanel game={game} gpu={state.gpu} />
-          <DiagnosticsPanel game={game} />
-        </div>
+      <DiagnosticsPanel game={game} compact />
+      <div className="shrink-0">
         <EditorModeBar
           gameId={game.id}
           panel={state.panel}
@@ -127,8 +120,11 @@ export function AdvancedEditor({ game }: Props) {
 
           <section className="flex min-h-0 min-w-0 flex-1 flex-col">
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-              <div className="mb-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap gap-1.5">
+              <details className="mb-3 shrink-0 text-xs text-[var(--color-text-muted)]">
+                <summary className="cursor-pointer">
+                  {t("catalogDetails", { count: state.catalogStats.total })}
+                </summary>
+                <div className="mt-2 flex flex-wrap gap-2">
                   <Badge tone="info">
                     {game.engine_version
                       ? t("paramsForEngine", {
@@ -146,34 +142,12 @@ export function AdvancedEditor({ game }: Props) {
                     </Badge>
                   )}
                   {state.limits && state.panel === "basic" && (
-                    <Badge tone="accent">
+                    <Badge>
                       {t("scalabilityLimits", { max: state.limits.global_max })}
                     </Badge>
                   )}
-                  {state.panel === "basic" && state.gusIniStats.total > 0 && (
-                    <Badge tone="warning">
-                      {t("gusIni.short", {
-                        on: state.gusIniStats.on,
-                        total: state.gusIniStats.total,
-                      })}
-                    </Badge>
-                  )}
-                  {state.panel === "advanced" &&
-                    state.engineStats.total > 0 && (
-                      <Badge tone="warning">
-                        {t("engineIni.short", {
-                          on: state.engineStats.on,
-                          total: state.engineStats.total,
-                        })}
-                      </Badge>
-                    )}
                 </div>
-                {gpuHint && (
-                  <Badge tone="info" className="max-w-xl" title={gpuHint}>
-                    {t("gpuHintTitle")}: {gpuHint}
-                  </Badge>
-                )}
-              </div>
+              </details>
 
               {state.validationIssues.length > 0 && (
                 <ApplyValidationPanel

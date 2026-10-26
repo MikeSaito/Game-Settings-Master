@@ -18,6 +18,7 @@ import {
 
 export function ChangesPreview() {
   const { t } = useTranslation("improvements");
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const translate = useRef(t);
   translate.current = t;
   const [pending, setPending] = useState<PreviewRequest>();
@@ -92,45 +93,14 @@ export function ChangesPreview() {
   }, [plan, selected]);
   useEffect(() => {
     if (!pending) return;
+    const dialog = dialogRef.current;
     const previous = document.activeElement as HTMLElement | null;
-    const dialog = document.getElementById("changes-preview");
-    dialog?.focus();
-    const keyboard = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        close();
-      }
-      if (event.key === "Tab" && dialog) {
-        const controls = [
-          ...dialog.querySelectorAll<HTMLElement>(
-            'button:not(:disabled), input:not(:disabled), [tabindex="0"]',
-          ),
-        ];
-        if (controls.length === 0) return;
-        const first = controls[0],
-          last = controls[controls.length - 1];
-        if (
-          event.shiftKey &&
-          (document.activeElement === first ||
-            document.activeElement === dialog)
-        ) {
-          event.preventDefault();
-          last.focus();
-        } else if (
-          !event.shiftKey &&
-          (document.activeElement === last || document.activeElement === dialog)
-        ) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener("keydown", keyboard);
+    dialog?.showModal();
     return () => {
-      document.removeEventListener("keydown", keyboard);
+      dialog?.close();
       previous?.focus();
     };
-  }, [pending, busy]);
+  }, [pending]);
   if (!pending || !plan)
     return completedWarning
       ? createPortal(
@@ -196,15 +166,17 @@ export function ChangesPreview() {
     }
   };
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4">
-      <section
-        id="changes-preview"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="preview-title"
-        tabIndex={-1}
-        className="flex max-h-[90vh] w-full max-w-5xl flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 text-[var(--color-text)] shadow-xl"
-      >
+    <dialog
+      ref={dialogRef}
+      id="changes-preview"
+      aria-labelledby="preview-title"
+      className="changes-dialog"
+      onCancel={(event) => {
+        event.preventDefault();
+        close();
+      }}
+    >
+      <section className="flex max-h-[90dvh] w-full flex-col p-6 text-[var(--color-text)]">
         <h2 id="preview-title" className="text-lg font-semibold">
           {t("preview.title")}
         </h2>
@@ -215,10 +187,18 @@ export function ChangesPreview() {
           <table className="w-full text-sm">
             <thead>
               <tr>
-                <th>{t("preview.select")}</th>
-                <th>{t("preview.parameter")}</th>
-                <th>{t("preview.before")}</th>
-                <th>{t("preview.after")}</th>
+                <th className="px-2 pb-3 text-left font-medium text-[var(--color-text-muted)]">
+                  {t("preview.select")}
+                </th>
+                <th className="px-2 pb-3 text-left font-medium text-[var(--color-text-muted)]">
+                  {t("preview.parameter")}
+                </th>
+                <th className="px-2 pb-3 text-left font-medium text-[var(--color-text-muted)]">
+                  {t("preview.before")}
+                </th>
+                <th className="px-2 pb-3 text-left font-medium text-[var(--color-text-muted)]">
+                  {t("preview.after")}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -322,7 +302,7 @@ export function ChangesPreview() {
             {error}
           </p>
         )}
-        <div className="mt-4 flex justify-end gap-2">
+        <div className="mt-4 flex shrink-0 flex-wrap justify-end gap-2">
           <Button variant="ghost" onClick={close} disabled={busy}>
             {t("cancel")}
           </Button>
@@ -349,7 +329,7 @@ export function ChangesPreview() {
           </Button>
         </div>
       </section>
-    </div>,
+    </dialog>,
     document.body,
   );
 }

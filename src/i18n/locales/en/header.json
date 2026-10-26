@@ -25,5 +25,7 @@
   "gameClosed": "Game closed.",
   "errors": {
     "noProcessName": "Game process name is undefined"
-  }
+  },
+  "gameDetails": "Game details",
+  "manualSource": "Manual"
 }

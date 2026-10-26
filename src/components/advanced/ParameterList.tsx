@@ -1,7 +1,16 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Search } from "lucide-react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type FocusEvent, type MouseEvent } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+} from "react";
 import { useTranslation } from "react-i18next";
+import { DetailDialog } from "@/components/ds/DetailDialog";
 import { ParameterDetailPane } from "./ParameterDetailPane";
 import { ParameterRow } from "./ParameterRow";
 import { EmptyState } from "@/components/ds/Feedback";
@@ -38,7 +47,12 @@ interface Props {
   shippedIniKeys?: ReadonlySet<string>;
   pendingConflictKeys?: Set<string>;
   comboWarningsByKey?: Map<string, ValidationIssue[]>;
-  onUpdateParam: (key: string, section: string, file: string, value: string) => void;
+  onUpdateParam: (
+    key: string,
+    section: string,
+    file: string,
+    value: string,
+  ) => void;
   onToggleEngineParam: (param: GameParameter, enabled: boolean) => void;
   className?: string;
 }
@@ -52,7 +66,12 @@ interface ParameterListRowProps {
   conflictText: string;
   warningLabel?: string;
   shippedIniKeys: ReadonlySet<string>;
-  onUpdateParam: (key: string, section: string, file: string, value: string) => void;
+  onUpdateParam: (
+    key: string,
+    section: string,
+    file: string,
+    value: string,
+  ) => void;
   onToggleEngineParam: (param: GameParameter, enabled: boolean) => void;
 }
 
@@ -82,7 +101,8 @@ const ParameterListRow = memo(function ParameterListRow({
     [onToggleEngineParam, param],
   );
   const handleChange = useCallback(
-    (value: string) => onUpdateParam(param.key, param.section, param.file, value),
+    (value: string) =>
+      onUpdateParam(param.key, param.section, param.file, value),
     [onUpdateParam, param.file, param.key, param.section],
   );
 
@@ -120,35 +140,8 @@ export function ParameterList({
 }: Props) {
   const { t } = useTranslation("advanced");
   const parentRef = useRef<HTMLDivElement>(null);
-  const listRootRef = useRef<HTMLDivElement>(null);
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const detailKeyRef = useRef<string | null>(null);
   const [detail, setDetail] = useState<DetailContext | null>(null);
   const conflictText = t("conflict.sgEngine");
-
-  const showDetailFor = useCallback((ctx: DetailContext) => {
-    const key = paramRowKey(ctx.param);
-    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-    if (detailKeyRef.current === key) return;
-    detailKeyRef.current = key;
-    setDetail(ctx);
-  }, []);
-
-  const scheduleCloseDetail = useCallback(() => {
-    closeTimerRef.current = setTimeout(() => {
-      const root = listRootRef.current;
-      const active = document.activeElement;
-      if (root && active instanceof Node && root.contains(active)) {
-        return;
-      }
-      detailKeyRef.current = null;
-      setDetail(null);
-    }, 150);
-  }, []);
-
-  const cancelCloseDetail = useCallback(() => {
-    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-  }, []);
 
   const virtualizer = useVirtualizer({
     count: filteredParams.length,
@@ -173,7 +166,6 @@ export function ParameterList({
       virtualizer.scrollToIndex(0);
     }
     setDetail(null);
-    detailKeyRef.current = null;
     // Reset scroll only when search or visible row set changes – not on value edits.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- virtualizer instance is stable enough here
   }, [search, rowKeys]);
@@ -191,13 +183,14 @@ export function ParameterList({
       const toggleable =
         showEngineToggle &&
         (gusIniToggleOnly
-          ? isIniMembershipToggleable(param, shippedIniKeys) && param.file === "GameUserSettings.ini"
+          ? isIniMembershipToggleable(param, shippedIniKeys) &&
+            param.file === "GameUserSettings.ini"
           : isIniMembershipToggleable(param, shippedIniKeys));
       const enabled = toggleable
         ? isEngineEnabled(param, engineEnabled, shippedIniKeys)
         : true;
 
-      showDetailFor({
+      setDetail({
         param,
         engineToggleable: toggleable,
         engineEnabled: enabled,
@@ -208,25 +201,18 @@ export function ParameterList({
       filteredParams,
       gusIniToggleOnly,
       shippedIniKeys,
-      showDetailFor,
       showEngineToggle,
     ],
   );
 
-  const handleScrollAreaMouseOver = useCallback(
+  const handleDetailClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      const row = (event.target as HTMLElement).closest<HTMLElement>("[data-param-key]");
-      if (!row) return;
-      revealDetailFromRow(row);
-    },
-    [revealDetailFromRow],
-  );
-
-  const handleScrollAreaFocus = useCallback(
-    (event: FocusEvent<HTMLDivElement>) => {
-      const row = (event.target as HTMLElement).closest<HTMLElement>("[data-param-key]");
-      if (!row) return;
-      revealDetailFromRow(row);
+      const trigger = (event.target as HTMLElement).closest(
+        "[data-parameter-details]",
+      );
+      if (!trigger) return;
+      const row = trigger.closest<HTMLElement>("[data-param-key]");
+      if (row) revealDetailFromRow(row);
     },
     [revealDetailFromRow],
   );
@@ -235,7 +221,9 @@ export function ParameterList({
     return (
       <div className="flex flex-col items-center gap-3 py-16">
         <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-        <p className="text-sm text-[var(--color-text-secondary)]">{t("loadingParams")}</p>
+        <p className="text-sm text-[var(--color-text-secondary)]">
+          {t("loadingParams")}
+        </p>
       </div>
     );
   }
@@ -244,7 +232,11 @@ export function ParameterList({
     return (
       <EmptyState
         icon={Search}
-        title={search ? t("emptyFiltered.titleSearch") : t("emptyFiltered.titleEmpty")}
+        title={
+          search
+            ? t("emptyFiltered.titleSearch")
+            : t("emptyFiltered.titleEmpty")
+        }
         description={
           search ? t("emptyFiltered.descSearch") : t("emptyFiltered.descEmpty")
         }
@@ -255,20 +247,17 @@ export function ParameterList({
 
   return (
     <div
-      ref={listRootRef}
       className={cn(
-        "flex min-h-[320px] flex-1 flex-row overflow-hidden rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-bg-soft)]",
+        "flex min-h-0 flex-1 flex-row overflow-hidden rounded-[var(--radius-panel)] bg-[var(--color-surface)]",
         className,
       )}
       data-testid="parameter-list"
-      onMouseLeave={scheduleCloseDetail}
+      onClick={handleDetailClick}
     >
       <div
         ref={parentRef}
-        className="min-h-0 min-w-0 flex-1 overflow-y-auto rounded-l-[var(--radius-panel)] bg-[var(--color-bg-soft)]"
+        className="min-h-0 min-w-0 flex-1 overflow-y-auto rounded-[var(--radius-panel)] bg-[var(--color-surface)]"
         data-testid="parameter-list-scroll"
-        onMouseOver={handleScrollAreaMouseOver}
-        onFocusCapture={handleScrollAreaFocus}
       >
         <div
           className="relative w-full"
@@ -287,8 +276,10 @@ export function ParameterList({
             const enabled = toggleable
               ? isEngineEnabled(param, engineEnabled, shippedIniKeys)
               : true;
-            const hasConflict = pendingConflictKeys?.has(param.key.toLowerCase()) ?? false;
-            const comboIssues = comboWarningsByKey?.get(param.key.toLowerCase()) ?? [];
+            const hasConflict =
+              pendingConflictKeys?.has(param.key.toLowerCase()) ?? false;
+            const comboIssues =
+              comboWarningsByKey?.get(param.key.toLowerCase()) ?? [];
             const warningLabel =
               !hasConflict && comboIssues.length > 0
                 ? formatValidationIssue(t, comboIssues[0])
@@ -321,13 +312,17 @@ export function ParameterList({
         </div>
       </div>
 
-      <ParameterDetailPane
-        param={detail?.param ?? null}
-        engineToggleable={detail?.engineToggleable}
-        engineEnabled={detail?.engineEnabled}
-        onPointerEnter={cancelCloseDetail}
-        onPointerLeave={scheduleCloseDetail}
-      />
+      <DetailDialog
+        open={detail !== null}
+        title={detail?.param.title || detail?.param.key || t("mode.help")}
+        onClose={() => setDetail(null)}
+      >
+        <ParameterDetailPane
+          param={detail?.param ?? null}
+          engineToggleable={detail?.engineToggleable}
+          engineEnabled={detail?.engineEnabled}
+        />
+      </DetailDialog>
     </div>
   );
 }

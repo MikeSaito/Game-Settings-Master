@@ -1,9 +1,7 @@
+import { Gamepad2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { GameProfile } from "@/lib/core";
-import {
-  gameCoverFallbackLetter,
-  resolveGameCoverCandidates,
-} from "@/lib/game";
+import { resolveGameCoverCandidates } from "@/lib/game";
 import { cn } from "@/lib/core";
 
 interface Props {
@@ -19,11 +17,15 @@ const aspectClass = {
   sidebar: "aspect-[16/9]",
 };
 
-export function GameCover({ game, className, aspect = "header", selected }: Props) {
+export function GameCover({
+  game,
+  className,
+  aspect = "header",
+  selected,
+}: Props) {
   const coverCandidates = resolveGameCoverCandidates(game);
   const [coverIndex, setCoverIndex] = useState(0);
   const src = coverCandidates[coverIndex] ?? null;
-  const letter = gameCoverFallbackLetter(game.name);
 
   useEffect(() => {
     setCoverIndex(0);
@@ -56,10 +58,17 @@ export function GameCover({ game, className, aspect = "header", selected }: Prop
         />
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[var(--color-surface-hover)] to-[var(--color-surface)]">
-          <span className="text-2xl font-bold text-[var(--color-text-secondary)]">{letter}</span>
+          <Gamepad2
+            aria-hidden
+            size={aspect === "square" ? 24 : 42}
+            strokeWidth={1.25}
+            className="text-[var(--color-text-muted)]"
+          />
         </div>
       )}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
+      {showImage && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
+      )}
     </div>
   );
 }

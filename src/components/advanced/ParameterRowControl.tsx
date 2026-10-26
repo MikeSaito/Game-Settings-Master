@@ -11,6 +11,7 @@ import {
   parameterInputClass,
   resolveStep,
   toggleStates,
+  resolveDisplayTitle,
 } from "./parameterRowUtils";
 
 interface Props {
@@ -39,7 +40,9 @@ export function ParameterRowControl({
   if (!canEdit) {
     return (
       <code className="block max-w-[220px] truncate rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-2 py-1.5 font-mono text-xs text-[var(--color-text-secondary)]">
-        {isOff ? formatParamDisplayValue(param.default_value || param.value || "") : formatParamDisplayValue(param.value)}
+        {isOff
+          ? formatParamDisplayValue(param.default_value || param.value || "")
+          : formatParamDisplayValue(param.value)}
         {!isOff && qualityName && !sentinel ? ` · ${qualityName}` : ""}
       </code>
     );
@@ -48,11 +51,18 @@ export function ParameterRowControl({
   if (controlKind === "toggle") {
     const states = toggleStates(param);
     const v = param.value.trim().toLowerCase();
-    const checked = v === states.on.toLowerCase() || v === "true" || v === "on" || v === "1";
+    const checked =
+      v === states.on.toLowerCase() || v === "true" || v === "on" || v === "1";
     return (
       <div className="flex items-center justify-end gap-2">
-        <Switch checked={checked} onChange={(next) => onChange(next ? states.on : states.off)} />
-        <span className="w-10 truncate font-mono text-xs text-[var(--color-text-muted)]">{param.value}</span>
+        <Switch
+          aria-label={resolveDisplayTitle(param)}
+          checked={checked}
+          onChange={(next) => onChange(next ? states.on : states.off)}
+        />
+        <span className="w-10 truncate font-mono text-xs text-[var(--color-text-muted)]">
+          {param.value}
+        </span>
       </div>
     );
   }
@@ -83,11 +93,16 @@ export function ParameterRowControl({
     const known = opts.some((option) => option.value === param.value);
     return (
       <Select
-        value={known ? param.value : opts[0]?.value}
+        value={param.value}
+        aria-label={resolveDisplayTitle(param)}
         onChange={(event) => onChange(event.target.value)}
-        className="max-w-[220px] font-mono text-sm"
+        className="w-full max-w-[220px] text-sm"
       >
-        {!known && <option value={param.value}>{t("currentOption", { value: param.value })}</option>}
+        {!known && (
+          <option value={param.value}>
+            {t("currentOption", { value: param.value })}
+          </option>
+        )}
         {opts.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -102,10 +117,13 @@ export function ParameterRowControl({
     const max = Number(param.max);
     const step = resolveStep(param, min, max);
     const current = Number(param.value);
-    const safeCurrent = Number.isFinite(current) ? Math.min(Math.max(current, min), max) : min;
+    const safeCurrent = Number.isFinite(current)
+      ? Math.min(Math.max(current, min), max)
+      : min;
     return (
       <div className="flex items-center justify-end gap-2">
         <input
+          aria-label={resolveDisplayTitle(param)}
           type="range"
           min={min}
           max={max}
@@ -115,6 +133,7 @@ export function ParameterRowControl({
           className="w-28 accent-[var(--color-accent)]"
         />
         <input
+          aria-label={resolveDisplayTitle(param)}
           type="number"
           min={param.min ?? undefined}
           max={param.max ?? undefined}
@@ -129,6 +148,7 @@ export function ParameterRowControl({
 
   return (
     <input
+      aria-label={resolveDisplayTitle(param)}
       type={controlKind === "number" ? "number" : "text"}
       min={param.min ?? undefined}
       max={param.max ?? undefined}
