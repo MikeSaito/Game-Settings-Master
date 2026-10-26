@@ -19,8 +19,8 @@ const env = { GSM_NATIVE_TEST_ROOT: root };
 async function start(crash = "") {
   app = await launch(application, { ...env, GSM_TEST_CRASH_AT: crash }, join(artifacts, crash || "normal"));
   await waitFor(() => app.execute("return document.body.innerText.includes('Native Test Game')"));
-  await app.execute("localStorage.setItem('gsm-app-settings', JSON.stringify({language:'en'}));localStorage.setItem('uesm:language','en');location.reload();return true");
-  await waitFor(() => app.execute("return document.body.innerText.includes('Native Test Game')"));
+  await app.execute("window.__gsmReloadPending=true;localStorage.setItem('gsm-app-settings', JSON.stringify({language:'en',theme:'dark'}));localStorage.setItem('uesm:language','en');location.reload();return true");
+  await waitFor(() => app.execute("return !window.__gsmReloadPending && document.documentElement.dataset.theme === 'dark' && document.body.innerText.includes('Native Test Game')"));
 }
 async function openFiles() {
   await app.button("Select");
