@@ -20,6 +20,7 @@ import { ErrorBoundary } from "@/components/app/ErrorBoundary";
 import { RouteLoading } from "@/components/app/RouteLoading";
 import { EmptyState } from "@/components/ds/Feedback";
 import { useCrashReporting } from "@/hooks/app/useCrashReporting";
+import { useStartupWindow } from "@/hooks/app/useStartupWindow";
 import { AppShell } from "@/components/layout/AppShell";
 import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
 import { AppSettingsProvider } from "@/hooks/app/useAppSettings";
@@ -181,6 +182,7 @@ export function AppContent() {
 
 export default function App() {
   useCrashReporting();
+  useStartupWindow();
 
   return (
     <QueryClientProvider client={queryClient}>

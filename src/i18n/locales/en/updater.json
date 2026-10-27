@@ -1,6 +1,10 @@
 {
   "checking": "Checking for updates…",
-  "downloading": "Downloading and installing update…",
+  "downloading": "Downloading update…",
+  "installing": "Verifying and installing update…",
+  "downloadHint": "Please wait. The app will restart after installation.",
+  "requiredHint": "Install the update to continue.",
+  "errorHint": "You can try again. Your game settings have not been changed.",
   "installFailed": "Could not install the update. Check your internet and try again.",
   "checkFailed": "Could not check for updates. Check your internet and try again.",
   "required": "A new version {{version}} is available. You must update to continue.",

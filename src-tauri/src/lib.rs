@@ -20,6 +20,7 @@ mod native_test;
 mod presets;
 mod profiles;
 mod scalability;
+mod startup;
 mod text_editor;
 mod transaction;
 mod validation_rules;
@@ -42,10 +43,12 @@ pub fn run() {
     #[cfg(feature = "native-test")]
     native_test::trace_startup();
     tauri::Builder::default()
+        .manage(startup::StartupState::default())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
+            startup::setup(app);
             #[cfg(feature = "native-test")]
             native_test::setup().map_err(std::io::Error::other)?;
             #[cfg(feature = "native-test")]
@@ -59,6 +62,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            startup::show_main_window,
             transaction::list_pending_operations,
             transaction::recover_pending_operation,
             changes::prepare_changes,

@@ -7,6 +7,7 @@ export type UpdaterStatus =
   | "ready"
   | "required"
   | "downloading"
+  | "installing"
   | "error";
 
 export interface UpdateProgress {
@@ -14,7 +15,7 @@ export interface UpdateProgress {
   total: number;
 }
 
-const isDev = import.meta.env.DEV;
+const isDev = import.meta.env.DEV && import.meta.env.MODE !== "e2e";
 const UPDATE_CHECK_TIMEOUT_MS = 15_000;
 const UPDATE_INSTALL_TIMEOUT_MS = 5 * 60_000;
 
@@ -98,6 +99,7 @@ export function useAppUpdater() {
               }));
               break;
             case "Finished":
+              setStatus("installing");
               break;
           }
         }),

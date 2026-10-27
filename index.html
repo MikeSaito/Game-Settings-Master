@@ -7,15 +7,37 @@
     <link rel="apple-touch-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game Settings Master</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="/src/styles/startup.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main class="startup-screen" aria-live="polite" role="status">
+        <div class="startup-card">
+          <img
+            class="startup-logo"
+            src="/logo.svg"
+            width="72"
+            height="72"
+            alt=""
+          />
+          <h1 class="startup-title">Game Settings Master</h1>
+          <p class="startup-label" data-boot-label>Preparing the app</p>
+          <p class="startup-description" data-boot-description>
+            Your game library and settings will appear shortly.
+          </p>
+          <div
+            class="startup-progress startup-progress--indeterminate"
+            aria-hidden="true"
+          >
+            <span></span>
+          </div>
+          <a class="startup-retry" href="/" data-boot-retry hidden
+            >Reload the interface</a
+          >
+        </div>
+      </main>
+    </div>
+    <script src="/startup.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

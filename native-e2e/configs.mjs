@@ -12,7 +12,19 @@ const artifacts = resolve("desktop-test-results/configs");
 console.log(`Native fixtures: ${root}`);
 await mkdir(artifacts, { recursive: true });
 // A real updater endpoint with no update; config tests never contact production.
-const server = createServer((_, response) => { response.writeHead(204); response.end(); });
+let holdUpdateCheck = false;
+const pendingUpdateChecks = new Set();
+const server = createServer((_, response) => {
+  if (holdUpdateCheck) {
+    pendingUpdateChecks.add(response);
+    response.on("close", () => pendingUpdateChecks.delete(response));
+  } else { response.writeHead(204); response.end(); }
+});
+function finishUpdateChecks() {
+  holdUpdateCheck = false;
+  for (const response of pendingUpdateChecks) { response.writeHead(204); response.end(); }
+  pendingUpdateChecks.clear();
+}
 await new Promise((resolve) => server.listen(17891, "127.0.0.1", resolve));
 let app;
 const env = { GSM_NATIVE_TEST_ROOT: root };
@@ -35,6 +47,21 @@ async function preview(text, engine) {
   await app.click("//input[@type='checkbox' and following-sibling::span[contains(.,'reviewed')]] | //label[contains(.,'I have reviewed the warnings')]//input");
 }
 const original = "[ScalabilityGroups]\r\nsg.ShadowQuality=2\r\n";
+async function verifyStartupWindow() {
+  holdUpdateCheck = true;
+  app = await launch(application, env, join(artifacts, "startup"));
+  for (const theme of ["light", "dark"]) {
+    await app.execute("localStorage.setItem('gsm-app-settings',JSON.stringify({language:'en',theme:arguments[0]}));localStorage.setItem('uesm:language','en');location.reload();return true",[theme]);
+    await waitFor(() => app.execute("return document.documentElement.dataset.nativeReady === 'true' && document.documentElement.dataset.theme === arguments[0] && !!document.querySelector('[data-testid=startup-screen][data-stage=updates]')",[theme]));
+    assert.equal(await app.execute("return getComputedStyle(document.documentElement).backgroundColor"), theme === "light" ? "rgb(255, 249, 239)" : "rgb(20, 19, 16)");
+    assert.ok(await app.execute("return document.querySelector('.startup-logo').complete && !!document.querySelector('[role=progressbar]')"));
+    await writeFile(join(artifacts,`startup-${theme}.png`),Buffer.from(await app.command("/screenshot",undefined,"GET"),"base64"));
+  }
+  finishUpdateChecks();
+  await waitFor(() => app.execute("return document.body.innerText.includes('Native Test Game')"));
+  await app.close(); app = null;
+  console.log("Native startup reveals a prepared light/dark window and hands off to the library");
+}
 async function verifyMaterialWorkspace() {
   await app.button("Select");
   for (const [button, theme] of [["Light", "light"], ["Dark", "dark"]]) {
@@ -55,6 +82,7 @@ async function verifyMaterialWorkspace() {
   console.log("Native light/dark themes, parameter details, game details and preset dialog passed");
 }
 try {
+  await verifyStartupWindow();
   await start(); await verifyMaterialWorkspace();
   await preview("[ScalabilityGroups]\r\nsg.ShadowQuality=3\r\n");
   await app.button("Confirm and apply");
@@ -89,4 +117,4 @@ try {
   assert.equal(await readFile(join(config,"GameUserSettings.ini"),"utf8"),original);
   await assert.rejects(readFile(join(config,"Engine.ini")), { code:"ENOENT" });
   console.log("Native save, restore, crash recovery and deferred-write protection passed");
-} finally { if (app) await app.close(); server.close(); }
+} finally { finishUpdateChecks(); if (app) await app.close(); server.close(); }
