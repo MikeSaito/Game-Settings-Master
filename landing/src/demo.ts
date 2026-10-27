@@ -1,3 +1,4 @@
+import { icon } from "./site/icons";
 import type { Copy } from "./content";
 import { escapeHtml as e } from "./site/render";
 
@@ -90,7 +91,7 @@ export function initDemo(root: HTMLElement, t: Copy): () => void {
           )
           .join("") +
         actions(
-          `<p class="demo__count" role="status">${changes().length ? `${e(d.changed)}: <b>${changes().length}</b>` : e(d.idle)}</p><button type="button" class="button button--primary" data-action="preview" ${changes().length ? "" : "disabled"}>${e(d.preview)} <span aria-hidden="true">→</span></button>`,
+          `<p class="demo__count" role="status">${changes().length ? `${e(d.changed)}: <b>${changes().length}</b>` : e(d.idle)}</p><button type="button" class="button button--primary" data-action="preview" ${changes().length ? "" : "disabled"}>${e(d.preview)} ${icon("arrow")}</button>`,
         );
     } else if (stage === "preview") {
       body =
@@ -106,7 +107,7 @@ export function initDemo(root: HTMLElement, t: Copy): () => void {
         );
     } else {
       body =
-        `<div class="demo-result"><span class="result-check" aria-hidden="true">✓</span><h3 tabindex="-1" id="demo-done">${e(d.done)}</h3><p>${e(d.result)}</p>${result.map((p) => `<div class="result-value"><code>${e(p.key)}</code><b>${e(p.value)}</b></div>`).join("")}</div>` +
+        `<div class="demo-result"><span class="result-check">${icon("check")}</span><h3 tabindex="-1" id="demo-done">${e(d.done)}</h3><p>${e(d.result)}</p>${result.map((p) => `<div class="result-value"><code>${e(p.key)}</code><b>${e(p.value)}</b></div>`).join("")}</div>` +
         actions(
           `<button class="button button--primary" data-action="reset">${e(d.reset)} ↺</button>`,
         );

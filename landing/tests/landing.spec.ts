@@ -210,65 +210,168 @@ for (const t of [ru, en]) {
       [390, 844],
     ]) {
       for (const zoom of [100, 125]) {
-        test(`layout ${width}x${height} at ${zoom}%`, async ({
-          page,
-        }, testInfo) => {
-          const errors: string[] = [];
-          page.on("pageerror", (error) => errors.push(error.message));
-          page.on("response", (response) => {
-            if (
-              response.status() >= 400 &&
-              response.url().startsWith("http://127.0.0.1:4181")
-            )
-              errors.push(`${response.status()} ${response.url()}`);
-          });
-          await page.setViewportSize({ width, height });
-          await page.goto(path);
-          if (zoom === 125)
-            await page.addStyleTag({ content: "html { zoom: 1.25; }" });
-          await page.evaluate(() => document.fonts.ready);
-          const demo = page.locator("#interactive-demo");
-          await demo
-            .getByLabel(t.demo.names[0], { exact: true })
-            .selectOption("False");
-          await demo.getByRole("button", { name: t.demo.preview }).click();
-          await expect(
-            demo.getByRole("button", { name: t.demo.confirm }),
-          ).toBeVisible();
-          await expect
-            .poll(() =>
-              page.evaluate(
-                () => document.documentElement.scrollWidth <= innerWidth + 1,
-              ),
-            )
-            .toBe(true);
-          for (const image of await page
-            .locator(".feature__visual img")
-            .all()) {
-            await image.scrollIntoViewIfNeeded();
+        for (const theme of ["dark", "light"] as const) {
+          test(`layout ${width}x${height} at ${zoom}% in ${theme}`, async ({
+            page,
+          }, testInfo) => {
+            const errors: string[] = [];
+            page.on("pageerror", (error) => errors.push(error.message));
+            page.on("response", (response) => {
+              if (
+                response.status() >= 400 &&
+                response.url().startsWith("http://127.0.0.1:4181")
+              )
+                errors.push(`${response.status()} ${response.url()}`);
+            });
+            await page.setViewportSize({ width, height });
+            await page.emulateMedia({ colorScheme: theme });
+            await page.goto(path);
+            await expect(page.locator("html")).toHaveAttribute(
+              "data-theme",
+              theme,
+            );
+            if (zoom === 125)
+              await page.addStyleTag({ content: "html { zoom: 1.25; }" });
+            await page.evaluate(() => document.fonts.ready);
+            const demo = page.locator("#interactive-demo");
+            await demo
+              .getByLabel(t.demo.names[0], { exact: true })
+              .selectOption("False");
+            await demo.getByRole("button", { name: t.demo.preview }).click();
+            await expect(
+              demo.getByRole("button", { name: t.demo.confirm }),
+            ).toBeVisible();
             await expect
               .poll(() =>
-                image.evaluate(
-                  (element: HTMLImageElement) =>
-                    element.complete && element.naturalWidth > 0,
+                page.evaluate(
+                  () => document.documentElement.scrollWidth <= innerWidth + 1,
                 ),
               )
               .toBe(true);
-          }
-          await expect(page.locator(".feature__visual img")).toHaveCount(3);
-          await demo
-            .getByRole("button", { name: t.demo.confirm })
-            .scrollIntoViewIfNeeded();
-          await expect(
-            demo.getByRole("button", { name: t.demo.confirm }),
-          ).toBeInViewport();
-          await page.screenshot({
-            path: testInfo.outputPath("preview.png"),
-            fullPage: true,
+            for (const image of await page
+              .locator(".feature__visual img")
+              .all()) {
+              await image.scrollIntoViewIfNeeded();
+              await expect
+                .poll(() =>
+                  image.evaluate(
+                    (element: HTMLImageElement) =>
+                      element.complete && element.naturalWidth > 0,
+                  ),
+                )
+                .toBe(true);
+            }
+            await expect(page.locator(".feature__visual img")).toHaveCount(3);
+            await demo
+              .getByRole("button", { name: t.demo.confirm })
+              .scrollIntoViewIfNeeded();
+            await expect(
+              demo.getByRole("button", { name: t.demo.confirm }),
+            ).toBeInViewport();
+            await page.screenshot({
+              path: testInfo.outputPath("preview.png"),
+              fullPage: true,
+            });
+            await expect(errors).toEqual([]);
           });
-          await expect(errors).toEqual([]);
-        });
+        }
       }
     }
   });
 }
+
+for (const t of [ru, en]) {
+  const path = t.lang === "ru" ? "/" : "/en/";
+  test(`${t.lang}: theme switching preserves the example and follows language navigation`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto(path);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    const demo = page.locator("#interactive-demo");
+    await demo
+      .getByLabel(t.demo.names[0], { exact: true })
+      .selectOption("False");
+    await demo
+      .getByRole("button", { name: t.demo.preview, exact: true })
+      .click();
+    await demo.getByRole("checkbox").uncheck();
+    await page
+      .getByRole("button", { name: t.theme.light, exact: true })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(demo.getByRole("checkbox")).not.toBeChecked();
+    await expect(
+      demo.getByRole("button", { name: t.demo.confirm, exact: true }),
+    ).toBeDisabled();
+    for (const image of await page.locator(".feature__visual img").all()) {
+      await image.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (img: HTMLImageElement) =>
+              img.complete &&
+              img.naturalWidth > 0 &&
+              img.currentSrc.includes("/light/"),
+          ),
+        )
+        .toBe(true);
+    }
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await page.locator(".language").click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveAttribute(
+      "lang",
+      t.lang === "ru" ? "en" : "ru",
+    );
+  });
+}
+
+test("system theme changes apply until a palette is explicitly chosen", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("button", { name: ru.theme.light, exact: true }).click();
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+});
+
+test("theme controls work when browser storage is unavailable", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "localStorage", {
+      get() {
+        throw new Error("Storage unavailable");
+      },
+    });
+  });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await page.getByRole("button", { name: ru.theme.light, exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByRole("button", { name: ru.theme.dark, exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+});
+
+test("an explicit URL palette overrides storage and an invalid value preserves it", async ({
+  page,
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("gsm-site-theme", "light"),
+  );
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/?theme=unknown");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.goto("/?theme=dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+});

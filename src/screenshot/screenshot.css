@@ -78,3 +78,15 @@
     flex-wrap: wrap;
   }
 }
+
+.shot-feature details {
+  max-height: none;
+  overflow: visible;
+}
+#changes-preview > section {
+  max-height: none;
+}
+
+#changes-preview::backdrop {
+  background: transparent;
+}

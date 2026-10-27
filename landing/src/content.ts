@@ -3,6 +3,12 @@ export interface Copy {
   title: string;
   description: string;
   hero: string;
+  kicker: string;
+  heroLink: string;
+  theme: { light: string; dark: string };
+  toolsKicker: string;
+  compatKicker: string;
+  faqIntro: string;
   intro: string;
   nav: string[];
   download: string;
@@ -59,12 +65,18 @@ export interface Copy {
 
 export const en: Copy = {
   lang: "en",
-  title: "Game Settings Master – Unreal Engine settings under control",
+  title: "Game Settings Master – a clear view of your Unreal Engine settings",
   description:
-    "A UE4 and UE5 settings editor for Windows with change previews, selective restore, presets and post-game configuration diagnostics.",
-  hero: "Unreal Engine settings – with previews and restore.",
+    "Edit UE4 and UE5 settings, INI files and classic input bindings on Windows. Review changes, restore snapshots and check your configuration after a game.",
+  hero: "Your game.\nYour settings.",
+  kicker: "UNREAL ENGINE SETTINGS EDITOR",
+  heroLink: "Explore the tools",
+  theme: { light: "Switch to light theme", dark: "Switch to dark theme" },
+  toolsKicker: "ONE WORKSPACE",
+  compatKicker: "COMPATIBILITY",
+  faqIntro: "A few things to know before changing your first config.",
   intro:
-    "From familiar graphics settings to engine parameters in INI files. Change values, review every edit and restore the settings you need from a snapshot.",
+    "Graphics, engine parameters and INI files in one place. Review your changes, apply them with a backup and return to the settings that work for you.",
   nav: ["Features", "Compatibility"],
   download: "Download for Windows",
   source: "Source on GitHub",
@@ -73,7 +85,7 @@ export const en: Copy = {
   help: "Installation and signatures",
   demo: {
     label: "INTERACTIVE EXAMPLE",
-    title: "Try it before you download",
+    title: "Try the editor",
     disclaimer: "Interactive example. Files on your computer are not changed.",
     modes: ["Basic settings", "Engine parameters"],
     names: [
@@ -102,30 +114,34 @@ export const en: Copy = {
     idle: "Change a value to see the diff.",
     changed: "Draft edits",
   },
-  workflow: "Four steps. Every edit in view.",
+  workflow: "From a game to a checked config.",
   steps: ["Choose a game", "Change values", "Review changes", "Apply"],
-  featuresKicker: "CONTROL AT EVERY STEP",
-  featuresTitle: "You decide what goes into the config.",
+  featuresKicker: "CHANGE WITH CONTEXT",
+  featuresTitle: "Change. Review. Return.",
   caption: "App interface · demonstration data",
   features: [
     {
-      title: "Review first. Apply second.",
+      title: "See exactly what will change.",
       text: "See the file, section and value before and after each change. Exclude individual edits before writing.",
       note: "If the config changes after the preview, the app asks you to refresh the diff.",
     },
     {
-      title: "Restore one setting. Or a whole snapshot.",
+      title: "Go back to what worked.",
       text: "Compare your config with a named snapshot and restore a parameter, a file or the entire backup.",
       note: "Selective restore preserves other data. Restoring also goes through a preview.",
     },
     {
-      title: "See what changed after the game.",
+      title: "See what changed after playing.",
       text: "After the game exits, the app checks the settings you applied and reports changes or a new config folder.",
       note: "Monitoring works while the app is open. The source of a change may be unknown.",
     },
   ],
-  extrasTitle: "More tools for the way you play.",
+  extrasTitle: "The rest of your setup, together.",
   extras: [
+    {
+      title: "A text editor for INI",
+      text: "Open Engine.ini, GameUserSettings.ini and other supported files in their own tab. Keep file drafts, find values and review the full diff before saving.",
+    },
     {
       title: "Presets with context",
       text: "Save selected edits or a full profile. Descriptions, game builds and GPU requirements help assess compatibility before import.",
@@ -161,9 +177,9 @@ export const en: Copy = {
       text: "Parameters and hints depend on the detected UE version. Some games ignore INI values or overwrite them on launch.",
     },
   ],
-  final: "Your settings. Your call.",
+  final: "Make the next change\nwith a clear view.",
   finalText:
-    "Start with basic graphics or explore engine parameters. Review the changes before writing.",
+    "Free and open source. Download for Windows, choose your game and start with a preview.",
   release: "What's new in this release",
   faqTitle: "Before your first launch",
   faq: [
@@ -197,10 +213,16 @@ export const ru: Copy = {
   lang: "ru",
   title: "Game Settings Master – настройки Unreal Engine под контролем",
   description:
-    "Редактор настроек UE4 и UE5 для Windows: предпросмотр изменений, частичный откат, пресеты и диагностика конфигов после игры.",
-  hero: "Настройки Unreal Engine – с предпросмотром и откатом",
+    "Настройки UE4 и UE5, INI-файлы и классические привязки в одном приложении для Windows. Предпросмотр правок, резервные копии и диагностика после игры.",
+  hero: "Ваша игра.\nВаши настройки.",
+  kicker: "РЕДАКТОР НАСТРОЕК UNREAL ENGINE",
+  heroLink: "Посмотреть возможности",
+  theme: { light: "Включить светлую тему", dark: "Включить темную тему" },
+  toolsKicker: "ОДНО РАБОЧЕЕ ПРОСТРАНСТВО",
+  compatKicker: "СОВМЕСТИМОСТЬ",
+  faqIntro: "Что стоит знать перед первым изменением конфигов.",
   intro:
-    "От графики в меню игры до параметров движка в INI. Меняйте значения, проверяйте каждую правку и возвращайте нужные настройки из снимка.",
+    "Графика, параметры движка и INI-файлы в одном месте. Проверьте изменения, примените их с резервной копией и вернитесь к подходящим настройкам, когда нужно.",
   nav: ["Возможности", "Совместимость"],
   download: "Скачать для Windows",
   source: "Исходники на GitHub",
@@ -209,7 +231,7 @@ export const ru: Copy = {
   help: "Об установке и подписи",
   demo: {
     label: "ИНТЕРАКТИВНЫЙ ПРИМЕР",
-    title: "Попробуйте перед скачиванием",
+    title: "Попробуйте на примере",
     disclaimer:
       "Интерактивный пример. Файлы на вашем компьютере не изменяются.",
     modes: ["Базовые настройки", "Параметры движка"],
@@ -239,24 +261,24 @@ export const ru: Copy = {
     idle: "Измените значение, чтобы увидеть дифф.",
     changed: "Правок в черновике",
   },
-  workflow: "Четыре шага. Каждая правка на виду.",
+  workflow: "От игры к проверенному конфигу.",
   steps: [
     "Выберите игру",
     "Измените значения",
     "Проверьте изменения",
     "Примените",
   ],
-  featuresKicker: "КОНТРОЛЬ НА КАЖДОМ ЭТАПЕ",
-  featuresTitle: "Вы решаете, что попадет в конфиг.",
+  featuresKicker: "КАЖДАЯ ПРАВКА НА ВИДУ",
+  featuresTitle: "Меняйте. Проверяйте. Возвращайте.",
   caption: "Интерфейс приложения · демонстрационные данные",
   features: [
     {
-      title: "Сначала посмотрите. Потом примените.",
+      title: "Проверьте каждую правку.",
       text: "Файл, секция и значение до и после изменения. Исключите отдельные правки перед записью.",
       note: "Если конфиг изменился после предпросмотра, приложение попросит обновить дифф.",
     },
     {
-      title: "Верните одну настройку. Или весь снимок.",
+      title: "Вернитесь к тому, что работало.",
       text: "Сравните конфиг с именованным снимком и восстановите нужный параметр, файл или резервную копию целиком.",
       note: "Частичный откат сохраняет остальные данные. Восстановление тоже проходит через предпросмотр.",
     },
@@ -266,8 +288,12 @@ export const ru: Copy = {
       note: "Наблюдение работает, пока приложение открыто. Источник изменения может быть неизвестен.",
     },
   ],
-  extrasTitle: "Больше возможностей для вашего сценария.",
+  extrasTitle: "Все нужное для ваших настроек.",
   extras: [
+    {
+      title: "Текстовый редактор INI",
+      text: "Открывайте Engine.ini, GameUserSettings.ini и другие поддерживаемые файлы в отдельной вкладке. Сохраняйте черновики, ищите значения и проверяйте дифф перед записью.",
+    },
     {
       title: "Пресеты с контекстом",
       text: "Сохраняйте выбранные правки или полный профиль. Описание, сборка игры и требования к GPU помогают проверить совместимость перед импортом.",
@@ -303,9 +329,9 @@ export const ru: Copy = {
       text: "Параметры и подсказки зависят от определенной версии UE. Некоторые игры игнорируют значения INI или перезаписывают их при запуске.",
     },
   ],
-  final: "Ваши настройки. Ваше решение.",
+  final: "Следующее изменение.\nС понятным результатом.",
   finalText:
-    "Начните с базовой графики или откройте параметры движка. Перед записью проверьте изменения.",
+    "Бесплатно и с открытым кодом. Скачайте приложение для Windows, выберите игру и начните с предпросмотра.",
   release: "Что нового в выпуске",
   faqTitle: "Перед первым запуском",
   faq: [
