@@ -31,37 +31,43 @@
 
 ## Screenshots
 
-Current application interface with demonstration data. Click an image to view it at full size.
+Material 3 interface with demonstration data. Screenshots follow your GitHub color theme. Click an image to view it at full size.
 
 <table>
   <tr>
     <td width="50%" align="center">
       <strong>Game library</strong><br>
-      <a href="docs/screenshots/en/library.webp"><img src="docs/screenshots/en/library.webp" width="400" alt="Game library"></a>
+      <a href="docs/screenshots/en/dark/library.webp#gh-dark-mode-only"><img src="docs/screenshots/en/dark/library.webp#gh-dark-mode-only" width="400" alt="Game library"></a>
+      <a href="docs/screenshots/en/light/library.webp#gh-light-mode-only"><img src="docs/screenshots/en/light/library.webp#gh-light-mode-only" width="400" alt="Game library"></a>
     </td>
     <td width="50%" align="center">
       <strong>Basic editor</strong><br>
-      <a href="docs/screenshots/en/editor-basic.webp"><img src="docs/screenshots/en/editor-basic.webp" width="400" alt="Basic editor"></a>
+      <a href="docs/screenshots/en/dark/editor-basic.webp#gh-dark-mode-only"><img src="docs/screenshots/en/dark/editor-basic.webp#gh-dark-mode-only" width="400" alt="Basic editor"></a>
+      <a href="docs/screenshots/en/light/editor-basic.webp#gh-light-mode-only"><img src="docs/screenshots/en/light/editor-basic.webp#gh-light-mode-only" width="400" alt="Basic editor"></a>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <strong>Advanced editor</strong><br>
-      <a href="docs/screenshots/en/editor-advanced.webp"><img src="docs/screenshots/en/editor-advanced.webp" width="400" alt="Advanced editor"></a>
+      <a href="docs/screenshots/en/dark/editor-advanced.webp#gh-dark-mode-only"><img src="docs/screenshots/en/dark/editor-advanced.webp#gh-dark-mode-only" width="400" alt="Advanced editor"></a>
+      <a href="docs/screenshots/en/light/editor-advanced.webp#gh-light-mode-only"><img src="docs/screenshots/en/light/editor-advanced.webp#gh-light-mode-only" width="400" alt="Advanced editor"></a>
     </td>
     <td width="50%" align="center">
       <strong>INI text editor</strong><br>
-      <a href="docs/screenshots/en/editor-files.webp"><img src="docs/screenshots/en/editor-files.webp" width="400" alt="INI text editor"></a>
+      <a href="docs/screenshots/en/dark/editor-files.webp#gh-dark-mode-only"><img src="docs/screenshots/en/dark/editor-files.webp#gh-dark-mode-only" width="400" alt="INI text editor"></a>
+      <a href="docs/screenshots/en/light/editor-files.webp#gh-light-mode-only"><img src="docs/screenshots/en/light/editor-files.webp#gh-light-mode-only" width="400" alt="INI text editor"></a>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <strong>Change preview</strong><br>
-      <a href="docs/screenshots/en/preview.webp"><img src="docs/screenshots/en/preview.webp" width="400" alt="Change preview"></a>
+      <a href="docs/screenshots/en/dark/preview.webp#gh-dark-mode-only"><img src="docs/screenshots/en/dark/preview.webp#gh-dark-mode-only" width="400" alt="Change preview"></a>
+      <a href="docs/screenshots/en/light/preview.webp#gh-light-mode-only"><img src="docs/screenshots/en/light/preview.webp#gh-light-mode-only" width="400" alt="Change preview"></a>
     </td>
     <td width="50%" align="center">
       <strong>Backups</strong><br>
-      <a href="docs/screenshots/en/backups.webp"><img src="docs/screenshots/en/backups.webp" width="400" alt="Backups"></a>
+      <a href="docs/screenshots/en/dark/backups.webp#gh-dark-mode-only"><img src="docs/screenshots/en/dark/backups.webp#gh-dark-mode-only" width="400" alt="Backups"></a>
+      <a href="docs/screenshots/en/light/backups.webp#gh-light-mode-only"><img src="docs/screenshots/en/light/backups.webp#gh-light-mode-only" width="400" alt="Backups"></a>
     </td>
   </tr>
 </table>
