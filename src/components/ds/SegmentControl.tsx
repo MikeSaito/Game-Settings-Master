@@ -30,7 +30,7 @@ export function SegmentControl<T extends string>({
   return (
     <div
       className={cn(
-        "inline-flex max-w-full rounded-[var(--radius-control)] border border-[var(--color-border-strong)] bg-[var(--color-bg-soft)] p-0.5",
+        "inline-flex max-w-full rounded-full border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-0.5",
         className,
       )}
       role="tablist"
@@ -45,13 +45,40 @@ export function SegmentControl<T extends string>({
             role="tab"
             aria-selected={active}
             disabled={option.disabled}
+            tabIndex={active ? 0 : -1}
+            onKeyDown={(event) => {
+              const available = options.filter((item) => !item.disabled);
+              const index = available.findIndex(
+                (item) => item.value === option.value,
+              );
+              const next =
+                event.key === "ArrowRight" || event.key === "ArrowDown"
+                  ? (index + 1) % available.length
+                  : event.key === "ArrowLeft" || event.key === "ArrowUp"
+                    ? (index + available.length - 1) % available.length
+                    : event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? available.length - 1
+                        : -1;
+              if (next < 0) return;
+              event.preventDefault();
+              onChange(available[next].value);
+              const tabs =
+                event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+                  '[role="tab"]:not(:disabled)',
+                );
+              tabs?.[next]?.focus();
+            }}
             onClick={() => onChange(option.value)}
             className={cn(
-              "min-h-9 whitespace-nowrap rounded-[7px] py-1.5 text-center text-sm font-semibold leading-tight transition disabled:cursor-not-allowed disabled:opacity-45",
-              sizeToContent ? "flex-none shrink-0 px-3 sm:px-4" : "min-w-0 flex-1 px-2",
+              "min-h-9 whitespace-nowrap rounded-full py-1.5 text-center text-sm font-semibold leading-tight transition disabled:cursor-not-allowed disabled:opacity-45",
+              sizeToContent
+                ? "flex-none shrink-0 px-3 sm:px-4"
+                : "min-w-0 flex-1 px-2",
               segmentClassName,
               active
-                ? "bg-[var(--color-accent-soft)] text-[var(--color-text)] ring-1 ring-[var(--color-accent)]/55 shadow-[var(--shadow-subtle)]"
+                ? "bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]"
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)]",
             )}
           >

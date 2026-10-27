@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorFilterMode } from "@/lib/routing";
 import { Input } from "@/components/ds/Field";
-import { Panel } from "@/components/ds/Panel";
 import { SegmentControl } from "@/components/ds/SegmentControl";
 import { cn } from "@/lib/core";
 
@@ -38,8 +37,17 @@ export function EditorSidebar({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      const editing = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.tagName === "SELECT";
-      if ((event.key === "/" || ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k")) && !editing) {
+      if (event.defaultPrevented || target?.closest("dialog[open]")) return;
+      const editing =
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.tagName === "SELECT";
+      if (
+        (event.key === "/" ||
+          ((event.ctrlKey || event.metaKey) &&
+            event.key.toLowerCase() === "k")) &&
+        !editing
+      ) {
         event.preventDefault();
         document.getElementById("advanced-search")?.focus();
       }
@@ -50,12 +58,13 @@ export function EditorSidebar({
   }, [onSearchChange, search]);
 
   return (
-    <Panel className="flex h-full min-h-0 w-60 shrink-0 flex-col overflow-hidden p-3">
+    <aside className="editor-sidebar flex h-full min-h-0 w-52 shrink-0 flex-col overflow-hidden pr-2">
       <div className="space-y-3">
         <Input
           id="advanced-search"
           icon={<Search size={15} />}
           placeholder={t("searchPlaceholder")}
+          aria-label={t("searchPlaceholder")}
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
         />
@@ -67,12 +76,15 @@ export function EditorSidebar({
             value: mode,
             label: t(`filter.${mode}`),
           }))}
-          className="w-full flex-col gap-1"
+          className="w-full flex-col gap-1 !rounded-2xl !border-0 !bg-transparent !p-0"
           segmentClassName="w-full whitespace-normal px-2 py-1.5 text-xs leading-tight"
         />
       </div>
 
-      <nav className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1" aria-label={t("categoryNav")}>
+      <nav
+        className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1"
+        aria-label={t("categoryNav")}
+      >
         {categories.map(({ cat, count }) => {
           const active = activeCategory === cat;
           return (
@@ -81,20 +93,22 @@ export function EditorSidebar({
               type="button"
               onClick={() => onCategoryChange(cat)}
               className={cn(
-                "mb-1 flex w-full items-center justify-between rounded-[var(--radius-control)] px-2.5 py-2 text-left text-sm transition",
+                "mb-1 flex w-full items-center justify-between rounded-full px-3 py-3 text-left text-sm transition",
                 active
                   ? "bg-[var(--color-accent-soft)] text-[var(--color-text)]"
                   : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)]",
               )}
             >
-              <span className="truncate">{t(`category.${cat}`, { defaultValue: cat })}</span>
-              <span className="ml-2 rounded bg-[var(--color-bg)] px-1.5 py-0.5 font-mono text-xs text-[var(--color-text-faint)]">
+              <span className="truncate">
+                {t(`category.${cat}`, { defaultValue: cat })}
+              </span>
+              <span className="ml-2 px-1.5 py-0.5 text-xs text-[var(--color-text-faint)]">
                 {count}
               </span>
             </button>
           );
         })}
       </nav>
-    </Panel>
+    </aside>
   );
 }

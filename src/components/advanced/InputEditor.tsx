@@ -14,7 +14,7 @@ const serialize = (fields: Record<string, string>) =>
     .map(([key, value]) => `${key}=${value}`)
     .join(",")})`;
 const controlClass =
-  "ml-2 rounded border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2";
+  "max-w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-3 py-2 accent-[var(--color-accent)]";
 
 export function InputEditor({
   game,
@@ -133,7 +133,7 @@ export function InputEditor({
 
   if (isLoading) return <p>{t("loading")}</p>;
   return (
-    <section className="space-y-3 overflow-auto p-2">
+    <section className="space-y-4 p-1">
       <h2 className="font-semibold">{t("input.title")}</h2>
       <p className="text-sm text-[var(--color-text-muted)]">
         {t("input.scope")}
@@ -182,7 +182,14 @@ export function InputEditor({
           const boolean = key.startsWith("b");
           const label = t(`input.fields.${key}`, { defaultValue: key });
           return (
-            <label key={key} className="text-sm">
+            <label
+              key={key}
+              className={
+                boolean
+                  ? "inline-flex items-center gap-2 text-sm"
+                  : "grid min-w-0 gap-2 text-sm"
+              }
+            >
               {label}
               <input
                 aria-label={`${title}: ${label}`}
@@ -210,9 +217,9 @@ export function InputEditor({
         return (
           <div
             key={entry.line}
-            className="space-y-2 rounded border border-[var(--color-border)] p-3"
+            className="space-y-3 rounded-[var(--radius-panel)] bg-[var(--color-surface)] p-5"
           >
-            <h3>{title}</h3>
+            <h3 className="font-medium">{title}</h3>
             {!entry.editable && (
               <>
                 <p className="text-sm text-[var(--color-warning)]">
@@ -223,7 +230,7 @@ export function InputEditor({
                 </pre>
               </>
             )}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap items-end gap-5">
               {allowed
                 .filter((key) => key in fields)
                 .map((key) =>
@@ -258,8 +265,9 @@ export function InputEditor({
         );
       })}
       {!!data?.entries.length && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-3 rounded-[var(--radius-panel)] bg-[var(--color-surface)] p-4">
           <Button
+            variant="primary"
             loading={busy}
             disabled={running || busy || updates.length === 0}
             onClick={() => void run(false)}
@@ -272,9 +280,9 @@ export function InputEditor({
             placeholder={t("snapshots.name")}
             value={name}
             onChange={(event) => setName(event.target.value)}
-            className="rounded bg-[var(--color-bg-soft)] p-2"
+            className="max-w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2"
           />
-          <label>
+          <label className="flex min-w-0 flex-wrap items-center gap-2">
             {t("presets.mode")}{" "}
             <select
               value={mode}

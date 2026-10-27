@@ -10,6 +10,7 @@ import type {
 } from "@/lib/core";
 import type {
   ChangeOperation,
+  DiagnosticReport,
   PrepareRequest,
   PreparedChanges,
   InputDocument,
@@ -268,8 +269,31 @@ export function handleE2eInvoke(
       return null;
     case "get_discovery_warnings":
       return [];
-    case "get_diagnostic_report":
-      return null;
+    case "get_diagnostic_report": {
+      if (sessionStorage.getItem("gsm-e2e-diagnostic") !== "changed")
+        return null;
+      const param = parameters.find((item) => item.key === "bUseVSync")!;
+      return {
+        game_id: testGame.id,
+        config_dir: testGame.config_dir!,
+        expected_dir: testGame.config_dir!,
+        status: "changed",
+        checked_at: "2026-10-26T09:00:00Z",
+        message: null,
+        changes: [
+          {
+            id: "diagnostic-vsync",
+            group: "diagnostic-vsync",
+            file: param.file,
+            section: param.section,
+            key: param.key,
+            before: "True",
+            after: "False",
+            kind: "scalar",
+          },
+        ],
+      } satisfies DiagnosticReport;
+    }
     case "get_ini_text_document":
       return textDocument(String(args?.file));
     case "get_input_document":
@@ -356,7 +380,8 @@ export function handleE2eInvoke(
               key: entry.key,
               before: entry.value,
               after: update.value,
-              kind: "input", line: entry.line,
+              kind: "input",
+              line: entry.line,
             });
           }
         }

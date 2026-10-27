@@ -36,7 +36,7 @@ export function GameHardwarePanel({
     }
   };
   return (
-    <details className="mb-3 rounded border border-[var(--color-border)] p-3 text-sm">
+    <details className="mb-3 rounded-[var(--radius-panel)] bg-[var(--color-bg-soft)] p-4 text-sm">
       <summary>
         {t("gpu.title")} · {gpu?.name ?? t("gpu.unknown")}
       </summary>
@@ -51,7 +51,7 @@ export function GameHardwarePanel({
               : ""
           }
           onChange={(event) => void select(event.target.value)}
-          className="rounded bg-[var(--color-bg-soft)] p-2"
+          className="mt-2 block w-full min-w-0 rounded-xl bg-[var(--color-surface-raised)] p-2"
         >
           <option value="">{t("gpu.auto")}</option>
           {adapters?.map((adapter) => (

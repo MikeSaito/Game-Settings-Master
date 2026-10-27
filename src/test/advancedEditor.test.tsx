@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { AppWindowFocusProvider } from "@/context/AppWindowFocusProvider";
 import { ParameterList } from "@/components/advanced/ParameterList";
@@ -72,27 +73,26 @@ describe("AdvancedEditor integration", () => {
     expect(param0Els.length).toBeGreaterThan(0);
   });
 
-  it("shows parameter description in the side detail pane on hover", async () => {
+  it("opens details explicitly without reacting to hover or editor focus", async () => {
     renderAdvancedEditor();
-    expect(screen.getByTestId("parameter-list-details")).toHaveTextContent(
-      /Наведите курсор на параметр|Hover a parameter/i,
-    );
-
-    const virtualList = await screen.findByTestId("parameter-list-virtual");
-    const row = within(virtualList).getAllByTestId("parameter-row")[0];
+    const row = screen.getAllByTestId("parameter-row")[0];
     fireEvent.mouseOver(row);
-
+    fireEvent.focus(row.querySelector("button")!);
+    expect(
+      screen.queryByTestId("parameter-list-details"),
+    ).not.toBeInTheDocument();
+    fireEvent.click(within(row).getByRole("button", { name: /Details for/ }));
     expect(screen.getByTestId("parameter-list-details")).toHaveTextContent(
       "Description for parameter 0",
     );
   });
 
-  it("shows parameter description in the side detail pane on focus", async () => {
+  it("opens parameter details with the keyboard", async () => {
+    const user = userEvent.setup();
     renderAdvancedEditor();
-    const virtualList = await screen.findByTestId("parameter-list-virtual");
-    const row = within(virtualList).getAllByTestId("parameter-row")[0];
-    fireEvent.focus(row.querySelector("button") ?? row);
-
+    const trigger = screen.getAllByRole("button", { name: /Details for/ })[0];
+    trigger.focus();
+    await user.keyboard("{Enter}");
     expect(screen.getByTestId("parameter-list-details")).toHaveTextContent(
       "Description for parameter 0",
     );

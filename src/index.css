@@ -152,3 +152,176 @@ select option {
   padding-top: 0.375rem;
   padding-bottom: 0.375rem;
 }
+
+/* Material surfaces and responsive workspace. */
+.skip-link {
+  position: fixed;
+  top: -5rem;
+  left: 6rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+.skip-link:focus {
+  top: 1rem;
+}
+.material-icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 180ms;
+}
+.material-icon-button:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+.material-tabs > button {
+  position: relative;
+  flex-shrink: 0;
+  min-height: 50px;
+  padding: 10px 16px 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.material-tabs > button:hover {
+  background: var(--color-surface);
+}
+.material-tabs > button[aria-selected="true"] {
+  color: var(--color-accent);
+}
+.material-tabs > button[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-accent);
+}
+.detail-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 28px;
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-panel);
+}
+.detail-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.detail-dialog::backdrop {
+  background: #0008;
+}
+.parameter-row-standard {
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px) 40px;
+}
+.parameter-row-membership {
+  grid-template-columns: 92px minmax(0, 1fr) minmax(140px, 220px) 40px;
+}
+.material-rail-button {
+  max-width: 100%;
+}
+@media (max-width: 1050px) {
+  .editor-sidebar {
+    width: 176px;
+  }
+  .parameter-row {
+    gap: 10px;
+    padding: 14px;
+  }
+  .parameter-row-membership {
+    grid-template-columns: 80px minmax(0, 1fr) 160px 40px;
+  }
+  .parameter-row-standard {
+    grid-template-columns: minmax(0, 1fr) 160px 40px;
+  }
+}
+@media (max-width: 760px) {
+  .parameter-row-membership {
+    grid-template-columns: 76px minmax(0, 1fr) 40px;
+  }
+  .parameter-row-standard {
+    grid-template-columns: minmax(0, 1fr) 40px;
+  }
+  .parameter-row > div:nth-last-child(2) {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    align-items: stretch;
+  }
+  .parameter-info {
+    grid-column: -2 / -1;
+    grid-row: 1;
+  }
+  .editor-sidebar {
+    width: 152px;
+  }
+}
+@media (max-width: 540px) {
+  .material-rail-button {
+    width: 44px;
+  }
+  .editor-sidebar {
+    width: 120px;
+    padding-right: 0;
+  }
+  .editor-sidebar nav button {
+    padding-inline: 8px;
+    font-size: 0.75rem;
+  }
+  .editor-sidebar nav button span:last-child {
+    display: none;
+  }
+  .editor-sidebar input {
+    font-size: 0.75rem;
+    padding-left: 30px;
+  }
+  .material-tabs > button {
+    padding-inline: 12px;
+  }
+  .parameter-row {
+    padding: 12px;
+    gap: 8px;
+  }
+  .parameter-row-membership {
+    grid-template-columns: minmax(0, 1fr) 32px;
+  }
+  .parameter-membership {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-content: flex-start;
+  }
+  .parameter-row > div:nth-last-child(2) {
+    grid-row: 2;
+  }
+}
+
+.changes-dialog {
+  width: min(1024px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 28px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-panel);
+}
+.changes-dialog::backdrop {
+  background: #0008;
+}

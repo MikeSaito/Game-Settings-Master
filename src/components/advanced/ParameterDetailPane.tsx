@@ -19,21 +19,9 @@ export function ParameterDetailPane({
 }: Props) {
   const { t } = useTranslation("advanced");
 
-  const shellClass =
-    "h-full min-h-0 w-[min(28rem,34vw)] shrink-0 overflow-y-auto rounded-r-[var(--radius-panel)] border-l border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3";
+  const shellClass = "min-w-0";
 
-  if (!param) {
-    return (
-      <div
-        className={shellClass}
-        data-testid="parameter-list-details"
-        onMouseEnter={onPointerEnter}
-        onMouseLeave={onPointerLeave}
-      >
-        <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">{t("detailPane.hint")}</p>
-      </div>
-    );
-  }
+  if (!param) return null;
 
   const lockedReason = readOnlyReason(param, engineToggleable, engineEnabled);
 
@@ -44,6 +32,9 @@ export function ParameterDetailPane({
       onMouseEnter={onPointerEnter}
       onMouseLeave={onPointerLeave}
     >
+      <code className="mb-4 block break-all text-xs text-[var(--color-text-muted)]">
+        {param.file} · [{param.section}]
+      </code>
       <div className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
         <p>{param.description}</p>
         <p className="mt-2">
@@ -51,8 +42,14 @@ export function ParameterDetailPane({
           {param.impact}
         </p>
         {param.value_hint && <p className="mt-2">{param.value_hint}</p>}
-        {param.tier_hint && <p className="mt-2 text-[var(--color-text-muted)]">{param.tier_hint}</p>}
-        {lockedReason && <p className="mt-2 text-[var(--color-warning)]">{lockedReason}</p>}
+        {param.tier_hint && (
+          <p className="mt-2 text-[var(--color-text-muted)]">
+            {param.tier_hint}
+          </p>
+        )}
+        {lockedReason && (
+          <p className="mt-2 text-[var(--color-warning)]">{lockedReason}</p>
+        )}
       </div>
     </div>
   );

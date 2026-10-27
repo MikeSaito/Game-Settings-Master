@@ -20,5 +20,7 @@
   "gpuFilterIntel": "Видеокарта {{name}}: DLSS недоступен: редактор скроет DLSS и предложит FSR или TSR.",
   "gpuFilterNvidiaNoDlss": "Видеокарта {{name}}: DLSS недоступен: GTX не поддерживает Tensor Cores.",
   "gpuFilterNvidiaNoFg": "Видеокарта {{name}}: Frame Generation недоступен: DLSS FG будет скрыт.",
-  "gpuFilterNvidiaDlssOnly": "Видеокарта {{name}}: DLSS доступен. Frame Generation (DLSS 3): только на RTX 40-й серии и новее."
+  "gpuFilterNvidiaDlssOnly": "Видеокарта {{name}}: DLSS доступен. Frame Generation (DLSS 3): только на RTX 40-й серии и новее.",
+  "skipToContent": "Перейти к содержимому",
+  "close": "Закрыть"
 }

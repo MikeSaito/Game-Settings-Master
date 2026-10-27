@@ -9,7 +9,6 @@ import {
   type LibraryViewMode,
 } from "@/components/library/LibraryToolbar";
 import { Alert, EmptyState, Skeleton } from "@/components/ds/Feedback";
-import { Badge } from "@/components/ds/Badge";
 import { Button } from "@/components/ds/Button";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import {
@@ -59,17 +58,6 @@ export function GameLibrary({
   });
 
   const libraryLoading = (isLoading || isFetching) && games.length === 0;
-  const scanSummary = useMemo(
-    () => ({
-      total: games.length,
-      withConfig: games.filter((game) => game.config_dir).length,
-      ue: games.filter((game) => game.is_ue).length,
-      withCover: games.filter((game) => game.custom_cover || game.cover_url)
-        .length,
-    }),
-    [games],
-  );
-
   const filteredGames = useMemo(() => {
     const q = query.trim().toLowerCase();
     return games
@@ -171,29 +159,12 @@ export function GameLibrary({
       <DiscoveryWarnings />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
-            Game Settings Master
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--color-text)]">
+          <h1 className="mt-1 text-3xl font-medium tracking-tight text-[var(--color-text)]">
             {t("header.title")}
           </h1>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">
             {t("header.subtitle")}
           </p>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <Badge tone="info">
-            {t("badges.total", { count: scanSummary.total })}
-          </Badge>
-          <Badge tone="success">
-            {t("badges.withConfig", { count: scanSummary.withConfig })}
-          </Badge>
-          <Badge tone="accent">
-            {t("badges.ue", { count: scanSummary.ue })}
-          </Badge>
-          <Badge tone="neutral">
-            {t("badges.withCover", { count: scanSummary.withCover })}
-          </Badge>
         </div>
       </div>
 

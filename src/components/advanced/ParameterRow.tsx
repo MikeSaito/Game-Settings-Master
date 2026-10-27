@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { MoreHorizontal } from "lucide-react";
+import { Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/core";
 import type { GameParameter } from "@/lib/core";
@@ -54,9 +54,13 @@ export const ParameterRow = memo(function ParameterRow({
     Number.isFinite(maxNum)
       ? qualityLabel(param.value, maxNum, t("qualityDefault"), t)
       : null;
-  const controlKind = canEdit ? resolveControlKind(param, selectOptions, sentinel) : "text";
+  const controlKind = canEdit
+    ? resolveControlKind(param, selectOptions, sentinel)
+    : "text";
   const changed =
-    (param.recommended != null && param.recommended !== "" && !sameValue(param.recommended, param.value)) ||
+    (param.recommended != null &&
+      param.recommended !== "" &&
+      !sameValue(param.recommended, param.value)) ||
     (engineToggleable && engineEnabled !== param.present_in_ini);
   const resetTarget =
     canEdit &&
@@ -78,14 +82,23 @@ export const ParameterRow = memo(function ParameterRow({
   return (
     <div
       className={cn(
-        "group grid min-h-[58px] grid-cols-[minmax(5.5rem,6.5rem)_minmax(0,1fr)_minmax(180px,280px)_24px] items-start gap-3 border-b border-[var(--color-border)] bg-[var(--color-bg-soft)] px-3 py-2 hover:bg-[var(--color-surface)]",
+        "parameter-row group grid min-h-[76px] items-center gap-4 border-b border-[var(--color-border)]/60 px-5 py-4 hover:bg-[var(--color-surface-raised)]",
+        engineToggleable && onEngineToggle
+          ? "parameter-row-membership"
+          : "parameter-row-standard",
         resetTarget && "min-h-[5.75rem]",
-        changed && "border-l-[3px] border-l-[var(--color-accent)] bg-[var(--color-accent-soft)]",
+        changed &&
+          "border-l-[3px] border-l-[var(--color-accent)] bg-[var(--color-accent-soft)]",
         isOff && "opacity-55 saturate-50",
       )}
       data-testid="parameter-row"
     >
-      <div className="flex shrink-0 justify-center self-start px-0.5 pt-1">
+      <div
+        className={cn(
+          "parameter-membership flex shrink-0 justify-center self-start pt-1",
+          !(engineToggleable && onEngineToggle) && "hidden",
+        )}
+      >
         {engineToggleable && onEngineToggle ? (
           engineEnabled ? (
             <Button
@@ -118,20 +131,30 @@ export const ParameterRow = memo(function ParameterRow({
       </div>
 
       <div className="min-w-0">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="truncate font-medium text-[var(--color-text)]">{displayTitle}</span>
-          {qualityName && <Badge tone="accent" title={param.tier_hint ?? undefined}>{qualityName}</Badge>}
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <span className="break-words font-medium text-[var(--color-text)]">
+            {displayTitle}
+          </span>
+          {qualityName && (
+            <Badge tone="accent" title={param.tier_hint ?? undefined}>
+              {qualityName}
+            </Badge>
+          )}
           {!param.known && <Badge tone="warning">{t("undocumented")}</Badge>}
           {!param.editable && <Badge tone="neutral">{t("service")}</Badge>}
           {dependencyLabel && <Badge tone="info">{dependencyLabel}</Badge>}
           {conflictLabel && <Badge tone="warning">{conflictLabel}</Badge>}
-          {warningLabel && !conflictLabel && <Badge tone="warning">{warningLabel}</Badge>}
+          {warningLabel && !conflictLabel && (
+            <Badge tone="warning">{warningLabel}</Badge>
+          )}
           {isIniShippedKey(param, shippedIniKeys) && (
             <Badge tone="success">{t("iniShipped")}</Badge>
           )}
-          {param.present_in_ini && !isIniShippedKey(param, shippedIniKeys) && (!engineToggleable || engineEnabled) && (
-            <Badge tone="success">{t("inIni")}</Badge>
-          )}
+          {param.present_in_ini &&
+            !isIniShippedKey(param, shippedIniKeys) &&
+            (!engineToggleable || engineEnabled) && (
+              <Badge tone="success">{t("inIni")}</Badge>
+            )}
           {engineToggleable && engineEnabled && !param.present_in_ini && (
             <Badge tone="accent">{t("gusIni.willAdd")}</Badge>
           )}
@@ -140,9 +163,9 @@ export const ParameterRow = memo(function ParameterRow({
           )}
         </div>
         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--color-text-muted)]">
-          <code className="truncate font-mono text-[var(--color-accent-hover)]">{param.key}</code>
-          <span>{t(`category.${param.category}`, { defaultValue: param.category })}</span>
-          <span>{param.file}</span>
+          <code className="truncate font-mono text-[var(--color-accent-hover)]">
+            {param.key}
+          </code>
         </div>
       </div>
 
@@ -159,7 +182,9 @@ export const ParameterRow = memo(function ParameterRow({
         />
         {param.key === "sg.ResolutionQuality" && (
           <span className="text-xs text-[var(--color-text-muted)]">
-            {Number.isFinite(Number(param.value)) ? `${param.value}%` : param.value}
+            {Number.isFinite(Number(param.value))
+              ? `${param.value}%`
+              : param.value}
           </span>
         )}
         {resetTarget && (
@@ -168,17 +193,22 @@ export const ParameterRow = memo(function ParameterRow({
             onClick={() => onChange?.(resetTarget.value)}
             className="max-w-full text-right text-xs leading-snug text-[var(--color-accent-hover)] hover:underline"
           >
-            {t("resetTo", { label: resetTarget.label, value: resetTarget.value })}
+            {t("resetTo", {
+              label: resetTarget.label,
+              value: resetTarget.value,
+            })}
           </button>
         )}
       </div>
 
       <button
         type="button"
-        className="grid h-7 w-7 shrink-0 place-items-center self-start rounded-[var(--radius-control)] text-[var(--color-text-faint)] opacity-0 transition hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)] group-hover:opacity-100"
+        className="material-icon-button parameter-info"
+        data-parameter-details
+        aria-label={t("parameterDetails", { name: displayTitle })}
         title={`${param.file} -> [${param.section}]`}
       >
-        <MoreHorizontal size={16} />
+        <Info size={16} />
       </button>
     </div>
   );

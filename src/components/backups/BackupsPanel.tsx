@@ -95,9 +95,12 @@ export function BackupsPanel({ game }: Props) {
         </Badge>
       </div>
 
-      <Alert tone="info" title={t("howItWorks.title")}>
-        {t("howItWorks.body")}
-      </Alert>
+      <details className="rounded-2xl bg-[var(--color-surface)] p-4 text-sm text-[var(--color-text-secondary)]">
+        <summary className="cursor-pointer font-medium">
+          {t("howItWorks.title")}
+        </summary>
+        <p className="mt-2">{t("howItWorks.body")}</p>
+      </details>
 
       <GameRunningAlert exeName={runningExeName} gameName={game.name} />
       <SnapshotTools
@@ -124,6 +127,46 @@ export function BackupsPanel({ game }: Props) {
         </Alert>
       )}
 
+      <section>
+        <BackupSectionTitle
+          title={t("list.title")}
+          description={t("list.desc")}
+          hint={
+            <Button variant="ghost" size="sm" onClick={() => refetch()}>
+              {t("list.refresh")}
+            </Button>
+          }
+        />
+
+        {backupsLoading ? (
+          <Panel padding="md">
+            <div className="flex flex-col items-center gap-3 py-6">
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
+              <p className="text-sm text-[var(--color-text-muted)]">
+                {t("list.loading")}
+              </p>
+            </div>
+          </Panel>
+        ) : backups.length === 0 ? (
+          <EmptyState
+            icon={History}
+            title={t("list.emptyTitle")}
+            description={t("list.emptyDesc")}
+          />
+        ) : (
+          <div className="space-y-2">
+            {backups.map((backup) => (
+              <BackupRow
+                key={backup.id}
+                backup={backup}
+                restoring={restore.isPending && restoringId === backup.id}
+                disabled={gameRunning || restore.isPending}
+                onRestore={() => restore.mutate(backup.id)}
+              />
+            ))}
+          </div>
+        )}
+      </section>
       <section>
         <BackupSectionTitle
           title={t("reset.sectionTitle")}
@@ -167,47 +210,6 @@ export function BackupsPanel({ game }: Props) {
           >
             {t("reset.button")}
           </Button>
-        )}
-      </section>
-
-      <section>
-        <BackupSectionTitle
-          title={t("list.title")}
-          description={t("list.desc")}
-          hint={
-            <Button variant="ghost" size="sm" onClick={() => refetch()}>
-              {t("list.refresh")}
-            </Button>
-          }
-        />
-
-        {backupsLoading ? (
-          <Panel padding="md">
-            <div className="flex flex-col items-center gap-3 py-6">
-              <span className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-              <p className="text-sm text-[var(--color-text-muted)]">
-                {t("list.loading")}
-              </p>
-            </div>
-          </Panel>
-        ) : backups.length === 0 ? (
-          <EmptyState
-            icon={History}
-            title={t("list.emptyTitle")}
-            description={t("list.emptyDesc")}
-          />
-        ) : (
-          <div className="space-y-2">
-            {backups.map((backup) => (
-              <BackupRow
-                key={backup.id}
-                backup={backup}
-                restoring={restore.isPending && restoringId === backup.id}
-                disabled={gameRunning || restore.isPending}
-                onRestore={() => restore.mutate(backup.id)}
-              />
-            ))}
-          </div>
         )}
       </section>
     </div>

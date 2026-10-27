@@ -138,9 +138,7 @@ export function GameGridCard({
       <article
         className={cn(
           "grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-[var(--radius-panel)] border bg-[var(--color-surface)] p-2 transition hover:border-[var(--color-border-strong)] md:grid-cols-[44px_minmax(0,1fr)_auto]",
-          selected
-            ? "border-[var(--color-accent)]"
-            : "border-[var(--color-border)]",
+          selected ? "border-[var(--color-accent)]" : "border-transparent",
         )}
       >
         <button
@@ -180,10 +178,10 @@ export function GameGridCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden rounded-[var(--radius-panel)] border bg-[var(--color-surface)] transition hover:-translate-y-0.5 hover:border-[var(--color-border-strong)]",
+        "group overflow-hidden rounded-[var(--radius-panel)] border bg-[var(--color-surface)] transition-colors hover:bg-[var(--color-surface-raised)]",
         selected
           ? "border-[var(--color-accent)] shadow-[0_0_0_1px_var(--color-accent-ring)]"
-          : "border-[var(--color-border)]",
+          : "border-transparent",
       )}
     >
       <button
@@ -198,7 +196,7 @@ export function GameGridCard({
           selected={selected}
           className="rounded-none"
         />
-        <div className="p-3">
+        <div className="p-4">
           <div className="truncate font-semibold text-[var(--color-text)]">
             {game.name}
           </div>
@@ -208,9 +206,7 @@ export function GameGridCard({
           </p>
         </div>
       </button>
-      <div className="border-t border-[var(--color-border)] p-2 opacity-95 transition group-hover:opacity-100">
-        {actions}
-      </div>
+      <div className="px-4 pb-4">{actions}</div>
     </article>
   );
 }

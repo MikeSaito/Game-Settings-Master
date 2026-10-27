@@ -87,7 +87,7 @@ export function SnapshotTools({
     await showPrepared(plan, request, reprepare);
   };
   return (
-    <section className="space-y-3 rounded-xl border border-[var(--color-border)] p-4">
+    <section className="space-y-4 rounded-[var(--radius-panel)] bg-[var(--color-surface)] p-5">
       <h3 className="font-semibold">{t("snapshots.title")}</h3>
       <div className="flex flex-wrap gap-2">
         <input
@@ -96,7 +96,7 @@ export function SnapshotTools({
           maxLength={120}
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className="rounded border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2"
+          className="max-w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2"
         />
         <Button
           onClick={() =>
@@ -128,13 +128,13 @@ export function SnapshotTools({
         )}
       </div>
       <div className="flex flex-wrap gap-2">
-        <label>
+        <label className="min-w-0 flex-1 basis-60 text-sm">
           {t("snapshots.from")}{" "}
           <select
             aria-label={t("snapshots.from")}
             value={first}
             onChange={(event) => setFirst(event.target.value)}
-            className="rounded bg-[var(--color-bg-soft)] p-2"
+            className="mt-2 block w-full min-w-0 rounded-xl bg-[var(--color-bg-soft)] p-2"
           >
             <option value="">–</option>
             {backups.map((backup) => (
@@ -144,13 +144,13 @@ export function SnapshotTools({
             ))}
           </select>
         </label>
-        <label>
+        <label className="min-w-0 flex-1 basis-60 text-sm">
           {t("snapshots.to")}{" "}
           <select
             aria-label={t("snapshots.to")}
             value={second}
             onChange={(event) => setSecond(event.target.value)}
-            className="rounded bg-[var(--color-bg-soft)] p-2"
+            className="mt-2 block w-full min-w-0 rounded-xl bg-[var(--color-bg-soft)] p-2"
           >
             <option value="">{t("snapshots.current")}</option>
             {backups.map((backup) => (
