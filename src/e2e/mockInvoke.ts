@@ -243,6 +243,11 @@ export function handleE2eInvoke(
 ): unknown {
   switch (cmd) {
     case "scan_games":
+      if (Number(sessionStorage.getItem("gsm-e2e-scan-delay")) > 0) {
+        const delay = Number(sessionStorage.getItem("gsm-e2e-scan-delay"));
+        sessionStorage.removeItem("gsm-e2e-scan-delay");
+        return new Promise(resolve => setTimeout(() => resolve(handleE2eInvoke(cmd, args)), delay));
+      }
       if (readE2eFixtureMode() === "readme") {
         const language =
           sessionStorage.getItem("gsm-e2e-language") === "ru" ? "ru" : "en";

@@ -8,7 +8,8 @@ import {
   LibraryToolbar,
   type LibraryViewMode,
 } from "@/components/library/LibraryToolbar";
-import { Alert, EmptyState, Skeleton } from "@/components/ds/Feedback";
+import { Alert, EmptyState } from "@/components/ds/Feedback";
+import { StartupScreen } from "@/components/app/StartupScreen";
 import { Button } from "@/components/ds/Button";
 import { useBackgroundSafeEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 import {
@@ -38,6 +39,7 @@ export function GameLibrary({
   onGameRemoved,
 }: Props) {
   const { t } = useTranslation("library");
+  const { t: startup } = useTranslation("startup");
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
   const [viewMode, setViewMode] = useState<LibraryViewMode>("grid");
@@ -46,8 +48,9 @@ export function GameLibrary({
 
   const {
     data: games = [],
-    isLoading,
+    isPending,
     isFetching,
+    error: scanError,
     refetch,
   } = useQuery({
     queryKey: ["games"],
@@ -57,7 +60,7 @@ export function GameLibrary({
     refetchOnMount: false,
   });
 
-  const libraryLoading = (isLoading || isFetching) && games.length === 0;
+  const libraryLoading = (isPending || isFetching) && games.length === 0;
   const filteredGames = useMemo(() => {
     const q = query.trim().toLowerCase();
     return games
@@ -168,9 +171,9 @@ export function GameLibrary({
         </div>
       </div>
 
-      {libraryError && (
+      {(libraryError || scanError) && (
         <Alert tone="danger" title={t("alerts.errorTitle")}>
-          {libraryError}
+          {libraryError ?? formatInvokeError(scanError)}
         </Alert>
       )}
 
@@ -188,11 +191,7 @@ export function GameLibrary({
       {hasGamesWithoutConfig && <ConfigPathHelp />}
 
       {libraryLoading ? (
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 6 }, (_, index) => (
-            <Skeleton key={index} className="h-56" />
-          ))}
-        </div>
+        <StartupScreen embedded title={startup("libraryLoading")} />
       ) : filteredGames.length === 0 ? (
         <EmptyState
           icon={Gamepad2}

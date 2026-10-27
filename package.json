@@ -1,7 +1,7 @@
 {
   "name": "ue-settings-master",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "e2e": "playwright test",
-    "e2e:serve": "cross-env GSM_E2E=1 vite",
+    "e2e:serve": "cross-env GSM_E2E=1 vite --mode e2e",
     "types:gen": "cargo test export_typescript_bindings --manifest-path src-tauri/Cargo.toml -- --nocapture",
     "catalog:build": "python tools/ue-catalog-builder/fixtures/gen_fixtures.py && python tools/ue-catalog-builder/build.py",
     "catalog:test": "python tools/ue-catalog-builder/test_build.py",

@@ -1,6 +1,6 @@
 [package]
 name = "ue-settings-master"
-version = "1.5.0"
+version = "1.5.1"
 description = "UE Settings Master – мастер настроек для игр Unreal Engine"
 authors = ["Mike Saito <chigikovden@gmail.com>"]
 license = "MIT"

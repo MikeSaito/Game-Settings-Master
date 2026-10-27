@@ -1,0 +1,9 @@
+{
+  "stages": "Startup stages",
+  "updates": "Updates",
+  "library": "Game library",
+  "updatesHint": "Checking whether a newer version is available.",
+  "libraryHint": "Finding installed games and their configuration folders. This can take a moment.",
+  "workspaceLoading": "Preparing your workspace",
+  "libraryLoading": "Finding your games"
+}

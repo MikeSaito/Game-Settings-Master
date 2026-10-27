@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppUpdater } from "@/hooks/app/useAppUpdater";
 import { Button } from "@/components/ds/Button";
+import { StartupScreen } from "./StartupScreen";
 
 interface Props {
   children: ReactNode;
@@ -17,6 +18,8 @@ export function UpdateGate({ children }: Props) {
     progress,
     retry,
     installUpdate,
+    canBypassOnError,
+    continueWithoutUpdate,
   } = useAppUpdater();
 
   if (status === "ready") {
@@ -29,69 +32,82 @@ export function UpdateGate({ children }: Props) {
       : null;
 
   return (
-    <div className="app-bg flex min-h-screen flex-col items-center justify-center px-6">
-      <div className="w-full max-w-md space-y-6 text-center">
-        <div>
-          <h1 className="text-xl font-semibold text-[var(--color-text)]">
-            Game Settings Master
-          </h1>
-          <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-            {status === "checking" && t("checking")}
-            {status === "required" && t("required", { version: update?.version })}
-            {status === "downloading" && t("downloading")}
-            {status === "error" && (update ? t("installFailed") : t("checkFailed"))}
-          </p>
-        </div>
+    <StartupScreen
+      stage="updates"
+      title={
+        status === "checking"
+          ? t("checking")
+          : status === "required"
+            ? t("required", { version: update?.version })
+            : status === "downloading"
+              ? t("downloading")
+              : status === "installing"
+                ? t("installing")
+                : update
+                  ? t("installFailed")
+                  : t("checkFailed")
+      }
+      description={
+        status === "checking"
+          ? undefined
+          : t(
+              status === "error"
+                ? "errorHint"
+                : status === "required"
+                  ? "requiredHint"
+                  : "downloadHint",
+            )
+      }
+      busy={
+        status === "checking" ||
+        status === "downloading" ||
+        status === "installing"
+      }
+      progress={status === "downloading" ? progressPercent : null}
+    >
+      {status === "required" && (
+        <Button
+          variant="primary"
+          icon={<Download size={18} />}
+          onClick={() => void installUpdate()}
+          className="w-full"
+        >
+          {t("updateTo", { version: update?.version })}
+        </Button>
+      )}
 
-        {status === "checking" && (
-          <div className="flex justify-center py-4">
-            <span className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
-          </div>
-        )}
+      {status === "downloading" && progressPercent != null && (
+        <p className="text-sm text-[var(--color-text-muted)]">
+          {progressPercent}%
+        </p>
+      )}
 
-        {status === "required" && (
+      {status === "error" && (
+        <div className="space-y-4">
+          {error && (
+            <p className="startup-error" role="alert">
+              {error}
+            </p>
+          )}
           <Button
             variant="primary"
-            icon={<Download size={18} />}
-            onClick={() => void installUpdate()}
+            icon={<RefreshCw size={18} />}
+            onClick={() => void retry()}
             className="w-full"
           >
-            {t("updateTo", { version: update?.version })}
+            {t("retry")}
           </Button>
-        )}
-
-        {status === "downloading" && (
-          <div className="space-y-2">
-            <div className="h-2 overflow-hidden rounded-full bg-[var(--color-border)]">
-              <div
-                className="h-full bg-[var(--color-accent)] transition-all duration-200"
-                style={{ width: `${progressPercent ?? 0}%` }}
-              />
-            </div>
-            {progressPercent != null && (
-              <p className="text-xs text-[var(--color-text-muted)]">{progressPercent}%</p>
-            )}
-          </div>
-        )}
-
-        {status === "error" && (
-          <div className="space-y-4">
-            {error && (
-              <p className="rounded-lg border border-[#5a3030] bg-[#2a1818] px-4 py-3 text-left text-sm text-[#f0a0a0]">
-                {error}
-              </p>
-            )}
+          {canBypassOnError && (
             <Button
-              variant="primary"
-              icon={<RefreshCw size={18} />}
-              onClick={() => void retry()}
+              variant="secondary"
+              onClick={continueWithoutUpdate}
               className="w-full"
             >
-              {t("retry")}
+              {t("continueOffline")}
             </Button>
-          </div>
-        )}
-      </div>
-    </div>
+          )}
+        </div>
+      )}
+    </StartupScreen>
   );
 }
