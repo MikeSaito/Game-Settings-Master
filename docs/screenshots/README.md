@@ -9,8 +9,11 @@ Run `npm run screenshots:readme` from the repository root after installing the
 project dependencies, Playwright Chromium, and Python with Pillow. The capture
 script starts and stops its own local preview server on port 4178.
 
-Each language has six lossless WebP images: the library, basic editor, advanced
-editor, INI text editor, change preview, and backups. Captures use a 1920 by 1080
+Each language has six lossless WebP images in each of the `dark` and `light`
+directories: the library, basic editor, advanced editor, INI text editor, change
+preview, and backups. The README uses GitHub theme-aware image fragments to show
+the matching Material 3 palette and link to its full-size capture.
+Captures use a 1920 by 1080
 viewport at a device scale factor of 1.25, producing 2400 by 1350 images. The
 clock is fixed, motion is reduced, fonts are loaded before capture, and rendering
 errors cause the command to fail. Game names and configuration values are

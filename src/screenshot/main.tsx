@@ -11,7 +11,12 @@ function screenshotLang(): AppLanguage {
 }
 
 const lang = screenshotLang();
-document.documentElement.setAttribute("data-theme", "dark");
+document.documentElement.setAttribute(
+  "data-theme",
+  new URLSearchParams(window.location.search).get("theme") === "light"
+    ? "light"
+    : "dark",
+);
 document.documentElement.lang = lang;
 
 void i18n.changeLanguage(lang).then(() => {
