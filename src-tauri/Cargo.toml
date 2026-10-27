@@ -53,7 +53,7 @@ tauri-plugin-updater = "2"
 specta-serde = "0.0.12"
 specta-typescript = "0.0.12"
 tempfile = "3"
-base64 = "0.22"
+base64 = "0.23"
 minisign-verify = "0.3"
 
 [profile.release]
