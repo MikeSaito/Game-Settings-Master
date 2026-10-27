@@ -31,37 +31,43 @@
 
 ## Скриншоты
 
-Текущий интерфейс приложения с демонстрационными данными. Нажмите на изображение, чтобы открыть его в полном размере.
+Интерфейс Material 3 с демонстрационными данными. Скриншоты соответствуют вашей теме GitHub. Нажмите на изображение, чтобы открыть его в полном размере.
 
 <table>
   <tr>
     <td width="50%" align="center">
       <strong>Библиотека игр</strong><br>
-      <a href="docs/screenshots/ru/library.webp"><img src="docs/screenshots/ru/library.webp" width="400" alt="Библиотека игр"></a>
+      <a href="docs/screenshots/ru/dark/library.webp#gh-dark-mode-only"><img src="docs/screenshots/ru/dark/library.webp#gh-dark-mode-only" width="400" alt="Библиотека игр"></a>
+      <a href="docs/screenshots/ru/light/library.webp#gh-light-mode-only"><img src="docs/screenshots/ru/light/library.webp#gh-light-mode-only" width="400" alt="Библиотека игр"></a>
     </td>
     <td width="50%" align="center">
       <strong>Базовый редактор</strong><br>
-      <a href="docs/screenshots/ru/editor-basic.webp"><img src="docs/screenshots/ru/editor-basic.webp" width="400" alt="Базовый редактор"></a>
+      <a href="docs/screenshots/ru/dark/editor-basic.webp#gh-dark-mode-only"><img src="docs/screenshots/ru/dark/editor-basic.webp#gh-dark-mode-only" width="400" alt="Базовый редактор"></a>
+      <a href="docs/screenshots/ru/light/editor-basic.webp#gh-light-mode-only"><img src="docs/screenshots/ru/light/editor-basic.webp#gh-light-mode-only" width="400" alt="Базовый редактор"></a>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <strong>Расширенный редактор</strong><br>
-      <a href="docs/screenshots/ru/editor-advanced.webp"><img src="docs/screenshots/ru/editor-advanced.webp" width="400" alt="Расширенный редактор"></a>
+      <a href="docs/screenshots/ru/dark/editor-advanced.webp#gh-dark-mode-only"><img src="docs/screenshots/ru/dark/editor-advanced.webp#gh-dark-mode-only" width="400" alt="Расширенный редактор"></a>
+      <a href="docs/screenshots/ru/light/editor-advanced.webp#gh-light-mode-only"><img src="docs/screenshots/ru/light/editor-advanced.webp#gh-light-mode-only" width="400" alt="Расширенный редактор"></a>
     </td>
     <td width="50%" align="center">
       <strong>Текстовый редактор INI</strong><br>
-      <a href="docs/screenshots/ru/editor-files.webp"><img src="docs/screenshots/ru/editor-files.webp" width="400" alt="Текстовый редактор INI"></a>
+      <a href="docs/screenshots/ru/dark/editor-files.webp#gh-dark-mode-only"><img src="docs/screenshots/ru/dark/editor-files.webp#gh-dark-mode-only" width="400" alt="Текстовый редактор INI"></a>
+      <a href="docs/screenshots/ru/light/editor-files.webp#gh-light-mode-only"><img src="docs/screenshots/ru/light/editor-files.webp#gh-light-mode-only" width="400" alt="Текстовый редактор INI"></a>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <strong>Предпросмотр изменений</strong><br>
-      <a href="docs/screenshots/ru/preview.webp"><img src="docs/screenshots/ru/preview.webp" width="400" alt="Предпросмотр изменений"></a>
+      <a href="docs/screenshots/ru/dark/preview.webp#gh-dark-mode-only"><img src="docs/screenshots/ru/dark/preview.webp#gh-dark-mode-only" width="400" alt="Предпросмотр изменений"></a>
+      <a href="docs/screenshots/ru/light/preview.webp#gh-light-mode-only"><img src="docs/screenshots/ru/light/preview.webp#gh-light-mode-only" width="400" alt="Предпросмотр изменений"></a>
     </td>
     <td width="50%" align="center">
       <strong>Бэкапы</strong><br>
-      <a href="docs/screenshots/ru/backups.webp"><img src="docs/screenshots/ru/backups.webp" width="400" alt="Бэкапы"></a>
+      <a href="docs/screenshots/ru/dark/backups.webp#gh-dark-mode-only"><img src="docs/screenshots/ru/dark/backups.webp#gh-dark-mode-only" width="400" alt="Бэкапы"></a>
+      <a href="docs/screenshots/ru/light/backups.webp#gh-light-mode-only"><img src="docs/screenshots/ru/light/backups.webp#gh-light-mode-only" width="400" alt="Бэкапы"></a>
     </td>
   </tr>
 </table>
