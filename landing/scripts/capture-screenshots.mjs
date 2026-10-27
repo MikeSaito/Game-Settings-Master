@@ -72,51 +72,63 @@ async function main() {
 
     for (const locale of locales) {
       dimensions[locale] = {};
-      const localeDir = resolve(outDir, locale);
-      mkdirSync(localeDir, { recursive: true });
-      for (const width of [740, 390]) {
-        await page.setViewportSize({ width, height: 900 });
-        for (const feature of ["preview", "restore", "diagnostics"]) {
-          await page.goto(`${baseUrl}?lang=${locale}&feature=${feature}`, {
-            waitUntil: "networkidle",
-          });
-          if (feature === "restore") {
-            await page
-              .getByRole("combobox", {
-                name: locale === "ru" ? "Снимок" : "Snapshot",
-                exact: true,
-              })
-              .selectOption("snapshot-demo");
-            await page
-              .getByText("r.Shadow.MaxResolution", { exact: false })
-              .waitFor();
-          }
-          const frame = page.locator(
-            feature === "preview" ? "#changes-preview" : "#shot-feature",
-          );
-          await frame.waitFor({ state: "visible" });
-          await page.evaluate(() => document.fonts.ready);
-          const filename = `${feature}${width === 390 ? "-mobile" : ""}`;
-          const png = resolve(localeDir, `${filename}.png`);
-          const webp = resolve(localeDir, `${filename}.webp`);
-          await frame.screenshot({ path: png, type: "png" });
-          const convert = spawnSync(
-            "python",
-            [
-              "-c",
-              "from PIL import Image; import sys,json; im=Image.open(sys.argv[1]); im.save(sys.argv[2], 'WEBP', lossless=True); print(json.dumps(im.size))",
-              png,
-              webp,
-            ],
-            { encoding: "utf8" },
-          );
-          if (convert.status !== 0)
-            throw new Error(
-              `WebP conversion requires Python/Pillow: ${convert.stderr}`,
+      for (const theme of ["dark", "light"]) {
+        dimensions[locale][theme] = {};
+        const localeDir = resolve(outDir, locale, theme);
+        mkdirSync(localeDir, { recursive: true });
+        for (const width of [740, 520, 390]) {
+          await page.setViewportSize({ width, height: 900 });
+          for (const feature of width === 520
+            ? ["preview"]
+            : ["preview", "restore", "diagnostics"]) {
+            await page.goto(
+              `${baseUrl}?lang=${locale}&theme=${theme}&feature=${feature}`,
+              {
+                waitUntil: "networkidle",
+              },
             );
-          dimensions[locale][filename] = JSON.parse(convert.stdout);
-          unlinkSync(png);
-          console.log(`saved ${locale}/${filename}.webp`);
+            if (feature === "restore") {
+              await page
+                .getByRole("combobox", {
+                  name: locale === "ru" ? "Снимок" : "Snapshot",
+                  exact: true,
+                })
+                .selectOption("snapshot-demo");
+              await page
+                .getByText("r.Shadow.MaxResolution", { exact: false })
+                .waitFor();
+            }
+            const frame = page.locator(
+              feature === "preview"
+                ? "#changes-preview"
+                : feature === "restore"
+                  ? "#shot-feature > section"
+                  : "#shot-feature > details",
+            );
+            await frame.waitFor({ state: "visible" });
+            await page.evaluate(() => document.fonts.ready);
+            const filename = `${feature}${width === 390 ? "-mobile" : width === 520 ? "-tall" : ""}`;
+            const png = resolve(localeDir, `${filename}.png`);
+            const webp = resolve(localeDir, `${filename}.webp`);
+            await frame.screenshot({ path: png, type: "png" });
+            const convert = spawnSync(
+              "python",
+              [
+                "-c",
+                "from PIL import Image; import sys,json; im=Image.open(sys.argv[1]); im.save(sys.argv[2], 'WEBP', lossless=True); print(json.dumps(im.size))",
+                png,
+                webp,
+              ],
+              { encoding: "utf8" },
+            );
+            if (convert.status !== 0)
+              throw new Error(
+                `WebP conversion requires Python/Pillow: ${convert.stderr}`,
+              );
+            dimensions[locale][theme][filename] = JSON.parse(convert.stdout);
+            unlinkSync(png);
+            console.log(`saved ${locale}/${theme}/${filename}.webp`);
+          }
         }
       }
       await page.setViewportSize({ width: frameWidth, height: frameHeight });
