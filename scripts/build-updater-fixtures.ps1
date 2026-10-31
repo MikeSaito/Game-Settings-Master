@@ -8,7 +8,7 @@ $publicKey = (Get-Content -LiteralPath "$keyPath.pub" -Raw).Trim()
 $env:TAURI_SIGNING_PRIVATE_KEY = Get-Content -LiteralPath $keyPath -Raw
 $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = 'native-test-password'
 try {
-  $baselineVersion = '1.5.0'
+  $baselineVersion = '1.5.1'
   $targetVersion = (Get-Content package.json -Raw | ConvertFrom-Json).version
   @{ baseline = $baselineVersion; target = $targetVersion } | ConvertTo-Json | Set-Content (Join-Path $fixtureRoot 'versions.json') -Encoding utf8NoBOM
   foreach ($version in @($baselineVersion, $targetVersion)) {
