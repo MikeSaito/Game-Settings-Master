@@ -21,10 +21,9 @@ pub use dedupe::{dedupe_games, merge_game_profile, normalize_install_dir};
 pub use enrich::{enrich_config_dir, enrich_engine_flags};
 pub use known_games::{known_config_dir, load_known_games, platform_hints_for_game};
 pub use manual::profile_from_manual_path;
-pub use registry::{
-    cached_scan_all_games, find_game_by_id, force_refresh_scan_all_games,
-    invalidate_game_scan_cache,
-};
+#[cfg(not(feature = "native-test"))]
+pub use registry::force_refresh_scan_all_games;
+pub use registry::{cached_scan_all_games, find_game_by_id, invalidate_game_scan_cache};
 pub use scan_all::scan_all_games;
 pub use ue_detect::{detect_unreal_engine, find_executables, is_non_game_install, UeDetectResult};
 pub use ue_version::enrich_engine_version;
