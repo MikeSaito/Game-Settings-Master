@@ -77,6 +77,10 @@ jobs:
         working-directory: src-tauri
         run: cargo clippy --locked -- -D warnings
 
+      - name: Rust clippy for native test fixtures
+        working-directory: src-tauri
+        run: cargo clippy --locked --features native-test -- -D warnings
+
   build-windows:
     runs-on: windows-latest
     steps:
