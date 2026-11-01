@@ -2,7 +2,7 @@ use std::fs;
 
 use crate::core::models::{GameOverride, SavedOverrides};
 
-use super::storage::{overrides_path, write_json_atomic};
+use super::storage::{lock_store, overrides_path, write_json_atomic};
 
 const MAX_OVERRIDE_JSON_BYTES: usize = 512 * 1024;
 const MAX_OVERRIDES_JSON_BYTES: usize = 1024 * 1024;
@@ -132,6 +132,11 @@ pub(crate) fn validate_override_payload(override_def: &GameOverride) -> Result<(
 }
 
 pub fn load_overrides() -> Result<Vec<GameOverride>, String> {
+    let _store = lock_store()?;
+    load_overrides_unlocked()
+}
+
+pub(super) fn load_overrides_unlocked() -> Result<Vec<GameOverride>, String> {
     let path = overrides_path()?;
     if !path.exists() {
         return Ok(Vec::new());
@@ -173,7 +178,8 @@ pub fn load_overrides() -> Result<Vec<GameOverride>, String> {
 
 pub fn save_override(override_def: &GameOverride) -> Result<(), String> {
     validate_override_payload(override_def)?;
-    let mut overrides = load_overrides()?;
+    let _store = lock_store()?;
+    let mut overrides = load_overrides_unlocked()?;
     if let Some(existing) = overrides
         .iter_mut()
         .find(|o| o.game_id == override_def.game_id && o.name == override_def.name)
@@ -196,7 +202,8 @@ pub fn get_overrides_for_game(game_id: &str) -> Result<Vec<GameOverride>, String
 }
 
 pub fn delete_override(game_id: &str, name: &str) -> Result<(), String> {
-    let mut overrides = load_overrides()?;
+    let _store = lock_store()?;
+    let mut overrides = load_overrides_unlocked()?;
     overrides.retain(|o| !(o.game_id == game_id && o.name == name));
     let path = overrides_path()?;
     let content =

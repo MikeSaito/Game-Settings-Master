@@ -2,14 +2,19 @@ use std::fs;
 
 use crate::core::models::{GameProfile, SavedOverrides, SavedProfiles};
 
-use super::overrides::load_overrides;
-use super::storage::{overrides_path, profiles_path, write_json_atomic};
+use super::overrides::load_overrides_unlocked;
+use super::storage::{lock_store, overrides_path, profiles_path, write_json_atomic};
 use super::trust::{is_stale_saved_profile, validate_profile_paths};
 
 const MAX_PROFILES_JSON_BYTES: usize = 2 * 1024 * 1024;
 const MAX_SAVED_GAMES: usize = 512;
 
 pub fn load_saved_profiles() -> Result<Vec<GameProfile>, String> {
+    let _store = lock_store()?;
+    load_saved_profiles_unlocked()
+}
+
+fn load_saved_profiles_unlocked() -> Result<Vec<GameProfile>, String> {
     let path = profiles_path()?;
     if !path.exists() {
         return Ok(Vec::new());
@@ -51,7 +56,8 @@ pub fn load_saved_profiles() -> Result<Vec<GameProfile>, String> {
 
 /// Removes test/broken entries from games.json (temp install, ipc-security-*).
 pub fn prune_stale_saved_profiles() -> Result<usize, String> {
-    let mut games = load_saved_profiles()?;
+    let _store = lock_store()?;
+    let mut games = load_saved_profiles_unlocked()?;
     let before = games.len();
     games.retain(|g| !is_stale_saved_profile(g));
     let removed = before.saturating_sub(games.len());
@@ -67,7 +73,8 @@ pub fn prune_stale_saved_profiles() -> Result<usize, String> {
 
 pub fn save_profile(profile: &GameProfile) -> Result<(), String> {
     validate_profile_paths(profile)?;
-    let mut games = load_saved_profiles()?;
+    let _store = lock_store()?;
+    let mut games = load_saved_profiles_unlocked()?;
     if let Some(existing) = games.iter_mut().find(|g| g.id == profile.id) {
         *existing = profile.clone();
     } else {
@@ -80,13 +87,14 @@ pub fn save_profile(profile: &GameProfile) -> Result<(), String> {
 }
 
 pub fn remove_profile(id: &str) -> Result<(), String> {
-    let mut games = load_saved_profiles()?;
+    let _store = lock_store()?;
+    let mut games = load_saved_profiles_unlocked()?;
     games.retain(|g| g.id != id);
     let path = profiles_path()?;
     let content =
         serde_json::to_string_pretty(&SavedProfiles { games }).map_err(|e| e.to_string())?;
     write_json_atomic(&path, &content)?;
-    let mut overrides = load_overrides()?;
+    let mut overrides = load_overrides_unlocked()?;
     let before = overrides.len();
     overrides.retain(|o| o.game_id != id);
     if overrides.len() != before {

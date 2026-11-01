@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "react-i18next";
+import { usePollingEnabled } from "@/hooks/app/useBackgroundSafeEnabled";
 export function DiscoveryWarnings() {
   const { t } = useTranslation("improvements");
+  const polling = usePollingEnabled();
   const { data: warnings = [] } = useQuery({
     queryKey: ["discovery-warnings"],
     queryFn: () => invoke<string[]>("get_discovery_warnings"),
-    refetchInterval: 30_000,
+    enabled: polling,
+    refetchInterval: polling ? 30_000 : false,
   });
   if (!warnings?.length) return null;
   return (

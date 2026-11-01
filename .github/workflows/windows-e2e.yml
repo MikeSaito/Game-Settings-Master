@@ -8,6 +8,9 @@ on:
       test_updates:
         type: boolean
         default: true
+      test_performance:
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       test_updates:
@@ -16,6 +19,9 @@ on:
 permissions:
   contents: read
 jobs:
+  performance:
+    if: inputs.test_performance == true
+    uses: ./.github/workflows/performance-windows.yml
   configs:
     # WebView2 WebDriver cannot create sessions on the current Server 2025 image.
     # https://github.com/actions/runner-images/issues/14738
