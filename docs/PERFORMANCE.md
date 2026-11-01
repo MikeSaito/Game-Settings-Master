@@ -52,3 +52,50 @@ multi-day stability or prove absence of all races.
   not whole-application startup or release-build performance.
 
 Runtime results are available in the `windows-performance-results` artifact.
+
+## Windows results, 2026-11-01
+
+[Audit run 41304104090](https://github.com/MikeSaito/Game-Settings-Master/actions/runs/41304104090)
+passed on Windows Server 2022 with four logical processors. The baseline is
+v1.5.3 (`92b5eab`); the measured candidate is `f2004f6`. The subsequent `a6870d9`
+change makes an already-held cross-process store lock fail promptly; its
+contention/recovery regression and full CI passed separately. The measured
+workload contains no competing application instance.
+
+| Phase | Baseline CPU | Candidate CPU | Baseline end private memory | Candidate end private memory |
+| --- | ---: | ---: | ---: | ---: |
+| Library idle | 0.185% | 0.214% | 118.4 MiB | 117.6 MiB |
+| Minimized | 0.254% | 0.084% | 120.9 MiB | 117.5 MiB |
+| Editor idle | 0.165% | 0.235% | 139.8 MiB | 146.8 MiB |
+| After 20 preview/cancel cycles | 0.165% | 0.199% | 158.2 MiB | 156.5 MiB |
+
+All percentages include the application and WebView2 and are percentages of the
+whole machine. These are single paired runs: the small foreground differences
+and the lower minimized CPU are observations, not an established speedup ratio.
+Both builds already have low idle CPU usage in this workload.
+
+Candidate private memory fell from 210.3 MiB at the first post-stress sample to
+156.5 MiB after about 57 seconds. Its process count stayed at eight throughout.
+Handles changed from 3,011 at the start of editor idle to 2,994 after stress;
+threads changed from 134 to 128. Recovery/discovery IPC counters were empty while
+minimized in both builds. The explicit focus gating additionally covers an
+unfocused window that remains visible, which is checked by the frontend test.
+The maximum foreground JavaScript timer delay during stress was 38.2 ms for the
+baseline and 37.4 ms for the candidate; this is not a frame-rendering benchmark.
+
+Document-to-library upper bounds were 0.77/1.57/1.36 seconds for the baseline
+and 1.64/1.42/2.10 seconds for the candidate. Median first contentful paint was
+1.14 and 1.23 seconds respectively. Three noisy WebDriver-observed startups do
+not establish a startup improvement or a regression. In particular, the first
+baseline driver launch took 9.6 seconds while its document-to-library time was
+0.77 seconds, demonstrating why driver startup must not be reported as app time.
+
+No sustained memory/process/handle accumulation was observed in this short
+scenario. It does not cover multi-hour sessions, all real store libraries, or
+GPU power/usage on physical hardware. The existing local discovery-cache test
+also passed in 2.14 seconds, including its initial scan and cached lookup; that
+is not an end-to-end application startup measurement.
+
+Final code validation: 255 Rust tests passed (two existing/manual ignores),
+243 frontend tests, 37 browser scenarios, 47 landing scenarios, both Clippy
+modes, formatting, generated bindings, and native config/recovery tests passed.
