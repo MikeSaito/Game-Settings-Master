@@ -1,0 +1,59 @@
+name: Windows performance audit
+on:
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  measure:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Install desktop drivers
+        shell: pwsh
+        run: ./scripts/install-native-driver.ps1
+      - name: Build baseline from v1.5.3
+        shell: pwsh
+        run: |
+          $baseline = Join-Path $env:RUNNER_TEMP 'gsm-performance-baseline'
+          git archive --format=zip --output=baseline.zip v1.5.3
+          if ($LASTEXITCODE -ne 0) { throw 'Baseline archive failed' }
+          Expand-Archive baseline.zip -DestinationPath $baseline
+          New-Item -ItemType Junction -Path (Join-Path $baseline 'node_modules') -Target (Join-Path $PWD 'node_modules') | Out-Null
+          $env:CARGO_TARGET_DIR = Join-Path $PWD 'src-tauri/target'
+          Push-Location $baseline
+          npm exec -- tauri build --no-bundle --features native-test --config native-e2e/tauri.conf.json
+          if ($LASTEXITCODE -ne 0) { throw 'Baseline build failed' }
+          Pop-Location
+          New-Item -ItemType Directory -Path '.verify/performance-baseline' -Force | Out-Null
+          Copy-Item src-tauri/target/release/ue-settings-master.exe .verify/performance-baseline/
+          Copy-Item (Join-Path $baseline 'src-tauri/catalog') .verify/performance-baseline/ -Recurse
+          Copy-Item (Join-Path $baseline 'src-tauri/games') .verify/performance-baseline/ -Recurse
+      - name: Measure baseline
+        env:
+          GSM_TEST_BINARY: .verify/performance-baseline/ue-settings-master.exe
+          GSM_PERFORMANCE_LABEL: baseline
+        run: node native-e2e/performance.mjs
+      - name: Build candidate
+        run: npm exec -- tauri build --no-bundle --features native-test --config native-e2e/tauri.conf.json
+      - name: Measure candidate
+        env:
+          GSM_PERFORMANCE_LABEL: candidate
+        run: node native-e2e/performance.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: windows-performance-results
+          path: test-results/performance

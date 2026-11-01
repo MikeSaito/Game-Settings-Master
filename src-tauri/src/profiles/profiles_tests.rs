@@ -7,6 +7,70 @@ use crate::core::models::{GameOverride, GameProfile};
 use crate::profiles::use_test_app_data_dir;
 
 #[test]
+fn busy_profile_store_fails_without_waiting_and_recovers() {
+    let root = tempfile::tempdir().unwrap();
+    let _data = use_test_app_data_dir(root.path());
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(root.path().join("profiles.lock"))
+        .unwrap();
+    file.lock().unwrap();
+    let started = std::time::Instant::now();
+    assert!(super::load_saved_profiles().is_err());
+    assert!(started.elapsed() < std::time::Duration::from_secs(1));
+    drop(file);
+    assert!(super::load_saved_profiles().unwrap().is_empty());
+}
+
+#[test]
+fn concurrent_profile_saves_preserve_every_game() {
+    let target = std::env::current_dir().unwrap().join("target");
+    std::fs::create_dir_all(&target).unwrap();
+    let root = tempfile::tempdir_in(target).unwrap();
+    let install = root.path().join("install");
+    std::fs::create_dir(&install).unwrap();
+    let data = root.path().join("app-data");
+    let _data = use_test_app_data_dir(&data);
+    let count = 24;
+    let barrier = std::sync::Arc::new(std::sync::Barrier::new(count));
+    let workers: Vec<_> = (0..count)
+        .map(|index| {
+            let barrier = barrier.clone();
+            let data = data.clone();
+            let install = install.clone();
+            std::thread::spawn(move || {
+                let _data = use_test_app_data_dir(data);
+                let profile: GameProfile = serde_json::from_value(serde_json::json!({
+                    "id": format!("manual-stress-{index}"), "name": "Concurrent fixture",
+                    "source": "manual", "install_dir": install, "config_dir": null,
+                    "exe_name": null, "is_ue": true, "engine_family": "ue5"
+                }))
+                .unwrap();
+                barrier.wait();
+                save_profile(&profile)
+            })
+        })
+        .collect();
+    let results: Vec<_> = workers
+        .into_iter()
+        .map(|worker| worker.join().unwrap())
+        .collect();
+    assert!(
+        results.iter().all(Result::is_ok),
+        "Concurrent writes failed: {results:?}"
+    );
+    let saved = super::load_saved_profiles().unwrap();
+    assert_eq!(
+        saved.len(),
+        count,
+        "Concurrent writes must not lose other games"
+    );
+}
+
+#[test]
 fn validate_profile_rejects_missing_install() {
     let profile = GameProfile {
         gpu_adapter_id: None,

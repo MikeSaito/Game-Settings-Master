@@ -1,5 +1,39 @@
 use std::fs;
 use std::path::PathBuf;
+use std::sync::{Mutex, MutexGuard};
+
+static STORE: Mutex<()> = Mutex::new(());
+
+pub(super) struct StoreGuard {
+    // Keep the OS lock until after all reads and the atomic replacement finish.
+    _file: fs::File,
+    _thread: MutexGuard<'static, ()>,
+}
+
+pub(super) fn lock_store() -> Result<StoreGuard, String> {
+    let thread = STORE.lock().map_err(|error| error.to_string())?;
+    let file = fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(app_data_dir()?.join("profiles.lock"))
+        .map_err(|error| error.to_string())?;
+    // A stalled second instance must not leave startup/IPC waiting indefinitely.
+    file.try_lock().map_err(|error| {
+        format!(
+            "{}: {error}",
+            crate::i18n::t(
+                "Хранилище профилей занято или недоступно",
+                "Profile store is busy or unavailable",
+            )
+        )
+    })?;
+    Ok(StoreGuard {
+        _file: file,
+        _thread: thread,
+    })
+}
 
 #[cfg(test)]
 thread_local! {

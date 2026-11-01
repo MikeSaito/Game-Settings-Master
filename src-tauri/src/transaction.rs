@@ -351,7 +351,7 @@ pub(crate) fn execute(
     save(&path, &journal)
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn list_pending_operations() -> Result<Vec<PendingOperation>, String> {
     let mut result = Vec::new();
     for (path, journal) in journals()? {

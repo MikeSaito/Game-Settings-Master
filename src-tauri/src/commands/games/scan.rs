@@ -8,7 +8,7 @@ use crate::discovery::{
 use crate::profiles::{is_stale_saved_profile, load_saved_profiles, prune_stale_saved_profiles};
 use std::path::PathBuf;
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn scan_games() -> Result<Vec<GameProfile>, AppInvokeError> {
     let _ = prune_stale_saved_profiles();
     #[cfg(not(feature = "native-test"))]

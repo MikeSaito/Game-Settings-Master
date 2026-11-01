@@ -25,7 +25,8 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
   const backgroundModeEnabled = inTauri && !import.meta.env.DEV;
   const [tauriFocused, setTauriFocused] = useState(true);
   const [docVisible, setDocVisible] = useState(
-    () => typeof document !== "undefined" && document.visibilityState === "visible",
+    () =>
+      typeof document !== "undefined" && document.visibilityState === "visible",
   );
   const focusedRef = useRef(true);
   const focused = inTauri ? tauriFocused && docVisible : docVisible;
@@ -36,18 +37,31 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
     if (!inTauri) return;
 
     let unlisten: (() => void) | undefined;
+    let disposed = false;
+    let receivedFocusEvent = false;
     const window = getCurrentWindow();
 
-    void window.isFocused().then((isFocused) => {
-      setTauriFocused((prev) => (prev === isFocused ? prev : isFocused));
-    });
-    void window.onFocusChanged(({ payload }) => {
-      setTauriFocused((prev) => (prev === payload ? prev : payload));
-    }).then((fn) => {
-      unlisten = fn;
-    });
+    void window
+      .isFocused()
+      .then((isFocused) => {
+        if (!disposed && !receivedFocusEvent)
+          setTauriFocused((prev) => (prev === isFocused ? prev : isFocused));
+      })
+      .catch(() => {});
+    void window
+      .onFocusChanged(({ payload }) => {
+        if (disposed) return;
+        receivedFocusEvent = true;
+        setTauriFocused((prev) => (prev === payload ? prev : payload));
+      })
+      .then((fn) => {
+        if (disposed) fn();
+        else unlisten = fn;
+      })
+      .catch(() => {});
 
     return () => {
+      disposed = true;
       unlisten?.();
     };
   }, [inTauri]);
@@ -66,7 +80,7 @@ export function AppWindowFocusProvider({ children }: { children: ReactNode }) {
 
     const delay = focused ? FOREGROUND_DELAY_MS : BACKGROUND_DELAY_MS;
     const timer = window.setTimeout(() => {
-      void setAppBackgroundMode(!focusedRef.current);
+      void setAppBackgroundMode(!focusedRef.current).catch(() => {});
     }, delay);
 
     return () => window.clearTimeout(timer);

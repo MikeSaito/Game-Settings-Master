@@ -212,11 +212,57 @@ fn active_dir(baseline: &Baseline) -> PathBuf {
     crate::ini::platform::reconcile_config_dir(Path::new(&baseline.dir), &hints)
 }
 fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
+    check_with_reader(baseline, crate::changes::read_optional)
+}
+
+struct ParsedConfig {
+    entries: Vec<Entry>,
+    keys: BTreeMap<(String, String), Vec<usize>>,
+    bindings: BTreeMap<(String, usize), usize>,
+}
+
+impl ParsedConfig {
+    fn new(text: &str, input: bool) -> Self {
+        let entries = Document::parse(text).entries();
+        let mut keys: BTreeMap<_, Vec<usize>> = BTreeMap::new();
+        let mut bindings = BTreeMap::new();
+        let mut counts = BTreeMap::new();
+        for (index, entry) in entries.iter().enumerate() {
+            keys.entry((
+                entry.section.to_ascii_lowercase(),
+                entry.key.to_ascii_lowercase(),
+            ))
+            .or_default()
+            .push(index);
+            if input {
+                let signature = input_signature(entry);
+                let occurrence = counts.entry(signature.clone()).or_insert(0usize);
+                bindings.insert((signature, *occurrence), index);
+                *occurrence += 1;
+            }
+        }
+        Self {
+            entries,
+            keys,
+            bindings,
+        }
+    }
+}
+
+fn check_with_reader(
+    baseline: &Baseline,
+    mut read: impl FnMut(&Path, &str) -> Result<Option<Vec<u8>>, String>,
+) -> Result<DiagnosticReport, String> {
     let dir = active_dir(baseline);
     let mut changes = Vec::new();
     let mut checked_files = BTreeSet::new();
+    let mut files = BTreeMap::new();
+    let mut documents = BTreeMap::new();
     for operation in &baseline.operations {
-        let bytes = crate::changes::read_optional(&dir, &operation.file)?;
+        if !files.contains_key(&operation.file) {
+            files.insert(operation.file.clone(), read(&dir, &operation.file)?);
+        }
+        let bytes = &files[&operation.file];
         if operation.kind == OperationKind::File {
             if !checked_files.insert(operation.file.clone()) {
                 continue;
@@ -233,22 +279,27 @@ fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
             }
             continue;
         }
-        let text = bytes
-            .as_ref()
-            .map(|bytes| crate::ini::encoding::decode_bytes(bytes).map(|(text, _)| text))
-            .transpose()?
-            .unwrap_or_default();
-        let document = Document::parse(&text);
+        if !documents.contains_key(&operation.file) {
+            let text = bytes
+                .as_ref()
+                .map(|bytes| crate::ini::encoding::decode_bytes(bytes).map(|(text, _)| text))
+                .transpose()?
+                .unwrap_or_default();
+            documents.insert(
+                operation.file.clone(),
+                ParsedConfig::new(&text, operation.file == "Input.ini"),
+            );
+        }
+        let document = &documents[&operation.file];
         let mut difference = operation.clone();
         let actual = if let Some(line) = operation.line.map(|line| line as usize) {
-            let entries = document.entries();
             let entry = if let Some(identity) = baseline.input_identities.get(&operation.id) {
-                entries
-                    .iter()
-                    .filter(|entry| input_signature(entry) == identity.signature)
-                    .nth(identity.occurrence)
+                document
+                    .bindings
+                    .get(&(identity.signature.clone(), identity.occurrence))
+                    .map(|index| &document.entries[*index])
             } else {
-                entries.iter().find(|entry| {
+                document.entries.iter().find(|entry| {
                     entry.line == line
                         && entry.section.eq_ignore_ascii_case(&operation.section)
                         && entry.key == operation.key
@@ -260,22 +311,22 @@ fn check(baseline: &Baseline) -> Result<DiagnosticReport, String> {
             entry.map(|entry| entry.value.clone())
         } else if let Some(occurrence) = operation.occurrence.map(|value| value as usize) {
             document
-                .entries()
-                .into_iter()
-                .filter(|entry| {
-                    entry.section.eq_ignore_ascii_case(&operation.section)
-                        && entry.key.eq_ignore_ascii_case(&operation.key)
-                })
-                .nth(occurrence)
-                .map(|entry| entry.value)
-        } else {
-            document
-                .scalar_values()
+                .keys
                 .get(&(
                     operation.section.to_ascii_lowercase(),
                     operation.key.to_ascii_lowercase(),
                 ))
-                .cloned()
+                .and_then(|indices| indices.get(occurrence))
+                .map(|index| document.entries[*index].value.clone())
+        } else {
+            document
+                .keys
+                .get(&(
+                    operation.section.to_ascii_lowercase(),
+                    operation.key.to_ascii_lowercase(),
+                ))
+                .and_then(|indices| indices.last())
+                .map(|index| document.entries[*index].value.clone())
         };
         // Struct field order and whitespace have no effect on binding values.
         let same_binding = operation.kind == OperationKind::Input
@@ -338,7 +389,7 @@ fn file_fingerprint(baseline: &Baseline) -> Result<String, String> {
     ))
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn get_diagnostic_report(
     game_id: String,
     refresh: bool,
@@ -694,6 +745,38 @@ mod tests {
         }
     }
     #[test]
+    #[ignore = "manual performance measurement"]
+    fn diagnostic_large_profile_benchmark() {
+        let root = tempfile::tempdir().unwrap();
+        let mut text = String::from("[SystemSettings]\n");
+        for index in 0..4000 {
+            text.push_str(&format!("r.Fixture{index}=1 ; benchmark fixture padding\n"));
+        }
+        std::fs::write(root.path().join("Engine.ini"), &text).unwrap();
+        let mut baseline = fixture(
+            root.path(),
+            operation("scalar", "Engine.ini", "r.Fixture0", None),
+        );
+        baseline.operations = (0..400)
+            .map(|index| {
+                operation(
+                    "scalar",
+                    "Engine.ini",
+                    &format!("r.Fixture{index}"),
+                    Some("1 ; benchmark fixture padding"),
+                )
+            })
+            .collect();
+        for sample in 0..3 {
+            let started = Instant::now();
+            assert_eq!(check(&baseline).unwrap().status, "unchanged");
+            println!(
+                "diagnostic sample={sample} operations=400 lines=4001 elapsed_ms={}",
+                started.elapsed().as_millis()
+            );
+        }
+    }
+    #[test]
     fn diagnostic_detects_recreated_deleted_parameter_and_new_active_folder() {
         let root = tempfile::tempdir().unwrap();
         let dir = root.path().join("Windows");
@@ -723,6 +806,33 @@ mod tests {
         let result = check(&baseline).unwrap();
         assert_eq!(result.status, "moved");
         assert_eq!(result.config_dir, new_dir.to_string_lossy());
+    }
+    #[test]
+    fn diagnostic_uses_one_revision_per_file_for_all_operations() {
+        let root = tempfile::tempdir().unwrap();
+        let mut baseline = fixture(
+            root.path(),
+            operation("scalar", "Engine.ini", "A", Some("1")),
+        );
+        baseline
+            .operations
+            .push(operation("scalar:1", "Engine.ini", "A", Some("1")));
+        baseline
+            .operations
+            .push(operation("scalar", "Engine.ini", "B", Some("")));
+        let mut reads = 0;
+        let result = check_with_reader(&baseline, |_, file| {
+            assert_eq!(file, "Engine.ini");
+            reads += 1;
+            Ok(Some(if reads == 1 {
+                b"[SystemSettings]\nA=0\nA=1\nB=\n".to_vec()
+            } else {
+                b"[SystemSettings]\nA=changed\nB=changed\n".to_vec()
+            }))
+        })
+        .unwrap();
+        assert_eq!(reads, 1);
+        assert_eq!(result.status, "unchanged");
     }
     #[test]
     fn input_diagnostic_survives_added_comment_and_reports_current_occurrence() {
