@@ -36,6 +36,9 @@ multi-day stability or prove absence of all races.
 - Twenty-four simultaneous profile saves reproduced an atomic replacement
   failure before serialization. Store access now holds a thread mutex and an
   OS file lock across read, modification, BOM normalization, and replacement.
+  Contention with another instance returns an error rather than waiting for a
+  potentially stalled process. The operation can be retried after it releases
+  the lock.
 - Focus lifecycle tests cover late subscription completion after unmount and
   a stale initial focus response arriving after a newer event.
 - Recovery and discovery polling stop while the application is unfocused;

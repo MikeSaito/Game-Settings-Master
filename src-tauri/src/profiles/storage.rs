@@ -19,7 +19,16 @@ pub(super) fn lock_store() -> Result<StoreGuard, String> {
         .write(true)
         .open(app_data_dir()?.join("profiles.lock"))
         .map_err(|error| error.to_string())?;
-    file.lock().map_err(|error| error.to_string())?;
+    // A stalled second instance must not leave startup/IPC waiting indefinitely.
+    file.try_lock().map_err(|error| {
+        format!(
+            "{}: {error}",
+            crate::i18n::t(
+                "Хранилище профилей занято или недоступно",
+                "Profile store is busy or unavailable",
+            )
+        )
+    })?;
     Ok(StoreGuard {
         _file: file,
         _thread: thread,

@@ -7,6 +7,25 @@ use crate::core::models::{GameOverride, GameProfile};
 use crate::profiles::use_test_app_data_dir;
 
 #[test]
+fn busy_profile_store_fails_without_waiting_and_recovers() {
+    let root = tempfile::tempdir().unwrap();
+    let _data = use_test_app_data_dir(root.path());
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(root.path().join("profiles.lock"))
+        .unwrap();
+    file.lock().unwrap();
+    let started = std::time::Instant::now();
+    assert!(super::load_saved_profiles().is_err());
+    assert!(started.elapsed() < std::time::Duration::from_secs(1));
+    drop(file);
+    assert!(super::load_saved_profiles().unwrap().is_empty());
+}
+
+#[test]
 fn concurrent_profile_saves_preserve_every_game() {
     let target = std::env::current_dir().unwrap().join("target");
     std::fs::create_dir_all(&target).unwrap();
